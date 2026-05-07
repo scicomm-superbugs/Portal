@@ -102,7 +102,11 @@ export function calculateScore({ completedTasks = 0, likesReceived = 0, connecti
 }
 
 export function getUnlockedTags(score) {
-  return AUTO_TAGS.filter(t => score >= t.threshold).map(t => t.tag);
+  const tags = AUTO_TAGS.filter(t => score >= t.threshold).map(t => t.tag);
+  if (score === Infinity) {
+    tags.push('👑 SciComm MasterMind');
+  }
+  return tags;
 }
 
 export function getNextTag(score) {
@@ -120,11 +124,11 @@ export const USER_LEVELS = [
   { threshold: 2000, level: 7, title: 'Innovator', color: '#d946ef', bg: '#fae8ff' },
   { threshold: 3000, level: 8, title: 'Luminary', color: '#f59e0b', bg: '#fef3c7' },
   { threshold: 5000, level: 9, title: 'Visionary', color: '#14b8a6', bg: '#ccfbf1' },
-  { threshold: 8000, level: 10, title: 'Master', color: '#ef4444', bg: '#fee2e2' }
+  { threshold: 8000, level: 10, title: 'Master', color: '#b45309', bg: '#fef3c7' }
 ];
 
 export function getUserLevel(score) {
-  if (score === Infinity) return { level: '∞', title: 'Infinite', color: '#1d4ed8', bg: '#eff6ff', isInfinite: true };
+  if (score === Infinity) return { level: '∞', title: 'Infinite', color: '#b45309', bg: '#fef3c7', isInfinite: true };
   let current = USER_LEVELS[0];
   for (const l of USER_LEVELS) {
     if (score >= l.threshold) current = l;

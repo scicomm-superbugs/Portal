@@ -35,13 +35,22 @@ export default function SciCommFeed() {
   const [isEditingLinks, setIsEditingLinks] = useState(false);
   const [tempLinks, setTempLinks] = useState([]);
 
-  const defaultQuickLinks = [
-    { id: 1, title: 'My Tasks', url: '/tasks', icon: '📋' },
-    { id: 2, title: 'Leaderboard', url: '/leaderboard', icon: '🏆' },
-    { id: 3, title: 'Calendar', url: '/calendar', icon: '📅' },
-    { id: 4, title: 'Chat', url: '/chat', icon: '💬' }
+  const AVAILABLE_QUICK_LINKS = [
+    { id: 'tasks', title: 'My Tasks', url: '/tasks', icon: '📋' },
+    { id: 'leaderboard', title: 'Leaderboard', url: '/leaderboard', icon: '🏆' },
+    { id: 'calendar', title: 'Calendar', url: '/calendar', icon: '📅' },
+    { id: 'chat', title: 'Chat', url: '/chat', icon: '💬' },
+    { id: 'network', title: 'Network', url: '/network', icon: '👥' },
+    { id: 'profile', title: 'My Profile', url: '/profile', icon: '👤' },
+    { id: 'notifications', title: 'Alerts', url: '/notifications', icon: '🔔' }
   ];
-  const myLinks = currentUserData?.quickLinks || defaultQuickLinks;
+
+  const defaultQuickLinks = ['tasks', 'leaderboard', 'calendar', 'chat'];
+  // Migrate old format if needed, or use defaults
+  let myLinks = currentUserData?.quickLinks || defaultQuickLinks;
+  if (myLinks.length > 0 && typeof myLinks[0] === 'object') {
+    myLinks = defaultQuickLinks; // Reset if they had the old object format
+  }
 
   const isAdmin = user.role === 'admin' || user.role === 'master';
 
@@ -467,26 +476,28 @@ export default function SciCommFeed() {
           
           {isEditingLinks ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {tempLinks.map((link, idx) => (
-                <div key={link.id || idx} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                  <input type="text" value={link.icon} onChange={e => { const n = [...tempLinks]; n[idx].icon = e.target.value; setTempLinks(n); }} placeholder="Emoji" style={{ width: '40px', padding: '6px', border: '1px solid #e0dfdc', borderRadius: '4px', fontSize: '12px', textAlign: 'center' }} />
-                  <input type="text" value={link.title} onChange={e => { const n = [...tempLinks]; n[idx].title = e.target.value; setTempLinks(n); }} placeholder="Title" style={{ flex: 1, padding: '6px', border: '1px solid #e0dfdc', borderRadius: '4px', fontSize: '12px' }} />
-                  <input type="text" value={link.url} onChange={e => { const n = [...tempLinks]; n[idx].url = e.target.value; setTempLinks(n); }} placeholder="URL (/path or http)" style={{ flex: 1, padding: '6px', border: '1px solid #e0dfdc', borderRadius: '4px', fontSize: '12px' }} />
-                  <button onClick={() => setTempLinks(tempLinks.filter((_, i) => i !== idx))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}><Trash2 size={14} /></button>
-                </div>
-              ))}
-              <button onClick={() => setTempLinks([...tempLinks, { id: Date.now(), title: '', url: '', icon: '🔗' }])} style={{ background: 'none', border: '1px dashed #1d4ed8', color: '#1d4ed8', borderRadius: '4px', padding: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px' }}><Plus size={14} /> Add Link</button>
+              <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Toggle the links you want to pin:</div>
+              {AVAILABLE_QUICK_LINKS.map((link) => {
+                const isActive = tempLinks.includes(link.id);
+                return (
+                  <label key={link.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px', padding: '6px', borderRadius: '4px', background: isActive ? '#eff6ff' : 'transparent', border: isActive ? '1px solid #bfdbfe' : '1px solid transparent' }}>
+                    <input type="checkbox" checked={isActive} onChange={() => {
+                      if (isActive) setTempLinks(tempLinks.filter(id => id !== link.id));
+                      else setTempLinks([...tempLinks, link.id]);
+                    }} style={{ cursor: 'pointer' }} />
+                    {link.icon} {link.title}
+                  </label>
+                );
+              })}
               <button onClick={async () => { await db.scientists.update(user.id, { quickLinks: tempLinks }); setIsEditingLinks(false); }} className="scicomm-btn-primary" style={{ padding: '8px', justifyContent: 'center', marginTop: '4px' }}>Save Links</button>
             </div>
           ) : (
             <div>
-              {myLinks.map((link, idx) => {
-                const isExternal = link.url.startsWith('http');
-                const content = <>{link.icon} {link.title}</>;
-                return isExternal ? (
-                  <a key={link.id || idx} href={link.url} target="_blank" rel="noreferrer" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>{content}</a>
-                ) : (
-                  <Link key={link.id || idx} to={link.url} style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>{content}</Link>
+              {myLinks.map(id => {
+                const link = AVAILABLE_QUICK_LINKS.find(l => l.id === id);
+                if (!link) return null;
+                return (
+                  <Link key={link.id} to={link.url} style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>{link.icon} {link.title}</Link>
                 );
               })}
             </div>

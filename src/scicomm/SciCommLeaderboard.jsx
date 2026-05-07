@@ -114,7 +114,7 @@ export default function SciCommLeaderboard() {
           {/* Master Accounts - Pinned at the very top */}
           {masterAccounts.map(s => {
             const isMe = String(s.id) === String(user.id);
-            const pinned = (s.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
+            const pinned = (s.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t) || t === '👑 SciComm MasterMind');
             return (
               <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 8px', borderRadius: '8px', marginBottom: '4px', background: 'linear-gradient(90deg, #eff6ff 0%, transparent 100%)', border: '1px solid #fbbf24' }}>
                 <div style={{ width: '32px', textAlign: 'center', fontSize: '20px' }}>👑</div>
@@ -127,7 +127,10 @@ export default function SciCommLeaderboard() {
                   </div>
                   {pinned.length > 0 && (
                     <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '4px' }}>
-                      {pinned.slice(0, 5).map((t, j) => <span key={j} style={{ fontSize: '10px', color: '#1e3a8a', background: '#dbeafe', padding: '2px 8px', borderRadius: '10px', border: '1px solid #bfdbfe' }}>{t}</span>)}
+                      {pinned.slice(0, 5).map((t, j) => {
+                        const isMasterTag = t === '👑 SciComm MasterMind';
+                        return <span key={j} style={{ fontSize: '10px', color: isMasterTag ? '#b45309' : '#1e3a8a', background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : '#dbeafe', padding: '2px 8px', borderRadius: '10px', border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe', fontWeight: isMasterTag ? 700 : 400 }}>{t}</span>
+                      })}
                     </div>
                   )}
                 </div>
@@ -144,7 +147,7 @@ export default function SciCommLeaderboard() {
             const badge = getRankBadge(i);
             const isMe = String(s.id) === String(user.id);
             const sLevel = getUserLevel(s.score);
-            const pinned = (s.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
+            const pinned = (s.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t) || t === '👑 SciComm MasterMind');
             return (
               <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 8px', borderRadius: '8px', marginBottom: '2px', background: isMe ? '#eff6ff' : 'transparent', border: isMe ? '1px solid #bfdbfe' : '1px solid transparent' }}>
                 <div style={{ width: '32px', textAlign: 'center', fontWeight: 700, fontSize: '14px', color: badge.color }}>{badge.emoji}</div>
@@ -157,7 +160,10 @@ export default function SciCommLeaderboard() {
                   </div>
                   {pinned.length > 0 && (
                     <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '2px' }}>
-                      {pinned.slice(0, 3).map((t, j) => <span key={j} style={{ fontSize: '10px', color: '#1e3a8a', background: '#eff6ff', padding: '1px 6px', borderRadius: '8px' }}>{t}</span>)}
+                      {pinned.slice(0, 3).map((t, j) => {
+                        const isMasterTag = t === '👑 SciComm MasterMind';
+                        return <span key={j} style={{ fontSize: '10px', color: isMasterTag ? '#b45309' : '#1e3a8a', background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : '#eff6ff', padding: '1px 6px', borderRadius: '8px', border: isMasterTag ? '1px solid #fde047' : 'none', fontWeight: isMasterTag ? 700 : 400 }}>{t}</span>
+                      })}
                     </div>
                   )}
                 </div>

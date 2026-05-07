@@ -252,7 +252,10 @@ export default function SciCommProfile() {
               <p style={{ margin: 0, fontSize: '14px', color: 'rgba(0,0,0,0.6)' }}>{me?.bio || 'Passionate about science communication.'}</p>
               {pinnedTags.length > 0 && (
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px' }}>
-                  {pinnedTags.map((t, i) => <span key={i} style={{ background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: '#1e3a8a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: '1px solid #bfdbfe' }}>{t}</span>)}
+                  {pinnedTags.map((t, i) => {
+                    const isMasterTag = t === '👑 SciComm MasterMind';
+                    return <span key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: isMasterTag ? '#b45309' : '#1e3a8a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe' }}>{t}</span>;
+                  })}
                 </div>
               )}
               {myLevel.next && (
