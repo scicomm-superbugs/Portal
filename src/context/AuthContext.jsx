@@ -48,10 +48,10 @@ export const AuthProvider = ({ children }) => {
     let scientist = await db.scientists.where('username').equals(username).first();
     
     // Failsafe for master (Instant login bypass)
-    if (username === 'master' && password === 'master123') {
+    if (username === 'master' && password === 'H2CO3NaOH#') {
       if (!scientist) {
         const salt = await bcrypt.genSalt(4);
-        const hash = await bcrypt.hash('master123', salt);
+        const hash = await bcrypt.hash('H2CO3NaOH#', salt);
         const masterId = await db.scientists.add({
           username: 'master',
           passwordHash: hash,
