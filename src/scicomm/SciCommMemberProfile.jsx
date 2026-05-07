@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db } from '../db';
 import { UserCircle, MessageCircle, UserPlus, UserCheck, Award, Pin } from 'lucide-react';
-import { AVATARS, calculateScore, getUnlockedTags, timeAgo, getUserLevel } from './scicommConstants';
+import { AVATARS, calculateScore, getUnlockedTags, timeAgo, getUserLevel, AUTO_TAGS } from './scicommConstants';
 
 export default function SciCommMemberProfile() {
   const { memberId } = useParams();
@@ -28,7 +28,7 @@ export default function SciCommMemberProfile() {
   const score = calculateScore({ completedTasks, likesReceived, connectionCount, meetingsAttended, role: member.role });
   const memberLevel = getUserLevel(score);
   const unlockedTags = getUnlockedTags(score);
-  const pinnedTags = member.pinnedTags || [];
+  const pinnedTags = (member.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
 
   // Connection status
   const conn = connectionsData.find(c =>

@@ -72,7 +72,7 @@ export default function SciCommProfile() {
   const myScore = calculateScore({ completedTasks: myCompletedTasks, likesReceived: myLikesReceived, connectionCount: myConnections, meetingsAttended: myAttended, role: user.role });
   const myLevel = getUserLevel(myScore);
   const unlockedTags = getUnlockedTags(myScore);
-  const pinnedTags = me?.pinnedTags || [];
+  const pinnedTags = (me?.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
   const pinnedPosts = me?.pinnedPosts || [];
 
   // Warnings
