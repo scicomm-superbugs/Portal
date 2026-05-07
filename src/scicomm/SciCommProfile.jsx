@@ -240,59 +240,91 @@ export default function SciCommProfile() {
             </button>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h1 style={{ margin: '0', fontSize: '22px' }}>{me?.name || user.name}</h1>
-                <span style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 700, border: `1px solid ${myLevel.color}40` }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
+            <div style={{ flex: 1, minWidth: '300px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                <h1 style={{ margin: '0', fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>{me?.name || user.name}</h1>
+                <span style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 800, border: `1px solid ${myLevel.color}40`, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   Lv. {myLevel.level}{myLevel.title ? ' ' + myLevel.title : ''}
                 </span>
               </div>
-              <p style={{ margin: '4px 0 6px', fontSize: '15px' }}>{me?.department || 'Science Communicator'}</p>
-              <p style={{ margin: 0, fontSize: '14px', color: 'rgba(0,0,0,0.6)' }}>{me?.bio || 'Passionate about science communication.'}</p>
+              <p style={{ margin: '6px 0 16px', fontSize: '16px', fontWeight: 600, color: '#1d4ed8' }}>{me?.department || 'Science Communicator'}</p>
+              
+              {/* Graphical Bio Block */}
+              <div style={{ background: '#f8fafc', padding: '16px 20px', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
+                <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.7', color: '#334155' }}>{me?.bio || 'Passionate about science communication.'}</p>
+              </div>
+
+              {/* Pinned Tags inside Header */}
               {pinnedTags.length > 0 && (
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px' }}>
-                  {pinnedTags.map((t, i) => {
-                    const isMasterTag = t === '👑 SciComm MasterMind';
-                    return <span key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: isMasterTag ? '#b45309' : '#1e3a8a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe' }}>{t}</span>;
-                  })}
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <h3 style={{ margin: 0, fontSize: '14px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pinned Tags</h3>
+                    <button onClick={() => setShowTagManager(true)} style={{ background: 'none', border: 'none', color: '#1d4ed8', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>Manage</button>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {pinnedTags.map((t, i) => {
+                      const isMasterTag = t === '👑 SciComm MasterMind';
+                      return <span key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: isMasterTag ? '#b45309' : '#1e3a8a', padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 700, border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{t}</span>;
+                    })}
+                  </div>
                 </div>
               )}
+
+              {/* Graphical Stats Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '12px', marginTop: '20px', padding: '16px', background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                {[
+                  { label: 'Score', value: myScore === Infinity ? 'Infinity' : myScore, color: myScore === Infinity ? '#b45309' : '#1d4ed8', icon: '✨' },
+                  { label: 'Posts', value: myPosts.length, color: '#3b82f6', icon: '📝' },
+                  { label: 'Reactions', value: myLikesReceived, color: '#ef4444', icon: '❤️' },
+                  { label: 'Tasks Done', value: myCompletedTasks, color: '#f59e0b', icon: '✅' },
+                  { label: 'Connections', value: myConnections, color: '#8b5cf6', icon: '👥' },
+                  { label: 'Tags', value: unlockedTags.length, color: '#ec4899', icon: '🏷️' },
+                ].map((s, i) => (
+                  <div key={i} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px' }}>
+                    <div style={{ fontSize: '20px', marginBottom: '4px' }}>{s.icon}</div>
+                    <div style={{ fontSize: '22px', fontWeight: 800, color: s.color }}>{s.value}</div>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '16px' }}>
+              <button onClick={() => setShowWarnings(true)} style={{ background: activeWarnings.length > 0 ? '#fee2e2' : '#f1f5f9', border: 'none', borderRadius: '24px', padding: '8px 16px', cursor: 'pointer', fontSize: '13px', fontWeight: 700, color: activeWarnings.length > 0 ? '#991b1b' : '#64748b', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                <AlertTriangle size={16} /> {activeWarnings.length}/3 Warnings
+              </button>
+              
               {myLevel.next && (
-                <div style={{ marginTop: '12px', width: '250px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'rgba(0,0,0,0.6)', marginBottom: '4px' }}>
+                <div style={{ width: '220px', background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>
                     <span>{myScore} pts</span>
                     <span>{myLevel.next.threshold} pts</span>
                   </div>
-                  <div style={{ width: '100%', height: '6px', background: '#eef3f8', borderRadius: '4px', overflow: 'hidden' }}>
+                  <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
                     <div style={{ width: `${myLevel.progress}%`, height: '100%', background: `linear-gradient(90deg, ${myLevel.color}, ${myLevel.next.color})`, borderRadius: '4px', transition: 'width 0.5s ease' }} />
                   </div>
-                  <div style={{ fontSize: '10px', color: 'rgba(0,0,0,0.5)', marginTop: '4px', textAlign: 'right' }}>
-                    Next: {myLevel.next.title}
+                  <div style={{ fontSize: '11px', fontWeight: 600, color: '#64748b', marginTop: '8px', textAlign: 'center' }}>
+                    Next Level: <span style={{ color: myLevel.next.color }}>{myLevel.next.title}</span>
                   </div>
                 </div>
               )}
-            </div>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => setShowWarnings(true)} style={{ background: activeWarnings.length > 0 ? '#fee2e2' : '#f3f2ef', border: 'none', borderRadius: '24px', padding: '6px 14px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, color: activeWarnings.length > 0 ? '#991b1b' : '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <AlertTriangle size={14} /> {activeWarnings.length}/3
-              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="scicomm-card" style={{ display: 'flex', overflow: 'hidden', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: 'white', padding: '8px', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
         {[
-          { id: 'overview', label: 'Overview', icon: <UserCircle size={16} /> },
-          { id: 'portfolio', label: 'CV & Portfolio', icon: <Briefcase size={16} /> },
-          { id: 'settings', label: 'Settings', icon: <Settings size={16} /> }
+          { id: 'overview', label: 'Overview', icon: <UserCircle size={18} /> },
+          { id: 'portfolio', label: 'CV & Portfolio', icon: <Briefcase size={18} /> },
+          { id: 'settings', label: 'Settings', icon: <Settings size={18} /> }
         ].map(t => (
           <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
-            flex: 1, padding: '12px 8px', border: 'none', background: activeTab === t.id ? '#1d4ed8' : 'transparent',
-            color: activeTab === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, cursor: 'pointer', fontSize: '14px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s'
+            flex: 1, padding: '12px 16px', border: 'none', background: activeTab === t.id ? '#1d4ed8' : 'transparent',
+            color: activeTab === t.id ? 'white' : '#64748b', fontWeight: 700, borderRadius: '12px', cursor: 'pointer', fontSize: '15px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s', boxShadow: activeTab === t.id ? '0 4px 12px rgba(29, 78, 216, 0.3)' : 'none'
           }}>{t.icon} {t.label}</button>
         ))}
       </div>
@@ -300,57 +332,32 @@ export default function SciCommProfile() {
       {/* OVERVIEW TAB */}
       {activeTab === 'overview' && (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '8px', marginBottom: '8px' }}>
-            {[
-              { label: 'Score', value: myScore === Infinity ? 'Infinity' : myScore, color: myScore === Infinity ? '#b45309' : '#1d4ed8' },
-              { label: 'Posts', value: myPosts.length, color: '#3b82f6' },
-              { label: 'Reactions', value: myLikesReceived, color: '#ef4444' },
-              { label: 'Tasks Done', value: myCompletedTasks, color: '#f59e0b' },
-              { label: 'Connections', value: myConnections, color: '#8b5cf6' },
-              { label: 'Tags', value: unlockedTags.length, color: '#ec4899' },
-            ].map((s, i) => (
-              <div key={i} className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', marginBottom: 0 }}>
-                <div style={{ fontSize: '24px', fontWeight: 700, color: s.color }}>{s.value}</div>
-                <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.5)' }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
 
           <div className="scicomm-card scicomm-card-padding" style={{ marginBottom: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <h2 style={{ fontSize: '18px', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}><Award size={20} color="#1d4ed8" /> Achievement Tags</h2>
-              <button onClick={() => setShowTagManager(true)} className="scicomm-btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }}>Manage Tags</button>
-            </div>
-            <p style={{ margin: '0 0 12px', fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Pinned ({pinnedTags.length}/{user.role === 'master' ? 'unlimited' : '5'}). Score: {myScore === Infinity ? '∞' : myScore} pts — {unlockedTags.length}/{AUTO_TAGS.length} tags unlocked!</p>
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              {pinnedTags.length > 0 ? pinnedTags.map((t, i) => {
-                const isMasterTag = t === '👑 SciComm MasterMind';
-                return (
-                  <div key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: isMasterTag ? '#b45309' : 'white', padding: '5px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', border: isMasterTag ? '1px solid #fde047' : 'none' }}>
-                    <Pin size={12} /> {t}
-                  </div>
-                );
-              }) : (
-                <div style={{ color: '#666', fontSize: '13px', fontStyle: 'italic' }}>No tags pinned. Click Manage Tags to pin some!</div>
-              )}
+              <h2 style={{ fontSize: '18px', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}><Award size={20} color="#1d4ed8" /> Tag Progression</h2>
+              <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 600 }}>{unlockedTags.length}/{AUTO_TAGS.length} unlocked</span>
             </div>
             {(() => {
               const nextTag = AUTO_TAGS.find(t => t.threshold > myScore);
-              if (!nextTag) return null;
+              if (!nextTag) return (
+                <div style={{ padding: '12px', background: '#fef3c7', borderRadius: '8px', border: '1px solid #fde68a', color: '#b45309', fontWeight: 600, fontSize: '13px' }}>
+                  🎉 You have unlocked all available Mystery Tags!
+                </div>
+              );
               const prevThreshold = AUTO_TAGS.filter(t => t.threshold <= myScore).pop()?.threshold || 0;
               const progress = Math.min(100, ((myScore - prevThreshold) / (nextTag.threshold - prevThreshold)) * 100);
               return (
-                <div style={{ marginTop: '12px', padding: '12px', background: '#f9fafb', borderRadius: '8px', border: '1px dashed #d1d5db' }}>
-                  <div style={{ fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>🔒 Next Mystery Tag: {nextTag.threshold} pts needed</div>
-                  <div style={{ width: '100%', height: '8px', background: '#e5e7eb', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>🔒 Next Mystery Tag: {nextTag.threshold} pts needed</div>
+                  <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
                     <div style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #1d4ed8, #1e3a8a)', borderRadius: '4px', transition: 'width 0.5s' }}></div>
                   </div>
-                  <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>{myScore}/{nextTag.threshold} pts ({Math.round(progress)}%)</div>
+                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748b', marginTop: '6px', textAlign: 'right' }}>{myScore}/{nextTag.threshold} pts ({Math.round(progress)}%)</div>
                 </div>
               );
             })()}
           </div>
-
           <div className="scicomm-card scicomm-card-padding">
             <h2 style={{ fontSize: '18px', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}><Pin size={20} color="#1d4ed8" /> Pinned Highlights (max 5)</h2>
             {myPosts.length === 0 ? <p style={{ color: '#666', fontSize: '14px' }}>No posts yet.</p> : (
