@@ -47,10 +47,14 @@ export default function SciCommLeaderboard() {
     return calculateScore({ completedTasks, likesReceived, connectionCount, meetingsAttended, role: s.role });
   };
 
-  const leaderboard = activeMembers
+  const normalLeaderboard = activeMembers
     .map(s => ({ ...s, score: getMemberScore(s) }))
-    .filter(s => s.score >= 0)
+    .filter(s => s.score >= 0 && s.role !== 'master')
     .sort((a, b) => b.score - a.score);
+
+  const masterAccounts = activeMembers
+    .filter(s => s.role === 'master')
+    .map(s => ({ ...s, score: Infinity }));
 
   const getRankBadge = (index) => {
     if (index === 0) return { emoji: '🥇', color: '#fbbf24' };
@@ -85,18 +89,18 @@ export default function SciCommLeaderboard() {
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
             {[1, 0, 2].map(idx => {
-              const person = leaderboard[idx];
+              const person = normalLeaderboard[idx];
               if (!person) return null;
               const isFirst = idx === 0;
               const badge = getRankBadge(idx);
               return (
                 <div key={person.id} style={{ textAlign: 'center', width: isFirst ? '140px' : '110px', order: idx === 0 ? 1 : idx === 1 ? 0 : 2 }}>
                   <div style={{ fontSize: isFirst ? '36px' : '24px', marginBottom: '6px' }}>{badge.emoji}</div>
-                  <Link to={`/member/${person.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <Link to={`/member/${person.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     {renderAvatar(person, isFirst ? 80 : 60)}
-                    <div style={{ fontWeight: 700, fontSize: '14px', marginTop: '6px' }}>{person.name}</div>
+                    <div style={{ fontWeight: 700, fontSize: '14px', marginTop: '6px', textAlign: 'center' }}>{person.name}</div>
                   </Link>
-                  <div style={{ fontSize: '20px', fontWeight: 700, color: '#10b981', marginTop: '4px' }}>{person.score === Infinity ? '∞' : person.score}</div>
+                  <div style={{ fontSize: '20px', fontWeight: 700, color: '#10b981', marginTop: '4px' }}>{person.score}</div>
                 </div>
               );
             })}
@@ -106,11 +110,40 @@ export default function SciCommLeaderboard() {
         {/* Full Rankings */}
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>Full Rankings</h3>
-          {leaderboard.map((s, i) => {
+          
+          {/* Master Accounts - Pinned at the very top */}
+          {masterAccounts.map(s => {
+            const isMe = String(s.id) === String(user.id);
+            const pinned = (s.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
+            return (
+              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 8px', borderRadius: '8px', marginBottom: '4px', background: 'linear-gradient(90deg, #ecfdf5 0%, transparent 100%)', border: '1px solid #34d399' }}>
+                <div style={{ width: '32px', textAlign: 'center', fontSize: '20px' }}>👑</div>
+                <Link to={`/member/${s.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>{renderAvatar(s, 44)}</Link>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                    <span style={{ fontWeight: 700, fontSize: '15px' }}>{s.name}</span>
+                    <span style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>Science Communication Master</span>
+                    {isMe && <span style={{ color: '#10b981', fontSize: '11px', fontWeight: 600 }}>(You)</span>}
+                  </div>
+                  {pinned.length > 0 && (
+                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '4px' }}>
+                      {pinned.slice(0, 5).map((t, j) => <span key={j} style={{ fontSize: '10px', color: '#065f46', background: '#d1fae5', padding: '2px 8px', borderRadius: '10px', border: '1px solid #a7f3d0' }}>{t}</span>)}
+                    </div>
+                  )}
+                </div>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <div style={{ fontWeight: 800, fontSize: '24px', color: '#10b981', lineHeight: 1 }}>∞</div>
+                  <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 600 }}>points</div>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Normal Leaderboard */}
+          {normalLeaderboard.map((s, i) => {
             const badge = getRankBadge(i);
             const isMe = String(s.id) === String(user.id);
-            const sLevel = getUserLevel(s.score === Infinity ? 10000 : s.score);
-            const tags = getUnlockedTags(s.score === Infinity ? 10000 : s.score);
+            const sLevel = getUserLevel(s.score);
             const pinned = (s.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
             return (
               <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 8px', borderRadius: '8px', marginBottom: '2px', background: isMe ? '#ecfdf5' : 'transparent', border: isMe ? '1px solid #a7f3d0' : '1px solid transparent' }}>
@@ -129,7 +162,7 @@ export default function SciCommLeaderboard() {
                   )}
                 </div>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <div style={{ fontWeight: 700, fontSize: '18px', color: '#10b981' }}>{s.score === Infinity ? '∞' : s.score}</div>
+                  <div style={{ fontWeight: 700, fontSize: '18px', color: '#10b981' }}>{s.score}</div>
                   <div style={{ fontSize: '10px', color: 'rgba(0,0,0,0.4)' }}>points</div>
                 </div>
               </div>
