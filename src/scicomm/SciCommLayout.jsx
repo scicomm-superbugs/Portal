@@ -137,48 +137,47 @@ export default function SciCommLayout() {
           background: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)',
           color: 'white',
           filter: isDarkMode ? 'invert(1) hue-rotate(180deg)' : 'none',
-          padding: '48px 24px 80px',
-          marginTop: '60px',
+          padding: '32px 24px 70px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '32px',
+          gap: '24px',
           margin: '40px -16px -16px -16px' // Stretch to edge if there's padding
         }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', width: '100%', maxWidth: '1200px', gap: '40px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', width: '100%', maxWidth: '1000px', gap: '32px' }}>
             
             {/* Column 1: Logo & Info */}
-            <div style={{ flex: '1 1 300px' }}>
-              <div style={{ background: 'white', padding: '12px', borderRadius: '12px', display: 'inline-block', marginBottom: '16px' }}>
-                <img src="./aiu_scicomm_light.png" alt="AIU SciComm" style={{ height: '60px', objectFit: 'contain', filter: 'none' }} onError={e => e.target.style.display='none'} />
+            <div style={{ flex: '1 1 280px' }}>
+              <div style={{ background: 'white', padding: '8px', borderRadius: '8px', display: 'inline-block', marginBottom: '12px' }}>
+                <img src="./aiu_scicomm_light.png" alt="AIU SciComm" style={{ height: '40px', objectFit: 'contain', filter: 'none' }} onError={e => e.target.style.display='none'} />
               </div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8', opacity: 0.9 }}>
+              <p style={{ fontSize: '12px', lineHeight: '1.5', opacity: 0.85, margin: 0 }}>
                 AIU SciComm is a pioneering scientific organization that empowers communities through quality outreach and capacity development. We provide collaborative enrichment programs and services that equip learners with future green skills, empower educators, and advance science communication.
               </p>
             </div>
             
             {/* Column 2: Developer Info */}
-            <div style={{ flex: '1 1 250px' }}>
-              <h3 style={{ fontSize: '18px', marginBottom: '20px', fontWeight: 600 }}>Developer</h3>
-              <p style={{ fontSize: '15px', lineHeight: '1.6', fontWeight: 700, marginBottom: '8px' }}>Abdullah Amr Maged</p>
-              <p style={{ fontSize: '14px', lineHeight: '1.8', opacity: 0.9, marginBottom: '16px' }}>
+            <div style={{ flex: '1 1 200px' }}>
+              <h3 style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px', opacity: 0.7, fontWeight: 700 }}>Developer</h3>
+              <p style={{ fontSize: '13px', lineHeight: '1.4', fontWeight: 700, margin: '0 0 4px' }}>Abdullah Amr Maged</p>
+              <p style={{ fontSize: '12px', lineHeight: '1.5', opacity: 0.85, margin: 0 }}>
                 Teaching Assistant at Faculty of Science<br/>
                 & General Coordinator for Science Communication
               </p>
             </div>
 
             {/* Column 3: Contact Info */}
-            <div style={{ flex: '1 1 250px' }}>
-              <h3 style={{ fontSize: '18px', marginBottom: '20px', fontWeight: 600 }}>Get in touch</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '15px' }}>
-                <a href="https://wa.me/201553937763" target="_blank" rel="noreferrer" style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <MessageCircle size={20} /> (+20) 155 393 7763
+            <div style={{ flex: '1 1 200px' }}>
+              <h3 style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '12px', opacity: 0.7, fontWeight: 700 }}>Get in touch</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
+                <a href="https://wa.me/201553937763" target="_blank" rel="noreferrer" style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <MessageCircle size={14} /> (+20) 155 393 7763
                 </a>
-                <a href="mailto:amaged@aiu.edu.eg" style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ fontSize: '20px' }}>✉</span> amaged@aiu.edu.eg
+                <a href="mailto:amaged@aiu.edu.eg" style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '14px' }}>✉</span> amaged@aiu.edu.eg
                 </a>
-                <div style={{ color: 'white', display: 'flex', alignItems: 'flex-start', gap: '12px', marginTop: '4px', opacity: 0.9, fontSize: '14px', lineHeight: '1.6' }}>
-                  <Building2 size={20} style={{ flexShrink: 0, marginTop: '2px' }} /> 
+                <div style={{ color: 'white', display: 'flex', alignItems: 'flex-start', gap: '8px', opacity: 0.85, lineHeight: '1.5' }}>
+                  <Building2 size={14} style={{ flexShrink: 0, marginTop: '2px' }} /> 
                   <div>
                     Alamein International University,<br/>
                     Faculty of Science.
@@ -189,7 +188,7 @@ export default function SciCommLayout() {
           </div>
           
           {/* Bottom Row */}
-          <div style={{ width: '100%', maxWidth: '1200px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '24px', textAlign: 'center', fontSize: '13px', opacity: 0.8, display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
+          <div style={{ width: '100%', maxWidth: '1000px', borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '16px', textAlign: 'center', fontSize: '11px', opacity: 0.7 }}>
             <div>All rights reserved AIU SciComm &copy; {new Date().getFullYear()}-2028</div>
           </div>
         </footer>
