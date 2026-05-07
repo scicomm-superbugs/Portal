@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db } from '../db';
-import { UserCircle, MessageCircle, UserPlus, UserCheck, Award, Pin, FileText } from 'lucide-react';
+import { UserCircle, MessageCircle, UserPlus, UserCheck, Award, Pin, FileText, UserX } from 'lucide-react';
 import { AVATARS, calculateScore, getUnlockedTags, timeAgo, getUserLevel, AUTO_TAGS } from './scicommConstants';
 
 export default function SciCommMemberProfile() {
