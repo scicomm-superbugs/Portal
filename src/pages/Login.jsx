@@ -58,7 +58,7 @@ export default function Login() {
             </div>
           ) : workspaceId === 'aiuscicomm' ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <img src="./aiu_scicomm_logo.png" alt="AIU SciComm" style={{ height: '80px', marginBottom: '1rem', objectFit: 'contain' }} onError={e => e.target.style.display='none'}/>
+              <img src="./aiu_scicomm_light.png" alt="AIU SciComm" style={{ height: '80px', marginBottom: '1rem', objectFit: 'contain' }} onError={e => e.target.style.display='none'}/>
               <h2 style={{ fontSize: '1.5rem', color: '#10b981', marginBottom: '0.25rem', textAlign: 'center' }}>AIU SciComm Team</h2>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Science Communication Team</div>
             </div>

@@ -586,7 +586,7 @@ export default function Portal() {
             title="AIU SciComm Team"
             subtitle="Science Communication Team"
             description="The dedicated platform for the Science Communication Team at Alamein International University. Fostering outreach, collaboration, and scientific dialogue."
-            logoSrc="./aiu_scicomm_logo.png"
+            logoSrc="./aiu_scicomm_dark.png"
             accentColor="#10b981"
             delay="0.6s"
             onClick={() => handleSelectWorkspace('aiuscicomm')}

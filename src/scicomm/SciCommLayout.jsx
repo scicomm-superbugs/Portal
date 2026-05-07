@@ -86,7 +86,7 @@ export default function SciCommLayout() {
       <header className="scicomm-header">
         <div className="scicomm-header-content">
           <div className="scicomm-header-left">
-            <Link to="/"><img src="./aiu_scicomm_logo.png" alt="AIU SciComm" className="scicomm-logo" onError={e => e.target.style.display='none'} /></Link>
+            <Link to="/"><img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => e.target.style.display='none'} /></Link>
             <div className="scicomm-search-box"><Search size={16} /><input type="text" placeholder="Search people..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { navigate('/network?q=' + encodeURIComponent(searchText)); setSearchText(''); } }} /></div>
           </div>
           <nav className="scicomm-nav">
