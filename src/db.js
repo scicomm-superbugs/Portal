@@ -19,10 +19,50 @@ export const storage = getStorage(app);
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
+const compressImageToBase64 = (file, maxWidth = 1000) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.6));
+      };
+      img.onerror = () => reject(new Error('Failed to load image for compression'));
+    };
+    reader.onerror = () => reject(new Error('Failed to read file'));
+  });
+};
+
 export const uploadFile = async (file, path, onProgress) => {
   if (!file) throw new Error('No file provided');
   if (file.size > MAX_FILE_SIZE) throw new Error(`File too large (max ${MAX_FILE_SIZE / 1024 / 1024}MB)`);
   
+  // 🔥 EMERGENCY FALLBACK: If it's an image, convert to Base64 and return immediately.
+  // This completely bypasses Firebase Storage CORS and timeout issues for Profile Pics & Banners!
+  if (file.type.startsWith('image/')) {
+    if (onProgress) onProgress(50);
+    try {
+      const base64Url = await compressImageToBase64(file);
+      if (onProgress) onProgress(100);
+      return base64Url;
+    } catch (e) {
+      console.error('Base64 compression failed, falling back to Firebase Storage', e);
+    }
+  }
+
   const storageRef = ref(storage, path);
   
   if (onProgress) {
@@ -31,8 +71,8 @@ export const uploadFile = async (file, path, onProgress) => {
       const task = uploadBytesResumable(storageRef, file);
       const timeout = setTimeout(() => { 
         task.cancel(); 
-        reject(new Error('Upload timed out. Check your Firebase Storage CORS and Rules configuration.')); 
-      }, 30000); // 30 second strict timeout
+        reject(new Error('Upload timed out. To fix this permanently for videos/documents, you MUST configure Firebase Storage CORS rules in your Google Cloud Console.')); 
+      }, 20000); // 20 second strict timeout
       
       task.on('state_changed',
         (snapshot) => {
@@ -50,7 +90,7 @@ export const uploadFile = async (file, path, onProgress) => {
   } else {
     // Simple upload for small files with timeout wrapper
     return new Promise(async (resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error('Upload timed out. Check Firebase Storage CORS and Rules.')), 30000);
+      const timeout = setTimeout(() => reject(new Error('Upload timed out. To fix this permanently for videos/documents, you MUST configure Firebase Storage CORS rules in your Google Cloud Console.')), 20000);
       try {
         await uploadBytes(storageRef, file);
         const url = await getDownloadURL(storageRef);
