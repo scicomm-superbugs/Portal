@@ -123,7 +123,7 @@ export default function SciCommNetwork() {
       <div className="scicomm-feed-main">
         {/* Tabs */}
         <div className="scicomm-card" style={{ display: 'flex', overflow: 'hidden' }}>
-          {[{ id: 'discover', label: 'Discover' }, { id: 'connections', label: `Connections (${myConnections.length})` }, { id: 'pending', label: `Pending (${pendingReceived.length})` }].map(t => (
+          {[{ id: 'discover', label: 'Discover' }, { id: 'connections', label: `Connections (${myConnections.length})` }, { id: 'pending', label: `Pending (${pendingReceived.length})` }, { id: 'sent', label: `Sent (${pendingSent.length})` }].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{
               flex: 1, padding: '14px 8px', border: 'none', background: tab === t.id ? '#1d4ed8' : 'transparent',
               color: tab === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s'
@@ -211,6 +211,29 @@ export default function SciCommNetwork() {
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <button className="scicomm-btn-primary" style={{ padding: '6px 14px', fontSize: '13px' }} onClick={() => handleAccept(c.id)}>Accept</button>
                     <button style={{ padding: '6px 14px', fontSize: '13px', border: '1px solid #e0dfdc', borderRadius: '24px', background: 'transparent', cursor: 'pointer' }} onClick={() => handleReject(c.id)}>Ignore</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {tab === 'sent' && (
+          <div className="scicomm-card scicomm-card-padding">
+            <h3 style={{ margin: '0 0 16px', fontSize: '18px' }}>Sent Requests</h3>
+            {pendingSent.length === 0 ? (
+              <p style={{ color: '#666', textAlign: 'center', padding: '24px' }}>No sent requests.</p>
+            ) : pendingSent.map(c => {
+              const receiver = scientists.find(s => String(s.id) === String(c.toId));
+              return (
+                <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0', borderBottom: '1px solid #eef3f8' }}>
+                  <Link to={`/member/${c.toId}`} style={{ flexShrink: 0 }}>{renderAvatar(receiver, 48)}</Link>
+                  <div style={{ flex: 1 }}>
+                    <Link to={`/member/${c.toId}`} style={{ textDecoration: 'none', color: 'inherit' }}><div style={{ fontWeight: 600, fontSize: '14px' }}>{c.toName}</div></Link>
+                    <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>Request sent</div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button style={{ padding: '6px 14px', fontSize: '13px', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '24px', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }} onClick={() => handleRemoveConnection(c.id)}><UserX size={14}/> Cancel</button>
                   </div>
                 </div>
               );

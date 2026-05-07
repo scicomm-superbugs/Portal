@@ -474,7 +474,6 @@
 /* ===== DARK MODE ===== */
 .scicomm-dark-mode {
   filter: invert(0.92) hue-rotate(180deg);
-  background-color: #111 !important;
 }
 .scicomm-dark-mode img,
 .scicomm-dark-mode video,

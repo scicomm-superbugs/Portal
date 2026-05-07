@@ -87,8 +87,10 @@ export default function SciCommMemberProfile() {
                   <button className="scicomm-btn-primary" onClick={() => navigate('/chat?with=' + memberId)} style={{ fontSize: '13px' }}><MessageCircle size={14} /> Message</button>
                   <button className="scicomm-btn-secondary" onClick={handleRemoveConnection} style={{ fontSize: '13px' }}>Remove Connection</button>
                 </>
-              ) : isPending ? (
-                <button className="scicomm-btn-secondary" disabled style={{ fontSize: '13px' }}>⏳ Request Pending</button>
+              ) : conn?.status === 'pending' && String(conn.fromId) === String(user.id) ? (
+                <button className="scicomm-btn-secondary" onClick={handleRemoveConnection} style={{ fontSize: '13px', color: '#ef4444' }}><UserX size={14} /> Cancel Request</button>
+              ) : conn?.status === 'pending' && String(conn.toId) === String(user.id) ? (
+                <button className="scicomm-btn-secondary" disabled style={{ fontSize: '13px' }}>⏳ Sent You Request</button>
               ) : (
                 <button className="scicomm-btn-primary" onClick={handleConnect} style={{ fontSize: '13px' }}><UserPlus size={14} /> Connect</button>
               )}
