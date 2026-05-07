@@ -71,7 +71,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.2.1';
+  const PLATFORM_VERSION = 'v3.3.0';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -169,30 +169,30 @@ export default function SciCommLayout() {
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>Real-time Profile Tracking:</strong> Profile viewers are now tracked with exact timestamps.</li>
-                  <li><strong>Precise Post Impressions:</strong> Impressions calculated from your actual posts & engagement.</li>
-                  <li><strong>Network Notifications:</strong> Red "New" badge on the Pending tab for incoming requests.</li>
-                  <li><strong>Pin Tags for Everyone:</strong> "Manage Pinned Tags" button is now always available.</li>
-                  <li><strong>Clickable Profiles:</strong> Profile card on Home page now links to your profile.</li>
+                  <li><strong>Comment Replies:</strong> You can now reply to individual comments with nested threads!</li>
+                  <li><strong>Comment Reactions:</strong> React to comments with 👍 Like, ❤️ Love, or 🔥 Fire.</li>
+                  <li><strong>Meetings Section:</strong> New dedicated Meetings tab in the navigation bar (desktop & mobile).</li>
+                  <li><strong>Clickable Calendar Events:</strong> Click any meeting or task in the calendar to jump straight to its details.</li>
+                  <li><strong>Admin & Master Badges:</strong> 👑 Master and 🛡️ Admin badges now appear next to names everywhere.</li>
                 </ul>
               </div>
               <div style={{ background: '#fef3c7', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔧 Fixes & Improvements</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#92400e', lineHeight: '1.8' }}>
-                  <li>Fixed profile view counter not incrementing on visits</li>
-                  <li>Fixed "Preview Profile" button overlapping the bio box</li>
+                  <li>Fixed action buttons overlapping bio box on member profiles</li>
+                  <li>Fixed reaction emoji picker being cut off by post cards</li>
                   <li>Analytics now opens as a proper centered popup modal</li>
-                  <li>Admin accounts now start at 0 points like normal users</li>
-                  <li>Updated website tab icon to AIU SciComm logo</li>
+                  <li>Profile card on Home now links to your profile page</li>
+                  <li>Clickable profiles from the Home page team sidebar</li>
                 </ul>
               </div>
               <div style={{ background: '#dbeafe', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 UI & Fun Updates</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>Dark Mode Makeover:</strong> Background now shows glowing molecule patterns.</li>
                   <li><strong>SciComm Level Titles:</strong> Lab Rat → Pipette Ninja → Hypothesis Hustler → SciComm Overlord!</li>
-                  <li>"See more team members" button in Home sidebar</li>
                   <li>Red "What's New" button to re-open this changelog anytime</li>
+                  <li>Mobile bottom bar now includes Meetings tab</li>
+                  <li>Calendar events show "View →" on hover for better interactivity</li>
                 </ul>
               </div>
             </div>
