@@ -549,6 +549,11 @@ export default function SciCommFeed() {
               </div>
             </Link>
           ))}
+          {scientists.filter(s => s.accountStatus !== 'pending').length > 5 && (
+            <Link to="/network" style={{ display: 'block', textAlign: 'center', marginTop: '12px', padding: '8px', background: '#eef3f8', color: '#1d4ed8', borderRadius: '6px', fontSize: '12px', fontWeight: 600, textDecoration: 'none', transition: 'background 0.2s' }}>
+              See more team members
+            </Link>
+          )}
         </div>
       </div>
 
@@ -563,9 +568,8 @@ export default function SciCommFeed() {
             
             <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e2e8f0' }}>
               <h3 style={{ margin: '0 0 12px', fontSize: '14px', color: '#334155' }}>Recent Profile Viewers</h3>
-              {connectionsRaw.filter(c => c.status === 'accepted' && (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id))).slice(0, 5).map((c, i) => {
-                const otherId = String(c.fromId) === String(user.id) ? c.toId : c.fromId;
-                const other = scientists.find(s => String(s.id) === String(otherId));
+              {(currentUserData?.viewers || []).slice(0, 5).map((v, i) => {
+                const other = scientists.find(s => String(s.id) === String(v.viewerId));
                 if (!other) return null;
                 return (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0', borderBottom: i < 4 ? '1px solid #e2e8f0' : 'none' }}>
@@ -574,11 +578,11 @@ export default function SciCommFeed() {
                       <div style={{ fontWeight: 600, fontSize: '13px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{other.name}</div>
                       <div style={{ fontSize: '11px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{other.department}</div>
                     </div>
-                    <div style={{ marginLeft: 'auto', fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap' }}>{Math.floor(Math.random() * 24 + 1)}h ago</div>
+                    <div style={{ marginLeft: 'auto', fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap' }}>{timeAgo(v.timestamp)}</div>
                   </div>
                 );
               })}
-              {connectionsRaw.filter(c => c.status === 'accepted').length === 0 && <div style={{ fontSize: '12px', color: '#64748b' }}>Connect with more people to see profile viewers!</div>}
+              {!(currentUserData?.viewers?.length > 0) && <div style={{ fontSize: '12px', color: '#64748b' }}>No one has viewed your profile recently.</div>}
             </div>
 
             <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>

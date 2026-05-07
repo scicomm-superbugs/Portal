@@ -20,8 +20,15 @@ export default function SciCommMemberProfile() {
       if (String(memberId) !== String(user.id)) {
         const target = await db.scientists.get(Number(memberId));
         if (target) {
+          const now = new Date().toISOString();
+          let viewers = target.viewers || [];
+          viewers = viewers.filter(v => String(v.viewerId) !== String(user.id));
+          viewers.unshift({ viewerId: user.id, timestamp: now });
+          if (viewers.length > 50) viewers.pop();
+
           await db.scientists.update(target.id, {
-            profileViews: (target.profileViews || 0) + 1
+            profileViews: (target.profileViews || 0) + 1,
+            viewers
           });
         }
       }
