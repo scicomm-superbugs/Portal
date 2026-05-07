@@ -71,7 +71,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.1.1';
+  const PLATFORM_VERSION = 'v3.2.0';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -159,30 +159,30 @@ export default function SciCommLayout() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Major Features</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>Gamification Levels:</strong> 10 dynamic tiers (Novice to Master) with progress bars.</li>
-                  <li><strong>Global Dark Mode:</strong> Toggle available in your profile menu!</li>
-                  <li><strong>Live Polls:</strong> Create interactive voting polls directly in the Feed.</li>
-                  <li><strong>@Mentions & #Hashtags:</strong> Tag users and topics in posts and chat.</li>
+                  <li><strong>Real-time Profile Tracking:</strong> Profile viewers are now tracked with exact timestamps.</li>
+                  <li><strong>Precise Post Impressions:</strong> Impressions are calculated from your actual posts & engagement.</li>
+                  <li><strong>Network Notifications:</strong> Red "New" badge on the Pending tab for incoming requests.</li>
+                  <li><strong>Pin Tags for Everyone:</strong> The "Manage Pinned Tags" button is now always available.</li>
                 </ul>
               </div>
               <div style={{ background: '#fef3c7', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔧 Critical Logic Fixes</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔧 Fixes & Improvements</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#92400e', lineHeight: '1.8' }}>
-                  <li>Removed circular score dependency (tags no longer inflate score)</li>
-                  <li>Standardized Approved/Completed task tracking</li>
-                  <li>Meeting badges sync strictly to members</li>
-                  <li>Task notifications have proper clickable links</li>
+                  <li>Fixed profile view counter not incrementing on visits</li>
+                  <li>Fixed "Preview Profile" button overlapping the bio box</li>
+                  <li>Admin accounts now start at 0 points like normal users</li>
+                  <li>Updated website tab icon to AIU SciComm logo</li>
                 </ul>
               </div>
               <div style={{ background: '#dbeafe', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 UI Improvements</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 UI & Fun Updates</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li>Mobile chat sidebar/panel toggle</li>
-                  <li>Back button in mobile chat</li>
-                  <li>Larger mobile search bar</li>
-                  <li>Network badge on mobile nav</li>
+                  <li><strong>Dark Mode Makeover:</strong> Background now shows glowing molecule patterns.</li>
+                  <li><strong>SciComm Level Titles:</strong> Lab Rat → Pipette Ninja → Hypothesis Hustler → SciComm Overlord!</li>
+                  <li>"See more team members" button in Home sidebar</li>
+                  <li>Improved analytics modal with real viewer timestamps</li>
                 </ul>
               </div>
             </div>

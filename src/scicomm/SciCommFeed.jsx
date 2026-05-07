@@ -34,19 +34,7 @@ export default function SciCommFeed() {
 
   const [isEditingLinks, setIsEditingLinks] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
-  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [tempLinks, setTempLinks] = useState([]);
-
-  useEffect(() => {
-    if (!localStorage.getItem('v2_1_update_popup_seen')) {
-      setShowUpdatePopup(true);
-    }
-  }, []);
-
-  const closeUpdatePopup = () => {
-    localStorage.setItem('v2_1_update_popup_seen', 'true');
-    setShowUpdatePopup(false);
-  };
 
   const AVAILABLE_QUICK_LINKS = [
     { id: 'tasks', title: 'My Tasks', url: '/tasks', icon: '📋' },
@@ -612,26 +600,6 @@ export default function SciCommFeed() {
                 <span style={{ fontWeight: 600, color: '#0f172a' }}>{Math.floor(profileViewers * 0.4)}</span>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-      {/* Update Popup */}
-      {showUpdatePopup && (
-        <div className="scicomm-modal-overlay" onClick={closeUpdatePopup} style={{ zIndex: 9999 }}>
-          <div className="scicomm-card" onClick={e => e.stopPropagation()} style={{ maxWidth: '450px', width: '90%', border: '2px solid var(--primary, #1d4ed8)', padding: '24px', position: 'relative' }}>
-            <h2 style={{ marginTop: 0, color: 'var(--primary, #1d4ed8)', fontSize: '20px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid var(--border-color, #e2e8f0)', paddingBottom: '12px' }}>
-              <span className="avatar-emoji">🚀</span> Welcome to SciComm v2.1!
-            </h2>
-            <p style={{ fontSize: '14px', lineHeight: '1.6', marginTop: '16px' }}>We've been hard at work making the SciComm platform even better for you. Here is what's new:</p>
-            <ul style={{ fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px', marginBottom: '24px', color: 'var(--text-muted, #475569)' }}>
-              <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--text-main, #0f172a)' }}>Real-time Profile Tracking:</strong> The profile viewers count and recent visitors list are now perfectly synced in real-time, right down to the exact timestamp!</li>
-              <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--text-main, #0f172a)' }}>Precise Post Impressions:</strong> Post impressions are now strictly calculated directly from your content and engagement.</li>
-              <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--text-main, #0f172a)' }}>Network Notifications:</strong> You will now see bright red 'New' badges when you receive a connection request in the Network tab.</li>
-              <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--text-main, #0f172a)' }}>Manage Tags Update:</strong> The "Manage Pinned Tags" button is now always available, even if you haven't pinned anything yet!</li>
-              <li style={{ marginBottom: '8px' }}><strong style={{ color: 'var(--text-main, #0f172a)' }}>Dark Mode Makeover:</strong> The dark mode background is now elegantly themed with glowing molecule patterns.</li>
-              <li><strong style={{ color: 'var(--text-main, #0f172a)' }}>SciComm Titles:</strong> Account levels are now themed with fun SciComm titles like <i>Pipette Ninja</i> and <i>Hypothesis Hustler</i>!</li>
-            </ul>
-            <button onClick={closeUpdatePopup} className="scicomm-btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', fontSize: '16px' }}>Awesome, let's go!</button>
           </div>
         </div>
       )}
