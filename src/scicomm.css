@@ -471,6 +471,31 @@
   }
 }
 
+/* ===== MODAL OVERLAY ===== */
+.scicomm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.scicomm-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
 /* ===== DARK MODE ===== */
 .scicomm-dark-mode {
   filter: invert(0.92) hue-rotate(180deg);
