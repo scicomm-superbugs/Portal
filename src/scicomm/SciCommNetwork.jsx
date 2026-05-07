@@ -111,7 +111,7 @@ export default function SciCommNetwork() {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
             <span style={{ color: 'rgba(0,0,0,0.6)' }}>Pending Received</span>
-            <strong style={{ color: '#f59e0b' }}>{pendingReceived.length}</strong>
+            <strong style={{ color: pendingReceived.length > 0 ? '#ef4444' : '#f59e0b' }}>{pendingReceived.length}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
             <span style={{ color: 'rgba(0,0,0,0.6)' }}>Sent Requests</span>
@@ -123,11 +123,14 @@ export default function SciCommNetwork() {
       <div className="scicomm-feed-main">
         {/* Tabs */}
         <div className="scicomm-card" style={{ display: 'flex', overflow: 'hidden' }}>
-          {[{ id: 'discover', label: 'Discover' }, { id: 'connections', label: `Connections (${myConnections.length})` }, { id: 'pending', label: `Pending (${pendingReceived.length})` }, { id: 'sent', label: `Sent (${pendingSent.length})` }].map(t => (
+          {[{ id: 'discover', label: 'Discover' }, { id: 'connections', label: `Connections (${myConnections.length})` }, { id: 'pending', label: `Pending (${pendingReceived.length})`, count: pendingReceived.length }, { id: 'sent', label: `Sent (${pendingSent.length})` }].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{
-              flex: 1, padding: '14px 8px', border: 'none', background: tab === t.id ? '#1d4ed8' : 'transparent',
+              flex: 1, padding: '14px 8px', border: 'none', background: tab === t.id ? '#1d4ed8' : 'transparent', position: 'relative',
               color: tab === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s'
-            }}>{t.label}</button>
+            }}>
+              {t.label}
+              {t.count > 0 && <span style={{ position: 'absolute', top: '4px', right: '10%', background: '#ef4444', color: 'white', fontSize: '10px', padding: '2px 5px', borderRadius: '10px', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(239,68,68,0.3)' }}>New</span>}
+            </button>
           ))}
         </div>
 

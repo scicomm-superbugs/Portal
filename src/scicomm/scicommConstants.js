@@ -97,7 +97,7 @@ export const AUTO_TAGS = [
 ];
 
 export function calculateScore({ completedTasks = 0, likesReceived = 0, connectionCount = 0, meetingsAttended = 0, reputationBonus = 0, role = 'user' }) {
-  if (role === 'master' || role === 'admin') return Infinity;
+  if (role === 'master') return Infinity;
   return (completedTasks * 25) + (likesReceived * 5) + (meetingsAttended * 15) + (connectionCount * 2) + reputationBonus;
 }
 
@@ -115,16 +115,16 @@ export function getNextTag(score) {
 
 // ===== USER LEVELS =====
 export const USER_LEVELS = [
-  { threshold: 0, level: 1, title: 'Novice', color: '#6b7280', bg: '#f3f4f6' },
-  { threshold: 150, level: 2, title: 'Apprentice', color: '#1d4ed8', bg: '#eff6ff' },
-  { threshold: 300, level: 3, title: 'Explorer', color: '#0ea5e9', bg: '#e0f2fe' },
-  { threshold: 500, level: 4, title: 'Analyst', color: '#8b5cf6', bg: '#ede9fe' },
-  { threshold: 800, level: 5, title: 'Researcher', color: '#ec4899', bg: '#fce7f3' },
-  { threshold: 1200, level: 6, title: 'Scholar', color: '#f43f5e', bg: '#ffe4e6' },
-  { threshold: 2000, level: 7, title: 'Innovator', color: '#d946ef', bg: '#fae8ff' },
-  { threshold: 3000, level: 8, title: 'Luminary', color: '#f59e0b', bg: '#fef3c7' },
-  { threshold: 5000, level: 9, title: 'Visionary', color: '#14b8a6', bg: '#ccfbf1' },
-  { threshold: 8000, level: 10, title: 'Master', color: '#b45309', bg: '#fef3c7' }
+  { threshold: 0, level: 1, title: 'Lab Rat', color: '#6b7280', bg: '#f3f4f6' },
+  { threshold: 150, level: 2, title: 'Beaker Breaker', color: '#1d4ed8', bg: '#eff6ff' },
+  { threshold: 300, level: 3, title: 'Pipette Ninja', color: '#0ea5e9', bg: '#e0f2fe' },
+  { threshold: 500, level: 4, title: 'Jargon Slayer', color: '#8b5cf6', bg: '#ede9fe' },
+  { threshold: 800, level: 5, title: 'Data Whisperer', color: '#ec4899', bg: '#fce7f3' },
+  { threshold: 1200, level: 6, title: 'Peer Review Survivor', color: '#f43f5e', bg: '#ffe4e6' },
+  { threshold: 2000, level: 7, title: 'Abstract Artist', color: '#d946ef', bg: '#fae8ff' },
+  { threshold: 3000, level: 8, title: 'Hypothesis Hustler', color: '#f59e0b', bg: '#fef3c7' },
+  { threshold: 5000, level: 9, title: 'Science Influencer', color: '#14b8a6', bg: '#ccfbf1' },
+  { threshold: 8000, level: 10, title: 'SciComm Overlord', color: '#b45309', bg: '#fef3c7' }
 ];
 
 export function getUserLevel(score) {
