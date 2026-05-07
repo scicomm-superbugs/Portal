@@ -232,7 +232,8 @@ export default function SciCommFeed() {
     <div className="scicomm-feed-layout">
       {/* Left Sidebar */}
       <div className="scicomm-sidebar-left hide-on-mobile">
-        <div className="scicomm-card" style={{ textAlign: 'center', overflow: 'hidden' }}>
+        <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <div className="scicomm-card" style={{ textAlign: 'center', overflow: 'hidden', cursor: 'pointer', transition: 'box-shadow 0.2s' }}>
           <div style={{ width: '100%', aspectRatio: '4 / 1', background: currentUserData?.coverPhoto ? `url(${currentUserData.coverPhoto}) center/cover` : 'linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%)' }}></div>
           <div style={{marginTop:'-28px'}}>{renderAvatar(currentUserData, 56)}</div>
           <div style={{ padding: '8px 12px 12px' }}>
@@ -257,6 +258,7 @@ export default function SciCommFeed() {
             </div>
           </div>
         </div>
+        </Link>
         <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px', fontSize: '13px' }}>
           <div onClick={() => setShowAnalytics(true)} style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.8)', fontWeight: 600, marginBottom: '12px', cursor: 'pointer', padding: '4px 0' }}>
             <span>Profile viewers</span>
