@@ -73,7 +73,7 @@ export default function SciCommProfile() {
   const myScore = calculateScore({ completedTasks: myCompletedTasks, likesReceived: myLikesReceived, connectionCount: myConnections, meetingsAttended: myAttended, role: user.role });
   const myLevel = getUserLevel(myScore);
   const unlockedTags = getUnlockedTags(myScore);
-  const pinnedTags = (me?.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
+  const pinnedTags = (me?.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t) || t === '👑 SciComm MasterMind');
   const pinnedPosts = me?.pinnedPosts || [];
 
   // Warnings
@@ -302,7 +302,7 @@ export default function SciCommProfile() {
         <>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '8px', marginBottom: '8px' }}>
             {[
-              { label: 'Score', value: myScore, color: '#1d4ed8' },
+              { label: 'Score', value: myScore === Infinity ? 'Infinity' : myScore, color: myScore === Infinity ? '#b45309' : '#1d4ed8' },
               { label: 'Posts', value: myPosts.length, color: '#3b82f6' },
               { label: 'Reactions', value: myLikesReceived, color: '#ef4444' },
               { label: 'Tasks Done', value: myCompletedTasks, color: '#f59e0b' },
@@ -323,11 +323,14 @@ export default function SciCommProfile() {
             </div>
             <p style={{ margin: '0 0 12px', fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Pinned ({pinnedTags.length}/{user.role === 'master' ? 'unlimited' : '5'}). Score: {myScore === Infinity ? '∞' : myScore} pts — {unlockedTags.length}/{AUTO_TAGS.length} tags unlocked!</p>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              {pinnedTags.length > 0 ? pinnedTags.map((t, i) => (
-                <div key={i} style={{ background: 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: 'white', padding: '5px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Pin size={12} /> {t}
-                </div>
-              )) : (
+              {pinnedTags.length > 0 ? pinnedTags.map((t, i) => {
+                const isMasterTag = t === '👑 SciComm MasterMind';
+                return (
+                  <div key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: isMasterTag ? '#b45309' : 'white', padding: '5px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', border: isMasterTag ? '1px solid #fde047' : 'none' }}>
+                    <Pin size={12} /> {t}
+                  </div>
+                );
+              }) : (
                 <div style={{ color: '#666', fontSize: '13px', fontStyle: 'italic' }}>No tags pinned. Click Manage Tags to pin some!</div>
               )}
             </div>
