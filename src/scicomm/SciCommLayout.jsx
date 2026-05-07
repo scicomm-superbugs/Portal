@@ -71,7 +71,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.2.0';
+  const PLATFORM_VERSION = 'v3.2.1';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -168,9 +168,10 @@ export default function SciCommLayout() {
                 <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
                   <li><strong>Real-time Profile Tracking:</strong> Profile viewers are now tracked with exact timestamps.</li>
-                  <li><strong>Precise Post Impressions:</strong> Impressions are calculated from your actual posts & engagement.</li>
+                  <li><strong>Precise Post Impressions:</strong> Impressions calculated from your actual posts & engagement.</li>
                   <li><strong>Network Notifications:</strong> Red "New" badge on the Pending tab for incoming requests.</li>
-                  <li><strong>Pin Tags for Everyone:</strong> The "Manage Pinned Tags" button is now always available.</li>
+                  <li><strong>Pin Tags for Everyone:</strong> "Manage Pinned Tags" button is now always available.</li>
+                  <li><strong>Clickable Profiles:</strong> Profile card on Home page now links to your profile.</li>
                 </ul>
               </div>
               <div style={{ background: '#fef3c7', padding: '14px', borderRadius: '10px' }}>
@@ -178,6 +179,7 @@ export default function SciCommLayout() {
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#92400e', lineHeight: '1.8' }}>
                   <li>Fixed profile view counter not incrementing on visits</li>
                   <li>Fixed "Preview Profile" button overlapping the bio box</li>
+                  <li>Analytics now opens as a proper centered popup modal</li>
                   <li>Admin accounts now start at 0 points like normal users</li>
                   <li>Updated website tab icon to AIU SciComm logo</li>
                 </ul>
@@ -188,7 +190,7 @@ export default function SciCommLayout() {
                   <li><strong>Dark Mode Makeover:</strong> Background now shows glowing molecule patterns.</li>
                   <li><strong>SciComm Level Titles:</strong> Lab Rat → Pipette Ninja → Hypothesis Hustler → SciComm Overlord!</li>
                   <li>"See more team members" button in Home sidebar</li>
-                  <li>Improved analytics modal with real viewer timestamps</li>
+                  <li>Red "What's New" button to re-open this changelog anytime</li>
                 </ul>
               </div>
             </div>
