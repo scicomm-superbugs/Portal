@@ -163,6 +163,9 @@ export default function Layout() {
                   </span>
                 </Link>
               </div>
+              <button onClick={() => { localStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} className="btn btn-secondary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }} title="Switch Hub">
+                <Building2 size={16} /> Hub
+              </button>
               <button onClick={() => { handleLogout(); handleNavClick(); }} className="btn btn-secondary" style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                 <LogOut size={16} /> Logout
               </button>

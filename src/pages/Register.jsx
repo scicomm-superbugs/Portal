@@ -158,6 +158,12 @@ export default function Register() {
         <div style={{ textAlign: 'center', fontSize: '0.875rem' }}>
           Already have an account? <Link to="/login" style={{ fontWeight: 600 }}>Login</Link>
         </div>
+
+        <div style={{ textAlign: 'center', marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
+          <button onClick={() => { localStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Building2 size={16} /> Back to Hub Selection
+          </button>
+        </div>
       </div>
     </div>
   );
