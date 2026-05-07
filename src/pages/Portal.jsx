@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Microscope, Atom, Network, GraduationCap, BookOpen, ChevronRight } from 'lucide-react';
+import { Users, Microscope, Atom, Network, GraduationCap, BookOpen, ChevronRight, MessageCircle } from 'lucide-react';
 
 // Advanced 3D iOS-style Glass Card Component
 const GlassCard = ({ title, subtitle, description, logoSrc, tags, accentColor, onClick, delay }) => {
@@ -599,6 +599,42 @@ export default function Portal() {
 
         </div>
         
+        <footer style={{
+          marginTop: 'auto',
+          width: '100%',
+          maxWidth: '1000px',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          paddingTop: '20px',
+          display: 'flex',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          gap: '40px',
+          color: 'rgba(255,255,255,0.7)',
+          fontSize: '0.85rem'
+        }}>
+           <div style={{ flex: '0 1 300px' }}>
+              <h3 style={{ fontSize: '0.85rem', color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>Developer</h3>
+              <p style={{ fontWeight: 700, margin: '0 0 4px', color: '#f8fafc' }}>Abdullah Amr Maged</p>
+              <p style={{ margin: 0, lineHeight: 1.5 }}>
+                Teaching Assistant at Faculty of Science<br/>
+                & General Coordinator for Science Communication
+              </p>
+           </div>
+           <div style={{ flex: '0 1 300px' }}>
+              <h3 style={{ fontSize: '0.85rem', color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>Get in touch</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <a href="https://wa.me/201553937763" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color='white'} onMouseLeave={e => e.target.style.color='rgba(255,255,255,0.7)'}>
+                  <MessageCircle size={14} /> (+20) 155 393 7763
+                </a>
+                <a href="mailto:amaged@aiu.edu.eg" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color='white'} onMouseLeave={e => e.target.style.color='rgba(255,255,255,0.7)'}>
+                  <span style={{ fontSize: '14px' }}>✉</span> amaged@aiu.edu.eg
+                </a>
+              </div>
+           </div>
+           <div style={{ width: '100%', textAlign: 'center', fontSize: '0.75rem', opacity: 0.5, marginTop: '10px' }}>
+             All rights reserved AIU SciComm &copy; {new Date().getFullYear()}-2028
+           </div>
+        </footer>
       </div>
     </>
   );
