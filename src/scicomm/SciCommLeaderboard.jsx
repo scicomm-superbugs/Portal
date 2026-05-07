@@ -36,8 +36,6 @@ export default function SciCommLeaderboard() {
   const getMemberScore = (s) => {
     const warnings = warningsData.filter(w => String(w.userId) === String(s.id) && w.status !== 'removed');
     if (warnings.length >= 3) return -1;
-    if (s.role === 'master') return Infinity;
-
     const start = getTimeframeStart();
     const inRange = (dateStr) => !start || (dateStr && dateStr >= start);
 
@@ -45,9 +43,8 @@ export default function SciCommLeaderboard() {
     const completedTasks = tasksData.filter(t => String(t.assignedTo) === String(s.id) && (t.status === 'Completed' || t.status === 'Approved') && inRange(t.approvedAt || t.createdAt)).length;
     const connectionCount = connectionsData.filter(c => c.status === 'accepted' && (String(c.fromId) === String(s.id) || String(c.toId) === String(s.id)) && inRange(c.acceptedAt || c.createdAt)).length;
     const meetingsAttended = meetingsData.filter(m => (m.attendees || []).includes(s.id) && inRange(m.date)).length;
-    const tagsCount = (s.pinnedTags || []).length;
-
-    return calculateScore({ completedTasks, likesReceived, connectionCount, meetingsAttended });
+    
+    return calculateScore({ completedTasks, likesReceived, connectionCount, meetingsAttended, role: s.role });
   };
 
   const leaderboard = activeMembers

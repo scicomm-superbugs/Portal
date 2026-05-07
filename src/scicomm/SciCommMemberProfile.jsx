@@ -25,7 +25,7 @@ export default function SciCommMemberProfile() {
   const completedTasks = tasksData.filter(t => String(t.assignedTo) === String(memberId) && (t.status === 'Completed' || t.status === 'Approved')).length;
   const connectionCount = connectionsData.filter(c => c.status === 'accepted' && (String(c.fromId) === String(memberId) || String(c.toId) === String(memberId))).length;
   const meetingsAttended = meetingsData.filter(m => (m.attendees || []).includes(memberId)).length;
-  const score = calculateScore({ completedTasks, likesReceived, connectionCount, meetingsAttended });
+  const score = calculateScore({ completedTasks, likesReceived, connectionCount, meetingsAttended, role: member.role });
   const memberLevel = getUserLevel(score);
   const unlockedTags = getUnlockedTags(score);
   const pinnedTags = member.pinnedTags || [];

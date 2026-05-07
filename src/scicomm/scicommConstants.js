@@ -52,8 +52,8 @@ export const AUTO_TAGS = [
   { threshold: 3500, tag: '🍎 Gravity Denier' },
 ];
 
-// ===== SCORE CALCULATOR =====
-export function calculateScore({ completedTasks = 0, likesReceived = 0, meetingsAttended = 0, connectionCount = 0, reputationBonus = 0 }) {
+export function calculateScore({ completedTasks = 0, likesReceived = 0, meetingsAttended = 0, connectionCount = 0, reputationBonus = 0, role = 'user' }) {
+  if (role === 'master' || role === 'admin') return Infinity;
   return (completedTasks * 25) + (likesReceived * 5) + (meetingsAttended * 15) + (connectionCount * 2) + reputationBonus;
 }
 
@@ -80,7 +80,7 @@ export const USER_LEVELS = [
 ];
 
 export function getUserLevel(score) {
-  if (score === Infinity) return { level: 99, title: 'Grandmaster', color: '#000000', bg: '#f3f4f6' };
+  if (score === Infinity) return { level: '∞', title: 'Infinite', color: '#10b981', bg: '#ecfdf5', isInfinite: true };
   let current = USER_LEVELS[0];
   for (const l of USER_LEVELS) {
     if (score >= l.threshold) current = l;
