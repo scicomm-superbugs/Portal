@@ -232,7 +232,7 @@ export default function SciCommFeed() {
             <h3 style={{ margin: '4px 0 2px', fontSize: '15px' }}>{user.name}</h3>
             <p style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px', margin: '0 0 8px' }}>{currentUserData?.department || 'Science Communicator'}</p>
             <div style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, display: 'inline-block', marginBottom: '8px', border: `1px solid ${myLevel.color}40` }}>
-              Lv. {myLevel.level} {myLevel.title}
+              Lv. {myLevel.level}{myLevel.title ? ' ' + myLevel.title : ''}
             </div>
             {myLevel.next && (
               <div style={{ marginBottom: '12px' }}>
@@ -246,7 +246,7 @@ export default function SciCommFeed() {
             )}
             <div style={{ borderTop: '1px solid #e0dfdc', marginTop: '4px', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
               <span style={{ color: 'rgba(0,0,0,0.6)' }}>Score</span>
-              <strong style={{ color: '#1d4ed8' }}>{myScore}</strong>
+              <strong style={{ color: myScore === Infinity ? '#b45309' : '#1d4ed8' }}>{myScore === Infinity ? 'Infinity' : myScore}</strong>
             </div>
           </div>
         </div>

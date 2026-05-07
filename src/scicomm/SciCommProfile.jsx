@@ -245,7 +245,7 @@ export default function SciCommProfile() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 <h1 style={{ margin: '0', fontSize: '22px' }}>{me?.name || user.name}</h1>
                 <span style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 700, border: `1px solid ${myLevel.color}40` }}>
-                  Lv. {myLevel.level} {myLevel.title}
+                  Lv. {myLevel.level}{myLevel.title ? ' ' + myLevel.title : ''}
                 </span>
               </div>
               <p style={{ margin: '4px 0 6px', fontSize: '15px' }}>{me?.department || 'Science Communicator'}</p>

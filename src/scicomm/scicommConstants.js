@@ -128,7 +128,7 @@ export const USER_LEVELS = [
 ];
 
 export function getUserLevel(score) {
-  if (score === Infinity) return { level: '∞', title: 'Infinite', color: '#b45309', bg: '#fef3c7', isInfinite: true };
+  if (score === Infinity) return { level: 'MAX', title: '', color: '#b45309', bg: '#fef3c7', isInfinite: true };
   let current = USER_LEVELS[0];
   for (const l of USER_LEVELS) {
     if (score >= l.threshold) current = l;
