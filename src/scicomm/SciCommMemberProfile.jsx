@@ -18,7 +18,7 @@ export default function SciCommMemberProfile() {
   useEffect(() => {
     async function trackView() {
       if (String(memberId) !== String(user.id)) {
-        const target = await db.scientists.get(Number(memberId));
+        const target = await db.scientists.get(memberId);
         if (target) {
           const now = new Date().toISOString();
           let viewers = target.viewers || [];
