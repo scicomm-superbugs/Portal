@@ -221,8 +221,9 @@ export default function SciCommFeed() {
   const myAttended = meetingsData.filter(m => (m.attendees || []).includes(user.id)).length;
   const myScore = calculateScore({ completedTasks: myCompletedTasks, likesReceived: myLikesReceived, connectionCount: myConnections, meetingsAttended: myAttended, role: user.role });
   const myLevel = getUserLevel(myScore);
-  const profileViewers = myScore === Infinity ? 1337 : Math.floor(myScore * 1.5 + myConnections * 3) || 128;
-  const postImpressions = myScore === Infinity ? 9001 : myPosts.length * 54 + myLikesReceived * 12 || 97;
+  const effectiveScore = myScore === Infinity ? 12500 : myScore;
+  const profileViewers = Math.floor((effectiveScore * 0.12) + (myConnections * 14) + (myCompletedTasks * 5) + 38);
+  const postImpressions = Math.floor((myPosts.length * 145) + (myLikesReceived * 32) + (effectiveScore * 0.35) + 112);
 
   return (
     <div className="scicomm-feed-layout">
