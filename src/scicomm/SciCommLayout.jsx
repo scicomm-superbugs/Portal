@@ -127,7 +127,73 @@ export default function SciCommLayout() {
         </div>
       </header>
 
-      <div className="scicomm-page-content"><Outlet /></div>
+      <div className="scicomm-page-content">
+        <div style={{ minHeight: 'calc(100vh - 300px)' }}>
+          <Outlet />
+        </div>
+        
+        {/* FOOTER */}
+        <footer style={{
+          background: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)',
+          color: 'white',
+          filter: isDarkMode ? 'invert(1) hue-rotate(180deg)' : 'none',
+          padding: '48px 24px 80px',
+          marginTop: '60px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '32px',
+          margin: '40px -16px -16px -16px' // Stretch to edge if there's padding
+        }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', width: '100%', maxWidth: '1200px', gap: '40px' }}>
+            
+            {/* Column 1: Logo & Info */}
+            <div style={{ flex: '1 1 300px' }}>
+              <div style={{ background: 'white', padding: '12px', borderRadius: '12px', display: 'inline-block', marginBottom: '16px' }}>
+                <img src="./aiu_scicomm_light.png" alt="AIU SciComm" style={{ height: '60px', objectFit: 'contain', filter: 'none' }} onError={e => e.target.style.display='none'} />
+              </div>
+              <p style={{ fontSize: '14px', lineHeight: '1.8', opacity: 0.9 }}>
+                AIU SciComm is a pioneering scientific organization that empowers communities through quality outreach and capacity development. We provide collaborative enrichment programs and services that equip learners with future green skills, empower educators, and advance science communication.
+              </p>
+            </div>
+            
+            {/* Column 2: Developer Info */}
+            <div style={{ flex: '1 1 250px' }}>
+              <h3 style={{ fontSize: '18px', marginBottom: '20px', fontWeight: 600 }}>Developer</h3>
+              <p style={{ fontSize: '15px', lineHeight: '1.6', fontWeight: 700, marginBottom: '8px' }}>Abdullah Amr Maged</p>
+              <p style={{ fontSize: '14px', lineHeight: '1.8', opacity: 0.9, marginBottom: '16px' }}>
+                Teaching Assistant at Faculty of Science<br/>
+                & General Coordinator for Science Communication
+              </p>
+            </div>
+
+            {/* Column 3: Contact Info */}
+            <div style={{ flex: '1 1 250px' }}>
+              <h3 style={{ fontSize: '18px', marginBottom: '20px', fontWeight: 600 }}>Get in touch</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '15px' }}>
+                <a href="https://wa.me/201553937763" target="_blank" rel="noreferrer" style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <MessageCircle size={20} /> (+20) 155 393 7763
+                </a>
+                <a href="mailto:amaged@aiu.edu.eg" style={{ color: 'white', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{ fontSize: '20px' }}>✉</span> amaged@aiu.edu.eg
+                </a>
+                <div style={{ color: 'white', display: 'flex', alignItems: 'flex-start', gap: '12px', marginTop: '4px', opacity: 0.9, fontSize: '14px', lineHeight: '1.6' }}>
+                  <Building2 size={20} style={{ flexShrink: 0, marginTop: '2px' }} /> 
+                  <div>
+                    Alamein International University,<br/>
+                    Faculty of Science.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Bottom Row */}
+          <div style={{ width: '100%', maxWidth: '1200px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '24px', textAlign: 'center', fontSize: '13px', opacity: 0.8, display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
+            <div>All rights reserved AIU SciComm &copy; {new Date().getFullYear()}-2028</div>
+          </div>
+        </footer>
+      </div>
 
       <nav className="scicomm-mobile-bar" style={{ overflowX: 'auto', justifyContent: 'flex-start', paddingLeft: '8px', paddingRight: '8px' }}>
         <style>{`.scicomm-mobile-bar::-webkit-scrollbar { display: none; }`}</style>
