@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { db, useLiveCollection, uploadFile } from '../db';
 import bcrypt from 'bcryptjs';
 import { Camera, Edit2, Award, Pin, AlertTriangle, UserCircle, X, Settings, Briefcase, FileText, CheckCircle, GraduationCap, Upload, Lock } from 'lucide-react';
@@ -7,6 +8,7 @@ import { AVATARS, AUTO_TAGS, calculateScore, getUnlockedTags, timeAgo, getUserLe
 
 export default function SciCommProfile() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const scientists = useLiveCollection('scientists') || [];
   const me = scientists.find(s => String(s.id) === String(user.id));
   const postsData = useLiveCollection('scicomm_posts') || [];
@@ -250,13 +252,16 @@ export default function SciCommProfile() {
               </div>
               <p style={{ margin: '6px 0 16px', fontSize: '16px', fontWeight: 600, color: '#1d4ed8' }}>{me?.department || 'Science Communicator'}</p>
             </div>
-            {user.role !== 'master' && (
-              <div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button onClick={() => navigate('/member/' + user.id)} style={{ background: '#eef3f8', border: 'none', borderRadius: '24px', padding: '8px 16px', cursor: 'pointer', fontSize: '13px', fontWeight: 700, color: '#1d4ed8', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                <UserCircle size={16} /> Preview Profile
+              </button>
+              {user.role !== 'master' && (
                 <button onClick={() => setShowWarnings(true)} style={{ background: activeWarnings.length > 0 ? '#fee2e2' : '#f1f5f9', border: 'none', borderRadius: '24px', padding: '8px 16px', cursor: 'pointer', fontSize: '13px', fontWeight: 700, color: activeWarnings.length > 0 ? '#991b1b' : '#64748b', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   <AlertTriangle size={16} /> {activeWarnings.length}/3 Warnings
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
               
           {/* Graphical Bio Block */}

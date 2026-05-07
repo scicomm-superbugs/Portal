@@ -17,8 +17,7 @@ export default function SciCommMemberProfile() {
   const member = scientists.find(s => String(s.id) === String(memberId));
   if (!member) return <div style={{ textAlign: 'center', padding: '60px', color: '#666' }}><h2>Member not found</h2></div>;
 
-  // Redirect to own profile if viewing self
-  if (String(memberId) === String(user.id)) { navigate('/profile', { replace: true }); return null; }
+  // Removed redirect so user can preview their own profile
 
   const memberPosts = postsData.filter(p => String(p.authorId) === String(memberId));
   const likesReceived = memberPosts.reduce((s, p) => s + Object.values(p.reactions || {}).reduce((ss, arr) => ss + arr.length, 0), 0);
@@ -85,7 +84,9 @@ export default function SciCommMemberProfile() {
               )}
             </div>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {isConnected ? (
+              {String(memberId) === String(user.id) ? (
+                <button className="scicomm-btn-secondary" onClick={() => navigate('/profile')} style={{ fontSize: '13px', background: '#eef3f8', border: 'none' }}>✏️ Back to Edit Mode</button>
+              ) : isConnected ? (
                 <>
                   <button className="scicomm-btn-primary" onClick={() => navigate('/chat?with=' + memberId)} style={{ fontSize: '13px' }}><MessageCircle size={14} /> Message</button>
                   <button className="scicomm-btn-secondary" onClick={handleRemoveConnection} style={{ fontSize: '13px' }}>Remove Connection</button>
