@@ -183,7 +183,7 @@ export default function SciCommProfile() {
   const handlePinTag = async (tag) => {
     let newPinned = [...pinnedTags];
     if (newPinned.includes(tag)) newPinned = newPinned.filter(t => t !== tag);
-    else if (newPinned.length < 5) newPinned.push(tag);
+    else if (user.role === 'master' || newPinned.length < 5) newPinned.push(tag);
     else { alert('Max 5 pinned tags!'); return; }
     await db.scientists.update(user.id, { pinnedTags: newPinned });
   };
@@ -314,7 +314,7 @@ export default function SciCommProfile() {
 
           <div className="scicomm-card scicomm-card-padding" style={{ marginBottom: '8px' }}>
             <h2 style={{ fontSize: '18px', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '8px' }}><Award size={20} color="#10b981" /> Achievement Tags</h2>
-            <p style={{ margin: '0 0 12px', fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Click to pin (max 5). Score: {myScore} pts — {unlockedTags.length}/{AUTO_TAGS.length} tags unlocked!</p>
+            <p style={{ margin: '0 0 12px', fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Click to pin ({user.role === 'master' ? 'unlimited' : 'max 5'}). Score: {myScore === Infinity ? '∞' : myScore} pts — {unlockedTags.length}/{AUTO_TAGS.length} tags unlocked!</p>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
               {unlockedTags.map((t, i) => {
                 const isPinned = pinnedTags.includes(t);

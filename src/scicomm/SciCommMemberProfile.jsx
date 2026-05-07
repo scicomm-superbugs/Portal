@@ -115,7 +115,7 @@ export default function SciCommMemberProfile() {
       </div>
 
       {/* Unlocked Tags */}
-      {unlockedTags.length > 0 && (
+      {unlockedTags.length > 0 && member.role !== 'master' && (
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 8px', fontSize: '16px' }}><Award size={18} color="#10b981" /> Achievement Tags</h3>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
