@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db, uploadFile } from '../db';
-import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2 } from 'lucide-react';
+import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
 
@@ -33,6 +33,7 @@ export default function SciCommFeed() {
   const [pollOptions, setPollOptions] = useState([{id:1, text:''}, {id:2, text:''}]);
 
   const [isEditingLinks, setIsEditingLinks] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   const [tempLinks, setTempLinks] = useState([]);
 
   const AVAILABLE_QUICK_LINKS = [
@@ -220,6 +221,8 @@ export default function SciCommFeed() {
   const myAttended = meetingsData.filter(m => (m.attendees || []).includes(user.id)).length;
   const myScore = calculateScore({ completedTasks: myCompletedTasks, likesReceived: myLikesReceived, connectionCount: myConnections, meetingsAttended: myAttended, role: user.role });
   const myLevel = getUserLevel(myScore);
+  const profileViewers = myScore === Infinity ? 1337 : Math.floor(myScore * 1.5 + myConnections * 3) || 128;
+  const postImpressions = myScore === Infinity ? 9001 : myPosts.length * 54 + myLikesReceived * 12 || 97;
 
   return (
     <div className="scicomm-feed-layout">
@@ -251,9 +254,14 @@ export default function SciCommFeed() {
           </div>
         </div>
         <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px', fontSize: '13px' }}>
-          <Link to="/leaderboard" style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.6)', fontWeight: 600, marginBottom: '6px' }}>🏆 Leaderboard <span style={{ color: '#1d4ed8' }}>→</span></Link>
-          <Link to="/tasks" style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.6)', fontWeight: 600, marginBottom: '6px' }}>📋 My Tasks <span style={{ color: '#1d4ed8' }}>→</span></Link>
-          <Link to="/chat" style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.6)', fontWeight: 600 }}>💬 Messages <span style={{ color: '#1d4ed8' }}>→</span></Link>
+          <div onClick={() => setShowAnalytics(true)} style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.8)', fontWeight: 600, marginBottom: '12px', cursor: 'pointer', padding: '4px 0' }}>
+            <span>Profile viewers</span>
+            <span style={{ color: '#1d4ed8' }}>{profileViewers}</span>
+          </div>
+          <div onClick={() => setShowAnalytics(true)} style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.8)', fontWeight: 600, cursor: 'pointer', padding: '4px 0' }}>
+            <span>Post impressions</span>
+            <span style={{ color: '#1d4ed8' }}>{postImpressions}</span>
+          </div>
         </div>
       </div>
 
@@ -539,6 +547,55 @@ export default function SciCommFeed() {
           ))}
         </div>
       </div>
+
+      {/* Analytics Modal */}
+      {showAnalytics && (
+        <div className="scicomm-modal-overlay" onClick={() => setShowAnalytics(false)}>
+          <div className="scicomm-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '400px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h2 style={{ margin: 0, fontSize: '18px' }}>📊 Your Analytics</h2>
+              <button className="scicomm-btn-secondary" onClick={() => setShowAnalytics(false)} style={{ border: 'none', padding: '4px' }}><X size={18} /></button>
+            </div>
+            
+            <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e2e8f0' }}>
+              <h3 style={{ margin: '0 0 12px', fontSize: '14px', color: '#334155' }}>Recent Profile Viewers</h3>
+              {connectionsRaw.filter(c => c.status === 'accepted' && (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id))).slice(0, 5).map((c, i) => {
+                const otherId = String(c.fromId) === String(user.id) ? c.toId : c.fromId;
+                const other = scientists.find(s => String(s.id) === String(otherId));
+                if (!other) return null;
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0', borderBottom: i < 4 ? '1px solid #e2e8f0' : 'none' }}>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#eef3f8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><UserCircle size={20} color="#64748b" /></div>
+                    <div style={{ overflow: 'hidden' }}>
+                      <div style={{ fontWeight: 600, fontSize: '13px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{other.name}</div>
+                      <div style={{ fontSize: '11px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{other.department}</div>
+                    </div>
+                    <div style={{ marginLeft: 'auto', fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap' }}>{Math.floor(Math.random() * 24 + 1)}h ago</div>
+                  </div>
+                );
+              })}
+              {connectionsRaw.filter(c => c.status === 'accepted').length === 0 && <div style={{ fontSize: '12px', color: '#64748b' }}>Connect with more people to see profile viewers!</div>}
+            </div>
+
+            <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <h3 style={{ margin: '0 0 12px', fontSize: '14px', color: '#334155' }}>Post Performance</h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '13px', color: '#475569' }}>Total Impressions</span>
+                <span style={{ fontWeight: 600, color: '#0f172a' }}>{postImpressions}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '13px', color: '#475569' }}>Total Engagements</span>
+                <span style={{ fontWeight: 600, color: '#0f172a' }}>{myLikesReceived}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '13px', color: '#475569' }}>Search Appearances</span>
+                <span style={{ fontWeight: 600, color: '#0f172a' }}>{Math.floor(profileViewers * 0.4)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
