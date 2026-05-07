@@ -162,7 +162,7 @@ export default function SciCommChat() {
   return (
     <div style={{ display: 'flex', height: 'calc(100dvh - 100px)', maxWidth: '900px', margin: '0 auto', gap: '0', overflow: 'hidden', borderRadius: '8px', border: '1px solid #e0dfdc', background: 'white' }}>
       {/* Room List - hidden on mobile when a room is selected */}
-      <div style={{ width: selectedRoom ? undefined : '100%', borderRight: '1px solid #e0dfdc', display: 'flex', flexDirection: 'column', flexShrink: 0 }} className={`scicomm-chat-sidebar ${selectedRoom ? 'chat-hide-mobile' : 'chat-show-mobile'}`}>
+      <div style={{ borderRight: '1px solid #e0dfdc', display: 'flex', flexDirection: 'column', flexShrink: 0 }} className={`scicomm-chat-sidebar ${selectedRoom ? 'chat-hide-mobile' : 'chat-show-mobile'}`}>
         <div style={{ padding: '12px', borderBottom: '1px solid #e0dfdc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, fontSize: '16px' }}>💬 Messaging</h3>
           <button onClick={() => setShowNewChat(!showNewChat)} style={{ background: '#10b981', color: 'white', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={16} /></button>

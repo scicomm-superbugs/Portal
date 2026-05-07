@@ -408,6 +408,11 @@
   }
 }
 
+/* === CHAT SIDEBAR === */
+.scicomm-chat-sidebar {
+  width: 320px;
+}
+
 /* === MOBILE CHAT TOGGLE === */
 @media (max-width: 768px) {
   .scicomm-chat-sidebar {
