@@ -205,7 +205,7 @@ export default function SciCommFeed() {
       {/* Left Sidebar */}
       <div className="scicomm-sidebar-left hide-on-mobile">
         <div className="scicomm-card" style={{ textAlign: 'center', overflow: 'hidden' }}>
-          <div style={{ height: '56px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}></div>
+          <div style={{ height: '56px', background: currentUserData?.cover ? `url(${currentUserData.cover}) center/cover` : 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}></div>
           <div style={{marginTop:'-28px'}}>{renderAvatar(currentUserData, 56)}</div>
           <div style={{ padding: '8px 12px 12px' }}>
             <h3 style={{ margin: '4px 0 2px', fontSize: '15px' }}>{user.name}</h3>

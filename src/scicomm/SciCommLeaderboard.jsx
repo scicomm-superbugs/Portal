@@ -16,7 +16,7 @@ export default function SciCommLeaderboard() {
 
   const [timeframe, setTimeframe] = useState('all'); // all | monthly | weekly | daily
 
-  const activeMembers = scientists.filter(s => s.accountStatus !== 'pending');
+  const activeMembers = scientists.filter(s => s.accountStatus !== 'pending' && s.role !== 'admin');
 
   const renderAvatar = (member, size = 48) => {
     if (member?.avatar) return <img src={member.avatar} alt="" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />;
@@ -111,7 +111,7 @@ export default function SciCommLeaderboard() {
             const isMe = String(s.id) === String(user.id);
             const sLevel = getUserLevel(s.score === Infinity ? 10000 : s.score);
             const tags = getUnlockedTags(s.score === Infinity ? 10000 : s.score);
-            const pinned = s.pinnedTags || [];
+            const pinned = (s.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
             return (
               <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 8px', borderRadius: '8px', marginBottom: '2px', background: isMe ? '#ecfdf5' : 'transparent', border: isMe ? '1px solid #a7f3d0' : '1px solid transparent' }}>
                 <div style={{ width: '32px', textAlign: 'center', fontWeight: 700, fontSize: '14px', color: badge.color }}>{badge.emoji}</div>

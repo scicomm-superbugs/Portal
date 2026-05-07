@@ -61,6 +61,23 @@ export const uploadFile = async (file, path, onProgress) => {
     } catch (e) {
       console.error('Base64 compression failed, falling back to Firebase Storage', e);
     }
+  } else if (file.size <= 750 * 1024) {
+    // 🔥 EMERGENCY FALLBACK for documents (CVs, PDFs) under 750KB
+    // Stores them directly as Base64 in Firestore to bypass Storage CORS completely!
+    if (onProgress) onProgress(50);
+    try {
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          if (onProgress) onProgress(100);
+          resolve(reader.result);
+        };
+        reader.onerror = () => reject(new Error('Failed to read file'));
+      });
+    } catch (e) {
+      console.error('Base64 document fallback failed, falling back to Firebase Storage', e);
+    }
   }
 
   const storageRef = ref(storage, path);
