@@ -81,6 +81,12 @@ export default function SciCommLayout() {
     setShowChangelog(false);
   };
 
+  useEffect(() => {
+    const handler = () => setShowChangelog(true);
+    window.addEventListener('show-changelog', handler);
+    return () => window.removeEventListener('show-changelog', handler);
+  }, []);
+
   return (
     <div className={`scicomm-app ${isDarkMode ? 'scicomm-dark-mode' : ''}`}>
       <header className="scicomm-header">
