@@ -20,6 +20,7 @@ export default function SciCommFeed() {
   const [commentText, setCommentText] = useState({});
   const [showComments, setShowComments] = useState({});
   const [activeReactionPicker, setActiveReactionPicker] = useState(null);
+  const [replyTo, setReplyTo] = useState(null); // { postId, commentIndex, authorName }
   const [bannerIdx, setBannerIdx] = useState(0);
   const [postError, setPostError] = useState('');
   const [postImage, setPostImage] = useState(null);
@@ -155,13 +156,43 @@ export default function SciCommFeed() {
   };
 
   const handleAddComment = async (post) => {
-    const text = commentText[post.id];
+    const key = replyTo?.postId === post.id ? `reply_${post.id}_${replyTo.commentIndex}` : post.id;
+    const text = commentText[key];
     if (!text?.trim()) return;
     const comments = [...(post.comments || [])];
-    comments.push({ authorId: user.id, authorName: user.name, text, createdAt: new Date().toISOString() });
+    if (replyTo?.postId === post.id) {
+      // Add reply to existing comment
+      const targetComment = comments[replyTo.commentIndex];
+      if (!targetComment.replies) targetComment.replies = [];
+      targetComment.replies.push({ authorId: user.id, authorName: user.name, text, createdAt: new Date().toISOString() });
+      setReplyTo(null);
+    } else {
+      comments.push({ authorId: user.id, authorName: user.name, text, createdAt: new Date().toISOString() });
+    }
     try {
       await db.scicomm_posts.update(post.id, { comments });
-      setCommentText(prev => ({ ...prev, [post.id]: '' }));
+      setCommentText(prev => ({ ...prev, [key]: '' }));
+    } catch (err) { console.error(err); }
+  };
+
+  const handleCommentReaction = async (post, commentIndex, reactionKey) => {
+    const comments = [...(post.comments || [])];
+    const comment = { ...comments[commentIndex] };
+    const reactions = { ...(comment.reactions || {}) };
+    // Remove user from all reaction types first
+    for (const k in reactions) {
+      reactions[k] = reactions[k].filter(id => id !== user.id);
+      if (reactions[k].length === 0) delete reactions[k];
+    }
+    // Toggle: if user already had this reaction, it's now removed; otherwise add
+    if (!(comment.reactions?.[reactionKey] || []).includes(user.id)) {
+      if (!reactions[reactionKey]) reactions[reactionKey] = [];
+      reactions[reactionKey].push(user.id);
+    }
+    comment.reactions = reactions;
+    comments[commentIndex] = comment;
+    try {
+      await db.scicomm_posts.update(post.id, { comments });
     } catch (err) { console.error(err); }
   };
 
@@ -458,21 +489,70 @@ export default function SciCommFeed() {
                 <div style={{ padding: '8px 16px 16px', borderTop: '1px solid #e0dfdc' }}>
                   {(post.comments || []).map((c, i) => {
                     const cAuthor = getAuthor(c.authorId);
+                    const cReactions = c.reactions || {};
+                    const cTotalReactions = Object.values(cReactions).reduce((s, arr) => s + arr.length, 0);
+                    const myCommentReaction = Object.entries(cReactions).find(([, arr]) => arr.includes(user.id))?.[0];
+                    const isReplying = replyTo?.postId === post.id && replyTo?.commentIndex === i;
+                    const replyKey = `reply_${post.id}_${i}`;
                     return (
-                      <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
-                        <Link to={`/member/${c.authorId}`} style={{ flexShrink: 0 }}>{renderAvatar(cAuthor, 32)}</Link>
-                        <div style={{ background: '#f3f2ef', borderRadius: '0 8px 8px 8px', padding: '8px 12px', flex: 1 }}>
-                          <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '13px' }}>{c.authorName}</strong></Link>
-                          <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', marginLeft: '8px' }}>{timeAgo(c.createdAt)}</span>
-                          <p style={{ margin: '4px 0 0', fontSize: '13px' }}>{c.text}</p>
+                      <div key={i} style={{ marginBottom: '12px' }}>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <Link to={`/member/${c.authorId}`} style={{ flexShrink: 0 }}>{renderAvatar(cAuthor, 32)}</Link>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ background: '#f3f2ef', borderRadius: '0 8px 8px 8px', padding: '8px 12px' }}>
+                              <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '13px' }}>{c.authorName}</strong></Link>
+                              <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', marginLeft: '8px' }}>{timeAgo(c.createdAt)}</span>
+                              <p style={{ margin: '4px 0 0', fontSize: '13px' }}>{c.text}</p>
+                            </div>
+                            {/* Comment action bar */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '4px' }}>
+                              {['like', 'love', 'fire'].map(rk => {
+                                const rd = REACTIONS.find(r => r.key === rk);
+                                const isActive = myCommentReaction === rk;
+                                return (
+                                  <button key={rk} onClick={() => handleCommentReaction(post, i, rk)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: isActive ? 700 : 500, color: isActive ? rd.color : 'rgba(0,0,0,0.5)', padding: '2px 0', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                                    {rd.emoji} {(cReactions[rk]?.length || 0) > 0 && <span>{cReactions[rk].length}</span>}
+                                  </button>
+                                );
+                              })}
+                              <button onClick={() => setReplyTo(isReplying ? null : { postId: post.id, commentIndex: i, authorName: c.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, color: isReplying ? '#1d4ed8' : 'rgba(0,0,0,0.5)', padding: '2px 0' }}>Reply</button>
+                            </div>
+                            {/* Nested replies */}
+                            {(c.replies || []).length > 0 && (
+                              <div style={{ marginTop: '8px', paddingLeft: '8px', borderLeft: '2px solid #e0dfdc' }}>
+                                {c.replies.map((r, ri) => {
+                                  const rAuthor = getAuthor(r.authorId);
+                                  return (
+                                    <div key={ri} style={{ display: 'flex', gap: '6px', marginBottom: '6px' }}>
+                                      <Link to={`/member/${r.authorId}`} style={{ flexShrink: 0 }}>{renderAvatar(rAuthor, 24)}</Link>
+                                      <div style={{ background: '#eef3f8', borderRadius: '0 8px 8px 8px', padding: '6px 10px', flex: 1 }}>
+                                        <Link to={`/member/${r.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '12px' }}>{r.authorName}</strong></Link>
+                                        <span style={{ fontSize: '10px', color: 'rgba(0,0,0,0.4)', marginLeft: '6px' }}>{timeAgo(r.createdAt)}</span>
+                                        <p style={{ margin: '2px 0 0', fontSize: '12px' }}>{r.text}</p>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            {/* Reply input */}
+                            {isReplying && (
+                              <div style={{ display: 'flex', gap: '6px', marginTop: '6px', paddingLeft: '8px' }}>
+                                <input type="text" placeholder={`Reply to ${c.authorName}...`} value={commentText[replyKey] || ''} onChange={e => setCommentText(prev => ({ ...prev, [replyKey]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && handleAddComment(post)}
+                                  style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '5px 12px', fontSize: '12px', outline: 'none' }} autoFocus />
+                                <button className="scicomm-btn-primary" style={{ padding: '4px 10px', fontSize: '11px' }} onClick={() => handleAddComment(post)}>Reply</button>
+                                <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '16px' }}>&times;</button>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     );
                   })}
                   <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-                    <input type="text" placeholder="Add a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText(prev => ({ ...prev, [post.id]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && handleAddComment(post)}
+                    <input type="text" placeholder="Add a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText(prev => ({ ...prev, [post.id]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && !replyTo && handleAddComment(post)}
                       style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '6px 14px', fontSize: '13px', outline: 'none' }} />
-                    <button className="scicomm-btn-primary" style={{ padding: '6px 14px', fontSize: '12px' }} onClick={() => handleAddComment(post)}>Post</button>
+                    <button className="scicomm-btn-primary" style={{ padding: '6px 14px', fontSize: '12px' }} onClick={() => { if (!replyTo) handleAddComment(post); }}>Post</button>
                   </div>
                 </div>
               )}
