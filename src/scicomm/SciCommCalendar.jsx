@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLiveCollection, db } from '../db';
 import { useAuth } from '../context/AuthContext';
 import { ChevronLeft, ChevronRight, Plus, User as UserIcon, X, Calendar as CalIcon } from 'lucide-react';
 
 export default function SciCommCalendar() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const isAdmin = user.role === 'admin' || user.role === 'master';
   
   const tasksData = useLiveCollection('tasks') || [];
@@ -160,22 +162,24 @@ export default function SciCommCalendar() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {dayAgenda.tasks.map(t => (
-                <div key={t.id} style={{ display: 'flex', gap: '10px', padding: '12px', background: 'white', borderRadius: '8px', border: '1px solid #e0dfdc' }}>
+                <div key={t.id} onClick={() => navigate('/tasks')} style={{ display: 'flex', gap: '10px', padding: '12px', background: 'white', borderRadius: '8px', border: '1px solid #e0dfdc', cursor: 'pointer', transition: 'box-shadow 0.15s' }} onMouseOver={e => e.currentTarget.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'} onMouseOut={e => e.currentTarget.style.boxShadow='none'}>
                   <div style={{ width: 40, height: 40, borderRadius: '8px', background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>📋</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600, fontSize: '14px' }}>{t.title}</div>
                     <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Status: {t.status || 'Pending'} • Priority: {t.priority || 'Medium'}{t.dueTime ? ` • Due: ${t.dueTime}` : ''}</div>
                     {t.description && <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.6)', marginTop: '4px' }}>{t.description}</div>}
                   </div>
+                  <div style={{ fontSize: '11px', color: '#1d4ed8', fontWeight: 600, alignSelf: 'center' }}>View →</div>
                 </div>
               ))}
               {dayAgenda.meetings.map(m => (
-                <div key={m.id} style={{ display: 'flex', gap: '10px', padding: '12px', background: 'white', borderRadius: '8px', border: '1px solid #dbeafe' }}>
+                <div key={m.id} onClick={() => navigate('/meetings')} style={{ display: 'flex', gap: '10px', padding: '12px', background: 'white', borderRadius: '8px', border: '1px solid #dbeafe', cursor: 'pointer', transition: 'box-shadow 0.15s' }} onMouseOver={e => e.currentTarget.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'} onMouseOut={e => e.currentTarget.style.boxShadow='none'}>
                   <div style={{ width: 40, height: 40, borderRadius: '8px', background: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>📅</div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600, fontSize: '14px' }}>{m.title}</div>
                     <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Time: {m.time || 'TBD'} • Location: {m.location || 'TBD'}</div>
                   </div>
+                  <div style={{ fontSize: '11px', color: '#1d4ed8', fontWeight: 600, alignSelf: 'center' }}>View →</div>
                 </div>
               ))}
               {dayAgenda.personal.map(p => (

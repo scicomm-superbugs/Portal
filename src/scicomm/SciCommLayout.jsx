@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2 } from 'lucide-react';
+import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
 import { useState, useEffect, useRef } from 'react';
@@ -100,6 +100,7 @@ export default function SciCommLayout() {
             <Link to="/network" className={`scicomm-nav-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span className="nav-text">Network</span></Link>
             <Link to="/tasks" className={`scicomm-nav-item ${isActive('/tasks') ? 'active' : ''}`} style={{position:'relative'}}><Briefcase size={20} />{myPendingTasks.length > 0 && <span className="scicomm-notif-badge">{myPendingTasks.length}</span>}<span className="nav-text">Tasks</span></Link>
             <Link to="/calendar" className={`scicomm-nav-item ${isActive('/calendar') ? 'active' : ''}`} style={{position:'relative'}}><Calendar size={20} />{upcomingMeetings.length > 0 && <span className="scicomm-notif-badge">{upcomingMeetings.length}</span>}<span className="nav-text">Calendar</span></Link>
+            <Link to="/meetings" className={`scicomm-nav-item ${isActive('/meetings') ? 'active' : ''}`}><Video size={20} /><span className="nav-text">Meetings</span></Link>
             <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`}><MessageCircle size={20} /><span className="nav-text">Chat</span></Link>
             <Link to="/leaderboard" className={`scicomm-nav-item ${isActive('/leaderboard') ? 'active' : ''}`}><Trophy size={20} /><span className="nav-text">Leaderboard</span></Link>
             <Link to="/notifications" className={`scicomm-nav-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell size={20} />{notifCount > 0 && <span className="scicomm-notif-badge">{notifCount}</span>}<span className="nav-text">Alerts</span></Link>
@@ -146,6 +147,7 @@ export default function SciCommLayout() {
         <style>{`.scicomm-mobile-bar::-webkit-scrollbar { display: none; }`}</style>
         <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`}><Home size={20} /><span>Home</span></Link>
         <Link to="/calendar" className={`scicomm-mobile-item ${isActive('/calendar') ? 'active' : ''}`} style={{position:'relative'}}><Calendar size={20} />{upcomingMeetings.length > 0 && <span className="scicomm-notif-badge">{upcomingMeetings.length}</span>}<span>Calendar</span></Link>
+        <Link to="/meetings" className={`scicomm-mobile-item ${isActive('/meetings') ? 'active' : ''}`}><Video size={20} /><span>Meetings</span></Link>
         <Link to="/tasks" className={`scicomm-mobile-item ${isActive('/tasks') ? 'active' : ''}`} style={{position:'relative'}}><Briefcase size={20} />{myPendingTasks.length > 0 && <span className="scicomm-notif-badge">{myPendingTasks.length}</span>}<span>Tasks</span></Link>
         <Link to="/chat" className={`scicomm-mobile-item ${isActive('/chat') ? 'active' : ''}`}><MessageCircle size={20} /><span>Chat</span></Link>
         <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span>Network</span></Link>
