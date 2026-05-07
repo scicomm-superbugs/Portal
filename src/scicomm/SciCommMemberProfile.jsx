@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db } from '../db';
@@ -13,6 +14,20 @@ export default function SciCommMemberProfile() {
   const tasksData = useLiveCollection('tasks') || [];
   const connectionsData = useLiveCollection('scicomm_connections') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
+
+  useEffect(() => {
+    async function trackView() {
+      if (String(memberId) !== String(user.id)) {
+        const target = await db.scientists.get(Number(memberId));
+        if (target) {
+          await db.scientists.update(target.id, {
+            profileViews: (target.profileViews || 0) + 1
+          });
+        }
+      }
+    }
+    trackView();
+  }, [memberId, user.id]);
 
   const member = scientists.find(s => String(s.id) === String(memberId));
   if (!member) return <div style={{ textAlign: 'center', padding: '60px', color: '#666' }}><h2>Member not found</h2></div>;
