@@ -84,7 +84,7 @@ export default function SciCommLeaderboard() {
           <h2 style={{ margin: '0 0 16px', fontSize: '22px', textAlign: 'center' }}>🏆 SciComm Leaderboard</h2>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '20px', flexWrap: 'wrap' }}>
             {[{id:'all',label:'All Time'},{id:'monthly',label:'Monthly'},{id:'weekly',label:'Weekly'},{id:'daily',label:'Daily'}].map(t => (
-              <button key={t.id} onClick={() => setTimeframe(t.id)} style={{ padding: '6px 16px', borderRadius: '20px', border: timeframe === t.id ? 'none' : '1px solid #e0dfdc', background: timeframe === t.id ? '#10b981' : 'transparent', color: timeframe === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>{t.label}</button>
+              <button key={t.id} onClick={() => setTimeframe(t.id)} style={{ padding: '6px 16px', borderRadius: '20px', border: timeframe === t.id ? 'none' : '1px solid #e0dfdc', background: timeframe === t.id ? '#1d4ed8' : 'transparent', color: timeframe === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>{t.label}</button>
             ))}
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
@@ -100,7 +100,7 @@ export default function SciCommLeaderboard() {
                     {renderAvatar(person, isFirst ? 80 : 60)}
                     <div style={{ fontWeight: 700, fontSize: '14px', marginTop: '6px', textAlign: 'center' }}>{person.name}</div>
                   </Link>
-                  <div style={{ fontSize: '20px', fontWeight: 700, color: '#10b981', marginTop: '4px' }}>{person.score}</div>
+                  <div style={{ fontSize: '20px', fontWeight: 700, color: '#1d4ed8', marginTop: '4px' }}>{person.score}</div>
                 </div>
               );
             })}
@@ -116,24 +116,24 @@ export default function SciCommLeaderboard() {
             const isMe = String(s.id) === String(user.id);
             const pinned = (s.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
             return (
-              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 8px', borderRadius: '8px', marginBottom: '4px', background: 'linear-gradient(90deg, #ecfdf5 0%, transparent 100%)', border: '1px solid #34d399' }}>
+              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 8px', borderRadius: '8px', marginBottom: '4px', background: 'linear-gradient(90deg, #eff6ff 0%, transparent 100%)', border: '1px solid #fbbf24' }}>
                 <div style={{ width: '32px', textAlign: 'center', fontSize: '20px' }}>👑</div>
                 <Link to={`/member/${s.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>{renderAvatar(s, 44)}</Link>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 700, fontSize: '15px' }}>{s.name}</span>
-                    <span style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>Science Communication Master</span>
-                    {isMe && <span style={{ color: '#10b981', fontSize: '11px', fontWeight: 600 }}>(You)</span>}
+                    <span style={{ background: 'linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>Science Communication Master</span>
+                    {isMe && <span style={{ color: '#1d4ed8', fontSize: '11px', fontWeight: 600 }}>(You)</span>}
                   </div>
                   {pinned.length > 0 && (
                     <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '4px' }}>
-                      {pinned.slice(0, 5).map((t, j) => <span key={j} style={{ fontSize: '10px', color: '#065f46', background: '#d1fae5', padding: '2px 8px', borderRadius: '10px', border: '1px solid #a7f3d0' }}>{t}</span>)}
+                      {pinned.slice(0, 5).map((t, j) => <span key={j} style={{ fontSize: '10px', color: '#1e3a8a', background: '#dbeafe', padding: '2px 8px', borderRadius: '10px', border: '1px solid #bfdbfe' }}>{t}</span>)}
                     </div>
                   )}
                 </div>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <div style={{ fontWeight: 800, fontSize: '24px', color: '#10b981', lineHeight: 1 }}>∞</div>
-                  <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 600 }}>points</div>
+                  <div style={{ fontWeight: 800, fontSize: '24px', color: '#1d4ed8', lineHeight: 1 }}>∞</div>
+                  <div style={{ fontSize: '10px', color: '#1d4ed8', fontWeight: 600 }}>points</div>
                 </div>
               </div>
             );
@@ -146,23 +146,23 @@ export default function SciCommLeaderboard() {
             const sLevel = getUserLevel(s.score);
             const pinned = (s.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t));
             return (
-              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 8px', borderRadius: '8px', marginBottom: '2px', background: isMe ? '#ecfdf5' : 'transparent', border: isMe ? '1px solid #a7f3d0' : '1px solid transparent' }}>
+              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 8px', borderRadius: '8px', marginBottom: '2px', background: isMe ? '#eff6ff' : 'transparent', border: isMe ? '1px solid #bfdbfe' : '1px solid transparent' }}>
                 <div style={{ width: '32px', textAlign: 'center', fontWeight: 700, fontSize: '14px', color: badge.color }}>{badge.emoji}</div>
                 <Link to={`/member/${s.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>{renderAvatar(s, 40)}</Link>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 600, fontSize: '14px' }}>{s.name}</span>
                     <span style={{ background: sLevel.bg, color: sLevel.color, padding: '2px 6px', borderRadius: '8px', fontSize: '10px', fontWeight: 700 }}>Lv. {sLevel.level}</span>
-                    {isMe && <span style={{ color: '#10b981', fontSize: '11px' }}>(You)</span>}
+                    {isMe && <span style={{ color: '#1d4ed8', fontSize: '11px' }}>(You)</span>}
                   </div>
                   {pinned.length > 0 && (
                     <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '2px' }}>
-                      {pinned.slice(0, 3).map((t, j) => <span key={j} style={{ fontSize: '10px', color: '#065f46', background: '#ecfdf5', padding: '1px 6px', borderRadius: '8px' }}>{t}</span>)}
+                      {pinned.slice(0, 3).map((t, j) => <span key={j} style={{ fontSize: '10px', color: '#1e3a8a', background: '#eff6ff', padding: '1px 6px', borderRadius: '8px' }}>{t}</span>)}
                     </div>
                   )}
                 </div>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <div style={{ fontWeight: 700, fontSize: '18px', color: '#10b981' }}>{s.score}</div>
+                  <div style={{ fontWeight: 700, fontSize: '18px', color: '#1d4ed8' }}>{s.score}</div>
                   <div style={{ fontSize: '10px', color: 'rgba(0,0,0,0.4)' }}>points</div>
                 </div>
               </div>
@@ -173,7 +173,7 @@ export default function SciCommLeaderboard() {
 
       <div className="scicomm-sidebar-right hide-on-mobile">
         <div className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', color: '#666', padding: '30px 20px' }}>
-          <h3 style={{ fontSize: '18px', color: '#10b981', marginBottom: '8px' }}>Hidden Tags</h3>
+          <h3 style={{ fontSize: '18px', color: '#1d4ed8', marginBottom: '8px' }}>Hidden Tags</h3>
           <p style={{ fontSize: '13px', lineHeight: '1.6' }}>Keep earning points to randomly unlock secret science achievements!</p>
           <div style={{ fontSize: '40px', marginTop: '16px' }}>🎁</div>
         </div>

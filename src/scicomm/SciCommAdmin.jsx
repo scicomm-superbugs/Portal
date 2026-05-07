@@ -106,7 +106,7 @@ export default function SciCommAdmin() {
 
   return (
     <div style={{ maxWidth: '950px', margin: '0 auto' }}>
-      {msg && <div style={{ background: '#dcfce7', color: '#166534', padding: '12px 16px', borderRadius: '8px', marginBottom: '8px', fontSize: '14px', fontWeight: 600 }}>✅ {msg}</div>}
+      {msg && <div style={{ background: '#fef3c7', color: '#92400e', padding: '12px 16px', borderRadius: '8px', marginBottom: '8px', fontSize: '14px', fontWeight: 600 }}>✅ {msg}</div>}
 
       <div className="scicomm-card scicomm-card-padding">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -144,7 +144,7 @@ export default function SciCommAdmin() {
       <div className="scicomm-card" style={{ display: 'flex', flexWrap: 'wrap', overflow: 'hidden' }}>
         {tabs.map(t => (
           <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
-            flex: '1 1 auto', minWidth: '80px', padding: '10px 6px', border: 'none', background: activeTab === t.id ? '#10b981' : 'transparent',
+            flex: '1 1 auto', minWidth: '80px', padding: '10px 6px', border: 'none', background: activeTab === t.id ? '#1d4ed8' : 'transparent',
             color: activeTab === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, cursor: 'pointer', fontSize: '12px',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.2s'
           }}>{t.icon} {t.label}</button>
@@ -211,11 +211,11 @@ export default function SciCommAdmin() {
                 {/* Stats Row */}
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {[
-                    { label: 'Score', val: analytics.score === Infinity ? '∞' : analytics.score, color: '#10b981' },
+                    { label: 'Score', val: analytics.score === Infinity ? '∞' : analytics.score, color: '#1d4ed8' },
                     { label: 'Posts', val: analytics.postCount, color: '#3b82f6' },
                     { label: 'Tasks Done', val: analytics.completedTasks, color: '#f59e0b' },
                     { label: 'Pending', val: analytics.pendingTasks, color: '#8b5cf6' },
-                    { label: 'Warnings', val: memberWarnings.length, color: memberWarnings.length > 0 ? '#ef4444' : '#10b981' },
+                    { label: 'Warnings', val: memberWarnings.length, color: memberWarnings.length > 0 ? '#ef4444' : '#1d4ed8' },
                     { label: 'Connections', val: analytics.connectionCount, color: '#06b6d4' },
                   ].map((stat, i) => (
                     <div key={i} style={{ background: '#f9fafb', borderRadius: '6px', padding: '6px 10px', textAlign: 'center', minWidth: '60px', flex: '1 1 auto' }}>
@@ -289,7 +289,7 @@ export default function SciCommAdmin() {
             <div key={w.id} style={{ padding: '8px 0', borderBottom: '1px solid #eef3f8', fontSize: '13px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span><strong>{w.userName}</strong> — {w.message.substring(0, 50)}</span>
-                <span style={{ background: w.status === 'removed' ? '#dcfce7' : '#fee2e2', padding: '2px 8px', borderRadius: '8px', fontSize: '11px' }}>{w.status}</span>
+                <span style={{ background: w.status === 'removed' ? '#fef3c7' : '#fee2e2', padding: '2px 8px', borderRadius: '8px', fontSize: '11px' }}>{w.status}</span>
               </div>
             </div>
           ))}
@@ -385,13 +385,13 @@ export default function SciCommAdmin() {
                   return (
                     <tr key={s.id} style={{ borderBottom: '1px solid #eef3f8' }}>
                       <td style={{ padding: '8px 4px', fontWeight: 600 }}>{s.name}</td>
-                      <td style={{ padding: '8px 4px', fontWeight: 700, color: '#10b981' }}>{a.score}</td>
+                      <td style={{ padding: '8px 4px', fontWeight: 700, color: '#1d4ed8' }}>{a.score}</td>
                       <td style={{ padding: '8px 4px' }}>{a.postCount}</td>
                       <td style={{ padding: '8px 4px' }}>{a.likesReceived}</td>
-                      <td style={{ padding: '8px 4px', color: '#10b981' }}>{a.completedTasks}</td>
+                      <td style={{ padding: '8px 4px', color: '#1d4ed8' }}>{a.completedTasks}</td>
                       <td style={{ padding: '8px 4px', color: '#f59e0b' }}>{a.pendingTasks}</td>
                       <td style={{ padding: '8px 4px' }}>{a.meetingsAttended}</td>
-                      <td style={{ padding: '8px 4px', color: a.warnings >= 3 ? '#ef4444' : a.warnings > 0 ? '#f59e0b' : '#10b981', fontWeight: 600 }}>{a.warnings}/3</td>
+                      <td style={{ padding: '8px 4px', color: a.warnings >= 3 ? '#ef4444' : a.warnings > 0 ? '#f59e0b' : '#1d4ed8', fontWeight: 600 }}>{a.warnings}/3</td>
                     </tr>
                   );
                 })}

@@ -18,6 +18,7 @@ export default function SciCommProfile() {
   const [activeTab, setActiveTab] = useState('overview'); // overview | portfolio | settings
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [showWarnings, setShowWarnings] = useState(false);
+  const [showTagManager, setShowTagManager] = useState(false);
   const [appealText, setAppealText] = useState('');
   const [appealTarget, setAppealTarget] = useState(null);
   
@@ -211,7 +212,7 @@ export default function SciCommProfile() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '40px' }}>
-      {msg && <div style={{ background: '#dcfce7', color: '#166534', padding: '12px 16px', borderRadius: '8px', marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>✅ {msg}</div>}
+      {msg && <div style={{ background: '#fef3c7', color: '#92400e', padding: '12px 16px', borderRadius: '8px', marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>✅ {msg}</div>}
 
       {/* Suspension Banner */}
       {isSuspended && (
@@ -225,7 +226,7 @@ export default function SciCommProfile() {
 
       {/* Profile Header */}
       <div className="scicomm-card" style={{ overflow: 'hidden' }}>
-        <div style={{ width: '100%', aspectRatio: '4 / 1', background: me?.coverPhoto ? `url(${me.coverPhoto}) center/cover` : 'linear-gradient(135deg, #10b981 0%, #047857 50%, #064e3b 100%)', position: 'relative' }}>
+        <div style={{ width: '100%', aspectRatio: '4 / 1', background: me?.coverPhoto ? `url(${me.coverPhoto}) center/cover` : 'linear-gradient(135deg, #1d4ed8 0%, #0f172a 50%, #020617 100%)', position: 'relative' }}>
           <label style={{ position: 'absolute', bottom: 10, right: 10, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '20px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <Camera size={14} /> {isUploadingCover ? 'Uploading...' : 'Edit Cover'}
             <input type="file" accept="image/*" onChange={handleCoverUpload} style={{ display: 'none' }} />
@@ -251,7 +252,7 @@ export default function SciCommProfile() {
               <p style={{ margin: 0, fontSize: '14px', color: 'rgba(0,0,0,0.6)' }}>{me?.bio || 'Passionate about science communication.'}</p>
               {pinnedTags.length > 0 && (
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px' }}>
-                  {pinnedTags.map((t, i) => <span key={i} style={{ background: 'linear-gradient(135deg, #ecfdf5, #d1fae5)', color: '#065f46', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: '1px solid #a7f3d0' }}>{t}</span>)}
+                  {pinnedTags.map((t, i) => <span key={i} style={{ background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: '#1e3a8a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: '1px solid #bfdbfe' }}>{t}</span>)}
                 </div>
               )}
               {myLevel.next && (
@@ -286,7 +287,7 @@ export default function SciCommProfile() {
           { id: 'settings', label: 'Settings', icon: <Settings size={16} /> }
         ].map(t => (
           <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
-            flex: 1, padding: '12px 8px', border: 'none', background: activeTab === t.id ? '#10b981' : 'transparent',
+            flex: 1, padding: '12px 8px', border: 'none', background: activeTab === t.id ? '#1d4ed8' : 'transparent',
             color: activeTab === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, cursor: 'pointer', fontSize: '14px',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s'
           }}>{t.icon} {t.label}</button>
@@ -298,7 +299,7 @@ export default function SciCommProfile() {
         <>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '8px', marginBottom: '8px' }}>
             {[
-              { label: 'Score', value: myScore, color: '#10b981' },
+              { label: 'Score', value: myScore, color: '#1d4ed8' },
               { label: 'Posts', value: myPosts.length, color: '#3b82f6' },
               { label: 'Reactions', value: myLikesReceived, color: '#ef4444' },
               { label: 'Tasks Done', value: myCompletedTasks, color: '#f59e0b' },
@@ -313,17 +314,19 @@ export default function SciCommProfile() {
           </div>
 
           <div className="scicomm-card scicomm-card-padding" style={{ marginBottom: '8px' }}>
-            <h2 style={{ fontSize: '18px', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '8px' }}><Award size={20} color="#10b981" /> Achievement Tags</h2>
-            <p style={{ margin: '0 0 12px', fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Click to pin ({user.role === 'master' ? 'unlimited' : 'max 5'}). Score: {myScore === Infinity ? '∞' : myScore} pts — {unlockedTags.length}/{AUTO_TAGS.length} tags unlocked!</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h2 style={{ fontSize: '18px', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}><Award size={20} color="#1d4ed8" /> Achievement Tags</h2>
+              <button onClick={() => setShowTagManager(true)} className="scicomm-btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }}>Manage Tags</button>
+            </div>
+            <p style={{ margin: '0 0 12px', fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Pinned ({pinnedTags.length}/{user.role === 'master' ? 'unlimited' : '5'}). Score: {myScore === Infinity ? '∞' : myScore} pts — {unlockedTags.length}/{AUTO_TAGS.length} tags unlocked!</p>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              {unlockedTags.map((t, i) => {
-                const isPinned = pinnedTags.includes(t);
-                return (
-                  <button key={i} onClick={() => handlePinTag(t)} style={{ background: isPinned ? 'linear-gradient(135deg, #10b981, #059669)' : '#f3f2ef', color: isPinned ? 'white' : '#333', padding: '5px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: isPinned ? 'none' : '1px solid #e0dfdc', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {isPinned && <Pin size={12} />} {t}
-                  </button>
-                );
-              })}
+              {pinnedTags.length > 0 ? pinnedTags.map((t, i) => (
+                <div key={i} style={{ background: 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: 'white', padding: '5px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Pin size={12} /> {t}
+                </div>
+              )) : (
+                <div style={{ color: '#666', fontSize: '13px', fontStyle: 'italic' }}>No tags pinned. Click Manage Tags to pin some!</div>
+              )}
             </div>
             {(() => {
               const nextTag = AUTO_TAGS.find(t => t.threshold > myScore);
@@ -334,7 +337,7 @@ export default function SciCommProfile() {
                 <div style={{ marginTop: '12px', padding: '12px', background: '#f9fafb', borderRadius: '8px', border: '1px dashed #d1d5db' }}>
                   <div style={{ fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>🔒 Next Mystery Tag: {nextTag.threshold} pts needed</div>
                   <div style={{ width: '100%', height: '8px', background: '#e5e7eb', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #10b981, #059669)', borderRadius: '4px', transition: 'width 0.5s' }}></div>
+                    <div style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #1d4ed8, #1e3a8a)', borderRadius: '4px', transition: 'width 0.5s' }}></div>
                   </div>
                   <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px' }}>{myScore}/{nextTag.threshold} pts ({Math.round(progress)}%)</div>
                 </div>
@@ -343,7 +346,7 @@ export default function SciCommProfile() {
           </div>
 
           <div className="scicomm-card scicomm-card-padding">
-            <h2 style={{ fontSize: '18px', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}><Pin size={20} color="#10b981" /> Pinned Highlights (max 5)</h2>
+            <h2 style={{ fontSize: '18px', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}><Pin size={20} color="#1d4ed8" /> Pinned Highlights (max 5)</h2>
             {myPosts.length === 0 ? <p style={{ color: '#666', fontSize: '14px' }}>No posts yet.</p> : (
               myPosts.slice(0, 10).map(p => {
                 const isPinned = pinnedPosts.includes(p.id);
@@ -353,7 +356,7 @@ export default function SciCommProfile() {
                       <p style={{ margin: '0 0 4px', fontSize: '14px' }}>{p.content.substring(0, 100)}{p.content.length > 100 ? '...' : ''}</p>
                       <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>👍 {Object.values(p.reactions || {}).reduce((s, a) => s + a.length, 0)} • 💬 {(p.comments || []).length} • {timeAgo(p.createdAt)}</div>
                     </div>
-                    <button onClick={() => handlePinPost(p.id)} style={{ background: isPinned ? '#10b981' : '#f3f2ef', color: isPinned ? 'white' : '#666', border: 'none', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
+                    <button onClick={() => handlePinPost(p.id)} style={{ background: isPinned ? '#1d4ed8' : '#f3f2ef', color: isPinned ? 'white' : '#666', border: 'none', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
                       {isPinned ? '📌 Pinned' : 'Pin'}
                     </button>
                   </div>
@@ -370,14 +373,14 @@ export default function SciCommProfile() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <h2 style={{ fontSize: '20px', margin: 0 }}>Professional Portfolio</h2>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: '#10b981' }}>{calculateReadiness()}%</div>
+              <div style={{ fontSize: '24px', fontWeight: 700, color: '#1d4ed8' }}>{calculateReadiness()}%</div>
               <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Readiness Score</div>
             </div>
           </div>
           
           {/* Progress Bar */}
           <div style={{ width: '100%', height: '8px', background: '#eef3f8', borderRadius: '4px', marginBottom: '24px', overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${calculateReadiness()}%`, background: 'linear-gradient(90deg, #34d399, #10b981)', transition: 'width 0.5s' }}></div>
+            <div style={{ height: '100%', width: `${calculateReadiness()}%`, background: 'linear-gradient(90deg, #fbbf24, #1d4ed8)', transition: 'width 0.5s' }}></div>
           </div>
 
           <div style={{ marginBottom: '24px' }}>
@@ -389,7 +392,9 @@ export default function SciCommProfile() {
               <input id="cv-upload-input" type="file" accept=".pdf,.doc,.docx" onChange={handleCVUpload} style={{ display: 'none' }} />
             </div>
             {(me?.cvFileUrl || portfolioData.cvLink) && (
-              <a href={me?.cvFileUrl || portfolioData.cvLink} target="_blank" rel="noreferrer" className="scicomm-btn-primary" style={{ textDecoration: 'none', display: 'inline-flex', justifyContent: 'center', width: '100%' }}>📄 View CV</a>
+              <a href={me?.cvFileUrl || portfolioData.cvLink} download={me?.cvFileName || "CV_Resume.pdf"} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', justifyContent: 'center', width: '100%', padding: '12px', background: 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: 'white', borderRadius: '8px', fontWeight: 700, fontSize: '15px', boxShadow: '0 4px 12px rgba(29, 78, 216, 0.3)', transition: 'all 0.2s', boxSizing: 'border-box' }}>
+                <FileText size={20} /> Download / View CV
+              </a>
             )}
           </div>
 
@@ -425,7 +430,7 @@ export default function SciCommProfile() {
                   <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: 'white', border: '1px solid #e0dfdc', borderRadius: '8px', marginBottom: '6px' }}>
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '14px' }}>{item.title}</div>
-                      <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>{item.date ? new Date(item.date).toLocaleDateString() : 'No date'} {item.link && <span>• <a href={item.link} target="_blank" rel="noreferrer" style={{color:'#10b981'}}>Link</a></span>}</div>
+                      <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>{item.date ? new Date(item.date).toLocaleDateString() : 'No date'} {item.link && <span>• <a href={item.link} target="_blank" rel="noreferrer" style={{color:'#1d4ed8'}}>Link</a></span>}</div>
                     </div>
                     <button onClick={() => handleRemovePortfolioItem(sec.key, item.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}><X size={16}/></button>
                   </div>
@@ -482,7 +487,7 @@ export default function SciCommProfile() {
 
           <div style={{ borderTop: '1px solid #eef3f8', paddingTop: '20px', marginTop: '20px' }}>
             <h3 style={{ fontSize: '16px', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '6px' }}><Lock size={16} /> Change Password</h3>
-            {passwordMsg && <div style={{ padding: '8px 12px', borderRadius: '8px', marginBottom: '12px', fontSize: '13px', fontWeight: 600, background: passwordMsg.startsWith('✅') ? '#dcfce7' : '#fee2e2', color: passwordMsg.startsWith('✅') ? '#166534' : '#991b1b' }}>{passwordMsg}</div>}
+            {passwordMsg && <div style={{ padding: '8px 12px', borderRadius: '8px', marginBottom: '12px', fontSize: '13px', fontWeight: 600, background: passwordMsg.startsWith('✅') ? '#fef3c7' : '#fee2e2', color: passwordMsg.startsWith('✅') ? '#92400e' : '#991b1b' }}>{passwordMsg}</div>}
             <form onSubmit={handlePasswordChange} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <input type="password" placeholder="Current Password" value={passwordForm.current} onChange={e => setPasswordForm({...passwordForm, current: e.target.value})} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
               <input type="password" placeholder="New Password" value={passwordForm.newPass} onChange={e => setPasswordForm({...passwordForm, newPass: e.target.value})} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
@@ -495,33 +500,60 @@ export default function SciCommProfile() {
 
       {/* Avatar Picker Modal */}
       {showAvatarPicker && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }} onClick={() => setShowAvatarPicker(false)}>
-          <div style={{ background: 'white', borderRadius: '12px', padding: '24px', maxWidth: '500px', width: '100%', maxHeight: '80vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <h2 style={{ margin: 0, fontSize: '20px' }}>Profile Picture</h2>
-              <button onClick={() => setShowAvatarPicker(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'white', padding: '24px', borderRadius: '12px', width: '100%', maxWidth: '500px', maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, fontSize: '18px' }}>Choose your Avatar</h3>
+              <button onClick={() => setShowAvatarPicker(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} color="#666" /></button>
             </div>
 
             {/* Custom Photo Upload */}
-            <div style={{ border: '2px dashed #10b981', padding: '20px', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', background: '#ecfdf5', marginBottom: '20px' }} onClick={() => document.getElementById('profile-photo-upload').click()}>
-              <Camera size={28} color="#10b981" style={{ marginBottom: '8px' }} />
-              <div style={{ fontWeight: 600, color: '#065f46' }}>{isUploadingPhoto ? 'Uploading...' : 'Upload Custom Photo'}</div>
-              <div style={{ fontSize: '12px', color: '#059669' }}>JPG, PNG (from your device)</div>
+            <div style={{ border: '2px dashed #1d4ed8', padding: '20px', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', background: '#eff6ff', marginBottom: '20px' }} onClick={() => document.getElementById('profile-photo-upload').click()}>
+              <Camera size={28} color="#1d4ed8" style={{ marginBottom: '8px' }} />
+              <div style={{ fontWeight: 600, color: '#1e3a8a' }}>{isUploadingPhoto ? 'Uploading...' : 'Upload Custom Photo'}</div>
+              <div style={{ fontSize: '12px', color: '#1e3a8a' }}>JPG, PNG (from your device)</div>
               <input id="profile-photo-upload" type="file" accept="image/*" onChange={handlePhotoUpload} style={{ display: 'none' }} />
             </div>
 
-            <div style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(0,0,0,0.5)', marginBottom: '12px', textAlign: 'center' }}>— or choose a preset avatar —</div>
-
+            {/* Preset Avatars */}
+            <h4 style={{ margin: '0 0 12px', fontSize: '14px', color: '#666' }}>Or choose a preset:</h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '12px' }}>
               {AVATARS.map(av => (
                 <button key={av.id} onClick={() => handleAvatarSelect(av.id)} style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', padding: '12px 4px', border: me?.avatarId === av.id ? '2px solid #10b981' : '2px solid transparent',
-                  borderRadius: '12px', background: me?.avatarId === av.id ? '#ecfdf5' : '#f3f2ef', cursor: 'pointer', transition: 'all 0.2s'
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', padding: '12px 4px', border: me?.avatarId === av.id ? '2px solid #1d4ed8' : '2px solid transparent',
+                  borderRadius: '12px', background: me?.avatarId === av.id ? '#eff6ff' : '#f3f2ef', cursor: 'pointer', transition: 'all 0.2s'
                 }}>
                   <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>{av.svg}</div>
                   <span style={{ fontSize: '10px', color: 'rgba(0,0,0,0.6)', textAlign: 'center' }}>{av.label}</span>
                 </button>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tag Manager Modal */}
+      {showTagManager && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'white', borderRadius: '12px', width: '100%', maxWidth: '600px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #eef3f8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '18px' }}>Manage Achievement Tags</h3>
+              <button onClick={() => setShowTagManager(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} color="#666" /></button>
+            </div>
+            <div style={{ padding: '20px', overflowY: 'auto', flex: 1 }}>
+              <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#666' }}>
+                Select up to {user.role === 'master' ? 'an unlimited number of' : '5'} tags to display on your profile and leaderboard entry.
+              </p>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {unlockedTags.map((t, i) => {
+                  const isPinned = pinnedTags.includes(t);
+                  return (
+                    <button key={i} onClick={() => handlePinTag(t)} style={{ background: isPinned ? 'linear-gradient(135deg, #1d4ed8, #1e3a8a)' : '#f3f2ef', color: isPinned ? 'white' : '#333', padding: '6px 14px', borderRadius: '16px', fontSize: '13px', fontWeight: 600, border: isPinned ? 'none' : '1px solid #e0dfdc', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      {isPinned && <Pin size={12} />} {t}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -557,7 +589,7 @@ export default function SciCommProfile() {
                   {w.appeal ? (
                     <div style={{ background: '#f3f2ef', padding: '8px 12px', borderRadius: '8px', fontSize: '13px' }}>
                       <strong>Your Appeal:</strong> {w.appeal}
-                      <div style={{ marginTop: '4px', fontWeight: 600, color: w.appealStatus === 'accepted' ? '#10b981' : w.appealStatus === 'rejected' ? '#ef4444' : '#f59e0b' }}>Status: {w.appealStatus || 'Pending'}</div>
+                      <div style={{ marginTop: '4px', fontWeight: 600, color: w.appealStatus === 'accepted' ? '#1d4ed8' : w.appealStatus === 'rejected' ? '#ef4444' : '#f59e0b' }}>Status: {w.appealStatus || 'Pending'}</div>
                     </div>
                   ) : (
                     appealTarget === w.id ? (

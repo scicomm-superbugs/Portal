@@ -13,7 +13,7 @@ export const REACTIONS = [
 export const AVATARS = [
   { id: 'av1', svg: '🧬', label: 'DNA Explorer', bg: '#dbeafe' },
   { id: 'av2', svg: '🔬', label: 'Microscope Master', bg: '#fce7f3' },
-  { id: 'av3', svg: '🧪', label: 'Lab Enthusiast', bg: '#d1fae5' },
+  { id: 'av3', svg: '🧪', label: 'Lab Enthusiast', bg: '#dbeafe' },
   { id: 'av4', svg: '⚗️', label: 'Chemistry Wizard', bg: '#fef3c7' },
   { id: 'av5', svg: '🧫', label: 'Petri Dish Pro', bg: '#ede9fe' },
   { id: 'av6', svg: '🦠', label: 'Micro Hunter', bg: '#ccfbf1' },
@@ -21,14 +21,14 @@ export const AVATARS = [
   { id: 'av8', svg: '🧲', label: 'Magnetic Mind', bg: '#e0e7ff' },
   { id: 'av9', svg: '🔭', label: 'Star Gazer', bg: '#1e1b4b', textColor: '#fff' },
   { id: 'av10', svg: '🪐', label: 'Cosmic Soul', bg: '#312e81', textColor: '#fff' },
-  { id: 'av11', svg: '🧑‍🔬', label: 'Scientist', bg: '#ecfdf5' },
+  { id: 'av11', svg: '🧑‍🔬', label: 'Scientist', bg: '#eff6ff' },
   { id: 'av12', svg: '🧑‍🏫', label: 'Educator', bg: '#fff7ed' },
   { id: 'av13', svg: '🎙️', label: 'Speaker', bg: '#fef2f2' },
   { id: 'av14', svg: '📡', label: 'Broadcaster', bg: '#f0f9ff' },
   { id: 'av15', svg: '🧠', label: 'Big Brain', bg: '#fdf4ff' },
   { id: 'av16', svg: '🚀', label: 'Rocket Scientist', bg: '#0f172a', textColor: '#fff' },
   { id: 'av17', svg: '⚛️', label: 'Atomic', bg: '#dbeafe' },
-  { id: 'av18', svg: '🌍', label: 'Global Thinker', bg: '#dcfce7' },
+  { id: 'av18', svg: '🌍', label: 'Global Thinker', bg: '#fef3c7' },
   { id: 'av19', svg: '💻', label: 'Tech Savvy', bg: '#f1f5f9' },
   { id: 'av20', svg: '🎓', label: 'Academic', bg: '#fefce8' },
 ];
@@ -112,7 +112,7 @@ export function getNextTag(score) {
 // ===== USER LEVELS =====
 export const USER_LEVELS = [
   { threshold: 0, level: 1, title: 'Novice', color: '#6b7280', bg: '#f3f4f6' },
-  { threshold: 150, level: 2, title: 'Apprentice', color: '#10b981', bg: '#ecfdf5' },
+  { threshold: 150, level: 2, title: 'Apprentice', color: '#1d4ed8', bg: '#eff6ff' },
   { threshold: 300, level: 3, title: 'Explorer', color: '#0ea5e9', bg: '#e0f2fe' },
   { threshold: 500, level: 4, title: 'Analyst', color: '#8b5cf6', bg: '#ede9fe' },
   { threshold: 800, level: 5, title: 'Researcher', color: '#ec4899', bg: '#fce7f3' },
@@ -124,7 +124,7 @@ export const USER_LEVELS = [
 ];
 
 export function getUserLevel(score) {
-  if (score === Infinity) return { level: '∞', title: 'Infinite', color: '#10b981', bg: '#ecfdf5', isInfinite: true };
+  if (score === Infinity) return { level: '∞', title: 'Infinite', color: '#1d4ed8', bg: '#eff6ff', isInfinite: true };
   let current = USER_LEVELS[0];
   for (const l of USER_LEVELS) {
     if (score >= l.threshold) current = l;

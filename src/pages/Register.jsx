@@ -101,7 +101,7 @@ export default function Register() {
           ) : workspaceId === 'aiuscicomm' ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
               <img src="./aiu_scicomm_light.png" alt="AIU SciComm" style={{ height: '50px', marginBottom: '1rem', objectFit: 'contain' }} onError={e => e.target.style.display='none'}/>
-              <h2 style={{ fontSize: '1.5rem', color: '#10b981', marginBottom: '0.25rem', textAlign: 'center' }}>AIU SciComm Team</h2>
+              <h2 style={{ fontSize: '1.5rem', color: '#1d4ed8', marginBottom: '0.25rem', textAlign: 'center' }}>AIU SciComm Team</h2>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Apply for Science Communication Team</div>
             </div>
           ) : null}

@@ -107,7 +107,7 @@ export default function SciCommNetwork() {
           <h3 style={{ margin: '0 0 16px', fontSize: '16px' }}>My Network</h3>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
             <span style={{ color: 'rgba(0,0,0,0.6)' }}>Connections</span>
-            <strong style={{ color: '#10b981' }}>{myConnections.length}</strong>
+            <strong style={{ color: '#1d4ed8' }}>{myConnections.length}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
             <span style={{ color: 'rgba(0,0,0,0.6)' }}>Pending Received</span>
@@ -125,7 +125,7 @@ export default function SciCommNetwork() {
         <div className="scicomm-card" style={{ display: 'flex', overflow: 'hidden' }}>
           {[{ id: 'discover', label: 'Discover' }, { id: 'connections', label: `Connections (${myConnections.length})` }, { id: 'pending', label: `Pending (${pendingReceived.length})` }].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{
-              flex: 1, padding: '14px 8px', border: 'none', background: tab === t.id ? '#10b981' : 'transparent',
+              flex: 1, padding: '14px 8px', border: 'none', background: tab === t.id ? '#1d4ed8' : 'transparent',
               color: tab === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s'
             }}>{t.label}</button>
           ))}

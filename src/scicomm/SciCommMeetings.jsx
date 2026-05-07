@@ -93,7 +93,7 @@ export default function SciCommMeetings() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-            <span style={{ background: isPast ? '#f3f2ef' : '#ecfdf5', color: isPast ? '#666' : '#065f46', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 600 }}>{isPast ? 'Past' : 'Upcoming'}</span>
+            <span style={{ background: isPast ? '#f3f2ef' : '#eff6ff', color: isPast ? '#666' : '#1e3a8a', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 600 }}>{isPast ? 'Past' : 'Upcoming'}</span>
             <span style={{ background: '#eef3f8', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 600 }}>{(m.attendees || []).length} confirmed</span>
           </div>
         </div>
@@ -127,9 +127,9 @@ export default function SciCommMeetings() {
     <div className="scicomm-feed-layout">
       <div className="scicomm-sidebar-left hide-on-mobile">
         <div className="scicomm-card scicomm-card-padding">
-          <h3 style={{ margin: '0 0 12px', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><Calendar size={18} color="#10b981" /> Meetings</h3>
+          <h3 style={{ margin: '0 0 12px', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><Calendar size={18} color="#1d4ed8" /> Meetings</h3>
           <div style={{ fontSize: '13px', color: 'rgba(0,0,0,0.6)', lineHeight: '2' }}>
-            <div>Upcoming: <strong style={{ color: '#10b981' }}>{upcomingMeetings.length}</strong></div>
+            <div>Upcoming: <strong style={{ color: '#1d4ed8' }}>{upcomingMeetings.length}</strong></div>
             <div>My meetings: <strong>{myMeetings.length}</strong></div>
             <div>Past: <strong>{pastMeetings.length}</strong></div>
           </div>
@@ -137,7 +137,7 @@ export default function SciCommMeetings() {
       </div>
 
       <div className="scicomm-feed-main">
-        {msg && <div style={{ background: '#dcfce7', color: '#166534', padding: '12px 16px', borderRadius: '8px', marginBottom: '8px', fontSize: '14px', fontWeight: 600 }}>✅ {msg}</div>}
+        {msg && <div style={{ background: '#fef3c7', color: '#92400e', padding: '12px 16px', borderRadius: '8px', marginBottom: '8px', fontSize: '14px', fontWeight: 600 }}>✅ {msg}</div>}
 
         {/* Schedule (Admin) */}
         {isAdmin && (
@@ -155,7 +155,7 @@ export default function SciCommMeetings() {
                 <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Invite: <span style={{ fontWeight: 400, color: 'rgba(0,0,0,0.5)' }}>(empty = all members)</span></div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {activeMembers.filter(s => s.role !== 'master').map(s => (
-                    <label key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', cursor: 'pointer', padding: '4px 8px', borderRadius: '16px', background: form.selectedMembers.includes(s.id) ? '#ecfdf5' : '#f3f2ef', border: form.selectedMembers.includes(s.id) ? '1px solid #10b981' : '1px solid transparent' }}>
+                    <label key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', cursor: 'pointer', padding: '4px 8px', borderRadius: '16px', background: form.selectedMembers.includes(s.id) ? '#eff6ff' : '#f3f2ef', border: form.selectedMembers.includes(s.id) ? '1px solid #1d4ed8' : '1px solid transparent' }}>
                       <input type="checkbox" checked={form.selectedMembers.includes(s.id)} onChange={() => toggleMember(s.id)} style={{ display: 'none' }} />
                       {s.name}
                     </label>
@@ -171,7 +171,7 @@ export default function SciCommMeetings() {
         <div className="scicomm-card" style={{ display: 'flex', overflow: 'hidden', marginBottom: '8px' }}>
           {[{ id: 'upcoming', label: 'Upcoming' }, { id: 'past', label: 'Past' }].map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{
-              flex: 1, padding: '12px', border: 'none', background: tab === t.id ? '#10b981' : 'transparent',
+              flex: 1, padding: '12px', border: 'none', background: tab === t.id ? '#1d4ed8' : 'transparent',
               color: tab === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, cursor: 'pointer', fontSize: '14px'
             }}>{t.label}</button>
           ))}

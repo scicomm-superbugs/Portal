@@ -158,9 +158,9 @@ export default function SciCommLayout() {
               <p style={{ margin: 0, color: 'rgba(0,0,0,0.5)', fontSize: '13px' }}>SciComm Platform Update</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
-              <div style={{ background: '#ecfdf5', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#065f46', fontSize: '14px' }}>✨ New Major Features</h4>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#065f46', lineHeight: '1.8' }}>
+              <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
+                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Major Features</h4>
+                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
                   <li><strong>Gamification Levels:</strong> 10 dynamic tiers (Novice to Master) with progress bars.</li>
                   <li><strong>Global Dark Mode:</strong> Toggle available in your profile menu!</li>
                   <li><strong>Live Polls:</strong> Create interactive voting polls directly in the Feed.</li>

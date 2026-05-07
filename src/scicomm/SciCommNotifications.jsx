@@ -35,7 +35,7 @@ export default function SciCommNotifications() {
   }, []);
 
   const notifications = [
-    ...myTasks.map(t => ({ type: 'task', icon: <Briefcase size={18} color="#10b981" />, bg: '#ecfdf5', title: `📋 New task: ${t.title}`, sub: `Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : 'TBD'} • Priority: ${t.priority || 'Medium'}`, time: t.createdAt, id: 't_' + t.id, link: '/tasks' })),
+    ...myTasks.map(t => ({ type: 'task', icon: <Briefcase size={18} color="#1d4ed8" />, bg: '#eff6ff', title: `📋 New task: ${t.title}`, sub: `Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : 'TBD'} • Priority: ${t.priority || 'Medium'}`, time: t.createdAt, id: 't_' + t.id, link: '/tasks' })),
     ...myWarnings.filter(w => w.status !== 'removed').map(w => ({ type: 'warning', icon: <AlertTriangle size={18} color="#ef4444" />, bg: '#fee2e2', title: `⚠️ Warning ${w.warningNumber}/3 from ${w.issuedBy}`, sub: w.message, time: w.issuedAt, id: 'w_' + w.id, link: '/profile' })),
     ...pendingAccounts.map(s => ({ type: 'pending', icon: <UserCheck size={18} color="#f59e0b" />, bg: '#fef3c7', title: `👤 New account: ${s.name}`, sub: `@${s.username} — Awaiting approval`, time: '', id: 'p_' + s.id, link: '/admin' })),
     ...pendingConnections.map(c => ({ type: 'connection', icon: <UserCheck size={18} color="#3b82f6" />, bg: '#dbeafe', title: `🤝 ${c.fromName} wants to connect`, sub: 'Accept or ignore in Network tab', time: c.createdAt, id: 'c_' + c.id, link: '/network' })),
@@ -48,7 +48,7 @@ export default function SciCommNotifications() {
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 12px', fontSize: '16px' }}>Notifications</h3>
           {[
-            { label: 'Tasks', count: myTasks.length, color: '#10b981' },
+            { label: 'Tasks', count: myTasks.length, color: '#1d4ed8' },
             { label: 'Warnings', count: myWarnings.filter(w => w.status !== 'removed').length, color: '#ef4444' },
             { label: 'Connections', count: pendingConnections.length, color: '#3b82f6' },
             { label: 'Meetings', count: upcomingMeetings.length, color: '#8b5cf6' },

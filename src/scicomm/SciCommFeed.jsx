@@ -205,7 +205,7 @@ export default function SciCommFeed() {
       {/* Left Sidebar */}
       <div className="scicomm-sidebar-left hide-on-mobile">
         <div className="scicomm-card" style={{ textAlign: 'center', overflow: 'hidden' }}>
-          <div style={{ width: '100%', aspectRatio: '4 / 1', background: currentUserData?.coverPhoto ? `url(${currentUserData.coverPhoto}) center/cover` : 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}></div>
+          <div style={{ width: '100%', aspectRatio: '4 / 1', background: currentUserData?.coverPhoto ? `url(${currentUserData.coverPhoto}) center/cover` : 'linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%)' }}></div>
           <div style={{marginTop:'-28px'}}>{renderAvatar(currentUserData, 56)}</div>
           <div style={{ padding: '8px 12px 12px' }}>
             <h3 style={{ margin: '4px 0 2px', fontSize: '15px' }}>{user.name}</h3>
@@ -225,14 +225,14 @@ export default function SciCommFeed() {
             )}
             <div style={{ borderTop: '1px solid #e0dfdc', marginTop: '4px', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
               <span style={{ color: 'rgba(0,0,0,0.6)' }}>Score</span>
-              <strong style={{ color: '#10b981' }}>{myScore}</strong>
+              <strong style={{ color: '#1d4ed8' }}>{myScore}</strong>
             </div>
           </div>
         </div>
         <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px', fontSize: '13px' }}>
-          <Link to="/leaderboard" style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.6)', fontWeight: 600, marginBottom: '6px' }}>🏆 Leaderboard <span style={{ color: '#10b981' }}>→</span></Link>
-          <Link to="/tasks" style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.6)', fontWeight: 600, marginBottom: '6px' }}>📋 My Tasks <span style={{ color: '#10b981' }}>→</span></Link>
-          <Link to="/chat" style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.6)', fontWeight: 600 }}>💬 Messages <span style={{ color: '#10b981' }}>→</span></Link>
+          <Link to="/leaderboard" style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.6)', fontWeight: 600, marginBottom: '6px' }}>🏆 Leaderboard <span style={{ color: '#1d4ed8' }}>→</span></Link>
+          <Link to="/tasks" style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.6)', fontWeight: 600, marginBottom: '6px' }}>📋 My Tasks <span style={{ color: '#1d4ed8' }}>→</span></Link>
+          <Link to="/chat" style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.6)', fontWeight: 600 }}>💬 Messages <span style={{ color: '#1d4ed8' }}>→</span></Link>
         </div>
       </div>
 
@@ -296,7 +296,7 @@ export default function SciCommFeed() {
                   {pollOptions.length > 2 && <button onClick={() => setPollOptions(pollOptions.filter(o => o.id !== opt.id))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '16px' }}>×</button>}
                 </div>
               ))}
-              {pollOptions.length < 5 && <button onClick={() => setPollOptions([...pollOptions, {id: Date.now(), text: ''}])} style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}>+ Add Option</button>}
+              {pollOptions.length < 5 && <button onClick={() => setPollOptions([...pollOptions, {id: Date.now(), text: ''}])} style={{ background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}>+ Add Option</button>}
             </div>
           )}
 
@@ -366,8 +366,8 @@ export default function SciCommFeed() {
                       const percent = totalVotes === 0 ? 0 : Math.round((optVotes / totalVotes) * 100);
                       const myVote = votes[user.id] === opt.id;
                       return (
-                        <div key={opt.id} onClick={() => handleVote(post, opt.id)} style={{ position: 'relative', background: myVote ? '#ecfdf5' : '#f3f2ef', border: myVote ? '1px solid #10b981' : '1px solid transparent', borderRadius: '4px', padding: '8px 12px', marginBottom: '6px', cursor: 'pointer', overflow: 'hidden' }}>
-                          <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: `${percent}%`, background: myVote ? '#a7f3d0' : '#e0dfdc', opacity: 0.5, zIndex: 0 }}></div>
+                        <div key={opt.id} onClick={() => handleVote(post, opt.id)} style={{ position: 'relative', background: myVote ? '#eff6ff' : '#f3f2ef', border: myVote ? '1px solid #1d4ed8' : '1px solid transparent', borderRadius: '4px', padding: '8px 12px', marginBottom: '6px', cursor: 'pointer', overflow: 'hidden' }}>
+                          <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: `${percent}%`, background: myVote ? '#bfdbfe' : '#e0dfdc', opacity: 0.5, zIndex: 0 }}></div>
                           <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                             <span style={{ fontWeight: myVote ? 700 : 400 }}>{opt.text}</span>
                             <span style={{ fontWeight: myVote ? 700 : 400 }}>{percent}%</span>
@@ -449,10 +449,10 @@ export default function SciCommFeed() {
       <div className="scicomm-sidebar-right hide-on-mobile">
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 10px', fontSize: '15px' }}>📌 Quick Links</h3>
-          <Link to="/tasks" style={{ display: 'block', color: '#10b981', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>📋 My Tasks</Link>
-          <Link to="/leaderboard" style={{ display: 'block', color: '#10b981', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>🏆 Leaderboard</Link>
-          <Link to="/calendar" style={{ display: 'block', color: '#10b981', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>📅 Calendar</Link>
-          <Link to="/chat" style={{ display: 'block', color: '#10b981', fontSize: '13px', textDecoration: 'none', fontWeight: 600 }}>💬 Chat</Link>
+          <Link to="/tasks" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>📋 My Tasks</Link>
+          <Link to="/leaderboard" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>🏆 Leaderboard</Link>
+          <Link to="/calendar" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>📅 Calendar</Link>
+          <Link to="/chat" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', textDecoration: 'none', fontWeight: 600 }}>💬 Chat</Link>
         </div>
         
         {recognitions.length > 0 && (
@@ -463,7 +463,7 @@ export default function SciCommFeed() {
               if (!targetPost) return null;
               return (
                 <div key={r.id} style={{ marginBottom: '12px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 800, color: '#10b981', marginBottom: '4px' }}>POST OF THE MONTH</div>
+                  <div style={{ fontSize: '11px', fontWeight: 800, color: '#1d4ed8', marginBottom: '4px' }}>POST OF THE MONTH</div>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     {renderAvatar(getAuthor(targetPost.authorId), 32)}
                     <div>

@@ -294,7 +294,7 @@ export default function Portal() {
           background: rgba(16, 185, 129, 0.05);
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
-          color: #10b981;
+          color: #1d4ed8;
           padding: 0.6rem 1.5rem;
           border-radius: 50px;
           font-weight: 700;
@@ -587,7 +587,7 @@ export default function Portal() {
             subtitle="Science Communication Team"
             description="The dedicated platform for the Science Communication Team at Alamein International University. Fostering outreach, collaboration, and scientific dialogue."
             logoSrc="./aiu_scicomm_dark.png"
-            accentColor="#10b981"
+            accentColor="#1d4ed8"
             delay="0.6s"
             onClick={() => handleSelectWorkspace('aiuscicomm')}
             tags={[

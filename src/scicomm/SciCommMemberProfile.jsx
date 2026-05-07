@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db } from '../db';
-import { UserCircle, MessageCircle, UserPlus, UserCheck, Award, Pin } from 'lucide-react';
+import { UserCircle, MessageCircle, UserPlus, UserCheck, Award, Pin, FileText } from 'lucide-react';
 import { AVATARS, calculateScore, getUnlockedTags, timeAgo, getUserLevel, AUTO_TAGS } from './scicommConstants';
 
 export default function SciCommMemberProfile() {
@@ -62,7 +62,7 @@ export default function SciCommMemberProfile() {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '40px' }}>
       <div className="scicomm-card" style={{ overflow: 'hidden' }}>
-        <div style={{ width: '100%', aspectRatio: '4 / 1', background: member.coverPhoto ? `url(${member.coverPhoto}) center/cover` : 'linear-gradient(135deg, #10b981 0%, #047857 50%, #064e3b 100%)' }}></div>
+        <div style={{ width: '100%', aspectRatio: '4 / 1', background: member.coverPhoto ? `url(${member.coverPhoto}) center/cover` : 'linear-gradient(135deg, #1d4ed8 0%, #0f172a 50%, #020617 100%)' }}></div>
         <div style={{ padding: '0 24px 24px' }}>
           <div style={{ marginTop: '-60px', marginBottom: '12px' }}>{renderAvatar(120)}</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
@@ -77,7 +77,7 @@ export default function SciCommMemberProfile() {
               <p style={{ margin: 0, fontSize: '14px', color: 'rgba(0,0,0,0.6)' }}>{member.bio || 'Passionate about science communication.'}</p>
               {pinnedTags.length > 0 && (
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px' }}>
-                  {pinnedTags.map((t, i) => <span key={i} style={{ background: 'linear-gradient(135deg, #ecfdf5, #d1fae5)', color: '#065f46', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: '1px solid #a7f3d0' }}>{t}</span>)}
+                  {pinnedTags.map((t, i) => <span key={i} style={{ background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: '#1e3a8a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: '1px solid #bfdbfe' }}>{t}</span>)}
                 </div>
               )}
             </div>
@@ -100,7 +100,7 @@ export default function SciCommMemberProfile() {
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: '8px', margin: '8px 0' }}>
         {[
-          { label: 'Score', value: score, color: '#10b981' },
+          { label: 'Score', value: score, color: '#1d4ed8' },
           { label: 'Posts', value: memberPosts.length, color: '#3b82f6' },
           { label: 'Reactions', value: likesReceived, color: '#ef4444' },
           { label: 'Tasks Done', value: completedTasks, color: '#f59e0b' },
@@ -114,15 +114,14 @@ export default function SciCommMemberProfile() {
         ))}
       </div>
 
-      {/* Unlocked Tags */}
-      {unlockedTags.length > 0 && member.role !== 'master' && (
+      {/* Pinned Tags */}
+      {pinnedTags.length > 0 && member.role !== 'master' && (
         <div className="scicomm-card scicomm-card-padding">
-          <h3 style={{ margin: '0 0 8px', fontSize: '16px' }}><Award size={18} color="#10b981" /> Achievement Tags</h3>
+          <h3 style={{ margin: '0 0 8px', fontSize: '16px' }}><Award size={18} color="#1d4ed8" /> Pinned Achievement Tags</h3>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {unlockedTags.map((t, i) => {
-              const isPinned = pinnedTags.includes(t);
-              return <span key={i} style={{ background: isPinned ? 'linear-gradient(135deg, #10b981, #059669)' : '#f3f2ef', color: isPinned ? 'white' : '#333', padding: '5px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: isPinned ? 'none' : '1px solid #e0dfdc', display: 'flex', alignItems: 'center', gap: '4px' }}>{isPinned && <Pin size={12} />} {t}</span>;
-            })}
+            {pinnedTags.map((t, i) => (
+              <span key={i} style={{ background: 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: 'white', padding: '5px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}><Pin size={12} /> {t}</span>
+            ))}
           </div>
         </div>
       )}
@@ -130,7 +129,9 @@ export default function SciCommMemberProfile() {
       {/* CV */}
       {member.cvFileUrl && (
         <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px' }}>
-          <a href={member.cvFileUrl} target="_blank" rel="noreferrer" className="scicomm-btn-primary" style={{ textDecoration: 'none', display: 'inline-flex', width: '100%', justifyContent: 'center' }}>📄 View CV</a>
+          <a href={member.cvFileUrl} download={member.cvFileName || "CV_Resume.pdf"} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', justifyContent: 'center', width: '100%', padding: '12px', background: 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: 'white', borderRadius: '8px', fontWeight: 700, fontSize: '15px', boxShadow: '0 4px 12px rgba(29, 78, 216, 0.3)', transition: 'all 0.2s' }}>
+            <FileText size={20} /> Download / View CV
+          </a>
         </div>
       )}
 

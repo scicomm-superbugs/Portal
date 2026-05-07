@@ -68,13 +68,13 @@ export default function SciCommTasks() {
     if (p === 'Urgent') return { bg: '#fee2e2', color: '#991b1b', icon: '🔴' };
     if (p === 'High') return { bg: '#ffedd5', color: '#9a3412', icon: '🟠' };
     if (p === 'Medium') return { bg: '#fef3c7', color: '#92400e', icon: '🟡' };
-    return { bg: '#ecfdf5', color: '#065f46', icon: '🟢' };
+    return { bg: '#eff6ff', color: '#1e3a8a', icon: '🟢' };
   };
 
   const getStatusBadge = (status) => {
     if (status === 'Review') return <span style={{ background: '#fef08a', color: '#854d0e', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 600 }}>Needs Review</span>;
     if (status === 'In Progress') return <span style={{ background: '#bfdbfe', color: '#1e3a8a', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 600 }}>In Progress</span>;
-    if (status === 'Approved' || status === 'Completed') return <span style={{ background: '#bbf7d0', color: '#166534', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 600 }}>Approved</span>;
+    if (status === 'Approved' || status === 'Completed') return <span style={{ background: '#bbf7d0', color: '#92400e', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 600 }}>Approved</span>;
     return <span style={{ background: '#e2e8f0', color: '#475569', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 600 }}>Pending</span>;
   };
 
@@ -82,11 +82,11 @@ export default function SciCommTasks() {
     <div className="scicomm-feed-layout">
       <div className="scicomm-sidebar-left hide-on-mobile">
         <div className="scicomm-card scicomm-card-padding">
-          <h3 style={{ margin: '0 0 12px', fontSize: '16px' }}><Briefcase size={16} color="#10b981" /> {isAdmin ? 'All Tasks' : 'My Tasks'}</h3>
+          <h3 style={{ margin: '0 0 12px', fontSize: '16px' }}><Briefcase size={16} color="#1d4ed8" /> {isAdmin ? 'All Tasks' : 'My Tasks'}</h3>
           <div style={{ fontSize: '13px', color: 'rgba(0,0,0,0.6)', lineHeight: '2' }}>
             <div>Active: <strong style={{ color: '#f59e0b' }}>{pendingTasks.length}</strong></div>
             {isAdmin && <div>To Review: <strong style={{ color: '#8b5cf6' }}>{reviewTasks.length}</strong></div>}
-            <div>Approved: <strong style={{ color: '#10b981' }}>{completedTasks.length}</strong></div>
+            <div>Approved: <strong style={{ color: '#1d4ed8' }}>{completedTasks.length}</strong></div>
           </div>
         </div>
       </div>
@@ -142,7 +142,7 @@ export default function SciCommTasks() {
                             <h4 style={{ margin: 0, fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>{t.title} {getStatusBadge(t.status)}</h4>
                             <span style={{ background: ps.bg, color: ps.color, padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 600 }}>{t.priority || 'Medium'}</span>
                           </div>
-                          {isAdmin && <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 600 }}>→ {getAssignee(t.assignedTo)}</div>}
+                          {isAdmin && <div style={{ fontSize: '12px', color: '#1d4ed8', fontWeight: 600 }}>→ {getAssignee(t.assignedTo)}</div>}
                           {t.description && <p style={{ margin: '4px 0', fontSize: '13px', color: 'rgba(0,0,0,0.6)' }}>{t.description}</p>}
                           <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                             <span>📅 {t.dueDate ? new Date(t.dueDate).toLocaleDateString() : 'TBD'}</span>
@@ -196,7 +196,7 @@ export default function SciCommTasks() {
               )}
               {completedTasks.length > 0 && (
                 <>
-                  <h3 style={{ fontSize: '15px', margin: '20px 0 10px', color: '#10b981' }}><CheckCircle size={16} /> Approved & Completed ({completedTasks.length})</h3>
+                  <h3 style={{ fontSize: '15px', margin: '20px 0 10px', color: '#1d4ed8' }}><CheckCircle size={16} /> Approved & Completed ({completedTasks.length})</h3>
                   {completedTasks.slice(0, 8).map(t => (
                     <div key={t.id} style={{ display: 'flex', gap: '10px', padding: '8px', borderRadius: '6px', background: '#f9fafb', marginBottom: '4px', opacity: 0.7, alignItems: 'center' }}>
                       <span>✅</span>

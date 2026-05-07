@@ -117,14 +117,14 @@ export default function SciCommCalendar() {
           const isSelected = selectedDay === day;
           const hasEvents = ev.tasks.length + ev.meetings.length + ev.personal.length + ev.warnings.length > 0;
           return (
-            <div key={day} onClick={() => setSelectedDay(isSelected ? null : day)} style={{ minHeight: '70px', border: isSelected ? '2px solid #10b981' : '1px solid #eef3f8', borderRadius: '4px', padding: '4px', background: isToday ? '#ecfdf5' : isSelected ? '#f0fdf4' : 'white', cursor: 'pointer', position: 'relative', transition: 'all 0.15s' }}>
-              <div style={{ fontSize: '12px', fontWeight: isToday ? 700 : 400, color: isToday ? '#10b981' : 'rgba(0,0,0,0.7)', marginBottom: '4px', display: 'flex', justifyContent: 'space-between' }}>
+            <div key={day} onClick={() => setSelectedDay(isSelected ? null : day)} style={{ minHeight: '70px', border: isSelected ? '2px solid #1d4ed8' : '1px solid #eef3f8', borderRadius: '4px', padding: '4px', background: isToday ? '#eff6ff' : isSelected ? '#f0fdf4' : 'white', cursor: 'pointer', position: 'relative', transition: 'all 0.15s' }}>
+              <div style={{ fontSize: '12px', fontWeight: isToday ? 700 : 400, color: isToday ? '#1d4ed8' : 'rgba(0,0,0,0.7)', marginBottom: '4px', display: 'flex', justifyContent: 'space-between' }}>
                 <span>{day}</span>
-                {hasEvents && <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', display: 'inline-block' }}></span>}
+                {hasEvents && <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#1d4ed8', display: 'inline-block' }}></span>}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                 {ev.tasks.slice(0, 2).map((t, j) => (
-                  <div key={'t'+j} style={{ fontSize: '9px', background: t.status === 'Completed' || t.status === 'Approved' ? '#dcfce7' : '#fef3c7', padding: '1px 4px', borderRadius: '3px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', color: '#333' }}>
+                  <div key={'t'+j} style={{ fontSize: '9px', background: t.status === 'Completed' || t.status === 'Approved' ? '#fef3c7' : '#fef3c7', padding: '1px 4px', borderRadius: '3px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', color: '#333' }}>
                     📋 {t.title}
                   </div>
                 ))}
@@ -149,7 +149,7 @@ export default function SciCommCalendar() {
         <div style={{ marginTop: '16px', background: '#f9fafb', border: '1px solid #e0dfdc', borderRadius: '12px', padding: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h3 style={{ margin: 0, fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <CalIcon size={18} color="#10b981" />
+              <CalIcon size={18} color="#1d4ed8" />
               {monthNames[calMonth]} {selectedDay}, {calYear}
             </h3>
             <button onClick={() => setSelectedDay(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={18} /></button>

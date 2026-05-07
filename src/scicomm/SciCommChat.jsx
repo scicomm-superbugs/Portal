@@ -165,7 +165,7 @@ export default function SciCommChat() {
       <div style={{ borderRight: '1px solid #e0dfdc', display: 'flex', flexDirection: 'column', flexShrink: 0 }} className={`scicomm-chat-sidebar ${selectedRoom ? 'chat-hide-mobile' : 'chat-show-mobile'}`}>
         <div style={{ padding: '12px', borderBottom: '1px solid #e0dfdc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, fontSize: '16px' }}>💬 Messaging</h3>
-          <button onClick={() => setShowNewChat(!showNewChat)} style={{ background: '#10b981', color: 'white', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={16} /></button>
+          <button onClick={() => setShowNewChat(!showNewChat)} style={{ background: '#1d4ed8', color: 'white', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={16} /></button>
         </div>
 
         {showNewChat && (
@@ -197,7 +197,7 @@ export default function SciCommChat() {
               display: 'flex', alignItems: 'center', gap: '10px', padding: '12px', cursor: 'pointer',
               background: selectedRoom === r.id ? '#eef3f8' : 'transparent', borderBottom: '1px solid #f3f2ef'
             }}>
-              {r.type === 'group' ? <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Users size={20} color="#10b981" /></div> : renderAvatar(getRoomOther(r), 40)}
+              {r.type === 'group' ? <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Users size={20} color="#1d4ed8" /></div> : renderAvatar(getRoomOther(r), 40)}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 600, fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{getRoomTitle(r)}</div>
                 <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.lastSender ? `${r.lastSender}: ${r.lastMessage || ''}` : 'No messages yet'}</div>
@@ -214,7 +214,7 @@ export default function SciCommChat() {
           <>
             <div style={{ padding: '12px 16px', borderBottom: '1px solid #e0dfdc', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <button onClick={() => setSelectedRoom(null)} className="chat-back-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'none', padding: '4px' }}><ArrowLeft size={20} /></button>
-              {activeRoom.type === 'group' ? <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={18} color="#10b981" /></div> : renderAvatar(getRoomOther(activeRoom), 36)}
+              {activeRoom.type === 'group' ? <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={18} color="#1d4ed8" /></div> : renderAvatar(getRoomOther(activeRoom), 36)}
               <div>
                 <div style={{ fontWeight: 600, fontSize: '15px' }}>{getRoomTitle(activeRoom)}</div>
                 {activeRoom.type === 'group' && <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>{(activeRoom.members || []).length} members</div>}
@@ -227,10 +227,10 @@ export default function SciCommChat() {
                   <div key={m.id} style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', marginBottom: '8px' }}>
                     <div style={{
                       maxWidth: '70%', padding: '10px 14px', borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                      background: isMe ? '#10b981' : 'white', color: isMe ? 'white' : 'rgba(0,0,0,0.9)',
+                      background: isMe ? '#1d4ed8' : 'white', color: isMe ? 'white' : 'rgba(0,0,0,0.9)',
                       border: isMe ? 'none' : '1px solid #e0dfdc', fontSize: '14px', lineHeight: '1.4'
                     }}>
-                      {!isMe && activeRoom.type === 'group' && <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '4px', color: '#10b981' }}>{m.senderName}</div>}
+                      {!isMe && activeRoom.type === 'group' && <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '4px', color: '#1d4ed8' }}>{m.senderName}</div>}
                       {m.type === 'image' && m.fileUrl && <img src={m.fileUrl} alt="" style={{ maxWidth: '100%', borderRadius: '8px', marginBottom: '4px' }} />}
                       {m.type === 'file' && m.fileUrl && <a href={m.fileUrl} target="_blank" rel="noreferrer" style={{ color: isMe ? 'white' : '#2563eb', textDecoration: 'underline' }}>📎 {m.fileName || 'File'}</a>}
                       {m.content && <div>{renderMessageText(m.content, isMe)}</div>}
