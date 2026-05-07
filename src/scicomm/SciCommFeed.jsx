@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db, uploadFile } from '../db';
-import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
 
@@ -31,6 +31,18 @@ export default function SciCommFeed() {
   const [showPoll, setShowPoll] = useState(false);
   const [pollQuestion, setPollQuestion] = useState('');
   const [pollOptions, setPollOptions] = useState([{id:1, text:''}, {id:2, text:''}]);
+
+  const [isEditingLinks, setIsEditingLinks] = useState(false);
+  const [tempLinks, setTempLinks] = useState([]);
+
+  const defaultQuickLinks = [
+    { id: 1, title: 'My Tasks', url: '/tasks', icon: '📋' },
+    { id: 2, title: 'Leaderboard', url: '/leaderboard', icon: '🏆' },
+    { id: 3, title: 'Calendar', url: '/calendar', icon: '📅' },
+    { id: 4, title: 'Chat', url: '/chat', icon: '💬' }
+  ];
+  const myLinks = currentUserData?.quickLinks || defaultQuickLinks;
+
   const isAdmin = user.role === 'admin' || user.role === 'master';
 
   const banners = [...bannersRaw].sort((a,b) => (a.order||0) - (b.order||0));
@@ -448,11 +460,37 @@ export default function SciCommFeed() {
       {/* Right Sidebar */}
       <div className="scicomm-sidebar-right hide-on-mobile">
         <div className="scicomm-card scicomm-card-padding">
-          <h3 style={{ margin: '0 0 10px', fontSize: '15px' }}>📌 Quick Links</h3>
-          <Link to="/tasks" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>📋 My Tasks</Link>
-          <Link to="/leaderboard" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>🏆 Leaderboard</Link>
-          <Link to="/calendar" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>📅 Calendar</Link>
-          <Link to="/chat" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', textDecoration: 'none', fontWeight: 600 }}>💬 Chat</Link>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <h3 style={{ margin: 0, fontSize: '15px' }}>📌 Quick Links</h3>
+            <button onClick={() => { setTempLinks([...myLinks]); setIsEditingLinks(!isEditingLinks); }} style={{ background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer' }}><Settings size={14} /></button>
+          </div>
+          
+          {isEditingLinks ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {tempLinks.map((link, idx) => (
+                <div key={link.id || idx} style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                  <input type="text" value={link.icon} onChange={e => { const n = [...tempLinks]; n[idx].icon = e.target.value; setTempLinks(n); }} placeholder="Emoji" style={{ width: '40px', padding: '6px', border: '1px solid #e0dfdc', borderRadius: '4px', fontSize: '12px', textAlign: 'center' }} />
+                  <input type="text" value={link.title} onChange={e => { const n = [...tempLinks]; n[idx].title = e.target.value; setTempLinks(n); }} placeholder="Title" style={{ flex: 1, padding: '6px', border: '1px solid #e0dfdc', borderRadius: '4px', fontSize: '12px' }} />
+                  <input type="text" value={link.url} onChange={e => { const n = [...tempLinks]; n[idx].url = e.target.value; setTempLinks(n); }} placeholder="URL (/path or http)" style={{ flex: 1, padding: '6px', border: '1px solid #e0dfdc', borderRadius: '4px', fontSize: '12px' }} />
+                  <button onClick={() => setTempLinks(tempLinks.filter((_, i) => i !== idx))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}><Trash2 size={14} /></button>
+                </div>
+              ))}
+              <button onClick={() => setTempLinks([...tempLinks, { id: Date.now(), title: '', url: '', icon: '🔗' }])} style={{ background: 'none', border: '1px dashed #1d4ed8', color: '#1d4ed8', borderRadius: '4px', padding: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px' }}><Plus size={14} /> Add Link</button>
+              <button onClick={async () => { await db.scientists.update(user.id, { quickLinks: tempLinks }); setIsEditingLinks(false); }} className="scicomm-btn-primary" style={{ padding: '8px', justifyContent: 'center', marginTop: '4px' }}>Save Links</button>
+            </div>
+          ) : (
+            <div>
+              {myLinks.map((link, idx) => {
+                const isExternal = link.url.startsWith('http');
+                const content = <>{link.icon} {link.title}</>;
+                return isExternal ? (
+                  <a key={link.id || idx} href={link.url} target="_blank" rel="noreferrer" style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>{content}</a>
+                ) : (
+                  <Link key={link.id || idx} to={link.url} style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>{content}</Link>
+                );
+              })}
+            </div>
+          )}
         </div>
         
         {recognitions.length > 0 && (
