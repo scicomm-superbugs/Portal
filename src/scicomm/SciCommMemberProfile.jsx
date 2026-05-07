@@ -62,7 +62,7 @@ export default function SciCommMemberProfile() {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '40px' }}>
       <div className="scicomm-card" style={{ overflow: 'hidden' }}>
-        <div style={{ height: '180px', background: member.coverPhoto ? `url(${member.coverPhoto}) center/cover` : 'linear-gradient(135deg, #10b981 0%, #047857 50%, #064e3b 100%)' }}></div>
+        <div style={{ width: '100%', aspectRatio: '4 / 1', background: member.coverPhoto ? `url(${member.coverPhoto}) center/cover` : 'linear-gradient(135deg, #10b981 0%, #047857 50%, #064e3b 100%)' }}></div>
         <div style={{ padding: '0 24px 24px' }}>
           <div style={{ marginTop: '-60px', marginBottom: '12px' }}>{renderAvatar(120)}</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
