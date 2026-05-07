@@ -13,15 +13,16 @@ export default function Login() {
   const navigate = useNavigate();
   const { workspace } = useParams();
 
-  const mappedWorkspace = (workspace === 'aiu' || workspace === 'Alamein International University' || workspace === 'alamein') ? 'alamein' : (workspace === 'aiuscicomm' ? 'aiuscicomm' : workspace);
+  const mappedWorkspace = (workspace === 'aiu' || workspace === 'alamein') ? 'alamein' : (workspace === 'aiuscicomm' ? 'aiuscicomm' : null);
 
-  if (mappedWorkspace && (mappedWorkspace === 'alamein' || mappedWorkspace === 'compchem' || mappedWorkspace === 'aiuscicomm')) {
+  if (mappedWorkspace) {
     localStorage.setItem('workspaceId', mappedWorkspace);
   }
 
-  const workspaceId = localStorage.getItem('workspaceId');
+  let workspaceId = localStorage.getItem('workspaceId');
   if (!workspaceId) {
-    return <Navigate to="/portal" replace />;
+    workspaceId = 'alamein';
+    localStorage.setItem('workspaceId', 'alamein');
   }
 
   // If already logged in, redirect
@@ -30,7 +31,7 @@ export default function Login() {
   }
 
   useEffect(() => {
-    document.title = workspaceId === 'alamein' ? 'Alamein International University' : (workspaceId === 'aiuscicomm' ? 'AIU SciComm Team' : 'COMPCHEM Laboratory');
+    document.title = workspaceId === 'alamein' ? 'Alamein International University' : 'AIU SciComm Team';
   }, [workspaceId]);
 
   const handleSubmit = async (e) => {
@@ -62,12 +63,7 @@ export default function Login() {
               <h2 style={{ fontSize: '1.5rem', color: '#10b981', marginBottom: '0.25rem', textAlign: 'center' }}>AIU SciComm Team</h2>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Science Communication Team</div>
             </div>
-          ) : (
-            <>
-              <img src="./compchem_logo_2.png" alt="COMPCHEM" style={{ height: '140px', marginBottom: '1.5rem', objectFit: 'contain' }} onError={e => e.target.style.display='none'}/>
-              <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)', marginTop: '0.5rem' }}>Laboratory Management</h2>
-            </>
-          )}
+          ) : null}
         </div>
 
         {error && (
