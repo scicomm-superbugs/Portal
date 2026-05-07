@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckCircle, Clock, Award, BarChart3, Image, Link2 } from 'lucide-react';
 import { AVATARS, calculateScore, getUnlockedTags, REACTIONS } from './scicommConstants';
+import SciCommMeetings from './SciCommMeetings';
 
 export default function SciCommAdmin() {
   const { user } = useAuth();
@@ -12,8 +13,6 @@ export default function SciCommAdmin() {
   const warningsData = useLiveCollection('scicomm_warnings') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
   const connectionsData = useLiveCollection('scicomm_connections') || [];
-  const bannersData = useLiveCollection('scicomm_banners') || [];
-  const recognitionsData = useLiveCollection('scicomm_recognitions') || [];
   const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
   const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
   const isMaster = user.role === 'master';
@@ -21,7 +20,6 @@ export default function SciCommAdmin() {
   const [activeTab, setActiveTab] = useState('pending');
   const [taskForm, setTaskForm] = useState({ title: '', description: '', assignedTo: '', dueDate: '', priority: 'Medium' });
   const [warningForm, setWarningForm] = useState({ userId: '', message: '', note: '' });
-  const [bannerForm, setBannerForm] = useState({ imageUrl: '', title: '', order: 0 });
   const [msg, setMsg] = useState('');
 
   const pendingAccounts = scientists.filter(s => s.accountStatus === 'pending');
@@ -70,24 +68,13 @@ export default function SciCommAdmin() {
     }
   };
 
-  const handleAddBanner = async (e) => {
-    e.preventDefault();
-    if (!bannerForm.imageUrl) return;
-    await db.scicomm_banners.add({ ...bannerForm, createdAt: new Date().toISOString() });
-    setBannerForm({ imageUrl: '', title: '', order: 0 });
-    flash('Banner added!');
-  };
-
-  const handleDeleteBanner = async (id) => { await db.scicomm_banners.delete(id); };
-
   const tabs = [
     { id: 'pending', label: `Pending (${pendingAccounts.length})`, icon: <Clock size={14} /> },
     { id: 'users', label: 'Users', icon: <Shield size={14} /> },
     { id: 'tasks', label: 'Tasks', icon: <Calendar size={14} /> },
     { id: 'warnings', label: 'Warnings', icon: <AlertTriangle size={14} /> },
-    { id: 'banners', label: 'Banners', icon: <Image size={14} /> },
+    { id: 'meetings', label: 'Meetings', icon: <Link2 size={14} /> },
     { id: 'posts', label: 'Posts', icon: <Trash2 size={14} /> },
-    { id: 'recognitions', label: 'Recognitions', icon: <Award size={14} /> },
     { id: 'analytics', label: 'Analytics', icon: <BarChart3 size={14} /> },
   ];
 
@@ -296,24 +283,9 @@ export default function SciCommAdmin() {
         </div>
       )}
 
-      {/* BANNERS */}
-      {activeTab === 'banners' && (
-        <div className="scicomm-card scicomm-card-padding">
-          <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>🖼️ Banner Management</h3>
-          <form onSubmit={handleAddBanner} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-            <input type="url" placeholder="Banner Image URL" value={bannerForm.imageUrl} onChange={e => setBannerForm({ ...bannerForm, imageUrl: e.target.value })} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
-            <input type="text" placeholder="Title/Caption (optional)" value={bannerForm.title} onChange={e => setBannerForm({ ...bannerForm, title: e.target.value })} style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
-            <input type="number" placeholder="Order (0 = first)" value={bannerForm.order} onChange={e => setBannerForm({ ...bannerForm, order: Number(e.target.value) })} style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
-            <button type="submit" className="scicomm-btn-primary" style={{ padding: '10px' }}>Add Banner</button>
-          </form>
-          {bannersData.map(b => (
-            <div key={b.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 0', borderBottom: '1px solid #eef3f8' }}>
-              <img src={b.imageUrl} alt="" style={{ width: '80px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} onError={e => e.target.style.display = 'none'} />
-              <div style={{ flex: 1, fontSize: '13px' }}>{b.title || 'No title'}</div>
-              <button onClick={() => handleDeleteBanner(b.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}><Trash2 size={16} /></button>
-            </div>
-          ))}
-        </div>
+      {/* MEETINGS */}
+      {activeTab === 'meetings' && (
+        <SciCommMeetings />
       )}
 
       {/* POSTS */}
@@ -329,35 +301,6 @@ export default function SciCommAdmin() {
               <button onClick={() => handleRemovePost(p.id)} style={{ background: '#fee2e2', border: 'none', color: '#991b1b', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', flexShrink: 0 }}><Trash2 size={12} /> Remove</button>
             </div>
           ))}
-        </div>
-      )}
-
-      {/* RECOGNITIONS */}
-      {activeTab === 'recognitions' && (
-        <div className="scicomm-card scicomm-card-padding">
-          <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>🏅 Manage Content Recognitions</h3>
-          <p style={{ fontSize: '13px', color: 'rgba(0,0,0,0.6)', marginBottom: '16px' }}>Feature reels or posts to recognize creators on the platform.</p>
-          
-          <form onSubmit={async (e) => {
-            e.preventDefault();
-            const targetId = e.target.targetId.value;
-            const type = e.target.recogType.value;
-            if(!targetId) return;
-            const existing = recognitionsData.find(r => r.type === type);
-            if (existing) {
-              await db.scicomm_recognitions.update(existing.id, { targetId, date: new Date().toISOString() });
-            } else {
-              await db.scicomm_recognitions.add({ type, targetId, date: new Date().toISOString() });
-            }
-            flash('Recognition updated!');
-          }} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <select name="recogType" required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #e0dfdc', fontSize: '14px' }}>
-              <option value="featured_reel">Reel of the Week</option>
-              <option value="post_of_month">Post of the Month</option>
-            </select>
-            <input name="targetId" placeholder="Target ID (Reel ID or Post ID)" required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #e0dfdc', fontSize: '14px' }} />
-            <button type="submit" className="scicomm-btn-primary" style={{ padding: '10px', justifyContent: 'center' }}>Set Feature</button>
-          </form>
         </div>
       )}
 
