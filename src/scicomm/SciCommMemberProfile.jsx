@@ -66,23 +66,15 @@ export default function SciCommMemberProfile() {
           <div style={{ marginTop: '-60px', marginBottom: '12px' }}>{renderAvatar(120)}</div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h1 style={{ margin: '0', fontSize: '22px' }}>{member.name}</h1>
-                <span style={{ background: memberLevel.bg, color: memberLevel.color, padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 700, border: `1px solid ${memberLevel.color}40` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                <h1 style={{ margin: '0', fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>{member.name}</h1>
+                <span style={{ background: memberLevel.bg, color: memberLevel.color, padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 800, border: `1px solid ${memberLevel.color}40`, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   Lv. {memberLevel.level}{memberLevel.title ? ' ' + memberLevel.title : ''}
                 </span>
               </div>
-              <p style={{ margin: '4px 0 6px', fontSize: '15px' }}>{member.department || 'Science Communicator'}</p>
-              <p style={{ margin: 0, fontSize: '14px', color: 'rgba(0,0,0,0.6)' }}>{member.bio || 'Passionate about science communication.'}</p>
-              {pinnedTags.length > 0 && (
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '10px' }}>
-                  {pinnedTags.map((t, i) => {
-                    const isMasterTag = t === '👑 SciComm MasterMind';
-                    return <span key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: isMasterTag ? '#b45309' : '#1e3a8a', padding: '4px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe' }}>{t}</span>;
-                  })}
-                </div>
-              )}
+              <p style={{ margin: '6px 0 16px', fontSize: '16px', fontWeight: 600, color: '#1d4ed8' }}>{member.department || 'Science Communicator'}</p>
             </div>
+            
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {String(memberId) === String(user.id) ? (
                 <button className="scicomm-btn-secondary" onClick={() => navigate('/profile')} style={{ fontSize: '13px', background: '#eef3f8', border: 'none' }}>✏️ Back to Edit Mode</button>
@@ -100,38 +92,46 @@ export default function SciCommMemberProfile() {
               )}
             </div>
           </div>
+              
+          {/* Graphical Bio Block */}
+          <div style={{ background: '#f8fafc', padding: '16px 20px', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
+            <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.7', color: '#334155' }}>{member.bio || 'Passionate about science communication.'}</p>
+          </div>
+
+          {/* Pinned Tags inside Header */}
+          {pinnedTags.length > 0 && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <h3 style={{ margin: 0, fontSize: '14px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pinned Tags</h3>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {pinnedTags.map((t, i) => {
+                  const isMasterTag = t === '👑 SciComm MasterMind';
+                  return <span key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: isMasterTag ? '#b45309' : '#1e3a8a', padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 700, border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{t}</span>;
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Graphical Stats Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '12px', padding: '16px', background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+            {[
+              { label: 'Score', value: score === Infinity ? 'Infinity' : score, color: score === Infinity ? '#b45309' : '#1d4ed8', icon: '✨' },
+              { label: 'Posts', value: memberPosts.length, color: '#3b82f6', icon: '📝' },
+              { label: 'Reactions', value: likesReceived, color: '#ef4444', icon: '❤️' },
+              { label: 'Tasks Done', value: completedTasks, color: '#f59e0b', icon: '✅' },
+              { label: 'Connections', value: connectionCount, color: '#8b5cf6', icon: '👥' },
+              { label: 'Tags', value: unlockedTags.length, color: '#ec4899', icon: '🏷️' },
+            ].map((s, i) => (
+              <div key={i} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px' }}>
+                <div style={{ fontSize: '20px', marginBottom: '4px' }}>{s.icon}</div>
+                <div style={{ fontSize: '22px', fontWeight: 800, color: s.color }}>{s.value}</div>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-
-      {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: '8px', margin: '8px 0' }}>
-        {[
-          { label: 'Score', value: score, color: '#1d4ed8' },
-          { label: 'Posts', value: memberPosts.length, color: '#3b82f6' },
-          { label: 'Reactions', value: likesReceived, color: '#ef4444' },
-          { label: 'Tasks Done', value: completedTasks, color: '#f59e0b' },
-          { label: 'Connections', value: connectionCount, color: '#8b5cf6' },
-          { label: 'Tags', value: unlockedTags.length, color: '#ec4899' },
-        ].map((s, i) => (
-          <div key={i} className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', marginBottom: 0 }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.5)' }}>{s.label}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Pinned Tags */}
-      {pinnedTags.length > 0 && (
-        <div className="scicomm-card scicomm-card-padding">
-          <h3 style={{ margin: '0 0 8px', fontSize: '16px' }}><Award size={18} color="#1d4ed8" /> Pinned Achievement Tags</h3>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {pinnedTags.map((t, i) => {
-              const isMasterTag = t === '👑 SciComm MasterMind';
-              return <span key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: isMasterTag ? '#b45309' : 'white', padding: '5px 12px', borderRadius: '16px', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', border: isMasterTag ? '1px solid #fde047' : 'none' }}><Pin size={12} /> {t}</span>;
-            })}
-          </div>
-        </div>
-      )}
 
       {/* CV */}
       {member.cvFileUrl && (
