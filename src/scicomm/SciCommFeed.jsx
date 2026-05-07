@@ -215,7 +215,8 @@ export default function SciCommFeed() {
   };
 
   // Score for sidebar
-  const myLikesReceived = postsRaw.filter(p => String(p.authorId) === String(user.id)).reduce((s, p) => s + Object.values(p.reactions || {}).reduce((ss, arr) => ss + arr.length, 0), 0);
+  const myPosts = postsRaw.filter(p => String(p.authorId) === String(user.id));
+  const myLikesReceived = myPosts.reduce((s, p) => s + Object.values(p.reactions || {}).reduce((ss, arr) => ss + arr.length, 0), 0);
   const myCompletedTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && (t.status === 'Completed' || t.status === 'Approved')).length;
   const myConnections = connectionsRaw.filter(c => c.status === 'accepted' && (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id))).length;
   const myAttended = meetingsData.filter(m => (m.attendees || []).includes(user.id)).length;
