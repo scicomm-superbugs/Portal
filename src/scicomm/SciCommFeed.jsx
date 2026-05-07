@@ -547,7 +547,11 @@ export default function SciCommFeed() {
             <Link key={s.id} to={`/member/${s.id}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', textDecoration: 'none', color: 'inherit' }}>
               {renderAvatar(s, 32)}
               <div>
-                <div style={{ fontWeight: 600, fontSize: '13px' }}>{s.name}</div>
+                <div style={{ fontWeight: 600, fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  {s.name}
+                  {s.role === 'master' && <span style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '8px', padding: '1px 5px', borderRadius: '8px', fontWeight: 700 }}>👑</span>}
+                  {s.role === 'admin' && <span style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '8px', padding: '1px 5px', borderRadius: '8px', fontWeight: 700 }}>🛡️</span>}
+                </div>
                 <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>{s.department || 'Member'}</div>
               </div>
             </Link>

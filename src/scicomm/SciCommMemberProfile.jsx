@@ -89,7 +89,11 @@ export default function SciCommMemberProfile() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                <h1 style={{ margin: '0', fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>{member.name}</h1>
+                <h1 style={{ margin: '0', fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
+                  {member.name}
+                  {member.role === 'master' && <span title="SciComm Master" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(245,158,11,0.4)' }}>👑 Master</span>}
+                  {member.role === 'admin' && <span title="Platform Admin" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(59,130,246,0.4)' }}>🛡️ Admin</span>}
+                </h1>
                 <span style={{ background: memberLevel.bg, color: memberLevel.color, padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 800, border: `1px solid ${memberLevel.color}40`, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   Lv. {memberLevel.level}{memberLevel.title ? ' ' + memberLevel.title : ''}
                 </span>
