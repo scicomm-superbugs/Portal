@@ -6,7 +6,7 @@ export default function ProtectedRoute({ requireAdmin = false }) {
   const workspaceId = localStorage.getItem('workspaceId');
 
   if (!workspaceId) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/portal" replace />;
   }
 
   if (!user) {

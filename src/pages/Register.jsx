@@ -23,14 +23,14 @@ export default function Register() {
 
   const mappedWorkspace = (workspace === 'aiu' || workspace === 'Alamein International University' || workspace === 'alamein') ? 'alamein' : (workspace === 'aiuscicomm' ? 'aiuscicomm' : workspace);
 
-  if (mappedWorkspace && (mappedWorkspace === 'alamein' || mappedWorkspace === 'compchem' || mappedWorkspace === 'aiuscicomm')) {
+  if (mappedWorkspace && (mappedWorkspace === 'alamein' || mappedWorkspace === 'aiuscicomm')) {
     localStorage.setItem('workspaceId', mappedWorkspace);
   }
 
-  const workspaceId = localStorage.getItem('workspaceId') || 'compchem';
+  const workspaceId = localStorage.getItem('workspaceId') || 'alamein';
 
   useEffect(() => {
-    document.title = workspaceId === 'alamein' ? 'Alamein International University' : (workspaceId === 'aiuscicomm' ? 'AIU SciComm Team' : 'COMPCHEM Laboratory');
+    document.title = workspaceId === 'alamein' ? 'Alamein International University' : 'AIU SciComm Team';
   }, [workspaceId]);
 
   // If already logged in, redirect
@@ -99,18 +99,12 @@ export default function Register() {
               <p style={{ color: 'var(--text-muted)' }}>Create a new account</p>
             </>
           ) : workspaceId === 'aiuscicomm' ? (
-            <>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
               <img src="./aiu_scicomm_logo.png" alt="AIU SciComm" style={{ height: '50px', marginBottom: '1rem', objectFit: 'contain' }} onError={e => e.target.style.display='none'}/>
-              <h2>📢 SciComm Registration</h2>
-              <p style={{ color: 'var(--text-muted)' }}>Create a new account</p>
-            </>
-          ) : (
-            <>
-              <img src="./compchem_logo_2.png" alt="COMPCHEM" style={{ height: '50px', marginBottom: '1rem', objectFit: 'contain' }} onError={e => e.target.style.display='none'}/>
-              <h2>🔬 Scientist Registration</h2>
-              <p style={{ color: 'var(--text-muted)' }}>Create a new account</p>
-            </>
-          )}
+              <h2 style={{ fontSize: '1.5rem', color: '#10b981', marginBottom: '0.25rem', textAlign: 'center' }}>AIU SciComm Team</h2>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Apply for Science Communication Team</div>
+            </div>
+          ) : null}
         </div>
 
         {error && (

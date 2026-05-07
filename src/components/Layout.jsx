@@ -17,7 +17,7 @@ export default function Layout() {
     
     // Set proper document title
     const workspaceId = localStorage.getItem('workspaceId');
-    document.title = workspaceId === 'alamein' ? 'Alamein International University' : 'COMPCHEM Laboratory';
+    document.title = workspaceId === 'alamein' ? 'Alamein International University' : 'AIU SciComm Team';
   }, [theme]);
   
   const toggleTheme = () => {
@@ -73,17 +73,9 @@ export default function Layout() {
       <header className="app-header">
         <div className="container header-content">
           <div className="logo-container">
-            {localStorage.getItem('workspaceId') === 'alamein' ? (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="./alamein_logo_2.png" alt="Alamein Logo" style={{ height: '48px', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
-              </div>
-            ) : localStorage.getItem('workspaceId') === 'aiuscicomm' ? (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="./aiu_scicomm_logo.png" alt="AIU SciComm Logo" style={{ height: '48px', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
-              </div>
-            ) : (
-              <img src="./compchem_logo_2.png" alt="COMPCHEM Logo" className="logo-image" style={{ objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
-            )}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <img src="./alamein_logo_2.png" alt="Alamein Logo" style={{ height: '48px', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
+            </div>
           </div>
           <button className="hamburger-btn" onClick={() => setMobileNavOpen(!mobileNavOpen)}>
             {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
@@ -185,17 +177,10 @@ export default function Layout() {
 
       {!location.pathname.includes('/chat') && (
         <footer className="app-footer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', padding: '2rem' }}>
-        {localStorage.getItem('workspaceId') === 'alamein' ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-            <img src="./alamein_logo_2.png" alt="Alamein" style={{ height: '40px', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
-            <div style={{ fontWeight: 'bold', color: 'var(--text)' }}>Alamein International University</div>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-            <img src="./compchem_logo_2.png" alt="COMPCHEM" style={{ height: '40px', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
-            <div style={{ fontWeight: 'bold', color: 'var(--text)' }}>COMPCHEM Laboratory</div>
-          </div>
-        )}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+          <img src="./alamein_logo_2.png" alt="Alamein" style={{ height: '40px', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
+          <div style={{ fontWeight: 'bold', color: 'var(--text)' }}>Alamein International University</div>
+        </div>
         <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
           <p>Management System &copy; {new Date().getFullYear()}</p>
           <p>Made by Abdullah Amr Maged</p>

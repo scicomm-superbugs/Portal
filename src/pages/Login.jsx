@@ -13,16 +13,15 @@ export default function Login() {
   const navigate = useNavigate();
   const { workspace } = useParams();
 
-  const mappedWorkspace = (workspace === 'aiu' || workspace === 'alamein') ? 'alamein' : (workspace === 'aiuscicomm' ? 'aiuscicomm' : null);
+  const mappedWorkspace = (workspace === 'aiu' || workspace === 'Alamein International University' || workspace === 'alamein') ? 'alamein' : (workspace === 'aiuscicomm' ? 'aiuscicomm' : workspace);
 
-  if (mappedWorkspace) {
+  if (mappedWorkspace && (mappedWorkspace === 'alamein' || mappedWorkspace === 'aiuscicomm')) {
     localStorage.setItem('workspaceId', mappedWorkspace);
   }
 
-  let workspaceId = localStorage.getItem('workspaceId');
+  const workspaceId = localStorage.getItem('workspaceId');
   if (!workspaceId) {
-    workspaceId = 'alamein';
-    localStorage.setItem('workspaceId', 'alamein');
+    return <Navigate to="/portal" replace />;
   }
 
   // If already logged in, redirect
