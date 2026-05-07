@@ -365,7 +365,7 @@ export default function SciCommFeed() {
           const currentReactionDef = myReaction ? REACTIONS.find(r => r.key === myReaction) : null;
 
           return (
-            <div key={post.id} className="scicomm-card" style={{ marginBottom: '8px' }}>
+            <div key={post.id} className="scicomm-card" style={{ marginBottom: '8px', overflow: 'visible' }}>
               <div className="scicomm-card-padding">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                   <Link to={`/member/${post.authorId}`} style={{ cursor: 'pointer', flexShrink: 0 }}>{renderAvatar(author, 48)}</Link>
