@@ -36,8 +36,21 @@ export default function SciCommLayout() {
   const notifCount = myWarnings.length + (isAdmin ? pendingAccounts.length : 0) + unreadChatCount;
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('scicommDarkMode') === 'true');
+  const postsRaw = useLiveCollection('scicomm_posts') || [];
+  
+  // Calculate stats for sidebar
+  const profileViewers = me?.profileViews || 0;
+  const myPosts = postsRaw.filter(p => String(p.authorId) === String(user.id));
+  const postImpressions = myPosts.reduce((acc, post) => {
+    const viewers = new Set();
+    const rx = post.reactions || {};
+    for (const arr of Object.values(rx)) arr.forEach(id => viewers.add(id));
+    (post.comments || []).forEach(c => viewers.add(c.authorId));
+    return acc + viewers.size;
+  }, 0);
   const connectionsData = useLiveCollection('scicomm_connections') || [];
   const pendingConnections = connectionsData.filter(c => c.status === 'pending' && String(c.toId) === String(user.id));
 
@@ -134,8 +147,8 @@ export default function SciCommLayout() {
       <header className="scicomm-header">
         <div className="scicomm-header-content">
           <div className="scicomm-header-left">
-            {/* Mobile: Profile avatar | Desktop: Logo */}
-            <Link to="/profile" className="scicomm-mobile-profile-link"><span className="scicomm-mobile-avatar">{renderAvatar(30)}</span></Link>
+            {/* Mobile: Profile avatar triggers sidebar | Desktop: Logo */}
+            <button onClick={() => setMobileSidebarOpen(true)} className="scicomm-mobile-profile-link" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', outline: 'none' }}><span className="scicomm-mobile-avatar">{renderAvatar(30)}</span></button>
             <Link to="/"><img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => e.target.style.display='none'} /></Link>
             <div className="scicomm-search-box"><Search size={16} /><input type="text" placeholder="Search..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { navigate('/network?q=' + encodeURIComponent(searchText)); setSearchText(''); } }} /></div>
           </div>
@@ -208,6 +221,61 @@ export default function SciCommLayout() {
         <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell size={22} />{notifCount > 0 && <span className="scicomm-notif-badge">{notifCount}</span>}<span>Alerts</span></Link>
         <Link to="/hub" className={`scicomm-mobile-item ${isActive('/hub') ? 'active' : ''}`}><div style={{ fontSize: '20px' }}>🔬</div><span>SciComm</span></Link>
       </nav>
+
+      {/* Mobile Profile Sidebar Overlay */}
+      {mobileSidebarOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)' }} onClick={() => setMobileSidebarOpen(false)} />
+          <div style={{ position: 'relative', width: '280px', maxWidth: '80%', background: 'white', height: '100%', display: 'flex', flexDirection: 'column', boxShadow: '2px 0 12px rgba(0,0,0,0.2)', animation: 'slideRight 0.3s ease' }}>
+            <div style={{ padding: '20px 16px', borderBottom: '1px solid #e0dfdc' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none' }}>{renderAvatar(56)}</Link>
+                <button onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#666', marginTop: '-8px' }}>×</button>
+              </div>
+              <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <h3 style={{ margin: '0 0 4px', fontSize: '16px' }}>{user.name}</h3>
+              </Link>
+              <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px', marginBottom: '8px' }}>{me?.department || 'Member'}</div>
+              <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>El Alamein, Matruh, Egypt</div>
+            </div>
+
+            <div style={{ padding: '16px', borderBottom: '1px solid #e0dfdc' }}>
+              <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.8)', fontWeight: 600, fontSize: '13px', marginBottom: '12px' }}>
+                <span>profile viewers</span>
+                <span style={{ color: '#1d4ed8' }}>{profileViewers}</span>
+              </Link>
+              <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.8)', fontWeight: 600, fontSize: '13px' }}>
+                <span>post impressions</span>
+                <span style={{ color: '#1d4ed8' }}>{postImpressions}</span>
+              </Link>
+            </div>
+
+            <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
+              <button onClick={() => { setMobileSidebarOpen(false); window.dispatchEvent(new CustomEvent('show-changelog')); }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, cursor: 'pointer', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🚀 What's New in {PLATFORM_VERSION}
+              </button>
+              {isAdmin && <Link to="/admin" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', textDecoration: 'none', color: 'rgba(0,0,0,0.8)', fontSize: '14px', fontWeight: 600 }}><Shield size={18} /> Admin Dashboard {pendingAccounts.length > 0 && <span className="scicomm-notif-badge" style={{position:'static', marginLeft:'auto'}}>{pendingAccounts.length}</span>}</Link>}
+              <button onClick={() => { toggleDarkMode(); setMobileSidebarOpen(false); }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, color: 'rgba(0,0,0,0.8)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />} {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+              </button>
+              <button onClick={() => { localStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, color: 'rgba(0,0,0,0.8)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Building2 size={18} /> Switch Hub
+              </button>
+            </div>
+
+            <div style={{ padding: '8px 0', borderTop: '1px solid #e0dfdc' }}>
+              <button style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, color: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}><Settings size={18} /> Settings</button>
+              <button onClick={() => { setMobileSidebarOpen(false); handleLogout(); }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, color: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>Sign Out</button>
+            </div>
+          </div>
+          <style>{`
+            @keyframes slideRight {
+              from { transform: translateX(-100%); }
+              to { transform: translateX(0); }
+            }
+          `}</style>
+        </div>
+      )}
 
       {/* Version Changelog Popup */}
       {showChangelog && (
