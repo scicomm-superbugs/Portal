@@ -66,6 +66,7 @@ export default function SciCommProfile() {
 
   const flash = (m) => { setMsg(m); setTimeout(() => setMsg(''), 3000); };
 
+  try {
   // Score calculation
   const myPosts = postsData.filter(p => String(p.authorId) === String(user.id));
   const myTaskPoints = tasksData.filter(t => String(t.assignedTo) === String(user.id) && (t.status === 'Completed' || t.status === 'Approved')).reduce((s, t) => s + (t.awardedPoints || 0), 0);
@@ -646,4 +647,7 @@ export default function SciCommProfile() {
       )}
     </div>
   );
+  } catch (e) {
+    return <div style={{ padding: '20px', color: 'red', background: 'white', margin: '20px', borderRadius: '8px', border: '1px solid #fecaca' }}><h2>⚠️ Error Loading Profile</h2><p>{e.message}</p></div>;
+  }
 }

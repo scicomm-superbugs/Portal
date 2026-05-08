@@ -40,7 +40,7 @@ export default function SciCommMemberProfile() {
   if (!member) return <div style={{ textAlign: 'center', padding: '60px', color: '#666' }}><h2>Member not found</h2></div>;
 
   // Removed redirect so user can preview their own profile
-
+  try {
   const memberPosts = postsData.filter(p => String(p.authorId) === String(memberId));
   const taskPoints = tasksData.filter(t => String(t.assignedTo) === String(memberId) && (t.status === 'Completed' || t.status === 'Approved')).reduce((s, t) => s + (t.awardedPoints || 0), 0);
   const connectionCount = connectionsData.filter(c => c.status === 'accepted' && (String(c.fromId) === String(memberId) || String(c.toId) === String(memberId))).length;
@@ -184,4 +184,7 @@ export default function SciCommMemberProfile() {
       </div>
     </div>
   );
+  } catch (e) {
+    return <div style={{ padding: '20px', color: 'red', background: 'white', margin: '20px', borderRadius: '8px', border: '1px solid #fecaca' }}><h2>⚠️ Error Loading Member Profile</h2><p>{e.message}</p></div>;
+  }
 }
