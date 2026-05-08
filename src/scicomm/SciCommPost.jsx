@@ -95,8 +95,6 @@ export default function SciCommPost() {
         </div>
         <button
           onClick={handlePostSubmit}
-          disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile && !(showArticle && articleTitle.trim()) && !(showPoll && pollQuestion.trim()))}
-          style={{ 
           disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim()))}
           style={{ 
             padding: '6px 16px', borderRadius: '4px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer',
