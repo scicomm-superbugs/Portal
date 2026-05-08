@@ -136,7 +136,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.7.1';
+  const PLATFORM_VERSION = 'v3.7.2';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -307,19 +307,17 @@ export default function SciCommLayout() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>📱 Mobile UI Redesign</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>📱 Mobile Navigation</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>LinkedIn-Style Layout:</strong> Redesigned mobile bottom navigation for a more premium feel.</li>
-                  <li><strong>Floating Post Button:</strong> A prominent blue "+" button in the bottom bar to create posts easily.</li>
-                  <li><strong>Dedicated Post Page:</strong> Full-screen post creation page with rich media support.</li>
+                  <li><strong>Profile Sidebar Menu:</strong> Tap your avatar on mobile to open a new slide-out menu with quick access to your profile, stats, and settings.</li>
+                  <li><strong>Improved Buttons:</strong> Menu actions are now bolder, larger, and much easier to tap on touch screens.</li>
                 </ul>
               </div>
               <div style={{ background: '#dcfce7', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#166534', fontSize: '14px' }}>🔧 Stability & Layout</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.8' }}>
-                  <li><strong>Profile Crash Fixes:</strong> Resolved blank screens and missing variables on both personal and member profiles.</li>
-                  <li><strong>Hub Streamlining:</strong> Removed redundant Network and Alerts buttons from the SciComm Hub.</li>
-                  <li><strong>Hidden Mobile Composer:</strong> The in-feed post box is now hidden on mobile to encourage use of the new dedicated page.</li>
+                  <li><strong>Dark Mode Fixed:</strong> Bottom navigation bars and popups no longer disappear into the background on mobile when Dark Mode is active.</li>
+                  <li><strong>Scroll Locking:</strong> Opening the mobile sidebar now properly locks the background feed, preventing annoying double-scrolling.</li>
                 </ul>
               </div>
             </div>
