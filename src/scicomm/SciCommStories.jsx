@@ -177,7 +177,6 @@ export default function SciCommStories({ scientists }) {
     });
 
     setReplyText('');
-    alert("Reply sent to chat!");
   };
 
   const handleLikeStory = async () => {
