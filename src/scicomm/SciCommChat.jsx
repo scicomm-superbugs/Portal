@@ -265,6 +265,14 @@ export default function SciCommChat() {
                       {m.type === 'image' && m.fileUrl && <img src={m.fileUrl} alt="" style={{ maxWidth: '100%', borderRadius: '8px', marginBottom: '4px' }} />}
                       {m.type === 'video' && m.fileUrl && <video src={m.fileUrl} controls style={{ maxWidth: '100%', borderRadius: '8px', marginBottom: '4px' }} />}
                       {m.type === 'file' && m.fileUrl && <a href={m.fileUrl} target="_blank" rel="noreferrer" style={{ color: isMe ? 'white' : '#2563eb', textDecoration: 'underline' }}>📎 {m.fileName || 'File'}</a>}
+                      {m.type === 'story_reply' && (
+                        <div style={{ marginBottom: '8px', padding: '8px', background: isMe ? 'rgba(255,255,255,0.2)' : '#f3f4f6', borderRadius: '8px', borderLeft: `4px solid ${isMe ? 'white' : '#1d4ed8'}` }}>
+                          <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '4px', opacity: 0.9 }}>Reply to Story</div>
+                          {m.storyUrl && m.storyType === 'video' && <video src={m.storyUrl} style={{ width: '100%', maxHeight: '120px', objectFit: 'cover', borderRadius: '4px', marginBottom: '4px' }} />}
+                          {m.storyUrl && m.storyType !== 'video' && <img src={m.storyUrl} style={{ width: '100%', maxHeight: '120px', objectFit: 'cover', borderRadius: '4px', marginBottom: '4px' }} />}
+                          {m.storyContent && <div style={{ fontSize: '13px', fontStyle: 'italic', opacity: 0.8 }}>"{m.storyContent}"</div>}
+                        </div>
+                      )}
                       {m.content && <div>{renderMessageText(m.content, isMe)}</div>}
                       <div style={{ fontSize: '10px', marginTop: '4px', opacity: 0.7, textAlign: 'right' }}>{timeAgo(m.createdAt)}</div>
                     </div>

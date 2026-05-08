@@ -136,18 +136,46 @@ export default function SciCommStories({ scientists }) {
     }
   }, [viewingUserId, storyIndex]);
 
+  const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
+
   const handleReply = async () => {
     if (!replyText.trim() || !viewingUserId) return;
     const story = storiesByUser[viewingUserId][storyIndex];
-    const roomId = `dm_${Math.min(user.id, viewingUserId)}_${Math.max(user.id, viewingUserId)}`;
-    const msg = `[Story Reply] ${story.content ? `"${story.content.substring(0, 20)}..."` : 'Media'}\n${replyText}`;
+    
+    let roomId = null;
+    const existing = chatRooms.find(r => r.type === 'private' && r.members?.includes(user.id) && r.members?.includes(viewingUserId));
+    if (existing) {
+      roomId = existing.id;
+    } else {
+      const otherUser = scientists.find(s => String(s.id) === String(viewingUserId));
+      roomId = await db.scicomm_chat_rooms.add({
+        type: 'private',
+        members: [user.id, viewingUserId],
+        memberNames: { [user.id]: user.name, [viewingUserId]: otherUser?.name || story.authorName },
+        createdAt: new Date().toISOString(),
+        lastMessageAt: new Date().toISOString()
+      });
+    }
+
     await db.scicomm_chat_messages.add({
       roomId,
-      authorId: user.id,
-      text: msg,
-      timestamp: new Date().toISOString(),
-      readBy: [user.id]
+      senderId: user.id,
+      senderName: user.name,
+      content: replyText,
+      type: 'story_reply',
+      storyUrl: story.mediaUrl || null,
+      storyType: story.mediaType || 'text',
+      storyContent: story.content || null,
+      readBy: [user.id],
+      createdAt: new Date().toISOString()
     });
+
+    await db.scicomm_chat_rooms.update(roomId, {
+      lastMessageAt: new Date().toISOString(),
+      lastMessage: 'Replied to story',
+      lastSender: user.name
+    });
+
     setReplyText('');
     alert("Reply sent to chat!");
   };
