@@ -152,8 +152,18 @@ export default function SciCommLayout() {
     return () => window.removeEventListener('show-changelog', handler);
   }, []);
 
+  // Apply dark mode to html root to prevent filter stacking context issues with position:fixed
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('scicomm-dark-mode');
+    } else {
+      document.documentElement.classList.remove('scicomm-dark-mode');
+    }
+    return () => document.documentElement.classList.remove('scicomm-dark-mode');
+  }, [isDarkMode]);
+
   return (
-    <div className={`scicomm-app ${isDarkMode ? 'scicomm-dark-mode' : ''}`}>
+    <div className="scicomm-app">
       <header className="scicomm-header">
         <div className="scicomm-header-content">
           <div className="scicomm-header-left">
