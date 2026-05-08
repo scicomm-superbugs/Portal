@@ -20,7 +20,7 @@ export default function SciCommFeed() {
   const [commentText, setCommentText] = useState({});
   const [showComments, setShowComments] = useState({});
   const [activeReactionPicker, setActiveReactionPicker] = useState(null);
-  const [replyTo, setReplyTo] = useState(null); // { postId, commentIndex, authorName }
+  const [replyTo, setReplyTo] = useState(null); // { postId, commentIndex, authorName, replyIndex? }
   const [bannerIdx, setBannerIdx] = useState(0);
   const [postError, setPostError] = useState('');
   const [postImage, setPostImage] = useState(null);
@@ -36,6 +36,10 @@ export default function SciCommFeed() {
   const [isEditingLinks, setIsEditingLinks] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [tempLinks, setTempLinks] = useState([]);
+  const [editingPost, setEditingPost] = useState(null); // { id, content, imageUrl }
+  const [commentImage, setCommentImage] = useState({}); // { [key]: File }
+  const [showEmojiPicker, setShowEmojiPicker] = useState(null); // key string
+  const EMOJI_LIST = ['😀','😂','😍','🥳','👏','🔥','❤️','💡','🧪','🧬','🔬','⚗️','🎉','👍','🙌','💪','🤔','😎','🤩','✨'];
 
   const AVAILABLE_QUICK_LINKS = [
     { id: 'tasks', title: 'My Tasks', url: '/tasks', icon: '📋' },
@@ -156,22 +160,37 @@ export default function SciCommFeed() {
   };
 
   const handleAddComment = async (post) => {
-    const key = replyTo?.postId === post.id ? `reply_${post.id}_${replyTo.commentIndex}` : post.id;
+    const isSubReply = replyTo?.postId === post.id && replyTo?.replyIndex !== undefined;
+    const isReply = replyTo?.postId === post.id && !isSubReply;
+    const key = isSubReply ? `subreply_${post.id}_${replyTo.commentIndex}_${replyTo.replyIndex}` : isReply ? `reply_${post.id}_${replyTo.commentIndex}` : post.id;
     const text = commentText[key];
-    if (!text?.trim()) return;
+    const imgFile = commentImage[key];
+    if (!text?.trim() && !imgFile) return;
+    let imageUrl = null;
+    if (imgFile) {
+      try { imageUrl = await uploadFile(imgFile, 'comment_images'); } catch(e) { console.error(e); }
+    }
     const comments = [...(post.comments || [])];
-    if (replyTo?.postId === post.id) {
-      // Add reply to existing comment
+    const newEntry = { authorId: user.id, authorName: user.name, text: text || '', createdAt: new Date().toISOString(), ...(imageUrl ? { imageUrl } : {}) };
+    if (isSubReply) {
       const targetComment = comments[replyTo.commentIndex];
       if (!targetComment.replies) targetComment.replies = [];
-      targetComment.replies.push({ authorId: user.id, authorName: user.name, text, createdAt: new Date().toISOString() });
+      if (!targetComment.replies[replyTo.replyIndex]) return;
+      if (!targetComment.replies[replyTo.replyIndex].replies) targetComment.replies[replyTo.replyIndex].replies = [];
+      targetComment.replies[replyTo.replyIndex].replies.push(newEntry);
+      setReplyTo(null);
+    } else if (isReply) {
+      const targetComment = comments[replyTo.commentIndex];
+      if (!targetComment.replies) targetComment.replies = [];
+      targetComment.replies.push(newEntry);
       setReplyTo(null);
     } else {
-      comments.push({ authorId: user.id, authorName: user.name, text, createdAt: new Date().toISOString() });
+      comments.push(newEntry);
     }
     try {
       await db.scicomm_posts.update(post.id, { comments });
       setCommentText(prev => ({ ...prev, [key]: '' }));
+      setCommentImage(prev => ({ ...prev, [key]: null }));
     } catch (err) { console.error(err); }
   };
 
@@ -179,12 +198,10 @@ export default function SciCommFeed() {
     const comments = [...(post.comments || [])];
     const comment = { ...comments[commentIndex] };
     const reactions = { ...(comment.reactions || {}) };
-    // Remove user from all reaction types first
     for (const k in reactions) {
       reactions[k] = reactions[k].filter(id => id !== user.id);
       if (reactions[k].length === 0) delete reactions[k];
     }
-    // Toggle: if user already had this reaction, it's now removed; otherwise add
     if (!(comment.reactions?.[reactionKey] || []).includes(user.id)) {
       if (!reactions[reactionKey]) reactions[reactionKey] = [];
       reactions[reactionKey].push(user.id);
@@ -194,6 +211,26 @@ export default function SciCommFeed() {
     try {
       await db.scicomm_posts.update(post.id, { comments });
     } catch (err) { console.error(err); }
+  };
+
+  const handleEditPost = async (postId) => {
+    if (!editingPost || editingPost.id !== postId) return;
+    const updates = { content: editingPost.content, editedAt: new Date().toISOString() };
+    if (editingPost.removeImage) updates.imageUrl = null;
+    if (editingPost.newImage) {
+      try { updates.imageUrl = await uploadFile(editingPost.newImage, 'post_images'); } catch(e) { console.error(e); }
+    }
+    try {
+      await db.scicomm_posts.update(postId, updates);
+      setEditingPost(null);
+    } catch (err) { console.error(err); }
+  };
+
+  const handleDeletePost = async (postId) => {
+    if (window.confirm('Delete this post permanently?')) {
+      try { await db.scicomm_posts.delete(postId); } catch (err) { console.error(err); }
+    }
+    setActiveReactionPicker(null);
   };
 
   const getTotalReactions = (post) => {
@@ -300,7 +337,7 @@ export default function SciCommFeed() {
             <span style={{ color: '#1d4ed8' }}>{postImpressions}</span>
           </div>
         </div>
-        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}>🚀 What's New in v3.3.0</button>
+        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}>🚀 What's New in v3.4.0</button>
       </div>
 
       {/* Main Feed */}
@@ -403,24 +440,44 @@ export default function SciCommFeed() {
                   <div style={{ flex: 1 }}>
                     <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>{post.authorName}</h4></Link>
                     <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px' }}>{author?.department || 'Member'}</div>
-                    <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>{timeAgo(post.createdAt)} • 🌐{post.recognized && ' ⭐ Master Recognized'}</div>
+                    <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>{timeAgo(post.createdAt)} • 🌐{post.recognized && ' ⭐ Master Recognized'}{post.editedAt && ' • ✏️ edited'}</div>
                   </div>
-                  {isAdmin && (
+                  {(isAdmin || String(post.authorId) === String(user.id)) && (
                     <div style={{ position: 'relative' }}>
                       <button onClick={() => setActiveReactionPicker(activeReactionPicker === 'menu_'+post.id ? null : 'menu_'+post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}><MoreHorizontal size={18} /></button>
                       {activeReactionPicker === 'menu_'+post.id && (
                         <div style={{ position: 'absolute', right: 0, top: '100%', background: 'white', border: '1px solid #e0dfdc', borderRadius: '8px', padding: '4px 0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 10, minWidth: '180px' }}>
-                          <button onClick={async () => { await db.scicomm_posts.update(post.id, { recognized: true, recognizedBy: user.name, recognizedAt: new Date().toISOString() }); setActiveReactionPicker(null); }} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left' }}>⭐ Recognize Contribution</button>
-                          <button onClick={async () => { if(window.confirm('Delete this post?')) await db.scicomm_posts.delete(post.id); setActiveReactionPicker(null); }} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left', color: '#ef4444' }}>🗑️ Delete Post</button>
+                          {isAdmin && <button onClick={async () => { await db.scicomm_posts.update(post.id, { recognized: true, recognizedBy: user.name, recognizedAt: new Date().toISOString() }); setActiveReactionPicker(null); }} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left' }}>⭐ Recognize Contribution</button>}
+                          {(String(post.authorId) === String(user.id) || isAdmin) && <button onClick={() => { setEditingPost({ id: post.id, content: post.content || '', imageUrl: post.imageUrl || null }); setActiveReactionPicker(null); }} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left' }}>✏️ Edit Post</button>}
+                          {(String(post.authorId) === String(user.id) || isAdmin) && <button onClick={() => handleDeletePost(post.id)} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left', color: '#ef4444' }}>🗑️ Delete Post</button>}
                         </div>
                       )}
                     </div>
                   )}
                 </div>
-                <p style={{ margin: '0 0 8px', fontSize: '14px', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>{renderPostText(post.content)}</p>
-                {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
-                {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}
-                {post.videoUrl && <video src={post.videoUrl} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />}
+                {/* Post content - edit mode or display */}
+                {editingPost?.id === post.id ? (
+                  <div style={{ marginBottom: '8px' }}>
+                    <textarea value={editingPost.content} onChange={e => setEditingPost(p => ({...p, content: e.target.value}))} style={{ width: '100%', minHeight: '80px', border: '1px solid #1d4ed8', borderRadius: '8px', padding: '10px', fontSize: '14px', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
+                    {editingPost.imageUrl && !editingPost.removeImage && (
+                      <div style={{ position: 'relative', marginTop: '8px' }}>
+                        <img src={editingPost.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', maxHeight: '200px', objectFit: 'cover' }} />
+                        <button onClick={() => setEditingPost(p => ({...p, removeImage: true}))} style={{ position: 'absolute', top: 4, right: 4, background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer', fontSize: '14px' }}>×</button>
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '8px', alignItems: 'center' }}>
+                      <label style={{ cursor: 'pointer', fontSize: '12px', color: '#1d4ed8', fontWeight: 600 }}>📷 Change Image<input type="file" accept="image/*" onChange={e => setEditingPost(p => ({...p, newImage: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                      <div style={{ flex: 1 }} />
+                      <button onClick={() => setEditingPost(null)} className="scicomm-btn-secondary" style={{ padding: '6px 14px', fontSize: '12px' }}>Cancel</button>
+                      <button onClick={() => handleEditPost(post.id)} className="scicomm-btn-primary" style={{ padding: '6px 14px', fontSize: '12px' }}>Save</button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p style={{ margin: '0 0 8px', fontSize: '14px', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>{renderPostText(post.content)}</p>
+                    {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
+                    {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}
+                    {post.videoUrl && <video src={post.videoUrl} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />}
                 {post.fileUrl && <a href={post.fileUrl} target="_blank" rel="noreferrer" style={{ display: 'block', padding: '10px 14px', background: '#eef3f8', borderRadius: '8px', marginBottom: '8px', color: '#2563eb', textDecoration: 'none', fontWeight: 600, fontSize: '13px' }}>📎 {post.fileName || 'Download Attachment'}</a>}
                 
                 {post.poll && (
@@ -444,6 +501,8 @@ export default function SciCommFeed() {
                     })}
                     <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.5)', marginTop: '8px' }}>{Object.keys(post.poll.votes || {}).length} votes</div>
                   </div>
+                )}
+                  </>
                 )}
               </div>
 
@@ -490,9 +549,8 @@ export default function SciCommFeed() {
                   {(post.comments || []).map((c, i) => {
                     const cAuthor = getAuthor(c.authorId);
                     const cReactions = c.reactions || {};
-                    const cTotalReactions = Object.values(cReactions).reduce((s, arr) => s + arr.length, 0);
                     const myCommentReaction = Object.entries(cReactions).find(([, arr]) => arr.includes(user.id))?.[0];
-                    const isReplying = replyTo?.postId === post.id && replyTo?.commentIndex === i;
+                    const isReplying = replyTo?.postId === post.id && replyTo?.commentIndex === i && replyTo?.replyIndex === undefined;
                     const replyKey = `reply_${post.id}_${i}`;
                     return (
                       <div key={i} style={{ marginBottom: '12px' }}>
@@ -503,6 +561,7 @@ export default function SciCommFeed() {
                               <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '13px' }}>{c.authorName}</strong></Link>
                               <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', marginLeft: '8px' }}>{timeAgo(c.createdAt)}</span>
                               <p style={{ margin: '4px 0 0', fontSize: '13px' }}>{c.text}</p>
+                              {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
                             </div>
                             {/* Comment action bar */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '4px' }}>
@@ -522,13 +581,54 @@ export default function SciCommFeed() {
                               <div style={{ marginTop: '8px', paddingLeft: '8px', borderLeft: '2px solid #e0dfdc' }}>
                                 {c.replies.map((r, ri) => {
                                   const rAuthor = getAuthor(r.authorId);
+                                  const isSubReplying = replyTo?.postId === post.id && replyTo?.commentIndex === i && replyTo?.replyIndex === ri;
+                                  const subReplyKey = `subreply_${post.id}_${i}_${ri}`;
                                   return (
-                                    <div key={ri} style={{ display: 'flex', gap: '6px', marginBottom: '6px' }}>
-                                      <Link to={`/member/${r.authorId}`} style={{ flexShrink: 0 }}>{renderAvatar(rAuthor, 24)}</Link>
-                                      <div style={{ background: '#eef3f8', borderRadius: '0 8px 8px 8px', padding: '6px 10px', flex: 1 }}>
-                                        <Link to={`/member/${r.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '12px' }}>{r.authorName}</strong></Link>
-                                        <span style={{ fontSize: '10px', color: 'rgba(0,0,0,0.4)', marginLeft: '6px' }}>{timeAgo(r.createdAt)}</span>
-                                        <p style={{ margin: '2px 0 0', fontSize: '12px' }}>{r.text}</p>
+                                    <div key={ri} style={{ marginBottom: '8px' }}>
+                                      <div style={{ display: 'flex', gap: '6px' }}>
+                                        <Link to={`/member/${r.authorId}`} style={{ flexShrink: 0 }}>{renderAvatar(rAuthor, 24)}</Link>
+                                        <div style={{ flex: 1 }}>
+                                          <div style={{ background: '#eef3f8', borderRadius: '0 8px 8px 8px', padding: '6px 10px' }}>
+                                            <Link to={`/member/${r.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '12px' }}>{r.authorName}</strong></Link>
+                                            <span style={{ fontSize: '10px', color: 'rgba(0,0,0,0.4)', marginLeft: '6px' }}>{timeAgo(r.createdAt)}</span>
+                                            <p style={{ margin: '2px 0 0', fontSize: '12px' }}>{r.text}</p>
+                                            {r.imageUrl && <img src={r.imageUrl} alt="" style={{ width: '100%', maxHeight: '150px', objectFit: 'cover', borderRadius: '6px', marginTop: '4px' }} />}
+                                          </div>
+                                          <button onClick={() => setReplyTo(isSubReplying ? null : { postId: post.id, commentIndex: i, replyIndex: ri, authorName: r.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: 600, color: isSubReplying ? '#1d4ed8' : 'rgba(0,0,0,0.4)', padding: '2px 4px', marginTop: '2px' }}>Reply</button>
+                                          {/* Sub-reply input */}
+                                          {isSubReplying && (
+                                            <div style={{ marginTop: '4px' }}>
+                                              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                                <input type="text" placeholder={`Reply to ${r.authorName}...`} value={commentText[subReplyKey] || ''} onChange={e => setCommentText(prev => ({ ...prev, [subReplyKey]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && handleAddComment(post)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '4px 10px', fontSize: '11px', outline: 'none' }} autoFocus />
+                                                <button onClick={() => setShowEmojiPicker(showEmojiPicker === subReplyKey ? null : subReplyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>😀</button>
+                                                <label style={{ cursor: 'pointer', fontSize: '14px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [subReplyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                                                <button className="scicomm-btn-primary" style={{ padding: '3px 8px', fontSize: '10px' }} onClick={() => handleAddComment(post)}>Reply</button>
+                                                <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '14px' }}>&times;</button>
+                                              </div>
+                                              {showEmojiPicker === subReplyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px', background: '#f9fafb', padding: '6px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [subReplyKey]: (prev[subReplyKey]||'')+e})); setShowEmojiPicker(null); }} style={{ background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
+                                              {commentImage[subReplyKey] && <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>📎 {commentImage[subReplyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [subReplyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '10px' }}>✕</button></div>}
+                                            </div>
+                                          )}
+                                          {/* Sub-sub replies */}
+                                          {(r.replies || []).length > 0 && (
+                                            <div style={{ marginTop: '4px', paddingLeft: '6px', borderLeft: '2px solid #e0dfdc' }}>
+                                              {r.replies.map((sr, sri) => {
+                                                const srAuthor = getAuthor(sr.authorId);
+                                                return (
+                                                  <div key={sri} style={{ display: 'flex', gap: '4px', marginBottom: '4px' }}>
+                                                    <Link to={`/member/${sr.authorId}`} style={{ flexShrink: 0 }}>{renderAvatar(srAuthor, 20)}</Link>
+                                                    <div style={{ background: '#f3f2ef', borderRadius: '0 6px 6px 6px', padding: '4px 8px', flex: 1 }}>
+                                                      <Link to={`/member/${sr.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '11px' }}>{sr.authorName}</strong></Link>
+                                                      <span style={{ fontSize: '9px', color: 'rgba(0,0,0,0.4)', marginLeft: '4px' }}>{timeAgo(sr.createdAt)}</span>
+                                                      <p style={{ margin: '1px 0 0', fontSize: '11px' }}>{sr.text}</p>
+                                                      {sr.imageUrl && <img src={sr.imageUrl} alt="" style={{ width: '100%', maxHeight: '100px', objectFit: 'cover', borderRadius: '4px', marginTop: '3px' }} />}
+                                                    </div>
+                                                  </div>
+                                                );
+                                              })}
+                                            </div>
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
                                   );
@@ -537,11 +637,16 @@ export default function SciCommFeed() {
                             )}
                             {/* Reply input */}
                             {isReplying && (
-                              <div style={{ display: 'flex', gap: '6px', marginTop: '6px', paddingLeft: '8px' }}>
-                                <input type="text" placeholder={`Reply to ${c.authorName}...`} value={commentText[replyKey] || ''} onChange={e => setCommentText(prev => ({ ...prev, [replyKey]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && handleAddComment(post)}
-                                  style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '5px 12px', fontSize: '12px', outline: 'none' }} autoFocus />
-                                <button className="scicomm-btn-primary" style={{ padding: '4px 10px', fontSize: '11px' }} onClick={() => handleAddComment(post)}>Reply</button>
-                                <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '16px' }}>&times;</button>
+                              <div style={{ marginTop: '6px', paddingLeft: '8px' }}>
+                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                  <input type="text" placeholder={`Reply to ${c.authorName}...`} value={commentText[replyKey] || ''} onChange={e => setCommentText(prev => ({ ...prev, [replyKey]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && handleAddComment(post)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '5px 12px', fontSize: '12px', outline: 'none' }} autoFocus />
+                                  <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>😀</button>
+                                  <label style={{ cursor: 'pointer', fontSize: '14px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                                  <button className="scicomm-btn-primary" style={{ padding: '4px 10px', fontSize: '11px' }} onClick={() => handleAddComment(post)}>Reply</button>
+                                  <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '16px' }}>&times;</button>
+                                </div>
+                                {showEmojiPicker === replyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px', background: '#f9fafb', padding: '6px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+e})); setShowEmojiPicker(null); }} style={{ background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
+                                {commentImage[replyKey] && <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>📎 {commentImage[replyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '10px' }}>✕</button></div>}
                               </div>
                             )}
                           </div>
@@ -549,11 +654,16 @@ export default function SciCommFeed() {
                       </div>
                     );
                   })}
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                  {/* Main comment input */}
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center' }}>
                     <input type="text" placeholder="Add a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText(prev => ({ ...prev, [post.id]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && !replyTo && handleAddComment(post)}
                       style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '6px 14px', fontSize: '13px', outline: 'none' }} />
+                    <button onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px' }}>😀</button>
+                    <label style={{ cursor: 'pointer', fontSize: '16px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                     <button className="scicomm-btn-primary" style={{ padding: '6px 14px', fontSize: '12px' }} onClick={() => { if (!replyTo) handleAddComment(post); }}>Post</button>
                   </div>
+                  {showEmojiPicker === post.id && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px', background: '#f9fafb', padding: '8px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [post.id]: (prev[post.id]||'')+e})); setShowEmojiPicker(null); }} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
+                  {commentImage[post.id] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>📎 {commentImage[post.id].name} <button onClick={() => setCommentImage(prev => ({...prev, [post.id]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
                 </div>
               )}
             </div>

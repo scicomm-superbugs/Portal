@@ -71,7 +71,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.3.0';
+  const PLATFORM_VERSION = 'v3.4.0';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -169,30 +169,29 @@ export default function SciCommLayout() {
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>Comment Replies:</strong> You can now reply to individual comments with nested threads!</li>
-                  <li><strong>Comment Reactions:</strong> React to comments with 👍 Like, ❤️ Love, or 🔥 Fire.</li>
-                  <li><strong>Meetings Section:</strong> New dedicated Meetings tab in the navigation bar (desktop & mobile).</li>
-                  <li><strong>Clickable Calendar Events:</strong> Click any meeting or task in the calendar to jump straight to its details.</li>
-                  <li><strong>Admin & Master Badges:</strong> 👑 Master and 🛡️ Admin badges now appear next to names everywhere.</li>
+                  <li><strong>Reply to Replies:</strong> You can now reply to any reply! Nested threaded conversations are here.</li>
+                  <li><strong>Emoji Picker:</strong> 😀 Add emojis to your comments and replies with the new emoji button.</li>
+                  <li><strong>Image Comments:</strong> 📷 Attach photos to comments and replies — not just posts!</li>
+                  <li><strong>Edit Your Posts:</strong> ✏️ All users can now edit their own posts (text, images, and more).</li>
+                  <li><strong>Delete Your Posts:</strong> 🗑️ Remove your own posts anytime from the three-dot menu.</li>
                 </ul>
               </div>
               <div style={{ background: '#fef3c7', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔧 Fixes & Improvements</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#92400e', lineHeight: '1.8' }}>
-                  <li>Fixed action buttons overlapping bio box on member profiles</li>
-                  <li>Fixed reaction emoji picker being cut off by post cards</li>
-                  <li>Analytics now opens as a proper centered popup modal</li>
-                  <li>Profile card on Home now links to your profile page</li>
-                  <li>Clickable profiles from the Home page team sidebar</li>
+                  <li>Three-dot menu now visible to post authors (not just admins)</li>
+                  <li>Edited posts show “✏️ edited” indicator next to timestamp</li>
+                  <li>Post image can be replaced or removed during editing</li>
+                  <li>Comment images display properly in all nesting levels</li>
                 </ul>
               </div>
               <div style={{ background: '#dbeafe', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 UI & Fun Updates</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 UI & Experience</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>SciComm Level Titles:</strong> Lab Rat → Pipette Ninja → Hypothesis Hustler → SciComm Overlord!</li>
-                  <li>Red "What's New" button to re-open this changelog anytime</li>
-                  <li>Mobile bottom bar now includes Meetings tab</li>
-                  <li>Calendar events show "View →" on hover for better interactivity</li>
+                  <li>Threaded replies are visually indented with left border lines</li>
+                  <li>Sub-replies get progressively smaller avatars for visual hierarchy</li>
+                  <li>Emoji picker appears inline below the input field</li>
+                  <li>Attached image name shown with remove button before posting</li>
                 </ul>
               </div>
             </div>
