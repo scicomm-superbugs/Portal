@@ -1,5 +1,4 @@
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import RegisterChemical from './pages/RegisterChemical';
@@ -15,6 +14,7 @@ import Chat from './pages/Chat';
 import TeamSearch from './pages/TeamSearch';
 import Portal from './pages/Portal';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import SciCommLayout from './scicomm/SciCommLayout';
 import SciCommFeed from './scicomm/SciCommFeed';
@@ -31,61 +31,64 @@ import SciCommMemberProfile from './scicomm/SciCommMemberProfile';
 import SciCommHub from './scicomm/SciCommHub';
 import SciCommPost from './scicomm/SciCommPost';
 
+// Read workspace once at module level (stable — only changes on Portal page redirect)
+const isSciComm = localStorage.getItem('workspaceId') === 'aiuscicomm';
+
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/portal" element={<Portal />} />
-        <Route path="/:workspace/login" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/:workspace/register" element={<Register />} />
-        <Route path="/register" element={<Register />} />
-        
-        <Route element={<ProtectedRoute />}>
-          {localStorage.getItem('workspaceId') === 'aiuscicomm' ? (
-            <Route path="/" element={<SciCommLayout />}>
-              <Route index element={<SciCommFeed />} />
-              <Route path="network" element={<SciCommNetwork />} />
-              <Route element={<ProtectedRoute requireTeam={true} />}>
-                <Route path="tasks" element={<SciCommTasks />} />
-                <Route path="meetings" element={<SciCommMeetings />} />
+    <ErrorBoundary>
+      <Router>
+        <Routes>
+          <Route path="/portal" element={<Portal />} />
+          <Route path="/:workspace/login" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/:workspace/register" element={<Register />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route element={<ProtectedRoute />}>
+            {isSciComm ? (
+              <Route path="/" element={<SciCommLayout />}>
+                <Route index element={<SciCommFeed />} />
+                <Route path="network" element={<SciCommNetwork />} />
+                <Route element={<ProtectedRoute requireTeam={true} />}>
+                  <Route path="tasks" element={<SciCommTasks />} />
+                  <Route path="meetings" element={<SciCommMeetings />} />
+                </Route>
+                <Route path="notifications" element={<SciCommNotifications />} />
+                <Route path="profile" element={<SciCommProfile />} />
+                <Route path="leaderboard" element={<SciCommLeaderboard />} />
+                <Route path="chat" element={<SciCommChat />} />
+                <Route path="calendar" element={<SciCommCalendar />} />
+                <Route path="member/:memberId" element={<SciCommMemberProfile />} />
+                <Route path="hub" element={<SciCommHub />} />
+                <Route path="post" element={<SciCommPost />} />
+                <Route element={<ProtectedRoute requireAdmin={true} />}>
+                  <Route path="admin" element={<SciCommAdmin />} />
+                </Route>
               </Route>
-              <Route path="notifications" element={<SciCommNotifications />} />
-              <Route path="profile" element={<SciCommProfile />} />
-              <Route path="leaderboard" element={<SciCommLeaderboard />} />
-              <Route path="chat" element={<SciCommChat />} />
-              <Route path="calendar" element={<SciCommCalendar />} />
-              <Route path="member/:memberId" element={<SciCommMemberProfile />} />
-              <Route path="hub" element={<SciCommHub />} />
-              <Route path="post" element={<SciCommPost />} />
-              <Route element={<ProtectedRoute requireAdmin={true} />}>
-                <Route path="admin" element={<SciCommAdmin />} />
+            ) : (
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="tracking" element={<UsageTracking />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="tasks" element={<Tasks />} />
+                <Route path="chat" element={<Chat />} />
+                <Route path="team" element={<TeamSearch />} />
+                <Route element={<ProtectedRoute requireAdmin={true} />}>
+                  <Route path="chemicals" element={<RegisterChemical />} />
+                  <Route path="devices" element={<Devices />} />
+                  <Route path="equipment" element={<Equipment />} />
+                  <Route path="scientists" element={<Scientists />} />
+                </Route>
               </Route>
-            </Route>
-          ) : (
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="tracking" element={<UsageTracking />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="tasks" element={<Tasks />} />
-              <Route path="chat" element={<Chat />} />
-              <Route path="team" element={<TeamSearch />} />
-              
-              {/* Admin/Master only routes */}
-              <Route element={<ProtectedRoute requireAdmin={true} />}>
-                <Route path="chemicals" element={<RegisterChemical />} />
-                <Route path="devices" element={<Devices />} />
-                <Route path="equipment" element={<Equipment />} />
-                <Route path="scientists" element={<Scientists />} />
-              </Route>
-            </Route>
-          )}
-        </Route>
-        
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+            )}
+          </Route>
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

@@ -66,7 +66,17 @@ export default function SciCommProfile() {
 
   const flash = (m) => { setMsg(m); setTimeout(() => setMsg(''), 3000); };
 
-  try {
+  // Show loading state while user data is fetched from Firebase
+  if (!me) return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: '40px', marginBottom: '12px', animation: 'spin 1s linear infinite' }}>🔬</div>
+        <p style={{ color: '#64748b', fontSize: '14px' }}>Loading profile...</p>
+        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      </div>
+    </div>
+  );
+
   // Score calculation
   const myPosts = postsData.filter(p => String(p.authorId) === String(user.id));
   const myLikesReceived = myPosts.reduce((acc, p) => {
@@ -654,7 +664,4 @@ export default function SciCommProfile() {
       )}
     </div>
   );
-  } catch (e) {
-    return <div style={{ padding: '20px', color: 'red', background: 'white', margin: '20px', borderRadius: '8px', border: '1px solid #fecaca' }}><h2>⚠️ Error Loading Profile</h2><p>{e.message}</p></div>;
-  }
 }
