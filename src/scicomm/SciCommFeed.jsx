@@ -653,7 +653,7 @@ export default function SciCommFeed() {
                 <div style={{ flex: 1, position: 'relative', userSelect: 'none', WebkitUserSelect: 'none' }}
                   onMouseEnter={() => setActiveReactionPicker(post.id)}
                   onMouseLeave={() => setActiveReactionPicker(null)}
-                  onTouchStart={() => { window.reactionTimer = setTimeout(() => setActiveReactionPicker(post.id), 400); }}
+                  onTouchStart={() => { window.reactionTimer = setTimeout(() => setActiveReactionPicker(post.id), 200); }}
                   onTouchEnd={() => clearTimeout(window.reactionTimer)}
                   onTouchMove={() => clearTimeout(window.reactionTimer)}
                   onContextMenu={(e) => { e.preventDefault(); setActiveReactionPicker(post.id); }}>
@@ -662,7 +662,7 @@ export default function SciCommFeed() {
                   </button>
                   {/* Reaction Picker */}
                   {activeReactionPicker === post.id && (
-                    <div style={{ position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)', background: 'white', borderRadius: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)', padding: '6px 8px', display: 'flex', gap: '2px', zIndex: 50 }}>
+                    <div style={{ position: 'absolute', bottom: '100%', left: '10px', background: 'white', borderRadius: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)', padding: '6px 8px', display: 'flex', gap: '2px', zIndex: 50 }}>
                       {REACTIONS.map(r => (
                         <button key={r.key} onClick={() => handleReaction(post, r.key)} title={r.label}
                           style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }}
