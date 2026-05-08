@@ -1,7 +1,7 @@
 import { db, useLiveCollection } from '../db';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
-import { Trophy, UserCircle, TrendingUp, Lock, Send, Users } from 'lucide-react';
+import { Trophy, UserCircle, TrendingUp, Lock, Send, Users, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AVATARS, AUTO_TAGS, calculateScore, getUnlockedTags, REACTIONS, getUserLevel } from './scicommConstants';
 
