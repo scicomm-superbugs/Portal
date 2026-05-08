@@ -97,7 +97,7 @@ export const AUTO_TAGS = [
 ];
 
 export function calculateScore({ completedTasks = 0, likesReceived = 0, connectionCount = 0, meetingsAttended = 0, reputationBonus = 0, role = 'user' }) {
-  if (role === 'master') return Infinity;
+  if (role === 'master' || role === 'admin') return Infinity;
   return (completedTasks * 25) + (likesReceived * 5) + (meetingsAttended * 15) + (connectionCount * 2) + reputationBonus;
 }
 
