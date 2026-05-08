@@ -840,7 +840,7 @@ export default function SciCommFeed() {
 
         <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px' }}>
           <h3 style={{ margin: '0 0 10px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}><Trophy size={18} color="#f59e0b" /> Leaderboard</h3>
-          {scientists.slice().sort((a, b) => calculateScore(b) - calculateScore(a)).slice(0, 5).map((s, idx) => {
+          {scientists.filter(s => s.role !== 'master' && s.role !== 'admin' && s.accountStatus !== 'pending').sort((a, b) => calculateScore(b) - calculateScore(a)).slice(0, 5).map((s, idx) => {
             const score = calculateScore(s);
             const level = getUserLevel(score);
             return (
