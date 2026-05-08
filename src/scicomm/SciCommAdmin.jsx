@@ -1,10 +1,11 @@
 import { useLiveCollection, db } from '../db';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Download, Upload } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useState } from 'react';
-import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckCircle, Clock, Award, BarChart3, Image, Link2 } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckCircle, Clock, Award, BarChart3, Image, Link2, Database } from 'lucide-react';
 import { AVATARS, calculateScore, getUnlockedTags, REACTIONS } from './scicommConstants';
 import SciCommMeetings from './SciCommMeetings';
+import * as XLSX from 'xlsx';
 
 export default function SciCommAdmin() {
   const { user } = useAuth();
@@ -91,7 +92,111 @@ export default function SciCommAdmin() {
     { id: 'meetings', label: 'Meetings', icon: <Link2 size={14} /> },
     { id: 'posts', label: 'Posts', icon: <Trash2 size={14} /> },
     { id: 'analytics', label: 'Analytics', icon: <BarChart3 size={14} /> },
+    { id: 'data', label: 'Data', icon: <Database size={14} /> },
   ];
+
+  const fileInputRef = useRef(null);
+
+  const handleResetAllPoints = async () => {
+    if (!window.confirm('Reset ALL member points to 0? This clears awardedPoints from every task.')) return;
+    for (const t of tasksData) {
+      if (t.awardedPoints) await db.tasks.update(t.id, { awardedPoints: 0 });
+    }
+    flash('All points reset to 0.');
+  };
+
+  const handleClearMemberTasks = async (memberId, memberName) => {
+    if (!window.confirm(`Delete all tasks for ${memberName}?`)) return;
+    const memberTasks = tasksData.filter(t => String(t.assignedTo) === String(memberId));
+    for (const t of memberTasks) await db.tasks.delete(t.id);
+    flash(`Cleared ${memberTasks.length} tasks for ${memberName}.`);
+  };
+
+  const handleClearMemberMeetings = async (memberId, memberName) => {
+    if (!window.confirm(`Remove ${memberName} from all meeting attendance records?`)) return;
+    for (const m of meetingsData) {
+      if ((m.attendees || []).includes(memberId)) {
+        const updated = (m.attendees || []).filter(a => a !== memberId);
+        await db.scicomm_meetings.update(m.id, { attendees: updated });
+      }
+    }
+    flash(`Cleared meeting records for ${memberName}.`);
+  };
+
+  const handleExportExcel = () => {
+    const wb = XLSX.utils.book_new();
+    // Users sheet
+    const usersRows = scientists.map(s => ({
+      ID: s.id, Username: s.username, Name: s.name, Department: s.department || '',
+      Role: s.role || 'scientist', Status: s.accountStatus || 'active',
+      Email: s.email || '', Bio: s.bio || '', EmployeeID: s.employeeId || '',
+      PasswordHash: s.passwordHash || ''
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(usersRows), 'Users');
+    // Tasks sheet
+    const taskRows = tasksData.map(t => ({
+      ID: t.id, Title: t.title, Description: t.description || '',
+      AssignedTo: t.assignedTo, AssigneeName: scientists.find(s => String(s.id) === String(t.assignedTo))?.name || '',
+      Status: t.status, Priority: t.priority || 'Medium',
+      DueDate: t.dueDate || '', AwardedPoints: t.awardedPoints || 0,
+      EvalNote: t.evalNote || '', CreatedAt: t.createdAt || ''
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(taskRows), 'Tasks');
+    // Meetings sheet
+    const meetingRows = meetingsData.map(m => ({
+      ID: m.id, Title: m.title, Date: m.date, Time: m.time || '',
+      Link: m.link || '', Location: m.location || '',
+      Attendees: (m.attendees || []).map(aid => scientists.find(s => String(s.id) === String(aid))?.name || aid).join(', '),
+      CreatedAt: m.createdAt || ''
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(meetingRows), 'Meetings');
+    // Applications sheet
+    const appRows = applicationsData.map(a => ({
+      ID: a.id, UserID: a.userId,
+      UserName: scientists.find(s => String(s.id) === String(a.userId))?.name || '',
+      Status: a.status, CreatedAt: a.createdAt || '', ReviewedAt: a.reviewedAt || ''
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(appRows), 'Applications');
+    XLSX.writeFile(wb, `SciComm_Export_${new Date().toISOString().slice(0,10)}.xlsx`);
+    flash('Data exported to Excel!');
+  };
+
+  const handleImportExcel = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!window.confirm('Import data from Excel? This will ADD new records. Existing records are NOT overwritten.')) {
+      e.target.value = '';
+      return;
+    }
+    const data = await file.arrayBuffer();
+    const wb = XLSX.read(data);
+    let imported = 0;
+    // Import Users
+    if (wb.SheetNames.includes('Users')) {
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets['Users']);
+      for (const r of rows) {
+        if (r.Username && r.Name) {
+          const exists = await db.scientists.where('username').equals(r.Username).first();
+          if (!exists) {
+            await db.scientists.add({ username: r.Username, name: r.Name, department: r.Department || '', role: r.Role || 'scientist', accountStatus: r.Status || 'active', email: r.Email || '', bio: r.Bio || '', employeeId: r.EmployeeID || '', passwordHash: r.PasswordHash || '' });
+            imported++;
+          }
+        }
+      }
+    }
+    // Import Tasks
+    if (wb.SheetNames.includes('Tasks')) {
+      const rows = XLSX.utils.sheet_to_json(wb.Sheets['Tasks']);
+      for (const r of rows) {
+        if (r.Title) {
+          await db.tasks.add({ title: r.Title, description: r.Description || '', assignedTo: r.AssignedTo || '', status: r.Status || 'Pending', priority: r.Priority || 'Medium', dueDate: r.DueDate || '', awardedPoints: r.AwardedPoints || 0, evalNote: r.EvalNote || '', createdAt: r.CreatedAt || new Date().toISOString() });
+          imported++;
+        }
+      }
+    }
+    flash(`Imported ${imported} records from Excel.`);
+    e.target.value = '';
+  };
 
   // Analytics data
   const getAnalytics = (member) => {
@@ -392,6 +497,48 @@ export default function SciCommAdmin() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* DATA MANAGEMENT */}
+      {activeTab === 'data' && (
+        <div className="scicomm-card scicomm-card-padding">
+          <h3 style={{ margin: '0 0 16px', fontSize: '18px' }}>🗄️ Data Management</h3>
+          
+          {/* Export / Import */}
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '24px' }}>
+            <button onClick={handleExportExcel} className="scicomm-btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 20px' }}>
+              <Download size={16} /> Export All Data to Excel
+            </button>
+            <button onClick={() => fileInputRef.current?.click()} className="scicomm-btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 20px' }}>
+              <Upload size={16} /> Import from Excel
+            </button>
+            <input ref={fileInputRef} type="file" accept=".xlsx,.xls" onChange={handleImportExcel} style={{ display: 'none' }} />
+          </div>
+
+          {/* Reset Points */}
+          <div style={{ padding: '16px', background: '#fef2f2', borderRadius: '10px', border: '1px solid #fca5a5', marginBottom: '24px' }}>
+            <h4 style={{ margin: '0 0 8px', fontSize: '15px', color: '#991b1b' }}>⚠️ Reset All Points</h4>
+            <p style={{ fontSize: '13px', color: '#7f1d1d', margin: '0 0 12px' }}>This will set awardedPoints to 0 on every task, resetting all member scores to zero.</p>
+            <button onClick={handleResetAllPoints} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>Reset All Points to 0</button>
+          </div>
+
+          {/* Per-member clear */}
+          <h4 style={{ margin: '0 0 12px', fontSize: '15px' }}>🧹 Clear Records per Member</h4>
+          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            {activeAccounts.filter(s => s.role !== 'master' || isMaster).map(s => {
+              const memberTaskCount = tasksData.filter(t => String(t.assignedTo) === String(s.id)).length;
+              const memberMeetingCount = meetingsData.filter(m => (m.attendees || []).includes(s.id)).length;
+              return (
+                <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 8px', borderBottom: '1px solid #f1f5f9', flexWrap: 'wrap' }}>
+                  <span style={{ fontWeight: 600, fontSize: '14px', flex: 1, minWidth: '120px' }}>{s.name}</span>
+                  <span style={{ fontSize: '12px', color: '#64748b' }}>{memberTaskCount} tasks · {memberMeetingCount} meetings</span>
+                  <button onClick={() => handleClearMemberTasks(s.id, s.name)} disabled={memberTaskCount === 0} style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '6px', border: '1px solid #fca5a5', background: memberTaskCount > 0 ? '#fee2e2' : '#f9fafb', color: memberTaskCount > 0 ? '#991b1b' : '#ccc', cursor: memberTaskCount > 0 ? 'pointer' : 'default', fontWeight: 600 }}>Clear Tasks</button>
+                  <button onClick={() => handleClearMemberMeetings(s.id, s.name)} disabled={memberMeetingCount === 0} style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '6px', border: '1px solid #bfdbfe', background: memberMeetingCount > 0 ? '#dbeafe' : '#f9fafb', color: memberMeetingCount > 0 ? '#1e3a8a' : '#ccc', cursor: memberMeetingCount > 0 ? 'pointer' : 'default', fontWeight: 600 }}>Clear Meetings</button>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
