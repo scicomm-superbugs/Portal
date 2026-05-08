@@ -93,9 +93,13 @@ export default function SciCommLayout() {
       <header className="scicomm-header">
         <div className="scicomm-header-content">
           <div className="scicomm-header-left">
+            {/* Mobile: Profile avatar | Desktop: Logo */}
+            <Link to="/profile" className="scicomm-mobile-profile-link"><span className="scicomm-mobile-avatar">{renderAvatar(30)}</span></Link>
             <Link to="/"><img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => e.target.style.display='none'} /></Link>
-            <div className="scicomm-search-box"><Search size={16} /><input type="text" placeholder="Search people..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { navigate('/network?q=' + encodeURIComponent(searchText)); setSearchText(''); } }} /></div>
+            <div className="scicomm-search-box"><Search size={16} /><input type="text" placeholder="Search..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { navigate('/network?q=' + encodeURIComponent(searchText)); setSearchText(''); } }} /></div>
           </div>
+          {/* Mobile: Chat icon top-right */}
+          <Link to="/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative' }}><MessageCircle size={24} color="rgba(0,0,0,0.6)" /></Link>
           <nav className="scicomm-nav">
             <Link to="/" className={`scicomm-nav-item ${isActive('/') ? 'active' : ''}`}><Home size={20} /><span className="nav-text">Home</span></Link>
             <Link to="/network" className={`scicomm-nav-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span className="nav-text">Network</span></Link>
@@ -144,17 +148,13 @@ export default function SciCommLayout() {
         {/* Footer Removed - Now relocated to Portal.jsx */}
       </div>
 
-      <nav className="scicomm-mobile-bar" style={{ overflowX: 'auto', justifyContent: 'flex-start', paddingLeft: '8px', paddingRight: '8px' }}>
-        <style>{`.scicomm-mobile-bar::-webkit-scrollbar { display: none; }`}</style>
-        <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`}><Home size={20} /><span>Home</span></Link>
-        <Link to="/calendar" className={`scicomm-mobile-item ${isActive('/calendar') ? 'active' : ''}`} style={{position:'relative'}}><Calendar size={20} />{upcomingMeetings.length > 0 && <span className="scicomm-notif-badge">{upcomingMeetings.length}</span>}<span>Calendar</span></Link>
-        {isTeam && <Link to="/meetings" className={`scicomm-mobile-item ${isActive('/meetings') ? 'active' : ''}`}><Video size={20} /><span>Meetings</span></Link>}
-        {isTeam && <Link to="/tasks" className={`scicomm-mobile-item ${isActive('/tasks') ? 'active' : ''}`} style={{position:'relative'}}><Briefcase size={20} />{myPendingTasks.length > 0 && <span className="scicomm-notif-badge">{myPendingTasks.length}</span>}<span>Tasks</span></Link>}
-        <Link to="/chat" className={`scicomm-mobile-item ${isActive('/chat') ? 'active' : ''}`}><MessageCircle size={20} /><span>Chat</span></Link>
-        <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span>Network</span></Link>
-        <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell size={20} />{notifCount > 0 && <span className="scicomm-notif-badge">{notifCount}</span>}<span>Alerts</span></Link>
-        <Link to="/profile" className={`scicomm-mobile-item ${isActive('/profile') ? 'active' : ''}`}>{renderAvatar(20)}<span>Me</span></Link>
-        {isAdmin && <Link to="/admin" className={`scicomm-mobile-item ${isActive('/admin') ? 'active' : ''}`}><Shield size={20} /><span>Admin</span></Link>}
+      {/* Mobile Bottom Bar - LinkedIn Style: Home, Network, Post, Notifications, SciComm */}
+      <nav className="scicomm-mobile-bar">
+        <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`}><Home size={22} /><span>Home</span></Link>
+        <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={22} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span>Network</span></Link>
+        <Link to="/" className="scicomm-mobile-item scicomm-mobile-post-btn" onClick={e => { e.preventDefault(); window.scrollTo({top: 0, behavior: 'smooth'}); const el = document.querySelector('textarea'); if (el) el.focus(); }}><div className="scicomm-post-plus">+</div><span>Post</span></Link>
+        <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell size={22} />{notifCount > 0 && <span className="scicomm-notif-badge">{notifCount}</span>}<span>Alerts</span></Link>
+        <Link to="/hub" className={`scicomm-mobile-item ${isActive('/hub') ? 'active' : ''}`}><div style={{ fontSize: '20px' }}>🔬</div><span>SciComm</span></Link>
       </nav>
 
       {/* Version Changelog Popup */}

@@ -314,7 +314,7 @@
   right: 0;
   background: white;
   border-top: 1px solid #e0dfdc;
-  height: 52px;
+  height: 56px;
   z-index: 100;
   justify-content: space-around;
   align-items: center;
@@ -332,11 +332,38 @@
   position: relative;
   gap: 2px;
   -webkit-tap-highlight-color: transparent;
-  min-width: 64px;
+  flex: 1;
+  padding: 6px 0;
 }
 
 .scicomm-mobile-item.active {
   color: rgba(0,0,0,0.9);
+}
+
+/* LinkedIn-style Post button */
+.scicomm-post-plus {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 300;
+  margin-top: -16px;
+  box-shadow: 0 2px 12px rgba(29, 78, 216, 0.35);
+}
+
+.scicomm-mobile-post-btn {
+  position: relative;
+}
+
+/* Mobile-only: Profile avatar top-left & Chat icon top-right */
+.scicomm-mobile-profile-link,
+.scicomm-mobile-chat-link {
+  display: none;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -351,7 +378,7 @@
 
 @media (max-width: 768px) {
   .scicomm-header {
-    height: 48px;
+    height: 52px;
   }
 
   .scicomm-nav {
@@ -362,8 +389,38 @@
     display: flex;
   }
 
+  /* Show mobile profile avatar (top-left) and chat icon (top-right) */
+  .scicomm-mobile-profile-link {
+    display: flex;
+    align-items: center;
+  }
+  .scicomm-mobile-chat-link {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+  }
+
+  /* Hide desktop logo on mobile */
+  .scicomm-logo {
+    display: none !important;
+  }
+
+  .scicomm-header-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scicomm-header-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .scicomm-search-box {
-    width: 160px;
+    flex: 1;
+    width: auto !important;
   }
 
   .scicomm-feed-layout {
@@ -373,7 +430,7 @@
   .scicomm-page-content {
     margin: 8px auto;
     padding: 0 8px;
-    padding-bottom: 64px;
+    padding-bottom: 72px;
   }
 
   .hide-on-mobile {
@@ -428,10 +485,6 @@
   .chat-back-btn {
     display: flex !important;
   }
-  .scicomm-search-box {
-    width: 100% !important;
-    flex: 1;
-  }
   .scicomm-search-box input {
     font-size: 16px !important;
   }
@@ -454,20 +507,11 @@
   .scicomm-feed-action span {
     display: none;
   }
-  .scicomm-mobile-bar {
-    gap: 0 !important;
-  }
   .scicomm-mobile-item {
-    min-width: 48px !important;
-    padding: 6px 4px !important;
     font-size: 9px !important;
   }
   .scicomm-header-left {
     gap: 6px !important;
-  }
-  .scicomm-logo {
-    width: 28px !important;
-    height: 28px !important;
   }
 }
 
