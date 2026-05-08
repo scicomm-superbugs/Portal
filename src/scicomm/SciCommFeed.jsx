@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db, uploadFile } from '../db';
-import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2, X } from 'lucide-react';
+import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2, X, Trophy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
 import SciCommStories from './SciCommStories';
@@ -839,26 +839,30 @@ export default function SciCommFeed() {
         )}
 
         <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px' }}>
-          <h3 style={{ margin: '0 0 10px', fontSize: '15px' }}>Team</h3>
-          {scientists.filter(s => s.accountStatus !== 'pending').slice(0, 5).map(s => (
-            <Link key={s.id} to={`/member/${s.id}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', textDecoration: 'none', color: 'inherit' }}>
-              {renderAvatar(s, 32)}
-              <div>
-                <div style={{ fontWeight: 600, fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  {s.name}
-                  {s.role === 'master' && <span style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '8px', padding: '1px 5px', borderRadius: '8px', fontWeight: 700 }}>👑</span>}
-                  {s.role === 'admin' && <span style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '8px', padding: '1px 5px', borderRadius: '8px', fontWeight: 700 }}>🛡️</span>}
-                  {s.role === 'scicomm' && <span style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', fontSize: '8px', padding: '1px 5px', borderRadius: '8px', fontWeight: 700 }}>🔬</span>}
+          <h3 style={{ margin: '0 0 10px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}><Trophy size={18} color="#f59e0b" /> Leaderboard</h3>
+          {scientists.slice().sort((a, b) => calculateScore(b) - calculateScore(a)).slice(0, 5).map((s, idx) => {
+            const score = calculateScore(s);
+            const level = getUserLevel(score);
+            return (
+              <Link key={s.id} to={`/member/${s.id}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', textDecoration: 'none', color: 'inherit' }}>
+                <div style={{ fontWeight: 800, fontSize: '14px', width: '20px', textAlign: 'center', color: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : '#64748b' }}>
+                  #{idx + 1}
                 </div>
-                <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>{s.department || 'Member'}</div>
-              </div>
-            </Link>
-          ))}
-          {scientists.filter(s => s.accountStatus !== 'pending').length > 5 && (
-            <Link to="/network" style={{ display: 'block', textAlign: 'center', marginTop: '12px', padding: '8px', background: '#eef3f8', color: '#1d4ed8', borderRadius: '6px', fontSize: '12px', fontWeight: 600, textDecoration: 'none', transition: 'background 0.2s' }}>
-              See more team members
-            </Link>
-          )}
+                {renderAvatar(s, 32)}
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <div style={{ fontWeight: 600, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {s.name}
+                  </div>
+                  <div style={{ color: level.color, fontSize: '11px', fontWeight: 700 }}>
+                    Lv. {level.level} • {score === Infinity ? 'Infinity' : score} pts
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+          <Link to="/leaderboard" style={{ display: 'block', textAlign: 'center', marginTop: '12px', padding: '8px', background: '#fffbeb', color: '#b45309', borderRadius: '6px', fontSize: '12px', fontWeight: 600, textDecoration: 'none', transition: 'background 0.2s' }}>
+            View Full Leaderboard
+          </Link>
         </div>
       </div>
 
