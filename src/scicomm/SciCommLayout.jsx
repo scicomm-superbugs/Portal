@@ -72,7 +72,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.6.0';
+  const PLATFORM_VERSION = 'v3.7.0';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -170,26 +170,28 @@ export default function SciCommLayout() {
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>Task Evaluation System:</strong> Admins rate task quality (5–50 pts) with optional notes when approving</li>
-                  <li><strong>Quality-Based Scoring:</strong> Points now come ONLY from tasks + meetings — no more likes/posts/connections</li>
-                  <li><strong>Team-Only Leaderboard:</strong> Only 🔬 SciComm Team members appear on the leaderboard</li>
+                  <li><strong>Who Reacted:</strong> Click reaction counts on posts, comments, or replies to see who reacted with what emoji</li>
+                  <li><strong>Role Badges on Posts:</strong> Every post now shows the author's role (👑 Master, 🛡️ Admin, 🔬 SciComm, 👤 Visitor)</li>
+                  <li><strong>Join SciComm Team:</strong> Visitors can apply to join the team directly from the Leaderboard</li>
+                  <li><strong>Application Review:</strong> Admins review applications in a new "Applications" tab</li>
+                </ul>
+              </div>
+              <div style={{ background: '#dcfce7', padding: '14px', borderRadius: '10px' }}>
+                <h4 style={{ margin: '0 0 6px', color: '#166534', fontSize: '14px' }}>🗄️ Data Management (Admin)</h4>
+                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.8' }}>
+                  <li>📥 <strong>Export to Excel:</strong> Download all users, tasks, meetings, and applications as .xlsx</li>
+                  <li>📤 <strong>Import from Excel:</strong> Upload .xlsx to bulk-add users and tasks</li>
+                  <li>⚠️ <strong>Reset All Points:</strong> Set every member's score back to zero</li>
+                  <li>🧹 <strong>Per-Member Cleanup:</strong> Clear tasks or meeting records for individual members</li>
                 </ul>
               </div>
               <div style={{ background: '#fef3c7', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔒 Access & Scoring</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔒 Access & Fixes</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#92400e', lineHeight: '1.8' }}>
-                  <li>Visitors see an info page explaining the leaderboard is for team members only</li>
-                  <li>Task points range: Poor (5) → Exceptional (50), evaluated by admins</li>
-                  <li>📋 Completed tasks show awarded points and evaluation notes</li>
-                  <li>📊 Score = Task Points + (Meetings × 15)</li>
-                </ul>
-              </div>
-              <div style={{ background: '#dbeafe', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 UI Updates</h4>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li>Leaderboard shows only SciComm team with 🔬 badge</li>
-                  <li>Admins & Master pinned at top with ∞ score</li>
-                  <li>Task evaluation box with points dropdown + note field</li>
+                  <li>Visitors can now <strong>view the full leaderboard</strong> with a banner explaining why they’re not ranked</li>
+                  <li>Application status shows 🎉 Approved / ❌ Rejected / ⏳ Pending clearly</li>
+                  <li>Application notifications appear in the Alerts page for both applicants and admins</li>
+                  <li>Removed legacy System Administrator account from the platform</li>
                 </ul>
               </div>
             </div>
