@@ -54,6 +54,16 @@ export default function SciCommLayout() {
   const connectionsData = useLiveCollection('scicomm_connections') || [];
   const pendingConnections = connectionsData.filter(c => c.status === 'pending' && String(c.toId) === String(user.id));
 
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (mobileSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [mobileSidebarOpen]);
+
   // Register service worker for mobile notifications
   useEffect(() => {
     if ('serviceWorker' in navigator && 'Notification' in window) {
