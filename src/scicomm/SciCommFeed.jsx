@@ -483,8 +483,9 @@ export default function SciCommFeed() {
             onMouseOver={e => e.currentTarget.style.border = '1px solid rgba(59,130,246,0.3)'}
             onMouseOut={e => e.currentTarget.style.border = '1px solid transparent'}
             >
-              <input type="text" placeholder="What's on your mind?" value={newPost} onChange={e => setNewPost(e.target.value)} onKeyDown={e => e.key === 'Enter' && handlePostSubmit(e)}
-                style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '15px', outline: 'none', color: '#1e293b', width: '100%', fontFamily: 'inherit' }} />
+              <textarea placeholder="What's on your mind?" value={newPost} onChange={e => setNewPost(e.target.value)}
+                rows={Math.max(2, newPost.split('\n').length)}
+                style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '15px', outline: 'none', color: '#1e293b', width: '100%', fontFamily: 'inherit', resize: 'none', paddingTop: '8px' }} />
             </div>
           </div>
           
@@ -503,11 +504,11 @@ export default function SciCommFeed() {
               </label>
             </div>
             
-            <button onClick={handlePostSubmit} disabled={!newPost.trim() && !postImage && !postVideo && !postFile} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: '12px', background: (!newPost.trim() && !postImage && !postVideo && !postFile) ? '#e2e8f0' : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', border: 'none', color: (!newPost.trim() && !postImage && !postVideo && !postFile) ? '#94a3b8' : 'white', fontWeight: 600, fontSize: '14px', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: (!newPost.trim() && !postImage && !postVideo && !postFile) ? 'none' : '0 4px 12px rgba(139,92,246,0.2)' }}
-            onMouseOver={e => { if(newPost.trim() || postImage || postVideo || postFile) e.currentTarget.style.transform = 'translateY(-1px)'; }}
+            <button onClick={handlePostSubmit} disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: '12px', background: (isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)) ? '#e2e8f0' : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', border: 'none', color: (isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)) ? '#94a3b8' : 'white', fontWeight: 600, fontSize: '14px', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: (isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)) ? 'none' : '0 4px 12px rgba(139,92,246,0.2)' }}
+            onMouseOver={e => { if(!isPostingMedia && (newPost.trim() || postImage || postVideo || postFile)) e.currentTarget.style.transform = 'translateY(-1px)'; }}
             onMouseOut={e => { e.currentTarget.style.transform = 'none'; }}
             >
-              Post <Send size={16} />
+              {isPostingMedia ? 'Posting...' : 'Post'} <Send size={16} />
             </button>
           </div>
 
@@ -537,9 +538,7 @@ export default function SciCommFeed() {
                 </div>
               )}
 
-              <button className="scicomm-btn-primary" onClick={handlePostSubmit} disabled={isPostingMedia} style={{ width: '100%', padding: '8px', fontSize: '15px', fontWeight: 600, background: '#1b74e4' }}>
-                {isPostingMedia ? 'Posting...' : 'Post'}
-              </button>
+              {/* Removed redundant post button */}
             </div>
           )}
         </div>
