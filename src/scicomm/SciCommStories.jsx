@@ -262,7 +262,7 @@ export default function SciCommStories({ scientists }) {
                     <img src={storiesByUser[viewingUserId][storyIndex].mediaUrl} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   )}
                   {storiesByUser[viewingUserId][storyIndex].content && (
-                    <div style={{ position: 'absolute', bottom: '40px', left: '20px', right: '20px', background: 'rgba(0,0,0,0.6)', padding: '12px', borderRadius: '12px', color: 'white', fontSize: '15px', textAlign: 'center' }}>
+                    <div style={{ position: 'absolute', bottom: '70px', left: '20px', right: '20px', background: 'rgba(0,0,0,0.6)', padding: '12px', borderRadius: '12px', color: 'white', fontSize: '15px', textAlign: 'center', zIndex: 6 }}>
                       {storiesByUser[viewingUserId][storyIndex].content}
                     </div>
                   )}
