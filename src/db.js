@@ -297,6 +297,9 @@ export const db = {
     add: async (msg) => {
       await addDoc(collection(firestore, getCollectionName('scicomm_chat_messages')), msg);
     },
+    update: async (id, data) => {
+      await updateDoc(doc(firestore, getCollectionName('scicomm_chat_messages'), String(id)), data);
+    },
     delete: async (id) => {
       await deleteDoc(doc(firestore, getCollectionName('scicomm_chat_messages'), String(id)));
     }
