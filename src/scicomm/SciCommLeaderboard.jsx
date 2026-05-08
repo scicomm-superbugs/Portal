@@ -186,30 +186,36 @@ export default function SciCommLeaderboard() {
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>Full Rankings</h3>
           
-          {/* Admin/Master Accounts - Master first, then Admins */}
-          {adminAccounts
-            .sort((a, b) => (a.role === 'master' ? -1 : 1) - (b.role === 'master' ? -1 : 1))
-            .map(s => {
-            const isMe = String(s.id) === String(user.id);
-            return (
-              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 8px', borderRadius: '8px', marginBottom: '4px', background: 'linear-gradient(90deg, #fffbeb 0%, #eff6ff 100%)', border: '1px solid #fbbf24' }}>
-                <div style={{ width: '32px', textAlign: 'center', fontSize: '20px' }}>👑</div>
-                <Link to={`/member/${s.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>{renderAvatar(s, 44)}</Link>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                    <span style={{ fontWeight: 700, fontSize: '15px' }}>{s.name}</span>
-                    <span style={{ background: s.role === 'master' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>{s.role === 'master' ? '👑 Master' : '🛡️ Admin'}</span>
-                    {isMe && <span style={{ color: '#1d4ed8', fontSize: '11px', fontWeight: 600 }}>(You)</span>}
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{s.department || 'Platform Management'}</div>
-                </div>
-                <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <div style={{ fontWeight: 800, fontSize: '24px', color: '#1d4ed8', lineHeight: 1 }}>∞</div>
-                  <div style={{ fontSize: '10px', color: '#1d4ed8', fontWeight: 600 }}>points</div>
-                </div>
+          {/* Admin/Master Accounts - Combined Box */}
+          {adminAccounts.length > 0 && (
+            <div style={{ background: 'linear-gradient(135deg, #fffbeb 0%, #eff6ff 100%)', border: '1px solid #fbbf24', borderRadius: '12px', padding: '16px', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', color: '#b45309', fontWeight: 700, fontSize: '15px' }}>
+                <Shield size={18} /> Platform Management
               </div>
-            );
-          })}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                {adminAccounts
+                  .sort((a, b) => (a.role === 'master' ? -1 : 1) - (b.role === 'master' ? -1 : 1))
+                  .map(s => {
+                  const isMe = String(s.id) === String(user.id);
+                  return (
+                    <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', background: 'white', padding: '10px 14px', borderRadius: '8px', border: '1px solid rgba(251, 191, 36, 0.5)', flex: '1 1 min(100%, 300px)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+                      <Link to={`/member/${s.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>{renderAvatar(s, 44)}</Link>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                          <Link to={`/member/${s.id}`} style={{ fontWeight: 700, fontSize: '15px', textDecoration: 'none', color: '#1e293b' }}>{s.name}</Link>
+                          {isMe && <span style={{ color: '#1d4ed8', fontSize: '11px', fontWeight: 600 }}>(You)</span>}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                          <span style={{ background: s.role === 'master' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>{s.role === 'master' ? '👑 Master' : '🛡️ Admin'}</span>
+                          <span style={{ fontSize: '11px', color: '#1d4ed8', fontWeight: 700 }}>∞ points</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* SciComm Team Leaderboard */}
           {leaderboard.length === 0 && (
