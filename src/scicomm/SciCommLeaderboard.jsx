@@ -2,11 +2,12 @@ import { db, useLiveCollection } from '../db';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import { Trophy, UserCircle, TrendingUp, Lock, Send, Users, Shield } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AVATARS, AUTO_TAGS, calculateScore, getUnlockedTags, REACTIONS, getUserLevel } from './scicommConstants';
 
 export default function SciCommLeaderboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const scientists = useLiveCollection('scientists') || [];
   const tasksData = useLiveCollection('tasks') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
@@ -135,8 +136,8 @@ export default function SciCommLeaderboard() {
                 <div style={{ padding: '14px 20px', borderRadius: '10px', fontWeight: 600, fontSize: '14px', background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5', marginBottom: '12px' }}>
                   ❌ Your previous application was not approved. Update your profile and try again.
                 </div>
-                <button onClick={handleReapply} disabled={applying} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', padding: '10px' }}>
-                  <Send size={16} /> {applying ? 'Submitting...' : 'Re-apply to SciComm Team'}
+                <button onClick={() => navigate('/apply')} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', padding: '10px' }}>
+                  <Send size={16} /> View Application Status
                 </button>
               </div>
             ) : (
@@ -145,8 +146,8 @@ export default function SciCommLeaderboard() {
                 <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#64748b' }}>
                   Make sure to update your profile with your <strong>experience and CV</strong> before applying, as it will be reviewed by the admins.
                 </p>
-                <button onClick={handleApply} disabled={applying} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', padding: '10px' }}>
-                  <Send size={16} /> {applying ? 'Submitting...' : 'Apply Now'}
+                <button onClick={() => navigate('/apply')} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', padding: '10px' }}>
+                  <Send size={16} /> Apply Now
                 </button>
               </div>
             )}

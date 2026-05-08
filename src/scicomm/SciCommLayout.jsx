@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard } from 'lucide-react';
+import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
 import { useState, useEffect, useRef } from 'react';
@@ -201,23 +201,43 @@ export default function SciCommLayout() {
               <div className="scicomm-dropdown" style={{ minWidth: '320px', padding: '16px' }}>
                 <h3 style={{ margin: '0 0 12px', fontSize: '14px', color: 'rgba(0,0,0,0.6)' }}>Your WorkSpace</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                  {isTeam && (
+                  {isTeam ? (
                     <Link to="/tasks" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                       <Briefcase size={24} color="#3b82f6" />
                       <span style={{ fontSize: '13px', fontWeight: 600 }}>Tasks</span>
                       {myPendingTasks.length > 0 && <span className="scicomm-notif-badge" style={{ position: 'absolute', top: 8, right: 8 }}>{myPendingTasks.length}</span>}
                     </Link>
+                  ) : (
+                    <div onClick={() => {
+                      if (window.confirm("This option is only available to the Science Communication Team. Do you want to apply to join the team?")) {
+                        navigate('/apply');
+                      }
+                    }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                      <Briefcase size={24} color="#94a3b8" />
+                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Tasks</span>
+                      <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
+                    </div>
                   )}
                   <Link to="/calendar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                     <Calendar size={24} color="#8b5cf6" />
                     <span style={{ fontSize: '13px', fontWeight: 600 }}>Calendar</span>
                     {upcomingMeetings.length > 0 && <span className="scicomm-notif-badge" style={{ position: 'absolute', top: 8, right: 8 }}>{upcomingMeetings.length}</span>}
                   </Link>
-                  {isTeam && (
+                  {isTeam ? (
                     <Link to="/meetings" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                       <Video size={24} color="#10b981" />
                       <span style={{ fontSize: '13px', fontWeight: 600 }}>Meetings</span>
                     </Link>
+                  ) : (
+                    <div onClick={() => {
+                      if (window.confirm("This option is only available to the Science Communication Team. Do you want to apply to join the team?")) {
+                        navigate('/apply');
+                      }
+                    }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                      <Video size={24} color="#94a3b8" />
+                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Meetings</span>
+                      <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
+                    </div>
                   )}
                   <Link to="/leaderboard" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                     <Trophy size={24} color="#f59e0b" />
