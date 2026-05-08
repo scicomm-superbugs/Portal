@@ -41,26 +41,37 @@ export default function SciCommLayout() {
   const connectionsData = useLiveCollection('scicomm_connections') || [];
   const pendingConnections = connectionsData.filter(c => c.status === 'pending' && String(c.toId) === String(user.id));
 
-  // Push notifications - safe wrapper (new Notification() crashes on mobile browsers)
-  const sendPushNotif = (title, body) => {
-    try {
-      if (!('Notification' in window) || Notification.permission !== 'granted') return;
-      // Mobile Chrome requires Service Worker - skip on mobile
-      if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) return;
-      new Notification(title, { body, icon: './aiu_scicomm_logo.png' });
-    } catch (e) {
-      // Silently ignore - e.g. mobile browsers that don't support direct Notification()
-    }
-  };
-
+  // Register service worker for mobile notifications
   useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      // Only request permission on desktop
-      if (!/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+    if ('serviceWorker' in navigator && 'Notification' in window) {
+      navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
+      if (Notification.permission === 'default') {
         Notification.requestPermission();
       }
     }
   }, []);
+
+  // Push notifications - safe wrapper for mobile and desktop
+  const sendPushNotif = async (title, body) => {
+    try {
+      if (!('Notification' in window) || Notification.permission !== 'granted') return;
+      
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+          await registration.showNotification(title, { body, icon: './aiu_scicomm_logo.png' });
+          return;
+        }
+      }
+      
+      // Fallback for desktop browsers without SW active
+      if (!/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        new Notification(title, { body, icon: './aiu_scicomm_logo.png' });
+      }
+    } catch (e) {
+      console.log('Push notification failed:', e);
+    }
+  };
   const prevTaskCount = useRef(myPendingTasks.length);
   useEffect(() => {
     if (myPendingTasks.length > prevTaskCount.current) {
