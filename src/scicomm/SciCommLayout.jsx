@@ -128,8 +128,19 @@ export default function SciCommLayout() {
             <Link to="/"><img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => e.target.style.display='none'} /></Link>
             <div className="scicomm-search-box"><Search size={16} /><input type="text" placeholder="Search..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { navigate('/network?q=' + encodeURIComponent(searchText)); setSearchText(''); } }} /></div>
           </div>
-          {/* Mobile: Chat icon top-right */}
-          <Link to="/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative' }}><MessageCircle size={24} color="rgba(0,0,0,0.6)" /></Link>
+          {/* Mobile: Chat icon top-right with unread badge */}
+          <Link to="/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative', display: 'inline-flex' }}>
+            <MessageCircle size={24} color="rgba(0,0,0,0.6)" />
+            {unreadChatCount > 0 && (
+              <span style={{
+                position: 'absolute', top: '-6px', right: '-6px',
+                background: '#ef4444', color: 'white', borderRadius: '50%',
+                width: '18px', height: '18px', fontSize: '10px', fontWeight: 700,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                lineHeight: 1, pointerEvents: 'none'
+              }}>{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>
+            )}
+          </Link>
           <nav className="scicomm-nav">
             <Link to="/" className={`scicomm-nav-item ${isActive('/') ? 'active' : ''}`}><Home size={20} /><span className="nav-text">Home</span></Link>
             <Link to="/network" className={`scicomm-nav-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span className="nav-text">Network</span></Link>
