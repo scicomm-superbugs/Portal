@@ -1,6 +1,6 @@
 import { useLiveCollection, db } from '../db';
 import { useAuth } from '../context/AuthContext';
-import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle } from 'lucide-react';
+import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, UserPlus } from 'lucide-react';
 import { useEffect } from 'react';
 import { timeAgo } from './scicommConstants';
 import { Link } from 'react-router-dom';
@@ -13,6 +13,7 @@ export default function SciCommNotifications() {
   const scientists = useLiveCollection('scientists') || [];
   const connectionsData = useLiveCollection('scicomm_connections') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
+  const applicationsData = useLiveCollection('scicomm_applications') || [];
 
   const myTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
   const myWarnings = warningsData.filter(w => String(w.userId) === String(user.id));
@@ -40,6 +41,42 @@ export default function SciCommNotifications() {
     ...pendingAccounts.map(s => ({ type: 'pending', icon: <UserCheck size={18} color="#f59e0b" />, bg: '#fef3c7', title: `👤 New account: ${s.name}`, sub: `@${s.username} — Awaiting approval`, time: '', id: 'p_' + s.id, link: '/admin' })),
     ...pendingConnections.map(c => ({ type: 'connection', icon: <UserCheck size={18} color="#3b82f6" />, bg: '#dbeafe', title: `🤝 ${c.fromName} wants to connect`, sub: 'Accept or ignore in Network tab', time: c.createdAt, id: 'c_' + c.id, link: '/network' })),
     ...upcomingMeetings.slice(0, 3).map(m => ({ type: 'meeting', icon: <Calendar size={18} color="#8b5cf6" />, bg: '#ede9fe', title: `📅 Upcoming: ${m.title}`, sub: `${new Date(m.date).toLocaleDateString()} ${m.time || ''}`, time: m.createdAt, id: 'm_' + m.id, link: '/meetings' })),
+    // Application status notifications for the applicant
+    ...applicationsData.filter(a => String(a.userId) === String(user.id) && a.status !== 'pending').map(a => ({
+      type: 'application',
+      icon: <UserPlus size={18} color={a.status === 'approved' ? '#16a34a' : '#ef4444'} />,
+      bg: a.status === 'approved' ? '#dcfce7' : '#fee2e2',
+      title: a.status === 'approved' ? '🎉 SciComm Team Application Approved!' : '❌ SciComm Team Application Not Approved',
+      sub: a.status === 'approved' ? 'Welcome to the team! You now have access to Tasks & Meetings.' : 'Your application was reviewed and not approved. Update your profile and try again.',
+      time: a.reviewedAt || a.createdAt,
+      id: 'app_' + a.id,
+      link: '/leaderboard'
+    })),
+    // Pending application notifications for the applicant
+    ...applicationsData.filter(a => String(a.userId) === String(user.id) && a.status === 'pending').map(a => ({
+      type: 'application',
+      icon: <UserPlus size={18} color="#f59e0b" />,
+      bg: '#fef3c7',
+      title: '⏳ SciComm Team Application Pending',
+      sub: 'Your application is under review by admins.',
+      time: a.createdAt,
+      id: 'app_' + a.id,
+      link: '/leaderboard'
+    })),
+    // Admin notification for new applications
+    ...(isAdmin ? applicationsData.filter(a => a.status === 'pending').map(a => {
+      const applicant = scientists.find(s => String(s.id) === String(a.userId));
+      return {
+        type: 'application_admin',
+        icon: <UserPlus size={18} color="#8b5cf6" />,
+        bg: '#ede9fe',
+        title: `📝 New Team Application: ${applicant?.name || 'Unknown'}`,
+        sub: 'Review in Admin Dashboard → Applications tab',
+        time: a.createdAt,
+        id: 'appadm_' + a.id,
+        link: '/admin'
+      };
+    }) : []),
   ].sort((a, b) => new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime());
 
   return (
@@ -52,6 +89,7 @@ export default function SciCommNotifications() {
             { label: 'Warnings', count: myWarnings.filter(w => w.status !== 'removed').length, color: '#ef4444' },
             { label: 'Connections', count: pendingConnections.length, color: '#3b82f6' },
             { label: 'Meetings', count: upcomingMeetings.length, color: '#8b5cf6' },
+            { label: 'Applications', count: applicationsData.filter(a => String(a.userId) === String(user.id)).length + (isAdmin ? applicationsData.filter(a => a.status === 'pending').length : 0), color: '#8b5cf6' },
             ...(isAdmin ? [{ label: 'Pending Accounts', count: pendingAccounts.length, color: '#f59e0b' }] : []),
           ].map((item, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px' }}>

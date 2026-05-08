@@ -107,8 +107,14 @@ export default function SciCommLeaderboard() {
             </p>
             
             {myApplication ? (
-              <div style={{ padding: '12px', background: '#e0f2fe', color: '#0369a1', borderRadius: '8px', display: 'inline-block', fontWeight: 600, fontSize: '14px' }}>
-                {myApplication.status === 'pending' ? '⏳ Application Submitted! Under review by Admins.' : '✅ Application Processed'}
+              <div style={{ padding: '14px 20px', borderRadius: '10px', display: 'inline-block', fontWeight: 600, fontSize: '14px',
+                background: myApplication.status === 'pending' ? '#e0f2fe' : myApplication.status === 'approved' ? '#dcfce7' : '#fee2e2',
+                color: myApplication.status === 'pending' ? '#0369a1' : myApplication.status === 'approved' ? '#166534' : '#991b1b',
+                border: myApplication.status === 'pending' ? '1px solid #7dd3fc' : myApplication.status === 'approved' ? '1px solid #86efac' : '1px solid #fca5a5'
+              }}>
+                {myApplication.status === 'pending' && '⏳ Application Submitted! Under review by Admins.'}
+                {myApplication.status === 'approved' && '🎉 Your application was approved! You are now a SciComm Team member. Refresh the page to see your new access.'}
+                {myApplication.status === 'rejected' && '❌ Your application was not approved at this time. Please update your profile and try again later.'}
               </div>
             ) : (
               <div style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'inline-block', textAlign: 'left', maxWidth: '400px' }}>
