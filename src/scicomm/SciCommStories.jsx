@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, X, UserCircle } from 'lucide-react';
+import { Plus, X, UserCircle, Heart, Send } from 'lucide-react';
 import { db, useLiveCollection, uploadFile } from '../db';
 import { useAuth } from '../context/AuthContext';
 import { AVATARS } from './scicommConstants';
@@ -25,6 +25,7 @@ export default function SciCommStories({ scientists }) {
   const [viewingUserId, setViewingUserId] = useState(null);
   const [storyIndex, setStoryIndex] = useState(0);
   const [showViewers, setShowViewers] = useState(false);
+  const [replyText, setReplyText] = useState('');
 
   // Filter active stories
   const now = new Date();
@@ -134,6 +135,33 @@ export default function SciCommStories({ scientists }) {
       return () => clearTimeout(timer);
     }
   }, [viewingUserId, storyIndex]);
+
+  const handleReply = async () => {
+    if (!replyText.trim() || !viewingUserId) return;
+    const story = storiesByUser[viewingUserId][storyIndex];
+    const roomId = `dm_${Math.min(user.id, viewingUserId)}_${Math.max(user.id, viewingUserId)}`;
+    const msg = `[Story Reply] ${story.content ? `"${story.content.substring(0, 20)}..."` : 'Media'}\n${replyText}`;
+    await db.scicomm_chat_messages.add({
+      roomId,
+      authorId: user.id,
+      text: msg,
+      timestamp: new Date().toISOString(),
+      readBy: [user.id]
+    });
+    setReplyText('');
+    alert("Reply sent to chat!");
+  };
+
+  const handleLikeStory = async () => {
+    if (!viewingUserId) return;
+    const story = storiesByUser[viewingUserId][storyIndex];
+    const likes = story.likes || [];
+    if (likes.includes(user.id)) {
+      await db.scicomm_stories.update(story.id, { likes: likes.filter(id => id !== user.id) });
+    } else {
+      await db.scicomm_stories.update(story.id, { likes: [...likes, user.id] });
+    }
+  };
 
   return (
     <>
@@ -284,8 +312,28 @@ export default function SciCommStories({ scientists }) {
                 onClick={(e) => { e.stopPropagation(); setShowViewers(true); }}
                 style={{ position: 'absolute', bottom: '16px', left: '16px', color: 'white', background: 'rgba(0,0,0,0.5)', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, zIndex: 10, cursor: 'pointer', border: '1px solid rgba(255,255,255,0.2)' }}>
                 👁 {storiesByUser[viewingUserId][storyIndex].viewers?.length || 0} views
+                {storiesByUser[viewingUserId][storyIndex].likes?.length > 0 && <span style={{ marginLeft: '8px' }}>❤️ {storiesByUser[viewingUserId][storyIndex].likes.length}</span>}
               </div>
             )}
+
+            {/* Interaction Bar for others' stories */}
+            {String(viewingUserId) !== String(user.id) && (() => {
+              const hasLiked = (storiesByUser[viewingUserId][storyIndex].likes || []).includes(user.id);
+              return (
+                <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', zIndex: 10, display: 'flex', gap: '12px', alignItems: 'center' }} onClick={e => e.stopPropagation()}>
+                  <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
+                    <input type="text" placeholder="Reply to story..." 
+                      value={replyText} onChange={e => setReplyText(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') handleReply(); }}
+                      style={{ width: '100%', padding: '12px 16px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(0,0,0,0.5)', color: 'white', outline: 'none' }} />
+                    {replyText && <button onClick={handleReply} style={{ position: 'absolute', right: '8px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Send size={16} /></button>}
+                  </div>
+                  <button onClick={handleLikeStory} style={{ background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.3)', color: hasLiked ? '#ef4444' : 'white', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, transition: 'transform 0.2s' }} onMouseDown={e => e.currentTarget.style.transform = 'scale(0.9)'} onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}>
+                    <Heart size={24} fill={hasLiked ? '#ef4444' : 'none'} />
+                  </button>
+                </div>
+              );
+            })()}
 
             {/* Viewers List Modal */}
             {showViewers && String(viewingUserId) === String(user.id) && (

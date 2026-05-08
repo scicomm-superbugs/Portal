@@ -605,9 +605,13 @@ export default function SciCommFeed() {
 
               {/* Action bar with reaction picker */}
               <div style={{ display: 'flex', borderTop: '1px solid #e0dfdc', position: 'relative' }}>
-                <div style={{ flex: 1, position: 'relative' }}
+                <div style={{ flex: 1, position: 'relative', userSelect: 'none', WebkitUserSelect: 'none' }}
                   onMouseEnter={() => setActiveReactionPicker(post.id)}
-                  onMouseLeave={() => setActiveReactionPicker(null)}>
+                  onMouseLeave={() => setActiveReactionPicker(null)}
+                  onTouchStart={() => { window.reactionTimer = setTimeout(() => setActiveReactionPicker(post.id), 400); }}
+                  onTouchEnd={() => clearTimeout(window.reactionTimer)}
+                  onTouchMove={() => clearTimeout(window.reactionTimer)}
+                  onContextMenu={(e) => { e.preventDefault(); setActiveReactionPicker(post.id); }}>
                   <button className={`scicomm-post-btn ${myReaction ? 'liked' : ''}`} style={{ color: currentReactionDef?.color || 'rgba(0,0,0,0.6)', width: '100%' }} onClick={() => handleReaction(post, myReaction || 'like')}>
                     {currentReactionDef ? currentReactionDef.emoji : '👍'} {currentReactionDef?.label || 'Like'}
                   </button>
