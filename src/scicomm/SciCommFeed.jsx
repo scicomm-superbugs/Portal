@@ -40,6 +40,8 @@ export default function SciCommFeed() {
   const [commentImage, setCommentImage] = useState({}); // { [key]: File }
   const [showEmojiPicker, setShowEmojiPicker] = useState(null); // key string
   const [showReactors, setShowReactors] = useState(null); // { reactions: {like: [...ids], love: [...]}, title: 'Post' }
+  const [mentionQuery, setMentionQuery] = useState(''); // current @mention search
+  const [mentionKey, setMentionKey] = useState(null); // which input is showing mentions
   const EMOJI_LIST = ['😀','😂','😍','🥳','👏','🔥','❤️','💡','🧪','🧬','🔬','⚗️','🎉','👍','🙌','💪','🤔','😎','🤩','✨'];
 
   const AVAILABLE_QUICK_LINKS = [
@@ -282,6 +284,55 @@ export default function SciCommFeed() {
       }
       return <span key={i}>{part}</span>;
     });
+  };
+
+  const mentionSuggestions = mentionQuery.length > 0 ? scientists.filter(s => 
+    s.name.toLowerCase().includes(mentionQuery.toLowerCase()) || 
+    (s.username || '').toLowerCase().includes(mentionQuery.toLowerCase())
+  ).slice(0, 5) : [];
+
+  const handleCommentInput = (inputKey, value) => {
+    setCommentText(prev => ({ ...prev, [inputKey]: value }));
+    // Check for @mention
+    const atIdx = value.lastIndexOf('@');
+    if (atIdx >= 0) {
+      const afterAt = value.slice(atIdx + 1);
+      if (!afterAt.includes(' ') && afterAt.length > 0) {
+        setMentionQuery(afterAt);
+        setMentionKey(inputKey);
+        return;
+      }
+    }
+    setMentionQuery('');
+    setMentionKey(null);
+  };
+
+  const insertMention = (inputKey, person) => {
+    const current = commentText[inputKey] || '';
+    const atIdx = current.lastIndexOf('@');
+    const before = current.slice(0, atIdx);
+    const mention = `@${person.username || person.name.replace(/\s+/g, '')} `;
+    setCommentText(prev => ({ ...prev, [inputKey]: before + mention }));
+    setMentionQuery('');
+    setMentionKey(null);
+  };
+
+  const MentionDropdown = ({ inputKey }) => {
+    if (mentionKey !== inputKey || mentionSuggestions.length === 0) return null;
+    return (
+      <div style={{ position: 'absolute', bottom: '100%', left: 0, right: 0, background: 'white', borderRadius: '8px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', border: '1px solid #e0dfdc', zIndex: 50, maxHeight: '180px', overflowY: 'auto', marginBottom: '4px' }}>
+        {mentionSuggestions.map(s => (
+          <div key={s.id} onClick={() => insertMention(inputKey, s)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', cursor: 'pointer', fontSize: '13px', transition: 'background 0.1s' }}
+            onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+            {renderAvatar(s, 28)}
+            <div>
+              <div style={{ fontWeight: 600 }}>{s.name}</div>
+              <div style={{ fontSize: '11px', color: '#64748b' }}>@{s.username || s.name.replace(/\s+/g, '')}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   const getMyReaction = (post) => {
@@ -589,7 +640,7 @@ export default function SciCommFeed() {
                             <div style={{ background: '#f3f2ef', borderRadius: '0 8px 8px 8px', padding: '8px 12px' }}>
                               <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '13px' }}>{c.authorName}</strong></Link>
                               <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', marginLeft: '8px' }}>{timeAgo(c.createdAt)}</span>
-                              <p style={{ margin: '4px 0 0', fontSize: '13px' }}>{c.text}</p>
+                              <p style={{ margin: '4px 0 0', fontSize: '13px' }}>{renderPostText(c.text)}</p>
                               {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
                             </div>
                             {/* Comment action bar */}
@@ -622,7 +673,7 @@ export default function SciCommFeed() {
                                           <div style={{ background: '#eef3f8', borderRadius: '0 8px 8px 8px', padding: '6px 10px' }}>
                                             <Link to={`/member/${r.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '12px' }}>{r.authorName}</strong></Link>
                                             <span style={{ fontSize: '10px', color: 'rgba(0,0,0,0.4)', marginLeft: '6px' }}>{timeAgo(r.createdAt)}</span>
-                                            <p style={{ margin: '2px 0 0', fontSize: '12px' }}>{r.text}</p>
+                                            <p style={{ margin: '2px 0 0', fontSize: '12px' }}>{renderPostText(r.text)}</p>
                                             {r.imageUrl && <img src={r.imageUrl} alt="" style={{ width: '100%', maxHeight: '150px', objectFit: 'cover', borderRadius: '6px', marginTop: '4px' }} />}
                                           </div>
                                           {/* Reply action bar with reactions */}
@@ -641,8 +692,9 @@ export default function SciCommFeed() {
                                           {/* Sub-reply input */}
                                           {isSubReplying && (
                                             <div style={{ marginTop: '4px' }}>
-                                              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                                                <input type="text" placeholder={`Reply to ${r.authorName}...`} value={commentText[subReplyKey] || ''} onChange={e => setCommentText(prev => ({ ...prev, [subReplyKey]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && handleAddComment(post)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '4px 10px', fontSize: '11px', outline: 'none' }} autoFocus />
+                                              <div style={{ display: 'flex', gap: '6px', alignItems: 'center', position: 'relative' }}>
+                                                <MentionDropdown inputKey={subReplyKey} />
+                                                <input type="text" placeholder={`Reply to ${r.authorName}... (@ to mention)`} value={commentText[subReplyKey] || ''} onChange={e => handleCommentInput(subReplyKey, e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddComment(post)} onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '4px 10px', fontSize: '11px', outline: 'none' }} autoFocus />
                                                 <button onClick={() => setShowEmojiPicker(showEmojiPicker === subReplyKey ? null : subReplyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>😀</button>
                                                 <label style={{ cursor: 'pointer', fontSize: '14px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [subReplyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                                                 <button className="scicomm-btn-primary" style={{ padding: '3px 8px', fontSize: '10px' }} onClick={() => handleAddComment(post)}>Reply</button>
@@ -663,7 +715,7 @@ export default function SciCommFeed() {
                                                     <div style={{ background: '#f3f2ef', borderRadius: '0 6px 6px 6px', padding: '4px 8px', flex: 1 }}>
                                                       <Link to={`/member/${sr.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '11px' }}>{sr.authorName}</strong></Link>
                                                       <span style={{ fontSize: '9px', color: 'rgba(0,0,0,0.4)', marginLeft: '4px' }}>{timeAgo(sr.createdAt)}</span>
-                                                      <p style={{ margin: '1px 0 0', fontSize: '11px' }}>{sr.text}</p>
+                                                      <p style={{ margin: '1px 0 0', fontSize: '11px' }}>{renderPostText(sr.text)}</p>
                                                       {sr.imageUrl && <img src={sr.imageUrl} alt="" style={{ width: '100%', maxHeight: '100px', objectFit: 'cover', borderRadius: '4px', marginTop: '3px' }} />}
                                                     </div>
                                                   </div>
@@ -681,8 +733,9 @@ export default function SciCommFeed() {
                             {/* Reply input */}
                             {isReplying && (
                               <div style={{ marginTop: '6px', paddingLeft: '8px' }}>
-                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                                  <input type="text" placeholder={`Reply to ${c.authorName}...`} value={commentText[replyKey] || ''} onChange={e => setCommentText(prev => ({ ...prev, [replyKey]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && handleAddComment(post)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '5px 12px', fontSize: '12px', outline: 'none' }} autoFocus />
+                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center', position: 'relative' }}>
+                                  <MentionDropdown inputKey={replyKey} />
+                                  <input type="text" placeholder={`Reply to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} onChange={e => handleCommentInput(replyKey, e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddComment(post)} onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '5px 12px', fontSize: '12px', outline: 'none' }} autoFocus />
                                   <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>😀</button>
                                   <label style={{ cursor: 'pointer', fontSize: '14px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                                   <button className="scicomm-btn-primary" style={{ padding: '4px 10px', fontSize: '11px' }} onClick={() => handleAddComment(post)}>Reply</button>
@@ -698,8 +751,10 @@ export default function SciCommFeed() {
                     );
                   })}
                   {/* Main comment input */}
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center' }}>
-                    <input type="text" placeholder="Add a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText(prev => ({ ...prev, [post.id]: e.target.value }))} onKeyDown={e => e.key === 'Enter' && !replyTo && handleAddComment(post)}
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center', position: 'relative' }}>
+                    <MentionDropdown inputKey={post.id} />
+                    <input type="text" placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} onChange={e => handleCommentInput(post.id, e.target.value)} onKeyDown={e => e.key === 'Enter' && !replyTo && handleAddComment(post)}
+                      onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)}
                       style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '6px 14px', fontSize: '13px', outline: 'none' }} />
                     <button onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px' }}>😀</button>
                     <label style={{ cursor: 'pointer', fontSize: '16px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
