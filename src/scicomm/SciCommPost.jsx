@@ -113,10 +113,6 @@ export default function SciCommPost() {
           {renderAvatar(currentUserData, 44)}
           <div>
             <div style={{ fontWeight: 600, fontSize: '15px', color: '#050505' }}>{user.name}</div>
-            <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#e4e6eb', padding: '4px 8px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: '#050505' }}>🌎 Public ▼</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#e4e6eb', padding: '4px 8px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: '#050505' }}>✨ AI label off ▼</span>
-            </div>
           </div>
         </div>
 
