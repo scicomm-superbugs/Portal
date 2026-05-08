@@ -323,5 +323,16 @@ export const db = {
     delete: async (id) => {
       await deleteDoc(doc(firestore, getCollectionName('scicomm_recognitions'), String(id)));
     }
+  },
+  scicomm_applications: {
+    add: async (app) => {
+      await addDoc(collection(firestore, getCollectionName('scicomm_applications')), app);
+    },
+    update: async (id, data) => {
+      await updateDoc(doc(firestore, getCollectionName('scicomm_applications'), String(id)), data);
+    },
+    delete: async (id) => {
+      await deleteDoc(doc(firestore, getCollectionName('scicomm_applications'), String(id)));
+    }
   }
 };

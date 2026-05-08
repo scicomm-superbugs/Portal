@@ -1,4 +1,5 @@
 import { useLiveCollection, db } from '../db';
+import { UserPlus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckCircle, Clock, Award, BarChart3, Image, Link2 } from 'lucide-react';
@@ -14,6 +15,8 @@ export default function SciCommAdmin() {
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
   const connectionsData = useLiveCollection('scicomm_connections') || [];
   const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
+  const applicationsData = useLiveCollection('scicomm_applications') || [];
+  const pendingApps = applicationsData.filter(a => a.status === 'pending');
   const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
   const isMaster = user.role === 'master';
 
@@ -68,8 +71,20 @@ export default function SciCommAdmin() {
     }
   };
 
+  const handleApproveApplication = async (app) => {
+    await db.scientists.update(app.userId, { role: 'scicomm' });
+    await db.scicomm_applications.update(app.id, { status: 'approved', reviewedAt: new Date().toISOString() });
+    flash(`Approved! User promoted to SciComm Team.`);
+  };
+
+  const handleRejectApplication = async (app) => {
+    await db.scicomm_applications.update(app.id, { status: 'rejected', reviewedAt: new Date().toISOString() });
+    flash('Application rejected.');
+  };
+
   const tabs = [
     { id: 'pending', label: `Pending (${pendingAccounts.length})`, icon: <Clock size={14} /> },
+    { id: 'applications', label: `Applications (${pendingApps.length})`, icon: <UserPlus size={14} /> },
     { id: 'users', label: 'Users', icon: <Shield size={14} /> },
     { id: 'tasks', label: 'Tasks', icon: <Calendar size={14} /> },
     { id: 'warnings', label: 'Warnings', icon: <AlertTriangle size={14} /> },
@@ -347,6 +362,36 @@ export default function SciCommAdmin() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* APPLICATIONS */}
+      {activeTab === 'applications' && (
+        <div className="scicomm-card scicomm-card-padding">
+          <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>📝 SciComm Team Applications</h3>
+          {pendingApps.length === 0 ? (
+            <p style={{ color: '#666', textAlign: 'center', padding: '24px' }}>No pending applications.</p>
+          ) : pendingApps.map(app => {
+            const applicant = scientists.find(s => String(s.id) === String(app.userId));
+            if (!applicant) return null;
+            return (
+              <div key={app.id} style={{ display: 'flex', gap: '12px', padding: '14px', marginBottom: '8px', borderRadius: '10px', border: '1px solid #e2e8f0', background: '#f8fafc', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                <div style={{ flexShrink: 0 }}>
+                  {applicant.avatar ? <img src={applicant.avatar} alt="" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} /> : <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#eef3f8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>👤</div>}
+                </div>
+                <div style={{ flex: 1, minWidth: '200px' }}>
+                  <div style={{ fontWeight: 700, fontSize: '15px', marginBottom: '2px' }}>{applicant.name}</div>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{applicant.department || 'No department'} · @{applicant.username}</div>
+                  {applicant.bio && <div style={{ fontSize: '12px', color: '#475569', marginBottom: '4px', fontStyle: 'italic' }}>"{applicant.bio}"</div>}
+                  <div style={{ fontSize: '11px', color: '#94a3b8' }}>Applied: {new Date(app.createdAt).toLocaleDateString()}</div>
+                </div>
+                <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                  <button onClick={() => handleApproveApplication(app)} className="scicomm-btn-primary" style={{ padding: '6px 14px', fontSize: '12px' }}>✅ Approve</button>
+                  <button onClick={() => handleRejectApplication(app)} className="scicomm-btn-secondary" style={{ padding: '6px 14px', fontSize: '12px', color: '#ef4444', borderColor: '#fca5a5' }}>❌ Reject</button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

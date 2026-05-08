@@ -1,7 +1,7 @@
-import { useLiveCollection } from '../db';
+import { db, useLiveCollection } from '../db';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
-import { Trophy, UserCircle, TrendingUp, Lock } from 'lucide-react';
+import { Trophy, UserCircle, TrendingUp, Lock, Send, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AVATARS, AUTO_TAGS, calculateScore, getUnlockedTags, REACTIONS, getUserLevel } from './scicommConstants';
 
@@ -11,8 +11,10 @@ export default function SciCommLeaderboard() {
   const tasksData = useLiveCollection('tasks') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
   const warningsData = useLiveCollection('scicomm_warnings') || [];
+  const applications = useLiveCollection('scicomm_applications') || [];
 
   const [timeframe, setTimeframe] = useState('all');
+  const [applying, setApplying] = useState(false);
 
   const isTeam = user.role === 'scicomm' || user.role === 'admin' || user.role === 'master';
 
@@ -63,36 +65,21 @@ export default function SciCommLeaderboard() {
     return { emoji: `#${index + 1}`, color: 'rgba(0,0,0,0.4)' };
   };
 
-  // Visitor message
-  if (!isTeam) {
-    return (
-      <div className="scicomm-feed-layout">
-        <div className="scicomm-feed-main" style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <div className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', padding: '60px 30px' }}>
-            <div style={{ fontSize: '64px', marginBottom: '16px' }}>🏆</div>
-            <h2 style={{ margin: '0 0 12px', fontSize: '24px', color: '#1e3a8a' }}>SciComm Team Leaderboard</h2>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '16px' }}>
-              <Lock size={18} color="#94a3b8" />
-              <span style={{ color: '#64748b', fontWeight: 600 }}>Team Members Only</span>
-            </div>
-            <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.8', maxWidth: '400px', margin: '0 auto 20px' }}>
-              The leaderboard is exclusively for <strong style={{ color: '#ef4444' }}>🔬 SciComm Team</strong> members who are assigned tasks and attend meetings. 
-              Points are earned through task evaluations by admins and meeting attendance.
-            </p>
-            <div style={{ background: '#f8fafc', borderRadius: '12px', padding: '16px', border: '1px solid #e2e8f0' }}>
-              <div style={{ fontSize: '13px', color: '#475569', lineHeight: '2' }}>
-                <div>📋 Complete assigned tasks → <strong>5–50 pts</strong> (quality-based)</div>
-                <div>📅 Attend meetings → <strong>15 pts</strong> each</div>
-              </div>
-            </div>
-            <p style={{ color: '#94a3b8', fontSize: '12px', marginTop: '16px' }}>
-              Contact an admin or master to be promoted to the SciComm Team.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleApply = async () => {
+    setApplying(true);
+    try {
+      await db.scicomm_applications.add({
+        userId: user.id,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    setApplying(false);
+  };
+
+  const myApplication = applications.find(a => String(a.userId) === String(user.id));
 
   return (
     <div className="scicomm-feed-layout">
@@ -108,6 +95,35 @@ export default function SciCommLeaderboard() {
       </div>
 
       <div className="scicomm-feed-main">
+        {!isTeam && (
+          <div className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', marginBottom: '24px', background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)', border: '1px solid #cbd5e1' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '12px' }}>
+              <Lock size={20} color="#64748b" />
+              <h2 style={{ margin: 0, fontSize: '20px', color: '#1e293b' }}>Visitor Access</h2>
+            </div>
+            <p style={{ color: '#475569', fontSize: '14px', lineHeight: '1.6', margin: '0 auto 16px', maxWidth: '480px' }}>
+              You are currently viewing the leaderboard as a visitor, so you are not ranked. 
+              The leaderboard tracks <strong style={{ color: '#ef4444' }}>🔬 SciComm Team</strong> members who complete tasks and attend meetings.
+            </p>
+            
+            {myApplication ? (
+              <div style={{ padding: '12px', background: '#e0f2fe', color: '#0369a1', borderRadius: '8px', display: 'inline-block', fontWeight: 600, fontSize: '14px' }}>
+                {myApplication.status === 'pending' ? '⏳ Application Submitted! Under review by Admins.' : '✅ Application Processed'}
+              </div>
+            ) : (
+              <div style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'inline-block', textAlign: 'left', maxWidth: '400px' }}>
+                <h4 style={{ margin: '0 0 8px', fontSize: '15px', color: '#0f172a' }}>Want to join the SciComm Team?</h4>
+                <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#64748b' }}>
+                  Make sure to update your profile with your <strong>experience and CV</strong> before applying, as it will be reviewed by the admins.
+                </p>
+                <button onClick={handleApply} disabled={applying} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', padding: '10px' }}>
+                  <Send size={16} /> {applying ? 'Submitting...' : 'Apply Now'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Top 3 Podium */}
         <div className="scicomm-card scicomm-card-padding">
           <h2 style={{ margin: '0 0 16px', fontSize: '22px', textAlign: 'center' }}>🏆 SciComm Leaderboard</h2>
@@ -141,27 +157,32 @@ export default function SciCommLeaderboard() {
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>Full Rankings</h3>
           
-          {/* Admin/Master Accounts - Pinned */}
-          {adminAccounts.map(s => {
-            const isMe = String(s.id) === String(user.id);
-            return (
-              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 8px', borderRadius: '8px', marginBottom: '4px', background: 'linear-gradient(90deg, #eff6ff 0%, transparent 100%)', border: '1px solid #fbbf24' }}>
-                <div style={{ width: '32px', textAlign: 'center', fontSize: '20px' }}>{s.role === 'master' ? '👑' : '🛡️'}</div>
-                <Link to={`/member/${s.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>{renderAvatar(s, 44)}</Link>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                    <span style={{ fontWeight: 700, fontSize: '15px' }}>{s.name}</span>
-                    <span style={{ background: s.role === 'master' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>{s.role === 'master' ? '👑 Master' : '🛡️ Admin'}</span>
-                    {isMe && <span style={{ color: '#1d4ed8', fontSize: '11px', fontWeight: 600 }}>(You)</span>}
+          {/* Admin/Master Accounts Combined Row */}
+          {adminAccounts.length > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 12px', borderRadius: '8px', marginBottom: '8px', background: 'linear-gradient(90deg, #f8fafc 0%, #eff6ff 100%)', border: '1px solid #cbd5e1' }}>
+              <div style={{ width: '32px', textAlign: 'center', fontSize: '20px' }}>🛡️</div>
+              <div style={{ display: 'flex', flexShrink: 0 }}>
+                {adminAccounts.slice(0, 4).map((s, idx) => (
+                  <div key={s.id} style={{ marginLeft: idx > 0 ? '-12px' : '0', border: '2px solid white', borderRadius: '50%', background: 'white', zIndex: 10 - idx }}>
+                    {renderAvatar(s, 36)}
                   </div>
+                ))}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <span style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a' }}>Platform Management</span>
+                  <span style={{ background: 'linear-gradient(135deg, #1e293b, #0f172a)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>Masters & Admins</span>
                 </div>
-                <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <div style={{ fontWeight: 800, fontSize: '24px', color: '#1d4ed8', lineHeight: 1 }}>∞</div>
-                  <div style={{ fontSize: '10px', color: '#1d4ed8', fontWeight: 600 }}>points</div>
+                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
+                  {adminAccounts.map(a => a.name).join(', ')}
                 </div>
               </div>
-            );
-          })}
+              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                <div style={{ fontWeight: 800, fontSize: '26px', color: '#1d4ed8', lineHeight: 1 }}>∞</div>
+                <div style={{ fontSize: '10px', color: '#1d4ed8', fontWeight: 600 }}>points</div>
+              </div>
+            </div>
+          )}
 
           {/* SciComm Team Leaderboard */}
           {leaderboard.length === 0 && (
