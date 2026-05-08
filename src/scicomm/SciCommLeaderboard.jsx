@@ -114,64 +114,65 @@ export default function SciCommLeaderboard() {
             <div style={{ color: 'rgba(0,0,0,0.4)', fontSize: '11px', marginTop: '8px' }}>Points are awarded by admins based on task quality evaluation.</div>
           </div>
         </div>
-      </div>
 
-      <div className="scicomm-feed-main">
         {!isTeam && (
-          <div className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', marginBottom: '24px', background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)', border: '1px solid #cbd5e1' }}>
+          <div className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', marginTop: '16px', background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)', border: '1px solid #cbd5e1' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '12px' }}>
               <Lock size={20} color="#64748b" />
-              <h2 style={{ margin: 0, fontSize: '20px', color: '#1e293b' }}>Visitor Access</h2>
+              <h2 style={{ margin: 0, fontSize: '16px', color: '#1e293b' }}>Visitor Access</h2>
             </div>
-            <p style={{ color: '#475569', fontSize: '14px', lineHeight: '1.6', margin: '0 auto 16px', maxWidth: '480px' }}>
-              You are currently viewing the leaderboard as a visitor, so you are not ranked. 
-              The leaderboard tracks <strong style={{ color: '#ef4444' }}>🔬 SciComm Team</strong> members who complete tasks and attend meetings.
+            <p style={{ color: '#475569', fontSize: '13px', lineHeight: '1.6', margin: '0 auto 16px' }}>
+              You are currently viewing the leaderboard as a visitor. The leaderboard tracks <strong style={{ color: '#ef4444' }}>SciComm Team</strong> members.
             </p>
             
             {myApplication ? (
-              <div style={{ padding: '14px 20px', borderRadius: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', fontWeight: 600, fontSize: '14px', maxWidth: '400px', margin: '0 auto',
+              <div style={{ padding: '10px', borderRadius: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '12px',
                 background: myApplication.status === 'pending' ? '#e0f2fe' : (localStorage.getItem('has_been_team_' + user.id) ? '#fee2e2' : '#dcfce7'),
                 color: myApplication.status === 'pending' ? '#0369a1' : (localStorage.getItem('has_been_team_' + user.id) ? '#b91c1c' : '#166534'),
                 border: myApplication.status === 'pending' ? '1px solid #7dd3fc' : (localStorage.getItem('has_been_team_' + user.id) ? '1px solid #fca5a5' : '1px solid #86efac')
               }}>
                 <div>
-                  {myApplication.status === 'pending' && '⏳ Application Submitted! Under review by Admins.'}
-                  {myApplication.status === 'approved' && !localStorage.getItem('has_been_team_' + user.id) && '🎉 Your application was approved! You are now a SciComm Team member. Refresh the page to see your new access.'}
-                  {myApplication.status === 'approved' && localStorage.getItem('has_been_team_' + user.id) && '⚠️ Your profile has been downgraded by admins. You no longer have team access.'}
+                  {myApplication.status === 'pending' && '⏳ Submitted! Under review.'}
+                  {myApplication.status === 'approved' && !localStorage.getItem('has_been_team_' + user.id) && '🎉 Approved! Refresh page.'}
+                  {myApplication.status === 'approved' && localStorage.getItem('has_been_team_' + user.id) && '⚠️ Downgraded by admins.'}
                 </div>
                 
                 {((myApplication.status === 'approved' && localStorage.getItem('has_been_team_' + user.id)) || myApplication.status === 'pending') && (
                   <button onClick={() => navigate('/apply')} style={{ 
                     background: myApplication.status === 'pending' ? '#0369a1' : '#b91c1c',
-                    color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+                    color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '11px', fontWeight: 600, cursor: 'pointer',
                     boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                   }}>
-                    View Application Status
+                    View Status
                   </button>
                 )}
               </div>
             ) : myRejectedApp ? (
-              <div style={{ display: 'inline-block', maxWidth: '420px' }}>
-                <div style={{ padding: '14px 20px', borderRadius: '10px', fontWeight: 600, fontSize: '14px', background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5', marginBottom: '12px' }}>
-                  ❌ Your previous application was not approved. Update your profile and try again.
+              <div style={{ display: 'inline-block' }}>
+                <div style={{ padding: '10px', borderRadius: '10px', fontWeight: 600, fontSize: '12px', background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5', marginBottom: '8px' }}>
+                  ❌ Not approved. Update profile and try again.
                 </div>
-                <button onClick={() => navigate('/apply')} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', padding: '10px' }}>
-                  <Send size={16} /> View Application Status
+                <button onClick={() => navigate('/apply')} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', padding: '8px', fontSize: '12px' }}>
+                  <Send size={14} /> View Status
                 </button>
               </div>
             ) : (
-              <div style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'inline-block', textAlign: 'left', maxWidth: '400px' }}>
-                <h4 style={{ margin: '0 0 8px', fontSize: '15px', color: '#0f172a' }}>Want to join the SciComm Team?</h4>
-                <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#64748b' }}>
-                  Make sure to update your profile with your <strong>experience and CV</strong> before applying, as it will be reviewed by the admins.
+              <div style={{ background: 'white', padding: '12px', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'left' }}>
+                <h4 style={{ margin: '0 0 4px', fontSize: '14px', color: '#0f172a' }}>Join the Team?</h4>
+                <p style={{ margin: '0 0 12px', fontSize: '12px', color: '#64748b' }}>
+                  Update your profile with experience before applying.
                 </p>
-                <button onClick={() => navigate('/apply')} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', padding: '10px' }}>
-                  <Send size={16} /> Apply Now
+                <button onClick={() => navigate('/apply')} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '6px', padding: '8px', fontSize: '12px' }}>
+                  <Send size={14} /> Apply Now
                 </button>
               </div>
             )}
           </div>
         )}
+      </div>
+
+      <div className="scicomm-feed-main">
+
 
         {/* Top 3 Podium */}
         <div className="scicomm-card scicomm-card-padding">
