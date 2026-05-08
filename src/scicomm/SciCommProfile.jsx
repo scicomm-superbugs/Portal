@@ -82,6 +82,7 @@ export default function SciCommProfile() {
   const unlockedTags = getUnlockedTags(myScore);
   const pinnedTags = (me?.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t) || t === '👑 SciComm MasterMind');
   const pinnedPosts = me?.pinnedPosts || [];
+  const myConnections = connectionsData.filter(c => c.status === 'accepted' && (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id))).length;
 
   // Warnings
   const activeWarnings = warningsData.filter(w => String(w.userId) === String(user.id) && w.status !== 'removed');

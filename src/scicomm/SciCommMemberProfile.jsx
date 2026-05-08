@@ -42,6 +42,12 @@ export default function SciCommMemberProfile() {
   // Removed redirect so user can preview their own profile
   try {
   const memberPosts = postsData.filter(p => String(p.authorId) === String(memberId));
+  const likesReceived = memberPosts.reduce((acc, p) => {
+    const reactions = p.reactions || {};
+    const count = Object.values(reactions).reduce((sum, users) => sum + (users?.length || 0), 0);
+    return acc + count;
+  }, 0);
+  const completedTasks = tasksData.filter(t => String(t.assignedTo) === String(memberId) && (t.status === 'Completed' || t.status === 'Approved')).length;
   const taskPoints = tasksData.filter(t => String(t.assignedTo) === String(memberId) && (t.status === 'Completed' || t.status === 'Approved')).reduce((s, t) => s + (t.awardedPoints || 0), 0);
   const connectionCount = connectionsData.filter(c => c.status === 'accepted' && (String(c.fromId) === String(memberId) || String(c.toId) === String(memberId))).length;
   const meetingsAttended = meetingsData.filter(m => (m.attendees || []).includes(memberId)).length;
