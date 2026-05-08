@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, X, UserCircle } from 'lucide-react';
-import { db, useLiveCollection } from '../db';
+import { db, useLiveCollection, uploadFile } from '../db';
 import { useAuth } from '../context/AuthContext';
 import { AVATARS } from './scicommConstants';
 
@@ -16,8 +16,8 @@ export default function SciCommStories({ scientists }) {
     return <UserCircle size={size} color="#94a3b8" />;
   };
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [mediaUrl, setMediaUrl] = useState('');
-  const [mediaType, setMediaType] = useState('image');
+  const [mediaFile, setMediaFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [duration, setDuration] = useState(24); // hours
   const [caption, setCaption] = useState('');
   const [creating, setCreating] = useState(false);
@@ -46,27 +46,38 @@ export default function SciCommStories({ scientists }) {
   });
 
   const handleCreateStory = async () => {
-    if (!mediaUrl && !caption) return;
+    if (!mediaFile && !caption) return;
     setCreating(true);
     try {
+      let finalMediaUrl = '';
+      let finalMediaType = 'image';
+
+      if (mediaFile) {
+        finalMediaType = mediaFile.type.startsWith('video/') ? 'video' : 'image';
+        const path = `stories/${user.id}_${Date.now()}_${mediaFile.name}`;
+        finalMediaUrl = await uploadFile(mediaFile, path, setUploadProgress);
+      }
+
       const expiresAt = new Date();
       expiresAt.setHours(expiresAt.getHours() + Number(duration));
       await db.scicomm_stories.add({
         authorId: user.id,
         authorName: user.name,
-        mediaUrl,
-        mediaType,
+        mediaUrl: finalMediaUrl,
+        mediaType: finalMediaType,
         content: caption,
         createdAt: new Date().toISOString(),
         expiresAt: expiresAt.toISOString(),
         viewers: []
       });
       setShowCreateModal(false);
-      setMediaUrl('');
+      setMediaFile(null);
+      setUploadProgress(0);
       setCaption('');
       setDuration(24);
     } catch (e) {
       console.error(e);
+      alert(e.message || 'Upload failed');
     }
     setCreating(false);
   };
@@ -179,17 +190,18 @@ export default function SciCommStories({ scientists }) {
               <button onClick={() => setShowCreateModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
             </div>
             <div style={{ marginBottom: '12px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Media URL (Optional)</label>
-              <input type="text" value={mediaUrl} onChange={e => setMediaUrl(e.target.value)} placeholder="https://..." style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', boxSizing: 'border-box' }} />
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Photo or Video (Optional)</label>
+              <input type="file" accept="image/*,video/*" onChange={e => {
+                if (e.target.files && e.target.files[0]) {
+                  setMediaFile(e.target.files[0]);
+                } else {
+                  setMediaFile(null);
+                }
+              }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', boxSizing: 'border-box' }} />
+              {uploadProgress > 0 && uploadProgress < 100 && (
+                <div style={{ marginTop: '8px', fontSize: '12px', color: '#1d4ed8' }}>Uploading... {uploadProgress}%</div>
+              )}
             </div>
-            {mediaUrl && (
-              <div style={{ marginBottom: '12px' }}>
-                <select value={mediaType} onChange={e => setMediaType(e.target.value)} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #ccc' }}>
-                  <option value="image">Image</option>
-                  <option value="video">Video</option>
-                </select>
-              </div>
-            )}
             <div style={{ marginBottom: '12px' }}>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Text (Optional)</label>
               <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="What's on your mind?" rows={3} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', boxSizing: 'border-box', fontFamily: 'inherit' }} />
@@ -202,7 +214,7 @@ export default function SciCommStories({ scientists }) {
                 <option value={168}>1 Week</option>
               </select>
             </div>
-            <button onClick={handleCreateStory} disabled={creating || (!mediaUrl && !caption)} className="scicomm-btn-primary" style={{ width: '100%', padding: '12px', justifyContent: 'center' }}>
+            <button onClick={handleCreateStory} disabled={creating || (!mediaFile && !caption)} className="scicomm-btn-primary" style={{ width: '100%', padding: '12px', justifyContent: 'center' }}>
               {creating ? 'Posting...' : 'Share to Story'}
             </button>
           </div>
