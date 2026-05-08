@@ -233,39 +233,38 @@ export default function SciCommLayout() {
                 <button onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#666', marginTop: '-8px' }}>×</button>
               </div>
               <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <h3 style={{ margin: '0 0 4px', fontSize: '16px' }}>{user.name}</h3>
+                <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700 }}>{user.name}</h3>
               </Link>
-              <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px', marginBottom: '8px' }}>{me?.department || 'Member'}</div>
-              <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>El Alamein, Matruh, Egypt</div>
+              <div style={{ color: '#4b5563', fontSize: '14px', marginBottom: '4px', fontWeight: 500 }}>{me?.department || 'Member'}</div>
             </div>
 
             <div style={{ padding: '16px', borderBottom: '1px solid #e0dfdc' }}>
-              <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.8)', fontWeight: 600, fontSize: '13px', marginBottom: '12px' }}>
-                <span>profile viewers</span>
+              <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: '#374151', fontWeight: 600, fontSize: '14px', marginBottom: '16px' }}>
+                <span>Profile viewers</span>
                 <span style={{ color: '#1d4ed8' }}>{profileViewers}</span>
               </Link>
-              <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'rgba(0,0,0,0.8)', fontWeight: 600, fontSize: '13px' }}>
-                <span>post impressions</span>
+              <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: '#374151', fontWeight: 600, fontSize: '14px' }}>
+                <span>Post impressions</span>
                 <span style={{ color: '#1d4ed8' }}>{postImpressions}</span>
               </Link>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
-              <button onClick={() => { setMobileSidebarOpen(false); window.dispatchEvent(new CustomEvent('show-changelog')); }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, cursor: 'pointer', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                🚀 What's New in {PLATFORM_VERSION}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '12px 0' }}>
+              <button onClick={() => { setMobileSidebarOpen(false); window.dispatchEvent(new CustomEvent('show-changelog')); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 700, cursor: 'pointer', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{ fontSize: '18px' }}>🚀</span> What's New in {PLATFORM_VERSION}
               </button>
-              {isAdmin && <Link to="/admin" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', textDecoration: 'none', color: 'rgba(0,0,0,0.8)', fontSize: '14px', fontWeight: 600 }}><Shield size={18} /> Admin Dashboard {pendingAccounts.length > 0 && <span className="scicomm-notif-badge" style={{position:'static', marginLeft:'auto'}}>{pendingAccounts.length}</span>}</Link>}
-              <button onClick={() => { toggleDarkMode(); setMobileSidebarOpen(false); }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, color: 'rgba(0,0,0,0.8)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />} {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+              {isAdmin && <Link to="/admin" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: '#1f2937', fontSize: '15px', fontWeight: 600 }}><Shield size={20} color="#4b5563" /> Admin Dashboard {pendingAccounts.length > 0 && <span className="scicomm-notif-badge" style={{position:'static', marginLeft:'auto'}}>{pendingAccounts.length}</span>}</Link>}
+              <button onClick={() => { toggleDarkMode(); setMobileSidebarOpen(false); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {isDarkMode ? <Sun size={20} color="#4b5563" /> : <Moon size={20} color="#4b5563" />} {isDarkMode ? 'Light Mode' : 'Dark Mode'}
               </button>
-              <button onClick={() => { localStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, color: 'rgba(0,0,0,0.8)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Building2 size={18} /> Switch Hub
+              <button onClick={() => { localStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Building2 size={20} color="#4b5563" /> Switch Hub
               </button>
             </div>
 
-            <div style={{ padding: '8px 0', borderTop: '1px solid #e0dfdc' }}>
-              <button style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, color: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}><Settings size={18} /> Settings</button>
-              <button onClick={() => { setMobileSidebarOpen(false); handleLogout(); }} style={{ width: '100%', padding: '12px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', fontWeight: 600, color: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>Sign Out</button>
+            <div style={{ padding: '12px 0', borderTop: '1px solid #e0dfdc' }}>
+              <button style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#4b5563', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}><Settings size={20} /> Settings</button>
+              <button onClick={() => { setMobileSidebarOpen(false); handleLogout(); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#4b5563', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>Sign Out</button>
             </div>
           </div>
           <style>{`
