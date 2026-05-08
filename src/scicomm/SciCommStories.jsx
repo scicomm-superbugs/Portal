@@ -24,6 +24,7 @@ export default function SciCommStories({ scientists }) {
 
   const [viewingUserId, setViewingUserId] = useState(null);
   const [storyIndex, setStoryIndex] = useState(0);
+  const [showViewers, setShowViewers] = useState(false);
 
   // Filter active stories
   const now = new Date();
@@ -279,8 +280,36 @@ export default function SciCommStories({ scientists }) {
 
             {/* Views counter for own story */}
             {String(viewingUserId) === String(user.id) && (
-              <div style={{ position: 'absolute', bottom: '16px', left: '16px', color: 'white', background: 'rgba(0,0,0,0.5)', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, zIndex: 10 }}>
+              <div 
+                onClick={(e) => { e.stopPropagation(); setShowViewers(true); }}
+                style={{ position: 'absolute', bottom: '16px', left: '16px', color: 'white', background: 'rgba(0,0,0,0.5)', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, zIndex: 10, cursor: 'pointer', border: '1px solid rgba(255,255,255,0.2)' }}>
                 👁 {storiesByUser[viewingUserId][storyIndex].viewers?.length || 0} views
+              </div>
+            )}
+
+            {/* Viewers List Modal */}
+            {showViewers && String(viewingUserId) === String(user.id) && (
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'white', borderTopLeftRadius: '16px', borderTopRightRadius: '16px', padding: '16px', zIndex: 20, maxHeight: '60%', overflowY: 'auto', boxShadow: '0 -4px 12px rgba(0,0,0,0.1)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h3 style={{ margin: 0, fontSize: '16px', color: '#0f172a' }}>👁 {storiesByUser[viewingUserId][storyIndex].viewers?.length || 0} Viewers</h3>
+                  <button onClick={(e) => { e.stopPropagation(); setShowViewers(false); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}><X size={20} /></button>
+                </div>
+                {(storiesByUser[viewingUserId][storyIndex].viewers || []).length > 0 ? (
+                  (storiesByUser[viewingUserId][storyIndex].viewers).map((vid, i) => {
+                    const viewer = scientists.find(s => String(s.id) === String(vid)) || { name: 'Unknown User' };
+                    return (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
+                        {renderAvatar(viewer, 36)}
+                        <div>
+                          <div style={{ fontWeight: 600, fontSize: '13px', color: '#0f172a' }}>{viewer.name}</div>
+                          <div style={{ fontSize: '11px', color: '#64748b' }}>{viewer.department || 'Member'}</div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div style={{ padding: '20px 0', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>No views yet.</div>
+                )}
               </div>
             )}
           </div>
