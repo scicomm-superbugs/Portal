@@ -336,7 +336,7 @@ export default function SciCommLayout() {
                 <Building2 size={20} color="#4b5563" /> Switch Hub
               </button>
               <div style={{ padding: '24px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 'auto' }}>
-                <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '80px', opacity: 0.9 }} onError={e => e.target.style.display='none'} />
+                <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '120px', opacity: 0.9 }} onError={e => e.target.style.display='none'} />
               </div>
             </div>
 
@@ -360,7 +360,7 @@ export default function SciCommLayout() {
           <div style={{ background: 'white', borderRadius: '16px', padding: '28px', maxWidth: '480px', width: '100%', maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
               <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
-                <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '80px' }} onError={e => e.target.style.display='none'} />
+                <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '120px' }} onError={e => e.target.style.display='none'} />
               </div>
               <h2 style={{ margin: '0 0 4px', fontSize: '22px' }}>What's New in {PLATFORM_VERSION}</h2>
               <p style={{ margin: 0, color: 'rgba(0,0,0,0.5)', fontSize: '13px' }}>SciComm Platform Update</p>
