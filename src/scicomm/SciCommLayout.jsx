@@ -336,7 +336,7 @@ export default function SciCommLayout() {
                 <Building2 size={20} color="#4b5563" /> Switch Hub
               </button>
               <div style={{ padding: '24px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 'auto' }}>
-                <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '36px', opacity: 0.8 }} onError={e => e.target.style.display='none'} />
+                <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '80px', opacity: 0.9 }} onError={e => e.target.style.display='none'} />
               </div>
             </div>
 
