@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export default function ProtectedRoute({ requireAdmin = false }) {
+export default function ProtectedRoute({ requireAdmin = false, requireTeam = false }) {
   const { user } = useAuth();
   const workspaceId = localStorage.getItem('workspaceId');
 
@@ -14,6 +14,10 @@ export default function ProtectedRoute({ requireAdmin = false }) {
   }
 
   if (requireAdmin && user.role !== 'admin' && user.role !== 'master') {
+    return <Navigate to="/" replace />;
+  }
+
+  if (requireTeam && user.role !== 'scicomm' && user.role !== 'admin' && user.role !== 'master') {
     return <Navigate to="/" replace />;
   }
 

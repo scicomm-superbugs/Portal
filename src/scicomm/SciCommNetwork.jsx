@@ -154,6 +154,7 @@ export default function SciCommNetwork() {
                       {s.name}
                       {s.role === 'master' && <span style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}>👑</span>}
                       {s.role === 'admin' && <span style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}>🛡️</span>}
+                      {s.role === 'scicomm' && <span style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}>🔬</span>}
                     </h4>
                     <p style={{ color: 'rgba(0,0,0,0.6)', margin: '0 0 12px', fontSize: '12px', height: '32px', overflow: 'hidden' }}>{s.department || 'Science Communicator'}</p>
                   </Link>

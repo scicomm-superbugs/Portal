@@ -26,6 +26,7 @@ export default function SciCommLayout() {
   const upcomingMeetings = meetingsData.filter(m => ((m.members || []).includes(user.id) || m.allMembers) && new Date(m.date) >= new Date(new Date().toDateString()));
   
   const isAdmin = user.role === 'admin' || user.role === 'master';
+  const isTeam = user.role === 'scicomm' || isAdmin;
 
   const notifCount = myWarnings.length + (isAdmin ? pendingAccounts.length : 0);
 
@@ -71,7 +72,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.4.1';
+  const PLATFORM_VERSION = 'v3.5.0';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -98,9 +99,9 @@ export default function SciCommLayout() {
           <nav className="scicomm-nav">
             <Link to="/" className={`scicomm-nav-item ${isActive('/') ? 'active' : ''}`}><Home size={20} /><span className="nav-text">Home</span></Link>
             <Link to="/network" className={`scicomm-nav-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span className="nav-text">Network</span></Link>
-            <Link to="/tasks" className={`scicomm-nav-item ${isActive('/tasks') ? 'active' : ''}`} style={{position:'relative'}}><Briefcase size={20} />{myPendingTasks.length > 0 && <span className="scicomm-notif-badge">{myPendingTasks.length}</span>}<span className="nav-text">Tasks</span></Link>
+            {isTeam && <Link to="/tasks" className={`scicomm-nav-item ${isActive('/tasks') ? 'active' : ''}`} style={{position:'relative'}}><Briefcase size={20} />{myPendingTasks.length > 0 && <span className="scicomm-notif-badge">{myPendingTasks.length}</span>}<span className="nav-text">Tasks</span></Link>}
             <Link to="/calendar" className={`scicomm-nav-item ${isActive('/calendar') ? 'active' : ''}`} style={{position:'relative'}}><Calendar size={20} />{upcomingMeetings.length > 0 && <span className="scicomm-notif-badge">{upcomingMeetings.length}</span>}<span className="nav-text">Calendar</span></Link>
-            <Link to="/meetings" className={`scicomm-nav-item ${isActive('/meetings') ? 'active' : ''}`}><Video size={20} /><span className="nav-text">Meetings</span></Link>
+            {isTeam && <Link to="/meetings" className={`scicomm-nav-item ${isActive('/meetings') ? 'active' : ''}`}><Video size={20} /><span className="nav-text">Meetings</span></Link>}
             <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`}><MessageCircle size={20} /><span className="nav-text">Chat</span></Link>
             <Link to="/leaderboard" className={`scicomm-nav-item ${isActive('/leaderboard') ? 'active' : ''}`}><Trophy size={20} /><span className="nav-text">Leaderboard</span></Link>
             <Link to="/notifications" className={`scicomm-nav-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell size={20} />{notifCount > 0 && <span className="scicomm-notif-badge">{notifCount}</span>}<span className="nav-text">Alerts</span></Link>
@@ -147,8 +148,8 @@ export default function SciCommLayout() {
         <style>{`.scicomm-mobile-bar::-webkit-scrollbar { display: none; }`}</style>
         <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`}><Home size={20} /><span>Home</span></Link>
         <Link to="/calendar" className={`scicomm-mobile-item ${isActive('/calendar') ? 'active' : ''}`} style={{position:'relative'}}><Calendar size={20} />{upcomingMeetings.length > 0 && <span className="scicomm-notif-badge">{upcomingMeetings.length}</span>}<span>Calendar</span></Link>
-        <Link to="/meetings" className={`scicomm-mobile-item ${isActive('/meetings') ? 'active' : ''}`}><Video size={20} /><span>Meetings</span></Link>
-        <Link to="/tasks" className={`scicomm-mobile-item ${isActive('/tasks') ? 'active' : ''}`} style={{position:'relative'}}><Briefcase size={20} />{myPendingTasks.length > 0 && <span className="scicomm-notif-badge">{myPendingTasks.length}</span>}<span>Tasks</span></Link>
+        {isTeam && <Link to="/meetings" className={`scicomm-mobile-item ${isActive('/meetings') ? 'active' : ''}`}><Video size={20} /><span>Meetings</span></Link>}
+        {isTeam && <Link to="/tasks" className={`scicomm-mobile-item ${isActive('/tasks') ? 'active' : ''}`} style={{position:'relative'}}><Briefcase size={20} />{myPendingTasks.length > 0 && <span className="scicomm-notif-badge">{myPendingTasks.length}</span>}<span>Tasks</span></Link>}
         <Link to="/chat" className={`scicomm-mobile-item ${isActive('/chat') ? 'active' : ''}`}><MessageCircle size={20} /><span>Chat</span></Link>
         <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span>Network</span></Link>
         <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell size={20} />{notifCount > 0 && <span className="scicomm-notif-badge">{notifCount}</span>}<span>Alerts</span></Link>
@@ -169,24 +170,29 @@ export default function SciCommLayout() {
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>Reply Reactions:</strong> 👍❤️🔥 React to replies with Like, Love, or Fire — just like comments!</li>
-                  <li><strong>Emoji Picker Stays Open:</strong> Select multiple emojis without the picker closing each time.</li>
+                  <li><strong>4-Tier Role System:</strong> Users are now classified into 4 roles with distinct badges:</li>
+                  <li>👑 <strong>Master</strong> (Gold) — Highest level, manages everything, can promote anyone</li>
+                  <li>🛡️ <strong>Admin</strong> (Blue) — Full access but cannot remove the Master</li>
+                  <li>🔬 <strong>SciComm Team</strong> (Red) — Access to Meetings & Tasks</li>
+                  <li>👤 <strong>Visitor</strong> (Gray) — Can browse, post, and chat but no Tasks or Meetings</li>
+                  <li><strong>Role Promotion Dropdown:</strong> Master can promote any user to any role from Admin Dashboard</li>
                 </ul>
               </div>
               <div style={{ background: '#fef3c7', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔧 Fixes & Improvements</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔒 Access Control</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#92400e', lineHeight: '1.8' }}>
-                  <li>Fixed: Only post owners and admins/masters can edit or delete posts now</li>
-                  <li>Fixed: Post impressions now count 1 per unique viewer (reactions + commenters)</li>
-                  <li>Fixed: Emoji picker no longer auto-closes after selecting one emoji</li>
+                  <li>Tasks & Meetings are now restricted to SciComm Team and above</li>
+                  <li>Visitors cannot see Tasks or Meetings in the navigation bar</li>
+                  <li>Admins cannot remove or demote the Master account</li>
+                  <li>Admins can promote visitors to SciComm Team</li>
                 </ul>
               </div>
               <div style={{ background: '#dbeafe', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 UI & Experience</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 Badges & UI</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li>Reply reaction bar matches comment reaction bar styling</li>
-                  <li>Reaction counts appear next to each emoji on replies</li>
-                  <li>Impressions metric is now accurate and meaningful</li>
+                  <li>Role badges appear on profiles, posts, network cards, and sidebars</li>
+                  <li>Gradient-colored badges: Gold, Blue, Red, Gray</li>
+                  <li>Admin Dashboard user list shows role dropdown for Master</li>
                 </ul>
               </div>
             </div>

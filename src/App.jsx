@@ -44,12 +44,14 @@ function App() {
             <Route path="/" element={<SciCommLayout />}>
               <Route index element={<SciCommFeed />} />
               <Route path="network" element={<SciCommNetwork />} />
-              <Route path="tasks" element={<SciCommTasks />} />
+              <Route element={<ProtectedRoute requireTeam={true} />}>
+                <Route path="tasks" element={<SciCommTasks />} />
+                <Route path="meetings" element={<SciCommMeetings />} />
+              </Route>
               <Route path="notifications" element={<SciCommNotifications />} />
               <Route path="profile" element={<SciCommProfile />} />
               <Route path="leaderboard" element={<SciCommLeaderboard />} />
               <Route path="chat" element={<SciCommChat />} />
-              <Route path="meetings" element={<SciCommMeetings />} />
               <Route path="calendar" element={<SciCommCalendar />} />
               <Route path="member/:memberId" element={<SciCommMemberProfile />} />
               <Route element={<ProtectedRoute requireAdmin={true} />}>

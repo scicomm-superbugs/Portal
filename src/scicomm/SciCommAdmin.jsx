@@ -30,8 +30,8 @@ export default function SciCommAdmin() {
   // Handlers
   const handleApprove = async (id) => { await db.scientists.update(id, { accountStatus: 'active' }); flash('Account approved!'); };
   const handleReject = async (id) => { if (window.confirm("Reject?")) await db.scientists.delete(id); };
-  const handlePromote = async (id) => { await db.scientists.update(id, { role: 'admin' }); flash('Promoted!'); };
-  const handleDemote = async (id) => { await db.scientists.update(id, { role: 'scientist' }); };
+  const handlePromote = async (id, newRole) => { await db.scientists.update(id, { role: newRole }); flash('Role updated!'); };
+  const handleDemote = async (id) => { await db.scientists.update(id, { role: 'scientist' }); flash('Demoted to Visitor.'); };
   const handleRemoveUser = async (id) => { if (window.confirm("Remove?")) await db.scientists.delete(id); };
   const handleRemovePost = async (id) => { if (window.confirm("Delete post?")) await db.scicomm_posts.delete(id); };
 
@@ -172,14 +172,21 @@ export default function SciCommAdmin() {
                       {s.avatar ? <img src={s.avatar} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} /> : '👤'}
                     </div>
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: '14px' }}>{s.name} <span style={{ background: s.role === 'master' ? '#fef08a' : s.role === 'admin' ? '#bbf7d0' : '#eef3f8', padding: '2px 6px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, marginLeft: '4px' }}>{s.role}</span></div>
+                    <div style={{ fontWeight: 600, fontSize: '14px' }}>{s.name} <span style={{ background: s.role === 'master' ? 'linear-gradient(135deg, #fbbf24, #f59e0b)' : s.role === 'admin' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : s.role === 'scicomm' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : '#e2e8f0', color: s.role === 'scientist' ? '#475569' : 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '10px', fontWeight: 700, marginLeft: '4px' }}>{s.role === 'master' ? '👑 Master' : s.role === 'admin' ? '🛡️ Admin' : s.role === 'scicomm' ? '🔬 SciComm' : '👤 Visitor'}</span></div>
                       <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>@{s.username} • {s.email || 'No email'} • {s.department || 'No department'}</div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                     {s.role !== 'master' && (
                       <>
-                        {s.role === 'scientist' ? <button onClick={() => handlePromote(s.id)} className="scicomm-btn-secondary" style={{ padding: '4px 10px', fontSize: '11px' }}>Promote</button> : isMaster && <button onClick={() => handleDemote(s.id)} style={{ padding: '4px 10px', fontSize: '11px', border: '1px solid #e0dfdc', borderRadius: '24px', background: 'transparent', cursor: 'pointer' }}>Demote</button>}
+                        {isMaster && (
+                          <select value={s.role} onChange={e => handlePromote(s.id, e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', border: '1px solid #e0dfdc', borderRadius: '8px', cursor: 'pointer', background: 'white' }}>
+                            <option value="scientist">👤 Visitor</option>
+                            <option value="scicomm">🔬 SciComm Team</option>
+                            <option value="admin">🛡️ Admin</option>
+                          </select>
+                        )}
+                        {!isMaster && s.role === 'scientist' && <button onClick={() => handlePromote(s.id, 'scicomm')} className="scicomm-btn-secondary" style={{ padding: '4px 10px', fontSize: '11px' }}>Promote to SciComm</button>}
                         <button onClick={async () => {
                           const bcrypt = (await import('bcryptjs')).default;
                           const newPass = window.prompt('Enter new password for ' + s.name);
@@ -190,7 +197,7 @@ export default function SciCommAdmin() {
                             flash('Password reset for ' + s.name);
                           }
                         }} style={{ padding: '4px 10px', fontSize: '11px', border: '1px solid #f59e0b', borderRadius: '24px', background: '#fef3c7', cursor: 'pointer', color: '#92400e' }}>Reset Password</button>
-                        <button onClick={() => handleRemoveUser(s.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}><UserX size={16} /></button>
+                        {(isMaster || s.role !== 'admin') && <button onClick={() => handleRemoveUser(s.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}><UserX size={16} /></button>}
                       </>
                     )}
                   </div>
