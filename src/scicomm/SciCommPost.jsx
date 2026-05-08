@@ -161,25 +161,43 @@ export default function SciCommPost() {
         )}
       </div>
 
-      {/* Options List */}
-      <div style={{ borderTop: '1px solid #ced0d4', background: 'white' }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
-          <Image size={24} color="#45bd62" /> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Photo/video</span>
-          <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files[0]; if(f && f.type.startsWith('video')) setPostVideo(f); else if (f) setPostImage(f); }} style={{ display: 'none' }} />
-        </label>
-        <div onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
-          <span style={{ fontSize: '24px', lineHeight: 1 }}>📊</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Create Poll</span>
-        </div>
+        {/* Futuristic Options Panel */}
+        <div style={{ 
+          background: 'rgba(255, 255, 255, 0.9)', 
+          backdropFilter: 'blur(20px)',
+          borderTop: '1px solid rgba(226, 232, 240, 0.8)',
+          padding: '20px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '12px',
+          boxShadow: '0 -10px 30px rgba(0,0,0,0.03)',
+          borderRadius: '24px 24px 0 0',
+          position: 'sticky',
+          bottom: 0
+        }}>
+          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px 10px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.2s' }}>
+            <div style={{ width: '40px', height: '40px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Image size={24} color="#10b981" />
+            </div>
+            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 600 }}>Media</span>
+            <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files[0]; if(f && f.type.startsWith('video')) setPostVideo(f); else if (f) setPostImage(f); }} style={{ display: 'none' }} />
+          </label>
+          
+          <div onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px 10px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.2s' }}>
+            <div style={{ width: '40px', height: '40px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: '20px', lineHeight: 1 }}>📊</span>
+            </div>
+            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 600 }}>Poll</span>
+          </div>
 
-        <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
-          <span style={{ fontSize: '24px', lineHeight: 1 }}>📎</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Attach File</span>
-          <input type="file" onChange={e => setPostFile(e.target.files[0])} style={{ display: 'none' }} />
-        </label>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', cursor: 'pointer' }}>
-          <span style={{ fontSize: '24px', lineHeight: 1 }}>📍</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Check in</span>
+          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px 10px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.2s' }}>
+            <div style={{ width: '40px', height: '40px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: '20px', lineHeight: 1 }}>📎</span>
+            </div>
+            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 600 }}>File</span>
+            <input type="file" onChange={e => setPostFile(e.target.files[0])} style={{ display: 'none' }} />
+          </label>
         </div>
-      </div>
     </div>
   );
 }
