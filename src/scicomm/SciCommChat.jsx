@@ -159,7 +159,32 @@ export default function SciCommChat() {
   };
 
   const EMOJI_LIST = ['😀','😂','😍','🔥','👍','❤️','🎉','💡','🧪','🔬','🧬','🧲','⚗️','💀','👀','🤯','🙏','✅','❌','🚀'];
+  const QUICK_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
   const [showEmoji, setShowEmoji] = useState(false);
+  const [hoveredMessage, setHoveredMessage] = useState(null);
+
+  const handleReact = async (messageId, emoji) => {
+    const msg = allMessages.find(m => m.id === messageId);
+    if (!msg) return;
+    const currentReactions = msg.reactions || {};
+    const users = currentReactions[emoji] || [];
+    
+    let newUsers;
+    if (users.includes(user.id)) {
+      newUsers = users.filter(id => id !== user.id);
+    } else {
+      newUsers = [...users, user.id];
+    }
+    
+    const newReactions = { ...currentReactions };
+    if (newUsers.length === 0) {
+      delete newReactions[emoji];
+    } else {
+      newReactions[emoji] = newUsers;
+    }
+    
+    await db.scicomm_chat_messages.update(messageId, { reactions: newReactions });
+  };
 
   const getRoomTitle = (room) => {
     if (room.type === 'group') return room.name || 'Group Chat';
@@ -255,11 +280,15 @@ export default function SciCommChat() {
               {roomMessages.map(m => {
                 const isMe = m.senderId === user.id;
                 return (
-                  <div key={m.id} style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', marginBottom: '8px' }}>
+                  <div key={m.id} style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', marginBottom: '8px', position: 'relative' }}
+                    onMouseEnter={() => setHoveredMessage(m.id)}
+                    onMouseLeave={() => setHoveredMessage(null)}
+                  >
                     <div style={{
                       maxWidth: '70%', padding: '10px 14px', borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                       background: isMe ? '#1d4ed8' : 'white', color: isMe ? 'white' : 'rgba(0,0,0,0.9)',
-                      border: isMe ? 'none' : '1px solid #e0dfdc', fontSize: '14px', lineHeight: '1.4'
+                      border: isMe ? 'none' : '1px solid #e0dfdc', fontSize: '14px', lineHeight: '1.4',
+                      position: 'relative'
                     }}>
                       {!isMe && activeRoom.type === 'group' && <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '4px', color: '#1d4ed8' }}>{m.senderName}</div>}
                       {m.type === 'image' && m.fileUrl && <img src={m.fileUrl} alt="" style={{ maxWidth: '100%', borderRadius: '8px', marginBottom: '4px' }} />}
@@ -274,8 +303,45 @@ export default function SciCommChat() {
                         </div>
                       )}
                       {m.content && <div>{renderMessageText(m.content, isMe)}</div>}
+                      
+                      {/* Reactions Display */}
+                      {m.reactions && Object.keys(m.reactions).length > 0 && (
+                        <div style={{ display: 'flex', gap: '4px', marginTop: '6px', flexWrap: 'wrap' }}>
+                          {Object.entries(m.reactions).map(([emoji, userIds]) => (
+                            <div key={emoji} onClick={() => handleReact(m.id, emoji)} style={{ background: isMe ? 'rgba(255,255,255,0.2)' : '#f1f5f9', padding: '2px 6px', borderRadius: '10px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '2px', cursor: 'pointer' }}>
+                              <span>{emoji}</span>
+                              <span style={{ opacity: 0.8 }}>{userIds.length}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
                       <div style={{ fontSize: '10px', marginTop: '4px', opacity: 0.7, textAlign: 'right' }}>{timeAgo(m.createdAt)}</div>
                     </div>
+
+                    {/* Quick Reactions Tooltip */}
+                    {hoveredMessage === m.id && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '-30px',
+                        left: isMe ? 'auto' : '10px',
+                        right: isMe ? '10px' : 'auto',
+                        background: 'white',
+                        borderRadius: '20px',
+                        padding: '4px 8px',
+                        display: 'flex',
+                        gap: '6px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        border: '1px solid #e0dfdc',
+                        zIndex: 10
+                      }}>
+                        {QUICK_REACTIONS.map(emoji => (
+                          <span key={emoji} onClick={() => handleReact(m.id, emoji)} style={{ cursor: 'pointer', fontSize: '16px', transition: 'transform 0.1s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'} onMouseOut={e => e.currentTarget.style.transform = 'none'}>
+                            {emoji}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })}
