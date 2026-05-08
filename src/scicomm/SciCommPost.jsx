@@ -126,8 +126,8 @@ export default function SciCommPost() {
           value={newPost}
           onChange={e => setNewPost(e.target.value)}
           style={{
-            width: '100%', minHeight: '120px', border: 'none', outline: 'none',
-            fontSize: '22px', lineHeight: '1.3', resize: 'vertical',
+            width: '100%', minHeight: '80px', border: 'none', outline: 'none',
+            fontSize: '18px', lineHeight: '1.3', resize: 'vertical',
             boxSizing: 'border-box', fontFamily: 'inherit', color: '#050505'
           }}
           autoFocus
@@ -166,7 +166,7 @@ export default function SciCommPost() {
           background: 'rgba(255, 255, 255, 0.9)', 
           backdropFilter: 'blur(20px)',
           borderTop: '1px solid rgba(226, 232, 240, 0.8)',
-          padding: '20px',
+          padding: '16px 16px 80px 16px',
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '12px',
