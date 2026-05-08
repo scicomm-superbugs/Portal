@@ -188,13 +188,28 @@ export default function SciCommLayout() {
           <nav className="scicomm-nav">
             <Link to="/" className={`scicomm-nav-item ${isActive('/') ? 'active' : ''}`}><Home size={20} /><span className="nav-text">Home</span></Link>
             <Link to="/network" className={`scicomm-nav-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span className="nav-text">Network</span></Link>
-            {isTeam && <Link to="/tasks" className={`scicomm-nav-item ${isActive('/tasks') ? 'active' : ''}`} style={{position:'relative'}}><Briefcase size={20} />{myPendingTasks.length > 0 && <span className="scicomm-notif-badge">{myPendingTasks.length}</span>}<span className="nav-text">Tasks</span></Link>}
-            <Link to="/calendar" className={`scicomm-nav-item ${isActive('/calendar') ? 'active' : ''}`} style={{position:'relative'}}><Calendar size={20} />{upcomingMeetings.length > 0 && <span className="scicomm-notif-badge">{upcomingMeetings.length}</span>}<span className="nav-text">Calendar</span></Link>
-            {isTeam && <Link to="/meetings" className={`scicomm-nav-item ${isActive('/meetings') ? 'active' : ''}`}><Video size={20} /><span className="nav-text">Meetings</span></Link>}
             <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`} style={{position:'relative'}}><MessageCircle size={20} />{unreadChatCount > 0 && <span className="scicomm-notif-badge">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}<span className="nav-text">Chat</span></Link>
-            <Link to="/leaderboard" className={`scicomm-nav-item ${isActive('/leaderboard') ? 'active' : ''}`}><Trophy size={20} /><span className="nav-text">Leaderboard</span></Link>
             <Link to="/notifications" className={`scicomm-nav-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell size={20} />{notifCount > 0 && <span className="scicomm-notif-badge">{notifCount}</span>}<span className="nav-text">Alerts</span></Link>
             
+            {/* SciComm Tools Dropdown */}
+            <div className="scicomm-nav-item profile-dropdown-container">
+              <div style={{ fontSize: '20px', lineHeight: 1 }}>🔬</div>
+              <span className="nav-text">SciComm ▼</span>
+              <div className="scicomm-dropdown" style={{ minWidth: '220px' }}>
+                {isTeam && <Link to="/tasks" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}><Briefcase size={16} /> Tasks {myPendingTasks.length > 0 && <span className="scicomm-notif-badge" style={{position:'static', marginLeft:'auto'}}>{myPendingTasks.length}</span>}</Link>}
+                <Link to="/calendar" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}><Calendar size={16} /> Calendar {upcomingMeetings.length > 0 && <span className="scicomm-notif-badge" style={{position:'static', marginLeft:'auto'}}>{upcomingMeetings.length}</span>}</Link>
+                {isTeam && <Link to="/meetings" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}><Video size={16} /> Meetings</Link>}
+                <Link to="/leaderboard" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}><Trophy size={16} /> Leaderboard</Link>
+                {isAdmin && (
+                  <>
+                    <div className="dropdown-divider"></div>
+                    <Link to="/admin" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}><Shield size={16} /> Admin Dashboard {pendingAccounts.length > 0 && <span className="scicomm-notif-badge" style={{position:'static', marginLeft:'auto'}}>{pendingAccounts.length}</span>}</Link>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Profile Dropdown */}
             <div className="scicomm-nav-item profile-dropdown-container">
               {renderAvatar(24)}
               <span className="nav-text">Me ▼</span>
@@ -209,7 +224,6 @@ export default function SciCommLayout() {
                   </div>
                   <Link to="/profile" className="scicomm-btn-secondary" style={{marginTop:'8px',display:'block',textAlign:'center',textDecoration:'none',padding:'4px 12px',fontSize:'13px'}}>View Profile</Link>
                 </div>
-                {isAdmin && <Link to="/admin" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}><Shield size={16} /> Admin Dashboard {pendingAccounts.length > 0 && <span className="scicomm-notif-badge" style={{position:'static'}}>{pendingAccounts.length}</span>}</Link>}
                 <button onClick={toggleDarkMode} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
                   {isDarkMode ? <Sun size={16} /> : <Moon size={16} />} {isDarkMode ? 'Light Mode' : 'Dark Mode'}
                 </button>
