@@ -157,32 +157,30 @@ export default function SciCommLeaderboard() {
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>Full Rankings</h3>
           
-          {/* Admin/Master Accounts Combined Row */}
-          {adminAccounts.length > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 12px', borderRadius: '8px', marginBottom: '8px', background: 'linear-gradient(90deg, #f8fafc 0%, #eff6ff 100%)', border: '1px solid #cbd5e1' }}>
-              <div style={{ width: '32px', textAlign: 'center', fontSize: '20px' }}>🛡️</div>
-              <div style={{ display: 'flex', flexShrink: 0 }}>
-                {adminAccounts.slice(0, 4).map((s, idx) => (
-                  <div key={s.id} style={{ marginLeft: idx > 0 ? '-12px' : '0', border: '2px solid white', borderRadius: '50%', background: 'white', zIndex: 10 - idx }}>
-                    {renderAvatar(s, 36)}
+          {/* Admin/Master Accounts - Master first, then Admins */}
+          {adminAccounts
+            .sort((a, b) => (a.role === 'master' ? -1 : 1) - (b.role === 'master' ? -1 : 1))
+            .map(s => {
+            const isMe = String(s.id) === String(user.id);
+            return (
+              <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 8px', borderRadius: '8px', marginBottom: '4px', background: 'linear-gradient(90deg, #fffbeb 0%, #eff6ff 100%)', border: '1px solid #fbbf24' }}>
+                <div style={{ width: '32px', textAlign: 'center', fontSize: '20px' }}>👑</div>
+                <Link to={`/member/${s.id}`} style={{ textDecoration: 'none', flexShrink: 0 }}>{renderAvatar(s, 44)}</Link>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                    <span style={{ fontWeight: 700, fontSize: '15px' }}>{s.name}</span>
+                    <span style={{ background: s.role === 'master' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>{s.role === 'master' ? '👑 Master' : '🛡️ Admin'}</span>
+                    {isMe && <span style={{ color: '#1d4ed8', fontSize: '11px', fontWeight: 600 }}>(You)</span>}
                   </div>
-                ))}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  <span style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a' }}>Platform Management</span>
-                  <span style={{ background: 'linear-gradient(135deg, #1e293b, #0f172a)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>Masters & Admins</span>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>{s.department || 'Platform Management'}</div>
                 </div>
-                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
-                  {adminAccounts.map(a => a.name).join(', ')}
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <div style={{ fontWeight: 800, fontSize: '24px', color: '#1d4ed8', lineHeight: 1 }}>∞</div>
+                  <div style={{ fontSize: '10px', color: '#1d4ed8', fontWeight: 600 }}>points</div>
                 </div>
               </div>
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                <div style={{ fontWeight: 800, fontSize: '26px', color: '#1d4ed8', lineHeight: 1 }}>∞</div>
-                <div style={{ fontSize: '10px', color: '#1d4ed8', fontWeight: 600 }}>points</div>
-              </div>
-            </div>
-          )}
+            );
+          })}
 
           {/* SciComm Team Leaderboard */}
           {leaderboard.length === 0 && (
