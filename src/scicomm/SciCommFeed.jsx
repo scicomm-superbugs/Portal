@@ -39,6 +39,7 @@ export default function SciCommFeed() {
   const [editingPost, setEditingPost] = useState(null); // { id, content, imageUrl }
   const [commentImage, setCommentImage] = useState({}); // { [key]: File }
   const [showEmojiPicker, setShowEmojiPicker] = useState(null); // key string
+  const [showReactors, setShowReactors] = useState(null); // { reactions: {like: [...ids], love: [...]}, title: 'Post' }
   const EMOJI_LIST = ['😀','😂','😍','🥳','👏','🔥','❤️','💡','🧪','🧬','🔬','⚗️','🎉','👍','🙌','💪','🤔','😎','🤩','✨'];
 
   const AVAILABLE_QUICK_LINKS = [
@@ -537,7 +538,7 @@ export default function SciCommFeed() {
               {/* Reaction summary + comment count */}
               {(totalReactions > 0 || commentCount > 0) && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 16px 8px', fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>
-                  <span>{reactionSummary.map(r => r.emoji).join('')} {totalReactions > 0 && totalReactions}</span>
+                  <span style={{ cursor: totalReactions > 0 ? 'pointer' : 'default' }} onClick={() => totalReactions > 0 && setShowReactors({ reactions: post.reactions || {}, title: 'Post Reactions' })}>{reactionSummary.map(r => r.emoji).join('')} {totalReactions > 0 && totalReactions}</span>
                   <span style={{ cursor: 'pointer' }} onClick={() => setShowComments(p => ({ ...p, [post.id]: !p[post.id] }))}>{commentCount > 0 ? `${commentCount} comment${commentCount > 1 ? 's' : ''}` : ''}</span>
                 </div>
               )}
@@ -598,7 +599,7 @@ export default function SciCommFeed() {
                                 const isActive = myCommentReaction === rk;
                                 return (
                                   <button key={rk} onClick={() => handleCommentReaction(post, i, rk)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: isActive ? 700 : 500, color: isActive ? rd.color : 'rgba(0,0,0,0.5)', padding: '2px 0', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                                    {rd.emoji} {(cReactions[rk]?.length || 0) > 0 && <span>{cReactions[rk].length}</span>}
+                                    {rd.emoji} {(cReactions[rk]?.length || 0) > 0 && <span style={{ cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); setShowReactors({ reactions: cReactions, title: 'Comment Reactions' }); }}>{cReactions[rk].length}</span>}
                                   </button>
                                 );
                               })}
@@ -631,7 +632,7 @@ export default function SciCommFeed() {
                                               const isActive = myReplyReaction === rk;
                                               return (
                                                 <button key={rk} onClick={() => handleReplyReaction(post, i, ri, rk)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: isActive ? 700 : 500, color: isActive ? rd.color : 'rgba(0,0,0,0.45)', padding: '1px 0', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                                                  {rd.emoji} {(rReactions[rk]?.length || 0) > 0 && <span>{rReactions[rk].length}</span>}
+                                                  {rd.emoji} {(rReactions[rk]?.length || 0) > 0 && <span style={{ cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); setShowReactors({ reactions: rReactions, title: 'Reply Reactions' }); }}>{rReactions[rk].length}</span>}
                                                 </button>
                                               );
                                             })}
@@ -839,6 +840,48 @@ export default function SciCommFeed() {
                 <span style={{ fontSize: '13px', color: '#475569' }}>Search Appearances</span>
                 <span style={{ fontWeight: 600, color: '#0f172a' }}>{Math.floor(profileViewers * 0.4)}</span>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* Who Reacted Modal */}
+      {showReactors && (
+        <div onClick={() => setShowReactors(null)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: '12px', width: '100%', maxWidth: '400px', maxHeight: '70vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #e0dfdc' }}>
+              <h3 style={{ margin: 0, fontSize: '16px' }}>{showReactors.title}</h3>
+              <button onClick={() => setShowReactors(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: '#666' }}>✕</button>
+            </div>
+            <div style={{ overflowY: 'auto', padding: '8px 0' }}>
+              {(() => {
+                const allReactors = [];
+                for (const [key, arr] of Object.entries(showReactors.reactions)) {
+                  const rd = REACTIONS.find(r => r.key === key);
+                  if (rd && arr.length > 0) {
+                    arr.forEach(uid => {
+                      const person = scientists.find(s => String(s.id) === String(uid));
+                      allReactors.push({ uid, person, reaction: rd });
+                    });
+                  }
+                }
+                if (allReactors.length === 0) return <p style={{ textAlign: 'center', padding: '20px', color: '#666' }}>No reactions yet.</p>;
+                return allReactors.map((r, idx) => (
+                  <Link key={idx} to={`/member/${r.uid}`} onClick={() => setShowReactors(null)} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', textDecoration: 'none', color: 'inherit', transition: 'background 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#f9fafb'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                    {renderAvatar(r.person, 36)}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 600, fontSize: '14px' }}>{r.person?.name || 'Unknown User'}</div>
+                      <div style={{ fontSize: '11px', color: '#64748b' }}>{r.person?.department || ''}</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#f1f5f9', padding: '4px 10px', borderRadius: '16px' }}>
+                      <span style={{ fontSize: '16px' }}>{r.reaction.emoji}</span>
+                      <span style={{ fontSize: '11px', color: r.reaction.color, fontWeight: 600 }}>{r.reaction.label}</span>
+                    </div>
+                  </Link>
+                ));
+              })()}
             </div>
           </div>
         </div>
