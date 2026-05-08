@@ -116,6 +116,12 @@
   object-fit: cover;
 }
 
+/* Hide mobile-specific elements on desktop */
+.scicomm-mobile-profile-link,
+.scicomm-mobile-chat-link {
+  display: none;
+}
+
 /* Notification Badge */
 .scicomm-notif-badge {
   position: absolute;

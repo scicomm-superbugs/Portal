@@ -129,7 +129,7 @@ export default function SciCommLayout() {
             <div className="scicomm-search-box"><Search size={16} /><input type="text" placeholder="Search..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { navigate('/network?q=' + encodeURIComponent(searchText)); setSearchText(''); } }} /></div>
           </div>
           {/* Mobile: Chat icon top-right with unread badge */}
-          <Link to="/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative', display: 'inline-flex' }}>
+          <Link to="/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative' }}>
             <MessageCircle size={24} color="rgba(0,0,0,0.6)" />
             {unreadChatCount > 0 && (
               <span style={{
