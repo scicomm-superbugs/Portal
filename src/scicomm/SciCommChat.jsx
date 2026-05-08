@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db, uploadFile } from '../db';
-import { Send, Plus, UserCircle, Users, Search, Smile, Paperclip, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import { Send, Plus, UserCircle, Users, Search, Smile, Paperclip, ArrowLeft, Image as ImageIcon, BarChart2, X } from 'lucide-react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { AVATARS, timeAgo } from './scicommConstants';
 
@@ -162,6 +162,10 @@ export default function SciCommChat() {
   const QUICK_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
   const [showEmoji, setShowEmoji] = useState(false);
   const [hoveredMessage, setHoveredMessage] = useState(null);
+  
+  const [showPollCreator, setShowPollCreator] = useState(false);
+  const [pollQuestion, setPollQuestion] = useState('');
+  const [pollOptions, setPollOptions] = useState(['', '']);
 
   const handleReact = async (messageId, emoji) => {
     const msg = allMessages.find(m => m.id === messageId);
@@ -184,6 +188,54 @@ export default function SciCommChat() {
     }
     
     await db.scicomm_chat_messages.update(messageId, { reactions: newReactions });
+  };
+
+  const handleVote = async (messageId, optionIdx) => {
+    const msg = allMessages.find(m => m.id === messageId);
+    if (!msg || msg.type !== 'poll') return;
+    
+    const newOptions = [...msg.poll.options];
+    const votes = newOptions[optionIdx].votes || [];
+    
+    if (votes.includes(user.id)) {
+      newOptions[optionIdx].votes = votes.filter(id => id !== user.id);
+    } else {
+      newOptions.forEach(opt => {
+        if (opt.votes) opt.votes = opt.votes.filter(id => id !== user.id);
+      });
+      newOptions[optionIdx].votes = [...votes, user.id];
+    }
+    
+    await db.scicomm_chat_messages.update(messageId, { poll: { ...msg.poll, options: newOptions } });
+  };
+
+  const sendPoll = async () => {
+    if (!pollQuestion.trim() || pollOptions.some(opt => !opt.trim())) return;
+    await db.scicomm_chat_messages.add({
+      roomId: selectedRoom, senderId: user.id, senderName: user.name,
+      type: 'poll',
+      poll: {
+        question: pollQuestion,
+        options: pollOptions.map(opt => ({ text: opt, votes: [] }))
+      },
+      readBy: [user.id],
+      createdAt: new Date().toISOString()
+    });
+    await db.scicomm_chat_rooms.update(selectedRoom, { lastMessageAt: new Date().toISOString(), lastMessage: `📊 Poll: ${pollQuestion}`, lastSender: user.name });
+    setShowPollCreator(false);
+    setPollQuestion('');
+    setPollOptions(['', '']);
+  };
+
+  const renderTag = (senderId) => {
+    const s = scientists.find(u => String(u.id) === String(senderId));
+    if (!s) return null;
+    const isAdm = s.role === 'admin' || s.role === 'master';
+    const isTm = s.role === 'scicomm' || isAdm;
+    
+    if (isAdm) return <span style={{ background: '#fee2e2', color: '#b91c1c', fontSize: '10px', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px', fontWeight: 600 }}>Admin</span>;
+    if (isTm) return <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '10px', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px', fontWeight: 600 }}>Team</span>;
+    return <span style={{ background: '#f1f5f9', color: '#475569', fontSize: '10px', padding: '1px 4px', borderRadius: '4px', marginLeft: '4px', fontWeight: 600 }}>Visitor</span>;
   };
 
   const getRoomTitle = (room) => {
@@ -290,10 +342,36 @@ export default function SciCommChat() {
                       border: isMe ? 'none' : '1px solid #e0dfdc', fontSize: '14px', lineHeight: '1.4',
                       position: 'relative'
                     }}>
-                      {!isMe && activeRoom.type === 'group' && <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '4px', color: '#1d4ed8' }}>{m.senderName}</div>}
+                      {!isMe && activeRoom.type === 'group' && (
+                        <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '4px', color: '#1d4ed8', display: 'flex', alignItems: 'center' }}>
+                          {m.senderName}
+                          {renderTag(m.senderId)}
+                        </div>
+                      )}
                       {m.type === 'image' && m.fileUrl && <img src={m.fileUrl} alt="" style={{ maxWidth: '100%', borderRadius: '8px', marginBottom: '4px' }} />}
                       {m.type === 'video' && m.fileUrl && <video src={m.fileUrl} controls style={{ maxWidth: '100%', borderRadius: '8px', marginBottom: '4px' }} />}
                       {m.type === 'file' && m.fileUrl && <a href={m.fileUrl} target="_blank" rel="noreferrer" style={{ color: isMe ? 'white' : '#2563eb', textDecoration: 'underline' }}>📎 {m.fileName || 'File'}</a>}
+                      {m.type === 'poll' && (
+                        <div style={{ background: isMe ? 'rgba(255,255,255,0.1)' : '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '4px', minWidth: '200px' }}>
+                          <div style={{ fontWeight: 600, marginBottom: '8px', color: isMe ? 'white' : '#0f172a' }}>{m.poll?.question}</div>
+                          {m.poll?.options.map((opt, idx) => {
+                            const totalVotes = m.poll.options.reduce((acc, o) => acc + (o.votes?.length || 0), 0);
+                            const percent = totalVotes > 0 ? Math.round(((opt.votes?.length || 0) / totalVotes) * 100) : 0;
+                            const hasVoted = opt.votes?.includes(user.id);
+                            
+                            return (
+                              <div key={idx} onClick={() => handleVote(m.id, idx)} style={{ 
+                                padding: '8px', background: isMe ? 'rgba(255,255,255,0.2)' : 'white', border: `1px solid ${hasVoted ? '#3b82f6' : '#e2e8f0'}`, borderRadius: '6px', marginBottom: '4px', cursor: 'pointer',
+                                display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', position: 'relative', overflow: 'hidden'
+                              }}>
+                                <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: `${percent}%`, background: isMe ? 'rgba(255,255,255,0.1)' : '#e0f2fe', zIndex: 1 }} />
+                                <span style={{ zIndex: 2, color: isMe ? 'white' : '#1e293b', fontWeight: hasVoted ? 600 : 400 }}>{opt.text}</span>
+                                <span style={{ zIndex: 2, fontSize: '11px', color: isMe ? 'rgba(255,255,255,0.8)' : '#64748b' }}>{opt.votes?.length || 0} ({percent}%)</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                       {m.type === 'story_reply' && (
                         <div style={{ marginBottom: '8px', padding: '8px', background: isMe ? 'rgba(255,255,255,0.2)' : '#f3f4f6', borderRadius: '8px', borderLeft: `4px solid ${isMe ? 'white' : '#1d4ed8'}` }}>
                           <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '4px', opacity: 0.9 }}>Reply to Story</div>
@@ -356,10 +434,52 @@ export default function SciCommChat() {
             <div style={{ display: 'flex', gap: '6px', padding: '10px 12px', borderTop: '1px solid #e0dfdc', alignItems: 'center' }}>
               <button onClick={() => setShowEmoji(!showEmoji)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: '4px' }}><Smile size={20} /></button>
               <label style={{ cursor: 'pointer', color: '#666', padding: '4px', display: 'flex' }}><Paperclip size={20} /><input type="file" onChange={handleFileUpload} style={{ display: 'none' }} /></label>
+              <button onClick={() => setShowPollCreator(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: '4px' }}><BarChart2 size={20} /></button>
               <input type="text" value={msgText} onChange={e => setMsgText(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMessage()}
                 placeholder="Type a message..." style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '24px', fontSize: '14px', outline: 'none', minWidth: 0 }} />
               <button className="scicomm-btn-primary" onClick={sendMessage} style={{ padding: '10px 14px', flexShrink: 0 }}><Send size={16} /></button>
             </div>
+
+            {/* Poll Creator Modal */}
+            {showPollCreator && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(5px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                <div style={{ background: 'white', borderRadius: '16px', padding: '24px', maxWidth: '400px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>Create Poll</h3>
+                    <button onClick={() => setShowPollCreator(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}><X size={20} /></button>
+                  </div>
+                  
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '4px', color: '#475569' }}>Question</label>
+                    <input type="text" value={pollQuestion} onChange={e => setPollQuestion(e.target.value)} placeholder="What's the question?" style={{ width: '100%', padding: '10px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box' }} />
+                  </div>
+                  
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '4px', color: '#475569' }}>Options</label>
+                    {pollOptions.map((opt, idx) => (
+                      <div key={idx} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                        <input type="text" value={opt} onChange={e => {
+                          const newOpts = [...pollOptions];
+                          newOpts[idx] = e.target.value;
+                          setPollOptions(newOpts);
+                        }} placeholder={`Option ${idx + 1}`} style={{ flex: 1, padding: '10px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '14px' }} />
+                        {pollOptions.length > 2 && (
+                          <button onClick={() => setPollOptions(pollOptions.filter((_, i) => i !== idx))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444' }}><X size={16} /></button>
+                        )}
+                      </div>
+                    ))}
+                    {pollOptions.length < 5 && (
+                      <button onClick={() => setPollOptions([...pollOptions, ''])} style={{ background: 'none', border: 'none', color: '#3b82f6', fontSize: '13px', fontWeight: 600, cursor: 'pointer', padding: '4px 0' }}>+ Add Option</button>
+                    )}
+                  </div>
+                  
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <button onClick={() => setShowPollCreator(false)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0', background: 'white', color: '#64748b', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>Cancel</button>
+                    <button onClick={sendPoll} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: 'none', background: '#3b82f6', color: 'white', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>Send Poll</button>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         ) : (
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', color: '#666' }} className="chat-hide-mobile">
