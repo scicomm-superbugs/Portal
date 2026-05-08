@@ -233,7 +233,12 @@ export default function SciCommStories({ scientists }) {
             </div>
             <div style={{ marginBottom: '12px' }}>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Text (Optional)</label>
-              <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="What's on your mind?" rows={3} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+              <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="What's on your mind?" rows={3} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', boxSizing: 'border-box', fontFamily: 'inherit', marginBottom: '8px' }} />
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {['😀', '😂', '😍', '🔥', '👍', '❤️', '🙌', '🎉', '💡', '🧪'].map(emoji => (
+                  <button key={emoji} onClick={() => setCaption(c => c + emoji)} style={{ background: '#f3f2ef', border: 'none', borderRadius: '4px', padding: '6px', cursor: 'pointer', fontSize: '16px' }}>{emoji}</button>
+                ))}
+              </div>
             </div>
             <div style={{ marginBottom: '20px' }}>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Story Duration</label>

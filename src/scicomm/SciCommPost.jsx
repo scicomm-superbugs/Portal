@@ -84,33 +84,50 @@ export default function SciCommPost() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 4px' }}>
+    <div style={{ maxWidth: '600px', margin: '0 auto', background: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0' }}>
-        <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
-          <ArrowLeft size={24} color="#0f172a" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #ced0d4' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
+            <ArrowLeft size={24} color="#050505" />
+          </button>
+          <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#050505' }}>Create post</h2>
+        </div>
+        <button
+          onClick={handlePostSubmit}
+          disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile && !(showArticle && articleTitle.trim()) && !(showPoll && pollQuestion.trim()))}
+          style={{ 
+            padding: '6px 16px', borderRadius: '4px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer',
+            background: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showArticle && articleTitle.trim()) && !(showPoll && pollQuestion.trim())) ? '#e4e6eb' : '#1b74e4', 
+            color: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showArticle && articleTitle.trim()) && !(showPoll && pollQuestion.trim())) ? '#bcc0c4' : 'white'
+          }}
+        >
+          {isPostingMedia ? 'Posting...' : 'Post'}
         </button>
-        <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>Create Post</h2>
       </div>
 
-      {/* Composer */}
-      <div className="scicomm-card scicomm-card-padding">
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}>
+      <div style={{ padding: '16px', flex: 1 }}>
+        {/* User Info & Privacy */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
           {renderAvatar(currentUserData, 44)}
           <div>
-            <div style={{ fontWeight: 600, fontSize: '15px' }}>{user.name}</div>
-            <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>{currentUserData?.department || 'Member'}</div>
+            <div style={{ fontWeight: 600, fontSize: '15px', color: '#050505' }}>{user.name}</div>
+            <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#e4e6eb', padding: '4px 8px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: '#050505' }}>🌎 Public ▼</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#e4e6eb', padding: '4px 8px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: '#050505' }}>✨ AI label off ▼</span>
+            </div>
           </div>
         </div>
 
+        {/* Textarea */}
         <textarea
-          placeholder="What do you want to talk about?"
+          placeholder="What's on your mind?"
           value={newPost}
           onChange={e => setNewPost(e.target.value)}
           style={{
-            width: '100%', minHeight: '150px', border: 'none', outline: 'none',
-            fontSize: '16px', lineHeight: '1.6', resize: 'vertical',
-            boxSizing: 'border-box', fontFamily: 'inherit',
+            width: '100%', minHeight: '120px', border: 'none', outline: 'none',
+            fontSize: '22px', lineHeight: '1.3', resize: 'vertical',
+            boxSizing: 'border-box', fontFamily: 'inherit', color: '#050505'
           }}
           autoFocus
         />
@@ -124,66 +141,57 @@ export default function SciCommPost() {
 
         {/* Article Title */}
         {showArticle && (
-          <div style={{ marginBottom: '8px' }}>
-            <input type="text" placeholder="Article title..." value={articleTitle} onChange={e => setArticleTitle(e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '15px', fontWeight: 600, outline: 'none', boxSizing: 'border-box' }} />
+          <div style={{ marginBottom: '12px', borderLeft: '3px solid #e7a33e', paddingLeft: '12px' }}>
+            <input type="text" placeholder="Article Title (Optional)..." value={articleTitle} onChange={e => setArticleTitle(e.target.value)} style={{ width: '100%', padding: '4px 0', border: 'none', fontSize: '16px', fontWeight: 600, outline: 'none', boxSizing: 'border-box', color: '#050505', background: 'transparent' }} />
           </div>
         )}
 
         {/* Poll Builder */}
         {showPoll && (
-          <div style={{ marginBottom: '12px', border: '1px solid #e0dfdc', borderRadius: '8px', padding: '12px' }}>
-            <input type="text" placeholder="Poll question..." value={pollQuestion} onChange={e => setPollQuestion(e.target.value)} style={{ width: '100%', padding: '8px 12px', border: '1px solid #e0dfdc', borderRadius: '4px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', marginBottom: '8px' }} />
+          <div style={{ marginBottom: '12px', border: '1px solid #ced0d4', borderRadius: '8px', padding: '12px' }}>
+            <input type="text" placeholder="Ask a question..." value={pollQuestion} onChange={e => setPollQuestion(e.target.value)} style={{ width: '100%', padding: '8px 12px', border: '1px solid #ced0d4', borderRadius: '4px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', marginBottom: '8px' }} />
             {pollOptions.map((opt, i) => (
               <div key={opt.id} style={{ display: 'flex', gap: '8px', marginBottom: '6px' }}>
                 <input type="text" placeholder={`Option ${i+1}`} value={opt.text} onChange={e => {
                   const newOpts = [...pollOptions];
                   newOpts[i].text = e.target.value;
                   setPollOptions(newOpts);
-                }} style={{ flex: 1, padding: '8px 10px', border: '1px solid #e0dfdc', borderRadius: '4px', fontSize: '14px', outline: 'none' }} />
+                }} style={{ flex: 1, padding: '8px 10px', border: '1px solid #ced0d4', borderRadius: '4px', fontSize: '14px', outline: 'none' }} />
                 {pollOptions.length > 2 && <button onClick={() => setPollOptions(pollOptions.filter(o => o.id !== opt.id))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '18px' }}>×</button>}
               </div>
             ))}
-            {pollOptions.length < 5 && <button onClick={() => setPollOptions([...pollOptions, {id: Date.now(), text: ''}])} style={{ background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}>+ Add Option</button>}
+            {pollOptions.length < 5 && <button onClick={() => setPollOptions([...pollOptions, {id: Date.now(), text: ''}])} style={{ background: 'none', border: 'none', color: '#1b74e4', cursor: 'pointer', fontSize: '14px', fontWeight: 600, marginTop: '4px' }}>+ Add Option</button>}
           </div>
         )}
+      </div>
 
-        {/* Action bar */}
-        <div style={{ borderTop: '1px solid #e0dfdc', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, color: '#475569', background: '#f8fafc' }}>
-              <Image size={20} color="#70b5f9" /> Photo
-              <input type="file" accept="image/*" onChange={e => setPostImage(e.target.files[0])} style={{ display: 'none' }} />
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, color: '#475569', background: '#f8fafc' }}>
-              <Video size={20} color="#7fc15e" /> Video
-              <input type="file" accept="video/*" onChange={e => setPostVideo(e.target.files[0])} style={{ display: 'none' }} />
-            </label>
-            <button onClick={() => setShowArticle(!showArticle)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, color: showArticle ? '#e7a33e' : '#475569', background: '#f8fafc', border: 'none' }}>
-              <FileText size={20} color="#e7a33e" /> Article
-            </button>
-            <button onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, color: showPoll ? '#8b5cf6' : '#475569', background: '#f8fafc', border: 'none' }}>
-              📊 Poll
-            </button>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, color: '#475569', background: '#f8fafc' }}>
-              📎 File
-              <input type="file" onChange={e => setPostFile(e.target.files[0])} style={{ display: 'none' }} />
-            </label>
-          </div>
+      {/* Options List */}
+      <div style={{ borderTop: '1px solid #ced0d4', background: 'white' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
+          <Image size={24} color="#45bd62" /> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Photo/video</span>
+          <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files[0]; if(f && f.type.startsWith('video')) setPostVideo(f); else if (f) setPostImage(f); }} style={{ display: 'none' }} />
+        </label>
+        
+        <div onClick={() => setShowArticle(!showArticle)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
+          <FileText size={24} color="#1877f2" /> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Write Article</span>
         </div>
 
-        {/* Post Button */}
-        <button
-          className="scicomm-btn-primary"
-          onClick={handlePostSubmit}
-          disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile && !(showArticle && articleTitle.trim()) && !(showPoll && pollQuestion.trim()))}
-          style={{
-            width: '100%', marginTop: '16px', padding: '14px',
-            justifyContent: 'center', fontSize: '16px', fontWeight: 700,
-            opacity: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showArticle && articleTitle.trim()) && !(showPoll && pollQuestion.trim())) ? 0.5 : 1,
-          }}
-        >
-          {isPostingMedia ? 'Posting...' : <><Send size={18} /> Post</>}
-        </button>
+        <div onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
+          <span style={{ fontSize: '24px', lineHeight: 1 }}>📊</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Create Poll</span>
+        </div>
+
+        <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
+          <span style={{ fontSize: '24px', lineHeight: 1 }}>📎</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Attach File</span>
+          <input type="file" onChange={e => setPostFile(e.target.files[0])} style={{ display: 'none' }} />
+        </label>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
+          <span style={{ fontSize: '24px', lineHeight: 1 }}>😀</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Feeling/activity</span>
+        </div>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', cursor: 'pointer' }}>
+          <span style={{ fontSize: '24px', lineHeight: 1 }}>📍</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Check in</span>
+        </div>
       </div>
     </div>
   );

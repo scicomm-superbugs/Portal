@@ -146,10 +146,11 @@ export default function SciCommChat() {
     try {
       const url = await uploadFile(file, `chat/${selectedRoom}/${Date.now()}_${file.name}`);
       const isImage = file.type.startsWith('image/');
+      const isVideo = file.type.startsWith('video/');
       await db.scicomm_chat_messages.add({
         roomId: selectedRoom, senderId: user.id, senderName: user.name,
-        content: isImage ? '' : file.name, fileUrl: url, fileName: file.name,
-        type: isImage ? 'image' : 'file',
+        content: (isImage || isVideo) ? '' : file.name, fileUrl: url, fileName: file.name,
+        type: isVideo ? 'video' : isImage ? 'image' : 'file',
         readBy: [user.id],
         createdAt: new Date().toISOString()
       });
@@ -262,6 +263,7 @@ export default function SciCommChat() {
                     }}>
                       {!isMe && activeRoom.type === 'group' && <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '4px', color: '#1d4ed8' }}>{m.senderName}</div>}
                       {m.type === 'image' && m.fileUrl && <img src={m.fileUrl} alt="" style={{ maxWidth: '100%', borderRadius: '8px', marginBottom: '4px' }} />}
+                      {m.type === 'video' && m.fileUrl && <video src={m.fileUrl} controls style={{ maxWidth: '100%', borderRadius: '8px', marginBottom: '4px' }} />}
                       {m.type === 'file' && m.fileUrl && <a href={m.fileUrl} target="_blank" rel="noreferrer" style={{ color: isMe ? 'white' : '#2563eb', textDecoration: 'underline' }}>📎 {m.fileName || 'File'}</a>}
                       {m.content && <div>{renderMessageText(m.content, isMe)}</div>}
                       <div style={{ fontSize: '10px', marginTop: '4px', opacity: 0.7, textAlign: 'right' }}>{timeAgo(m.createdAt)}</div>
