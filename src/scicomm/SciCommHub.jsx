@@ -17,8 +17,6 @@ export default function SciCommHub() {
     ...(isTeam ? [{ to: '/meetings', icon: <Video size={32} />, label: 'Meetings', color: '#8b5cf6', bg: '#f5f3ff', badge: 0 }] : []),
     { to: '/leaderboard', icon: <Trophy size={32} />, label: 'Leaderboard', color: '#f59e0b', bg: '#fffbeb', badge: 0 },
     { to: '/calendar', icon: <Calendar size={32} />, label: 'Calendar', color: '#10b981', bg: '#ecfdf5', badge: upcomingMeetings.length },
-    { to: '/network', icon: <Users size={32} />, label: 'Network', color: '#06b6d4', bg: '#ecfeff', badge: 0 },
-    { to: '/notifications', icon: <Bell size={32} />, label: 'Alerts', color: '#ef4444', bg: '#fef2f2', badge: 0 },
     ...(isAdmin ? [{ to: '/admin', icon: <Shield size={32} />, label: 'Admin', color: '#1d4ed8', bg: '#eff6ff', badge: 0 }] : []),
   ];
 

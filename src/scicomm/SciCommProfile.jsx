@@ -210,6 +210,16 @@ export default function SciCommProfile() {
     return new Date(new Date(latest.issuedAt).getTime() + 365 * 24 * 60 * 60 * 1000);
   })() : null;
 
+  if (!me) return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: '40px', marginBottom: '12px', animation: 'spin 1s linear infinite' }}>🔬</div>
+        <p style={{ color: '#64748b', fontSize: '14px' }}>Loading profile...</p>
+        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      </div>
+    </div>
+  );
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '40px' }}>
       {msg && <div style={{ background: '#fef3c7', color: '#92400e', padding: '12px 16px', borderRadius: '8px', marginBottom: '12px', fontSize: '14px', fontWeight: 600 }}>✅ {msg}</div>}
