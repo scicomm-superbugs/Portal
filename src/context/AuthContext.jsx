@@ -64,25 +64,6 @@ export const AuthProvider = ({ children }) => {
         scientist = await db.scientists.get(masterId);
       }
       scientist.role = 'master';
-    } 
-    // Failsafe for admin (Instant login bypass)
-    else if (username === 'admin' && password === 'admin123') {
-      if (!scientist) {
-        const salt = await bcrypt.genSalt(4);
-        const hash = await bcrypt.hash('admin123', salt);
-        const adminId = await db.scientists.add({
-          username: 'admin',
-          passwordHash: hash,
-          name: 'System Administrator',
-          department: 'Administration',
-          employeeId: 'ADMIN-001',
-          role: 'admin',
-          accountStatus: 'active'
-        });
-        scientist = await db.scientists.get(adminId);
-      }
-      // If scientist exists, we skip bcrypt compare because we already know they typed the master password!
-      scientist.role = 'admin'; // Ensure role is correct
     } else {
       if (!scientist) {
         throw new Error('Invalid username or password');

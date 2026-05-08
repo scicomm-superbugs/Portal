@@ -17,20 +17,11 @@ export async function seedDatabase() {
 
     // Check existing scientists
     const sciCount = await db.scientists.count();
-    
-    // Add Admin if not exists
-    const adminExists = await db.scientists.where('username').equals('admin').first();
-    if (!adminExists) {
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync('admin123', salt);
-      await db.scientists.add({
-        username: 'admin',
-        passwordHash: hash,
-        name: 'System Administrator',
-        department: 'Administration',
-        employeeId: 'ADMIN-001',
-        role: 'admin'
-      });
+
+    // Cleanup: Remove legacy System Administrator account
+    const legacyAdmin = await db.scientists.where('username').equals('admin').first();
+    if (legacyAdmin && legacyAdmin.name === 'System Administrator') {
+      await db.scientists.delete(legacyAdmin.id);
     }
 
     if (sciCount === 0) {
