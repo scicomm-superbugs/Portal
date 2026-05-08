@@ -152,7 +152,7 @@ export default function SciCommLayout() {
       <nav className="scicomm-mobile-bar">
         <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`}><Home size={22} /><span>Home</span></Link>
         <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users size={22} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge">{pendingConnections.length}</span>}<span>Network</span></Link>
-        <Link to="/" className="scicomm-mobile-item scicomm-mobile-post-btn" onClick={e => { e.preventDefault(); window.scrollTo({top: 0, behavior: 'smooth'}); const el = document.querySelector('textarea'); if (el) el.focus(); }}><div className="scicomm-post-plus">+</div><span>Post</span></Link>
+        <Link to="/post" className={`scicomm-mobile-item scicomm-mobile-post-btn ${isActive('/post') ? 'active' : ''}`}><div className="scicomm-post-plus">+</div><span>Post</span></Link>
         <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell size={22} />{notifCount > 0 && <span className="scicomm-notif-badge">{notifCount}</span>}<span>Alerts</span></Link>
         <Link to="/hub" className={`scicomm-mobile-item ${isActive('/hub') ? 'active' : ''}`}><div style={{ fontSize: '20px' }}>🔬</div><span>SciComm</span></Link>
       </nav>

@@ -439,8 +439,8 @@ export default function SciCommFeed() {
           </div>
         )}
 
-        {/* Post Composer */}
-        <div className="scicomm-card scicomm-card-padding">
+        {/* Post Composer - hidden on mobile, use /post page instead */}
+        <div className="scicomm-card scicomm-card-padding hide-on-mobile">
           <div style={{ display: 'flex', gap: '12px', marginBottom: '8px' }}>
             {renderAvatar(currentUserData, 44)}
             <input type="text" placeholder="Share your science communication thoughts..." value={newPost} onChange={e => setNewPost(e.target.value)} onKeyDown={e => e.key === 'Enter' && handlePostSubmit(e)}

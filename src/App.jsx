@@ -29,6 +29,7 @@ import SciCommMeetings from './scicomm/SciCommMeetings';
 import SciCommCalendar from './scicomm/SciCommCalendar';
 import SciCommMemberProfile from './scicomm/SciCommMemberProfile';
 import SciCommHub from './scicomm/SciCommHub';
+import SciCommPost from './scicomm/SciCommPost';
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
               <Route path="calendar" element={<SciCommCalendar />} />
               <Route path="member/:memberId" element={<SciCommMemberProfile />} />
               <Route path="hub" element={<SciCommHub />} />
+              <Route path="post" element={<SciCommPost />} />
               <Route element={<ProtectedRoute requireAdmin={true} />}>
                 <Route path="admin" element={<SciCommAdmin />} />
               </Route>
