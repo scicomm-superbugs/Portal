@@ -39,6 +39,7 @@ export default function SciCommLayout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('scicommDarkMode') === 'true');
+  const [showApplyModal, setShowApplyModal] = useState(false);
   const postsRaw = useLiveCollection('scicomm_posts') || [];
   
   // Calculate stats for sidebar
@@ -208,11 +209,7 @@ export default function SciCommLayout() {
                       {myPendingTasks.length > 0 && <span className="scicomm-notif-badge" style={{ position: 'absolute', top: 8, right: 8 }}>{myPendingTasks.length}</span>}
                     </Link>
                   ) : (
-                    <div onClick={() => {
-                      if (window.confirm("This option is only available to the Science Communication Team. Do you want to apply to join the team?")) {
-                        navigate('/apply');
-                      }
-                    }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                    <div onClick={() => setShowApplyModal(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                       <Briefcase size={24} color="#94a3b8" />
                       <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Tasks</span>
                       <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
@@ -229,11 +226,7 @@ export default function SciCommLayout() {
                       <span style={{ fontSize: '13px', fontWeight: 600 }}>Meetings</span>
                     </Link>
                   ) : (
-                    <div onClick={() => {
-                      if (window.confirm("This option is only available to the Science Communication Team. Do you want to apply to join the team?")) {
-                        navigate('/apply');
-                      }
-                    }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                    <div onClick={() => setShowApplyModal(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                       <Video size={24} color="#94a3b8" />
                       <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Meetings</span>
                       <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
@@ -384,6 +377,43 @@ export default function SciCommLayout() {
               </div>
             </div>
             <button onClick={dismissChangelog} className="scicomm-btn-primary" style={{ width: '100%', padding: '14px', justifyContent: 'center', fontSize: '16px', fontWeight: 700 }}>Got It! 🎉</button>
+          </div>
+        </div>
+      )}
+      {/* Custom Apply Modal */}
+      {showApplyModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(10px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ 
+            background: 'white', 
+            borderRadius: '24px', 
+            padding: '32px', 
+            maxWidth: '440px', 
+            width: '100%', 
+            textAlign: 'center',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.5)',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)' }} />
+            
+            <div style={{ width: '64px', height: '64px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <Lock size={32} color="#3b82f6" />
+            </div>
+            
+            <h2 style={{ margin: '0 0 12px', fontSize: '20px', fontWeight: 700, color: '#0f172a' }}>Access Restricted</h2>
+            <p style={{ margin: '0 0 24px', fontSize: '15px', color: '#64748b', lineHeight: '1.6' }}>
+              This option is only available to the <strong>Science Communication Team</strong>. Do you want to apply to join the team now?
+            </p>
+            
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button onClick={() => setShowApplyModal(false)} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid #e2e8f0', background: 'white', color: '#64748b', fontWeight: 600, fontSize: '14px', cursor: 'pointer', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.background = '#f8fafc'} onMouseOut={e => e.currentTarget.style.background = 'white'}>
+                Maybe Later
+              </button>
+              <button onClick={() => { setShowApplyModal(false); navigate('/apply'); }} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: 'none', background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', color: 'white', fontWeight: 600, fontSize: '14px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(139,92,246,0.3)', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-1px)'} onMouseOut={e => e.currentTarget.style.transform = 'none'}>
+                Apply Now
+              </button>
+            </div>
           </div>
         </div>
       )}
