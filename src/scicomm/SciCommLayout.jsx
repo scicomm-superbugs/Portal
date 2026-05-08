@@ -359,7 +359,9 @@ export default function SciCommLayout() {
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
           <div style={{ background: 'white', borderRadius: '16px', padding: '28px', maxWidth: '480px', width: '100%', maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <div style={{ fontSize: '48px', marginBottom: '8px' }}>🚀</div>
+              <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
+                <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '40px' }} onError={e => e.target.style.display='none'} />
+              </div>
               <h2 style={{ margin: '0 0 4px', fontSize: '22px' }}>What's New in {PLATFORM_VERSION}</h2>
               <p style={{ margin: 0, color: 'rgba(0,0,0,0.5)', fontSize: '13px' }}>SciComm Platform Update</p>
             </div>
