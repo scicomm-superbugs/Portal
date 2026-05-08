@@ -92,7 +92,7 @@ export default function SciCommFeed() {
   // Post submission with spam check
   const handlePostSubmit = async (e) => {
     e?.preventDefault();
-    if (!newPost.trim() && (!showPoll || !pollQuestion.trim())) return;
+    if (!newPost.trim() && !postImage && !postVideo && !postFile && (!showPoll || !pollQuestion.trim())) return;
     setPostError('');
     const myRecentPosts = posts.filter(p => String(p.authorId) === String(user.id)).slice(0, 5);
     if (isSpamPost(newPost, myRecentPosts)) {
