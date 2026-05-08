@@ -370,6 +370,11 @@ export default function SciCommFeed() {
     return acc + viewers.size;
   }, 0);
 
+  const myLikesReceived = myPosts.reduce((acc, post) => {
+    const rx = post.reactions || {};
+    return acc + Object.values(rx).reduce((sum, arr) => sum + (arr?.length || 0), 0);
+  }, 0);
+
   return (
     <div className="scicomm-feed-layout">
       {/* Left Sidebar */}

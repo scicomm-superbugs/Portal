@@ -69,6 +69,11 @@ export default function SciCommProfile() {
   try {
   // Score calculation
   const myPosts = postsData.filter(p => String(p.authorId) === String(user.id));
+  const myLikesReceived = myPosts.reduce((acc, p) => {
+    const reactions = p.reactions || {};
+    const count = Object.values(reactions).reduce((sum, users) => sum + (users?.length || 0), 0);
+    return acc + count;
+  }, 0);
   const myTaskPoints = tasksData.filter(t => String(t.assignedTo) === String(user.id) && (t.status === 'Completed' || t.status === 'Approved')).reduce((s, t) => s + (t.awardedPoints || 0), 0);
   const myAttended = meetingsData.filter(m => (m.attendees || []).includes(user.id)).length;
   const myScore = calculateScore({ taskPoints: myTaskPoints, meetingsAttended: myAttended, role: user.role });
