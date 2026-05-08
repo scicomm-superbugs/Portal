@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, UserCircle } from 'lucide-react';
 import { db, useLiveCollection } from '../db';
 import { useAuth } from '../context/AuthContext';
-import { renderAvatar } from './scicommConstants';
+import { AVATARS } from './scicommConstants';
 
 export default function SciCommStories({ scientists }) {
   const { user } = useAuth();
   const allStories = useLiveCollection('scicomm_stories') || [];
   
+  const renderAvatar = (member, size = 48) => {
+    if (!member) return <UserCircle size={size} color="#94a3b8" />;
+    if (member.avatar) return <img src={member.avatar} alt={member.name} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }} />;
+    const av = AVATARS.find(a => a.id === member.avatarId);
+    if (av) return <div style={{ width: size, height: size, borderRadius: '50%', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.5 }}>{av.svg}</div>;
+    return <UserCircle size={size} color="#94a3b8" />;
+  };
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [mediaUrl, setMediaUrl] = useState('');
   const [mediaType, setMediaType] = useState('image');
