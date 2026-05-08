@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
     }, 3000);
 
     // Check if user is logged in
-    const storedUserId = sessionStorage.getItem('userId');
+    const storedUserId = localStorage.getItem('userId');
     if (storedUserId) {
       db.scientists.get(String(storedUserId)).then(scientist => {
         if (isTimeout) return;
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
         if (isTimeout) return;
         clearTimeout(timeoutId);
         console.error('Failed to restore session:', err);
-        sessionStorage.removeItem('userId');
+        localStorage.removeItem('userId');
         setLoading(false);
       });
     } else {
@@ -87,13 +87,13 @@ export const AuthProvider = ({ children }) => {
     };
 
     setUser(userData);
-    sessionStorage.setItem('userId', scientist.id);
+    localStorage.setItem('userId', scientist.id);
     return userData;
   };
 
   const logout = () => {
     setUser(null);
-    sessionStorage.removeItem('userId');
+    localStorage.removeItem('userId');
   };
 
   return (
