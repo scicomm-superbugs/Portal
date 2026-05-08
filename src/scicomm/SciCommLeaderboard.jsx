@@ -129,14 +129,26 @@ export default function SciCommLeaderboard() {
             </p>
             
             {myApplication ? (
-              <div style={{ padding: '14px 20px', borderRadius: '10px', display: 'inline-block', fontWeight: 600, fontSize: '14px',
+              <div style={{ padding: '14px 20px', borderRadius: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', fontWeight: 600, fontSize: '14px', maxWidth: '400px', margin: '0 auto',
                 background: myApplication.status === 'pending' ? '#e0f2fe' : (localStorage.getItem('has_been_team_' + user.id) ? '#fee2e2' : '#dcfce7'),
                 color: myApplication.status === 'pending' ? '#0369a1' : (localStorage.getItem('has_been_team_' + user.id) ? '#b91c1c' : '#166534'),
                 border: myApplication.status === 'pending' ? '1px solid #7dd3fc' : (localStorage.getItem('has_been_team_' + user.id) ? '1px solid #fca5a5' : '1px solid #86efac')
               }}>
-                {myApplication.status === 'pending' && '⏳ Application Submitted! Under review by Admins.'}
-                {myApplication.status === 'approved' && !localStorage.getItem('has_been_team_' + user.id) && '🎉 Your application was approved! You are now a SciComm Team member. Refresh the page to see your new access.'}
-                {myApplication.status === 'approved' && localStorage.getItem('has_been_team_' + user.id) && '⚠️ Your profile has been downgraded by admins. You no longer have team access.'}
+                <div>
+                  {myApplication.status === 'pending' && '⏳ Application Submitted! Under review by Admins.'}
+                  {myApplication.status === 'approved' && !localStorage.getItem('has_been_team_' + user.id) && '🎉 Your application was approved! You are now a SciComm Team member. Refresh the page to see your new access.'}
+                  {myApplication.status === 'approved' && localStorage.getItem('has_been_team_' + user.id) && '⚠️ Your profile has been downgraded by admins. You no longer have team access.'}
+                </div>
+                
+                {((myApplication.status === 'approved' && localStorage.getItem('has_been_team_' + user.id)) || myApplication.status === 'pending') && (
+                  <button onClick={() => navigate('/apply')} style={{ 
+                    background: myApplication.status === 'pending' ? '#0369a1' : '#b91c1c',
+                    color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}>
+                    View Application Status
+                  </button>
+                )}
               </div>
             ) : myRejectedApp ? (
               <div style={{ display: 'inline-block', maxWidth: '420px' }}>

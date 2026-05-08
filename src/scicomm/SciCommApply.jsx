@@ -43,6 +43,8 @@ export default function SciCommApply() {
     setApplying(false);
   };
 
+  const isTeam = user.role === 'scicomm' || user.role === 'admin' || user.role === 'master';
+
   return (
     <div style={{ maxWidth: '600px', margin: '40px auto', padding: '24px', background: 'white', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
       <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#0f172a', marginBottom: '16px' }}>Join the Science Communication Team</h1>
@@ -78,11 +80,29 @@ export default function SciCommApply() {
         </div>
       )}
 
-      {myApplication && myApplication.status === 'approved' && (
+      {myApplication && myApplication.status === 'approved' && isTeam && (
         <div style={{ textAlign: 'center', padding: '20px', background: '#dcfce7', borderRadius: '8px', color: '#15803d' }}>
           <CheckCircle size={40} style={{ marginBottom: '12px' }} />
           <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>Application Approved!</h3>
           <p style={{ fontSize: '14px' }}>Welcome to the team! You now have access to all workspace tools.</p>
+        </div>
+      )}
+
+      {myApplication && myApplication.status === 'approved' && !isTeam && (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ padding: '20px', background: '#fee2e2', borderRadius: '8px', color: '#b91c1c', marginBottom: '16px' }}>
+            <XCircle size={40} style={{ marginBottom: '12px' }} />
+            <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>Profile Downgraded</h3>
+            <p style={{ fontSize: '14px' }}>Your profile has been downgraded by admins. You no longer have team access. Update your profile and try again.</p>
+          </div>
+          <button 
+            onClick={handleReapply} 
+            disabled={applying} 
+            className="scicomm-btn-primary" 
+            style={{ width: '100%', justifyContent: 'center', gap: '8px', padding: '12px', marginBottom: '24px' }}
+          >
+            <Send size={18} /> {applying ? 'Submitting...' : 'Re-apply Now'}
+          </button>
         </div>
       )}
 
