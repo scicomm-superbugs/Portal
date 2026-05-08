@@ -213,6 +213,27 @@ export default function SciCommFeed() {
     } catch (err) { console.error(err); }
   };
 
+  const handleReplyReaction = async (post, commentIndex, replyIndex, reactionKey) => {
+    const comments = [...(post.comments || [])];
+    const comment = comments[commentIndex];
+    if (!comment.replies || !comment.replies[replyIndex]) return;
+    const reply = { ...comment.replies[replyIndex] };
+    const reactions = { ...(reply.reactions || {}) };
+    for (const k in reactions) {
+      reactions[k] = reactions[k].filter(id => id !== user.id);
+      if (reactions[k].length === 0) delete reactions[k];
+    }
+    if (!(reply.reactions?.[reactionKey] || []).includes(user.id)) {
+      if (!reactions[reactionKey]) reactions[reactionKey] = [];
+      reactions[reactionKey].push(user.id);
+    }
+    reply.reactions = reactions;
+    comment.replies[replyIndex] = reply;
+    try {
+      await db.scicomm_posts.update(post.id, { comments });
+    } catch (err) { console.error(err); }
+  };
+
   const handleEditPost = async (postId) => {
     if (!editingPost || editingPost.id !== postId) return;
     const updates = { content: editingPost.content, editedAt: new Date().toISOString() };
@@ -291,9 +312,12 @@ export default function SciCommFeed() {
   const myScore = calculateScore({ completedTasks: myCompletedTasks, likesReceived: myLikesReceived, connectionCount: myConnections, meetingsAttended: myAttended, role: user.role });
   const myLevel = getUserLevel(myScore);
   const profileViewers = currentUserData?.profileViews || 0;
-  const postImpressions = myPosts.length === 0 ? 0 : myPosts.reduce((acc, post) => {
-    const rxCount = Object.values(post.reactions || {}).reduce((s, arr) => s + arr.length, 0);
-    return acc + 15 + (rxCount * 25);
+  const postImpressions = myPosts.reduce((acc, post) => {
+    const viewers = new Set();
+    const rx = post.reactions || {};
+    for (const arr of Object.values(rx)) arr.forEach(id => viewers.add(id));
+    (post.comments || []).forEach(c => viewers.add(c.authorId));
+    return acc + viewers.size;
   }, 0);
 
   return (
@@ -337,7 +361,7 @@ export default function SciCommFeed() {
             <span style={{ color: '#1d4ed8' }}>{postImpressions}</span>
           </div>
         </div>
-        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}>🚀 What's New in v3.4.0</button>
+        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}>🚀 What's New in v3.4.1</button>
       </div>
 
       {/* Main Feed */}
@@ -583,6 +607,8 @@ export default function SciCommFeed() {
                                   const rAuthor = getAuthor(r.authorId);
                                   const isSubReplying = replyTo?.postId === post.id && replyTo?.commentIndex === i && replyTo?.replyIndex === ri;
                                   const subReplyKey = `subreply_${post.id}_${i}_${ri}`;
+                                  const rReactions = r.reactions || {};
+                                  const myReplyReaction = Object.entries(rReactions).find(([, arr]) => arr.includes(user.id))?.[0];
                                   return (
                                     <div key={ri} style={{ marginBottom: '8px' }}>
                                       <div style={{ display: 'flex', gap: '6px' }}>
@@ -594,7 +620,19 @@ export default function SciCommFeed() {
                                             <p style={{ margin: '2px 0 0', fontSize: '12px' }}>{r.text}</p>
                                             {r.imageUrl && <img src={r.imageUrl} alt="" style={{ width: '100%', maxHeight: '150px', objectFit: 'cover', borderRadius: '6px', marginTop: '4px' }} />}
                                           </div>
-                                          <button onClick={() => setReplyTo(isSubReplying ? null : { postId: post.id, commentIndex: i, replyIndex: ri, authorName: r.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: 600, color: isSubReplying ? '#1d4ed8' : 'rgba(0,0,0,0.4)', padding: '2px 4px', marginTop: '2px' }}>Reply</button>
+                                          {/* Reply action bar with reactions */}
+                                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '3px', paddingLeft: '4px' }}>
+                                            {['like', 'love', 'fire'].map(rk => {
+                                              const rd = REACTIONS.find(r2 => r2.key === rk);
+                                              const isActive = myReplyReaction === rk;
+                                              return (
+                                                <button key={rk} onClick={() => handleReplyReaction(post, i, ri, rk)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: isActive ? 700 : 500, color: isActive ? rd.color : 'rgba(0,0,0,0.45)', padding: '1px 0', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                                                  {rd.emoji} {(rReactions[rk]?.length || 0) > 0 && <span>{rReactions[rk].length}</span>}
+                                                </button>
+                                              );
+                                            })}
+                                            <button onClick={() => setReplyTo(isSubReplying ? null : { postId: post.id, commentIndex: i, replyIndex: ri, authorName: r.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: 600, color: isSubReplying ? '#1d4ed8' : 'rgba(0,0,0,0.4)', padding: '1px 0' }}>Reply</button>
+                                          </div>
                                           {/* Sub-reply input */}
                                           {isSubReplying && (
                                             <div style={{ marginTop: '4px' }}>
@@ -605,7 +643,7 @@ export default function SciCommFeed() {
                                                 <button className="scicomm-btn-primary" style={{ padding: '3px 8px', fontSize: '10px' }} onClick={() => handleAddComment(post)}>Reply</button>
                                                 <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '14px' }}>&times;</button>
                                               </div>
-                                              {showEmojiPicker === subReplyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px', background: '#f9fafb', padding: '6px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [subReplyKey]: (prev[subReplyKey]||'')+e})); setShowEmojiPicker(null); }} style={{ background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
+                                              {showEmojiPicker === subReplyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px', background: '#f9fafb', padding: '6px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [subReplyKey]: (prev[subReplyKey]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
                                               {commentImage[subReplyKey] && <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>📎 {commentImage[subReplyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [subReplyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '10px' }}>✕</button></div>}
                                             </div>
                                           )}
@@ -645,7 +683,7 @@ export default function SciCommFeed() {
                                   <button className="scicomm-btn-primary" style={{ padding: '4px 10px', fontSize: '11px' }} onClick={() => handleAddComment(post)}>Reply</button>
                                   <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '16px' }}>&times;</button>
                                 </div>
-                                {showEmojiPicker === replyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px', background: '#f9fafb', padding: '6px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+e})); setShowEmojiPicker(null); }} style={{ background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
+                                {showEmojiPicker === replyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px', background: '#f9fafb', padding: '6px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
                                 {commentImage[replyKey] && <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>📎 {commentImage[replyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '10px' }}>✕</button></div>}
                               </div>
                             )}
@@ -662,7 +700,7 @@ export default function SciCommFeed() {
                     <label style={{ cursor: 'pointer', fontSize: '16px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                     <button className="scicomm-btn-primary" style={{ padding: '6px 14px', fontSize: '12px' }} onClick={() => { if (!replyTo) handleAddComment(post); }}>Post</button>
                   </div>
-                  {showEmojiPicker === post.id && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px', background: '#f9fafb', padding: '8px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [post.id]: (prev[post.id]||'')+e})); setShowEmojiPicker(null); }} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
+                  {showEmojiPicker === post.id && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px', background: '#f9fafb', padding: '8px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [post.id]: (prev[post.id]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
                   {commentImage[post.id] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>📎 {commentImage[post.id].name} <button onClick={() => setCommentImage(prev => ({...prev, [post.id]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
                 </div>
               )}

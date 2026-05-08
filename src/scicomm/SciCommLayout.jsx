@@ -71,7 +71,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.4.0';
+  const PLATFORM_VERSION = 'v3.4.1';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -169,29 +169,24 @@ export default function SciCommLayout() {
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>Reply to Replies:</strong> You can now reply to any reply! Nested threaded conversations are here.</li>
-                  <li><strong>Emoji Picker:</strong> 😀 Add emojis to your comments and replies with the new emoji button.</li>
-                  <li><strong>Image Comments:</strong> 📷 Attach photos to comments and replies — not just posts!</li>
-                  <li><strong>Edit Your Posts:</strong> ✏️ All users can now edit their own posts (text, images, and more).</li>
-                  <li><strong>Delete Your Posts:</strong> 🗑️ Remove your own posts anytime from the three-dot menu.</li>
+                  <li><strong>Reply Reactions:</strong> 👍❤️🔥 React to replies with Like, Love, or Fire — just like comments!</li>
+                  <li><strong>Emoji Picker Stays Open:</strong> Select multiple emojis without the picker closing each time.</li>
                 </ul>
               </div>
               <div style={{ background: '#fef3c7', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔧 Fixes & Improvements</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#92400e', lineHeight: '1.8' }}>
-                  <li>Three-dot menu now visible to post authors (not just admins)</li>
-                  <li>Edited posts show “✏️ edited” indicator next to timestamp</li>
-                  <li>Post image can be replaced or removed during editing</li>
-                  <li>Comment images display properly in all nesting levels</li>
+                  <li>Fixed: Only post owners and admins/masters can edit or delete posts now</li>
+                  <li>Fixed: Post impressions now count 1 per unique viewer (reactions + commenters)</li>
+                  <li>Fixed: Emoji picker no longer auto-closes after selecting one emoji</li>
                 </ul>
               </div>
               <div style={{ background: '#dbeafe', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 UI & Experience</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li>Threaded replies are visually indented with left border lines</li>
-                  <li>Sub-replies get progressively smaller avatars for visual hierarchy</li>
-                  <li>Emoji picker appears inline below the input field</li>
-                  <li>Attached image name shown with remove button before posting</li>
+                  <li>Reply reaction bar matches comment reaction bar styling</li>
+                  <li>Reaction counts appear next to each emoji on replies</li>
+                  <li>Impressions metric is now accurate and meaningful</li>
                 </ul>
               </div>
             </div>
