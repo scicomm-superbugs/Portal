@@ -72,7 +72,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.5.0';
+  const PLATFORM_VERSION = 'v3.6.0';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -170,29 +170,26 @@ export default function SciCommLayout() {
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>4-Tier Role System:</strong> Users are now classified into 4 roles with distinct badges:</li>
-                  <li>👑 <strong>Master</strong> (Gold) — Highest level, manages everything, can promote anyone</li>
-                  <li>🛡️ <strong>Admin</strong> (Blue) — Full access but cannot remove the Master</li>
-                  <li>🔬 <strong>SciComm Team</strong> (Red) — Access to Meetings & Tasks</li>
-                  <li>👤 <strong>Visitor</strong> (Gray) — Can browse, post, and chat but no Tasks or Meetings</li>
-                  <li><strong>Role Promotion Dropdown:</strong> Master can promote any user to any role from Admin Dashboard</li>
+                  <li><strong>Task Evaluation System:</strong> Admins rate task quality (5–50 pts) with optional notes when approving</li>
+                  <li><strong>Quality-Based Scoring:</strong> Points now come ONLY from tasks + meetings — no more likes/posts/connections</li>
+                  <li><strong>Team-Only Leaderboard:</strong> Only 🔬 SciComm Team members appear on the leaderboard</li>
                 </ul>
               </div>
               <div style={{ background: '#fef3c7', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔒 Access Control</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔒 Access & Scoring</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#92400e', lineHeight: '1.8' }}>
-                  <li>Tasks & Meetings are now restricted to SciComm Team and above</li>
-                  <li>Visitors cannot see Tasks or Meetings in the navigation bar</li>
-                  <li>Admins cannot remove or demote the Master account</li>
-                  <li>Admins can promote visitors to SciComm Team</li>
+                  <li>Visitors see an info page explaining the leaderboard is for team members only</li>
+                  <li>Task points range: Poor (5) → Exceptional (50), evaluated by admins</li>
+                  <li>📋 Completed tasks show awarded points and evaluation notes</li>
+                  <li>📊 Score = Task Points + (Meetings × 15)</li>
                 </ul>
               </div>
               <div style={{ background: '#dbeafe', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 Badges & UI</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>🎨 UI Updates</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li>Role badges appear on profiles, posts, network cards, and sidebars</li>
-                  <li>Gradient-colored badges: Gold, Blue, Red, Gray</li>
-                  <li>Admin Dashboard user list shows role dropdown for Master</li>
+                  <li>Leaderboard shows only SciComm team with 🔬 badge</li>
+                  <li>Admins & Master pinned at top with ∞ score</li>
+                  <li>Task evaluation box with points dropdown + note field</li>
                 </ul>
               </div>
             </div>

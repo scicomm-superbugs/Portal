@@ -96,9 +96,9 @@ export const AUTO_TAGS = [
   { threshold: 100000, tag: '🥇 Nobel Laureate' }
 ];
 
-export function calculateScore({ completedTasks = 0, likesReceived = 0, connectionCount = 0, meetingsAttended = 0, reputationBonus = 0, role = 'user' }) {
+export function calculateScore({ taskPoints = 0, meetingsAttended = 0, role = 'user' }) {
   if (role === 'master' || role === 'admin') return Infinity;
-  return (completedTasks * 25) + (likesReceived * 5) + (meetingsAttended * 15) + (connectionCount * 2) + reputationBonus;
+  return taskPoints + (meetingsAttended * 15);
 }
 
 export function getUnlockedTags(score) {

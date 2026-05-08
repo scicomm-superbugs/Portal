@@ -42,11 +42,10 @@ export default function SciCommMemberProfile() {
   // Removed redirect so user can preview their own profile
 
   const memberPosts = postsData.filter(p => String(p.authorId) === String(memberId));
-  const likesReceived = memberPosts.reduce((s, p) => s + Object.values(p.reactions || {}).reduce((ss, arr) => ss + arr.length, 0), 0);
-  const completedTasks = tasksData.filter(t => String(t.assignedTo) === String(memberId) && (t.status === 'Completed' || t.status === 'Approved')).length;
+  const taskPoints = tasksData.filter(t => String(t.assignedTo) === String(memberId) && (t.status === 'Completed' || t.status === 'Approved')).reduce((s, t) => s + (t.awardedPoints || 0), 0);
   const connectionCount = connectionsData.filter(c => c.status === 'accepted' && (String(c.fromId) === String(memberId) || String(c.toId) === String(memberId))).length;
   const meetingsAttended = meetingsData.filter(m => (m.attendees || []).includes(memberId)).length;
-  const score = calculateScore({ completedTasks, likesReceived, connectionCount, meetingsAttended, role: member.role });
+  const score = calculateScore({ taskPoints, meetingsAttended, role: member.role });
   const memberLevel = getUserLevel(score);
   const unlockedTags = getUnlockedTags(score);
   const pinnedTags = (member.pinnedTags || []).filter(t => AUTO_TAGS.some(a => a.tag === t) || t === '👑 SciComm MasterMind');

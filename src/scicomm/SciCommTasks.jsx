@@ -53,8 +53,12 @@ export default function SciCommTasks() {
     setSubmissionFile(null);
   };
 
+  const [evalPoints, setEvalPoints] = useState({});
+  const [evalNote, setEvalNote] = useState({});
+
   const handleApproveTask = async (taskId) => {
-    await db.tasks.update(taskId, { status: 'Approved', approvedAt: new Date().toISOString() });
+    const points = parseInt(evalPoints[taskId]) || 25;
+    await db.tasks.update(taskId, { status: 'Approved', approvedAt: new Date().toISOString(), awardedPoints: points, evalNote: evalNote[taskId] || '' });
   };
 
   const handleRejectTask = async (taskId) => {
@@ -112,8 +116,26 @@ export default function SciCommTasks() {
                       <span>{t.submissionValue}</span>
                     )}
                   </div>
+                  {/* Evaluation Section */}
+                  <div style={{ marginTop: '10px', padding: '10px', background: '#eff6ff', borderRadius: '6px', border: '1px solid #bfdbfe' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px' }}>⭐ Task Evaluation</div>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '6px' }}>
+                      <label style={{ fontSize: '12px', fontWeight: 600 }}>Points:</label>
+                      <select value={evalPoints[t.id] || '25'} onChange={e => setEvalPoints(p => ({...p, [t.id]: e.target.value}))} style={{ padding: '4px 8px', borderRadius: '6px', border: '1px solid #bfdbfe', fontSize: '13px', fontWeight: 600 }}>
+                        <option value="5">5 — Poor</option>
+                        <option value="10">10 — Below Average</option>
+                        <option value="15">15 — Average</option>
+                        <option value="20">20 — Good</option>
+                        <option value="25">25 — Very Good</option>
+                        <option value="30">30 — Excellent</option>
+                        <option value="40">40 — Outstanding</option>
+                        <option value="50">50 — Exceptional</option>
+                      </select>
+                    </div>
+                    <input type="text" placeholder="Evaluation note (optional)..." value={evalNote[t.id] || ''} onChange={e => setEvalNote(p => ({...p, [t.id]: e.target.value}))} style={{ width: '100%', padding: '6px 10px', border: '1px solid #bfdbfe', borderRadius: '6px', fontSize: '12px', boxSizing: 'border-box' }} />
+                  </div>
                   <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                    <button className="scicomm-btn-primary" onClick={() => handleApproveTask(t.id)}>Approve Task</button>
+                    <button className="scicomm-btn-primary" onClick={() => handleApproveTask(t.id)}>✅ Approve ({evalPoints[t.id] || 25} pts)</button>
                     <button className="scicomm-btn-secondary" onClick={() => handleRejectTask(t.id)} style={{ color: '#ef4444', borderColor: '#ef4444' }}>Reject</button>
                   </div>
                 </div>
@@ -198,9 +220,11 @@ export default function SciCommTasks() {
                 <>
                   <h3 style={{ fontSize: '15px', margin: '20px 0 10px', color: '#1d4ed8' }}><CheckCircle size={16} /> Approved & Completed ({completedTasks.length})</h3>
                   {completedTasks.slice(0, 8).map(t => (
-                    <div key={t.id} style={{ display: 'flex', gap: '10px', padding: '8px', borderRadius: '6px', background: '#f9fafb', marginBottom: '4px', opacity: 0.7, alignItems: 'center' }}>
+                    <div key={t.id} style={{ display: 'flex', gap: '10px', padding: '8px 12px', borderRadius: '6px', background: '#f9fafb', marginBottom: '4px', alignItems: 'center', flexWrap: 'wrap' }}>
                       <span>✅</span>
-                      <span style={{ fontSize: '13px', textDecoration: 'line-through' }}>{t.title}</span>
+                      <span style={{ fontSize: '13px', flex: 1 }}>{t.title}</span>
+                      {t.awardedPoints && <span style={{ background: '#dbeafe', color: '#1e3a8a', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 700 }}>+{t.awardedPoints} pts</span>}
+                      {t.evalNote && <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', fontStyle: 'italic' }}>"{t.evalNote}"</span>}
                       {isAdmin && <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>→ {getAssignee(t.assignedTo)}</span>}
                     </div>
                   ))}

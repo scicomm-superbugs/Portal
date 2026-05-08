@@ -80,15 +80,14 @@ export default function SciCommAdmin() {
 
   // Analytics data
   const getAnalytics = (member) => {
-    const likesReceived = posts.filter(p => String(p.authorId) === String(member.id)).reduce((s, p) => s + Object.values(p.reactions || {}).reduce((ss, arr) => ss + arr.length, 0), 0);
-    const completedTasks = tasksData.filter(t => String(t.assignedTo) === String(member.id) && t.status === 'Completed').length;
-    const pendingTasks = tasksData.filter(t => String(t.assignedTo) === String(member.id) && t.status !== 'Completed').length;
-    const connectionCount = connectionsData.filter(c => c.status === 'accepted' && (String(c.fromId) === String(member.id) || String(c.toId) === String(member.id))).length;
+    const completedTasks = tasksData.filter(t => String(t.assignedTo) === String(member.id) && (t.status === 'Completed' || t.status === 'Approved')).length;
+    const taskPoints = tasksData.filter(t => String(t.assignedTo) === String(member.id) && (t.status === 'Completed' || t.status === 'Approved')).reduce((s, t) => s + (t.awardedPoints || 0), 0);
+    const pendingTasks = tasksData.filter(t => String(t.assignedTo) === String(member.id) && t.status !== 'Completed' && t.status !== 'Approved').length;
     const meetingsAttended = meetingsData.filter(m => (m.attendees || []).includes(member.id)).length;
     const postCount = posts.filter(p => String(p.authorId) === String(member.id)).length;
     const warnings = warningsData.filter(w => String(w.userId) === String(member.id) && w.status !== 'removed').length;
-    const score = calculateScore({ completedTasks, likesReceived, connectionCount, meetingsAttended, tagsCount: (member.pinnedTags || []).length });
-    return { likesReceived, completedTasks, pendingTasks, connectionCount, meetingsAttended, postCount, warnings, score };
+    const score = calculateScore({ taskPoints, meetingsAttended, role: member.role });
+    return { completedTasks, taskPoints, pendingTasks, meetingsAttended, postCount, warnings, score };
   };
 
   return (
