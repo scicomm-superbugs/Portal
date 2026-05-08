@@ -103,14 +103,37 @@ export default function SciCommChat() {
     setSelectedMembers([]);
   };
 
+  // Mark all messages in current room as read for current user
+  useEffect(() => {
+    if (!selectedRoom) return;
+    const unread = allMessages.filter(m => m.roomId === selectedRoom && m.senderId !== user.id && !(m.readBy || []).includes(user.id));
+    unread.forEach(m => {
+      db.scicomm_chat_messages.update(m.id, { readBy: [...(m.readBy || []), user.id] }).catch(() => {});
+    });
+  }, [selectedRoom, allMessages.length]);
+
+  // Count total unread messages across all rooms
+  const unreadCount = allMessages.filter(m => {
+    const myRoom = myRooms.find(r => r.id === m.roomId);
+    return myRoom && m.senderId !== user.id && !(m.readBy || []).includes(user.id);
+  }).length;
+
+  // Unread count per room
+  const unreadPerRoom = (roomId) => allMessages.filter(m =>
+    m.roomId === roomId && m.senderId !== user.id && !(m.readBy || []).includes(user.id)
+  ).length;
+
   const sendMessage = async () => {
     if (!msgText.trim() || !selectedRoom) return;
+    const room = rooms.find(r => r.id === selectedRoom);
+    const otherMembers = (room?.members || []).filter(id => id !== user.id);
     await db.scicomm_chat_messages.add({
       roomId: selectedRoom,
       senderId: user.id,
       senderName: user.name,
       content: msgText,
       type: 'text',
+      readBy: [user.id], // sender has already read it
       createdAt: new Date().toISOString()
     });
     await db.scicomm_chat_rooms.update(selectedRoom, { lastMessageAt: new Date().toISOString(), lastMessage: msgText, lastSender: user.name });
@@ -127,6 +150,7 @@ export default function SciCommChat() {
         roomId: selectedRoom, senderId: user.id, senderName: user.name,
         content: isImage ? '' : file.name, fileUrl: url, fileName: file.name,
         type: isImage ? 'image' : 'file',
+        readBy: [user.id],
         createdAt: new Date().toISOString()
       });
       await db.scicomm_chat_rooms.update(selectedRoom, { lastMessageAt: new Date().toISOString(), lastMessage: isImage ? '📷 Photo' : `📎 ${file.name}`, lastSender: user.name });
@@ -192,18 +216,24 @@ export default function SciCommChat() {
         )}
 
         <div style={{ flex: 1, overflowY: 'auto' }}>
-          {myRooms.map(r => (
-            <div key={r.id} onClick={() => setSelectedRoom(r.id)} style={{
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px', cursor: 'pointer',
-              background: selectedRoom === r.id ? '#eef3f8' : 'transparent', borderBottom: '1px solid #f3f2ef'
-            }}>
-              {r.type === 'group' ? <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Users size={20} color="#1d4ed8" /></div> : renderAvatar(getRoomOther(r), 40)}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{getRoomTitle(r)}</div>
-                <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.lastSender ? `${r.lastSender}: ${r.lastMessage || ''}` : 'No messages yet'}</div>
+          {myRooms.map(r => {
+            const unread = unreadPerRoom(r.id);
+            return (
+              <div key={r.id} onClick={() => setSelectedRoom(r.id)} style={{
+                display: 'flex', alignItems: 'center', gap: '10px', padding: '12px', cursor: 'pointer',
+                background: selectedRoom === r.id ? '#eef3f8' : unread > 0 ? '#f0f7ff' : 'transparent', borderBottom: '1px solid #f3f2ef'
+              }}>
+                {r.type === 'group' ? <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Users size={20} color="#1d4ed8" /></div> : renderAvatar(getRoomOther(r), 40)}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: unread > 0 ? 800 : 600, fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{getRoomTitle(r)}</div>
+                  <div style={{ fontSize: '12px', color: unread > 0 ? '#1d4ed8' : 'rgba(0,0,0,0.5)', fontWeight: unread > 0 ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.lastSender ? `${r.lastSender}: ${r.lastMessage || ''}` : 'No messages yet'}</div>
+                </div>
+                {unread > 0 && (
+                  <div style={{ background: '#1d4ed8', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}>{unread > 9 ? '9+' : unread}</div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
           {myRooms.length === 0 && <div style={{ padding: '24px', textAlign: 'center', color: '#666', fontSize: '13px' }}>No conversations yet. Connect with team members to start chatting!</div>}
         </div>
       </div>

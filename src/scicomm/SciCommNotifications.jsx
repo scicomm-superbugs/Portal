@@ -14,6 +14,8 @@ export default function SciCommNotifications() {
   const connectionsData = useLiveCollection('scicomm_connections') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
   const applicationsData = useLiveCollection('scicomm_applications') || [];
+  const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
+  const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
 
   const myTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
   const myWarnings = warningsData.filter(w => String(w.userId) === String(user.id));
@@ -77,6 +79,28 @@ export default function SciCommNotifications() {
         link: '/admin'
       };
     }) : []),
+    // Unread chat message notifications
+    ...(() => {
+      const myRoomIds = new Set(chatRooms.filter(r => (r.members || []).includes(user.id)).map(r => r.id));
+      const unreadByRoom = {};
+      chatMessages.forEach(m => {
+        if (myRoomIds.has(m.roomId) && m.senderId !== user.id && !(m.readBy || []).includes(user.id)) {
+          if (!unreadByRoom[m.roomId]) unreadByRoom[m.roomId] = { count: 0, senderName: m.senderName, roomId: m.roomId, lastTime: m.createdAt };
+          unreadByRoom[m.roomId].count++;
+          if (m.createdAt > unreadByRoom[m.roomId].lastTime) unreadByRoom[m.roomId].lastTime = m.createdAt;
+        }
+      });
+      return Object.values(unreadByRoom).map(r => ({
+        type: 'chat',
+        icon: <MessageCircle size={18} color="#0891b2" />,
+        bg: '#ecfeff',
+        title: `💬 ${r.count} unread message${r.count > 1 ? 's' : ''} from ${r.senderName}`,
+        sub: 'Click to open chat',
+        time: r.lastTime,
+        id: 'chat_' + r.roomId,
+        link: '/chat'
+      }));
+    })(),
   ].sort((a, b) => new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime());
 
   return (

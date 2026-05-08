@@ -18,6 +18,7 @@ export default function SciCommLayout() {
   const warningsData = useLiveCollection('scicomm_warnings') || [];
   const pendingAccounts = (scientists || []).filter(s => s.accountStatus === 'pending');
   const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
+  const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
   
   const myPendingTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
@@ -25,10 +26,14 @@ export default function SciCommLayout() {
   
   const upcomingMeetings = meetingsData.filter(m => ((m.members || []).includes(user.id) || m.allMembers) && new Date(m.date) >= new Date(new Date().toDateString()));
   
+  // Unread chat messages: messages not sent by me, in rooms I'm in, and not yet read by me
+  const myRoomIds = new Set(chatRooms.filter(r => (r.members || []).includes(user.id)).map(r => r.id));
+  const unreadChatCount = chatMessages.filter(m => myRoomIds.has(m.roomId) && m.senderId !== user.id && !(m.readBy || []).includes(user.id)).length;
+
   const isAdmin = user.role === 'admin' || user.role === 'master';
   const isTeam = user.role === 'scicomm' || isAdmin;
 
-  const notifCount = myWarnings.length + (isAdmin ? pendingAccounts.length : 0);
+  const notifCount = myWarnings.length + (isAdmin ? pendingAccounts.length : 0) + unreadChatCount;
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -55,6 +60,15 @@ export default function SciCommLayout() {
     }
     prevWarningCount.current = myWarnings.length;
   }, [myWarnings.length]);
+
+  const prevUnreadChat = useRef(unreadChatCount);
+  useEffect(() => {
+    if (unreadChatCount > prevUnreadChat.current && Notification.permission === 'granted') {
+      const latestUnread = chatMessages.find(m => myRoomIds.has(m.roomId) && m.senderId !== user.id && !(m.readBy || []).includes(user.id));
+      new Notification('💬 New Message', { body: latestUnread ? `${latestUnread.senderName}: ${latestUnread.content?.substring(0, 60) || '📎 File'}` : 'You have a new message', icon: './aiu_scicomm_logo.png' });
+    }
+    prevUnreadChat.current = unreadChatCount;
+  }, [unreadChatCount]);
 
   const toggleDarkMode = () => {
     const next = !isDarkMode;
@@ -106,7 +120,7 @@ export default function SciCommLayout() {
             {isTeam && <Link to="/tasks" className={`scicomm-nav-item ${isActive('/tasks') ? 'active' : ''}`} style={{position:'relative'}}><Briefcase size={20} />{myPendingTasks.length > 0 && <span className="scicomm-notif-badge">{myPendingTasks.length}</span>}<span className="nav-text">Tasks</span></Link>}
             <Link to="/calendar" className={`scicomm-nav-item ${isActive('/calendar') ? 'active' : ''}`} style={{position:'relative'}}><Calendar size={20} />{upcomingMeetings.length > 0 && <span className="scicomm-notif-badge">{upcomingMeetings.length}</span>}<span className="nav-text">Calendar</span></Link>
             {isTeam && <Link to="/meetings" className={`scicomm-nav-item ${isActive('/meetings') ? 'active' : ''}`}><Video size={20} /><span className="nav-text">Meetings</span></Link>}
-            <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`}><MessageCircle size={20} /><span className="nav-text">Chat</span></Link>
+            <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`} style={{position:'relative'}}><MessageCircle size={20} />{unreadChatCount > 0 && <span className="scicomm-notif-badge">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}<span className="nav-text">Chat</span></Link>
             <Link to="/leaderboard" className={`scicomm-nav-item ${isActive('/leaderboard') ? 'active' : ''}`}><Trophy size={20} /><span className="nav-text">Leaderboard</span></Link>
             <Link to="/notifications" className={`scicomm-nav-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell size={20} />{notifCount > 0 && <span className="scicomm-notif-badge">{notifCount}</span>}<span className="nav-text">Alerts</span></Link>
             
