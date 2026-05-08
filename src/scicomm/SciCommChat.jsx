@@ -380,7 +380,15 @@ export default function SciCommChat() {
                           {m.storyContent && <div style={{ fontSize: '13px', fontStyle: 'italic', opacity: 0.8 }}>"{m.storyContent}"</div>}
                         </div>
                       )}
-                      {m.content && <div style={{ unicodeBidi: 'plaintext', textAlign: 'start' }}>{renderMessageText(m.content, isMe)}</div>}
+                      {m.content && (
+                        <div style={{ 
+                          unicodeBidi: 'plaintext', 
+                          direction: /[\u0600-\u06FF]/.test(m.content || '') ? 'rtl' : 'ltr',
+                          textAlign: /[\u0600-\u06FF]/.test(m.content || '') ? 'right' : 'left'
+                        }}>
+                          {renderMessageText(m.content, isMe)}
+                        </div>
+                      )}
                       
                       {/* Reactions Display */}
                       {m.reactions && Object.keys(m.reactions).length > 0 && (

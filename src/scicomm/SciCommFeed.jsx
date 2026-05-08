@@ -608,7 +608,15 @@ export default function SciCommFeed() {
                   </div>
                 ) : (
                   <>
-                    <p style={{ margin: '0 0 8px', fontSize: '14px', lineHeight: '1.5', whiteSpace: 'pre-wrap', unicodeBidi: 'plaintext', textAlign: 'start' }}>{renderPostText(post.content)}</p>
+                    <p style={{ 
+                      margin: '0 0 8px', 
+                      fontSize: '14px', 
+                      lineHeight: '1.5', 
+                      whiteSpace: 'pre-wrap', 
+                      unicodeBidi: 'plaintext', 
+                      direction: /[\u0600-\u06FF]/.test(post.content || '') ? 'rtl' : 'ltr',
+                      textAlign: /[\u0600-\u06FF]/.test(post.content || '') ? 'right' : 'left'
+                    }}>{renderPostText(post.content)}</p>
                     {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
                     {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}
                     {post.videoUrl && <video src={post.videoUrl} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />}
