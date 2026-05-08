@@ -72,7 +72,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.7.0';
+  const PLATFORM_VERSION = 'v3.7.1';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -168,30 +168,19 @@ export default function SciCommLayout() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>✨ New Features</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>📱 Mobile UI Redesign</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>Who Reacted:</strong> Click reaction counts on posts, comments, or replies to see who reacted with what emoji</li>
-                  <li><strong>Role Badges on Posts:</strong> Every post now shows the author's role (👑 Master, 🛡️ Admin, 🔬 SciComm, 👤 Visitor)</li>
-                  <li><strong>Join SciComm Team:</strong> Visitors can apply to join the team directly from the Leaderboard</li>
-                  <li><strong>Application Review:</strong> Admins review applications in a new "Applications" tab</li>
+                  <li><strong>LinkedIn-Style Layout:</strong> Redesigned mobile bottom navigation for a more premium feel.</li>
+                  <li><strong>Floating Post Button:</strong> A prominent blue "+" button in the bottom bar to create posts easily.</li>
+                  <li><strong>Dedicated Post Page:</strong> Full-screen post creation page with rich media support.</li>
                 </ul>
               </div>
               <div style={{ background: '#dcfce7', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#166534', fontSize: '14px' }}>🗄️ Data Management (Admin)</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#166534', fontSize: '14px' }}>🔧 Stability & Layout</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.8' }}>
-                  <li>📥 <strong>Export to Excel:</strong> Download all users, tasks, meetings, and applications as .xlsx</li>
-                  <li>📤 <strong>Import from Excel:</strong> Upload .xlsx to bulk-add users and tasks</li>
-                  <li>⚠️ <strong>Reset All Points:</strong> Set every member's score back to zero</li>
-                  <li>🧹 <strong>Per-Member Cleanup:</strong> Clear tasks or meeting records for individual members</li>
-                </ul>
-              </div>
-              <div style={{ background: '#fef3c7', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#92400e', fontSize: '14px' }}>🔒 Access & Fixes</h4>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#92400e', lineHeight: '1.8' }}>
-                  <li>Visitors can now <strong>view the full leaderboard</strong> with a banner explaining why they’re not ranked</li>
-                  <li>Application status shows 🎉 Approved / ❌ Rejected / ⏳ Pending clearly</li>
-                  <li>Application notifications appear in the Alerts page for both applicants and admins</li>
-                  <li>Removed legacy System Administrator account from the platform</li>
+                  <li><strong>Profile Crash Fixes:</strong> Resolved blank screens and missing variables on both personal and member profiles.</li>
+                  <li><strong>Hub Streamlining:</strong> Removed redundant Network and Alerts buttons from the SciComm Hub.</li>
+                  <li><strong>Hidden Mobile Composer:</strong> The in-feed post box is now hidden on mobile to encourage use of the new dedicated page.</li>
                 </ul>
               </div>
             </div>
