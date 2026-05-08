@@ -335,6 +335,9 @@ export default function SciCommLayout() {
               <button onClick={() => { localStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Building2 size={20} color="#4b5563" /> Switch Hub
               </button>
+              <div style={{ padding: '24px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 'auto' }}>
+                <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '36px', opacity: 0.8 }} onError={e => e.target.style.display='none'} />
+              </div>
             </div>
 
             <div style={{ padding: '12px 0', borderTop: '1px solid #e0dfdc' }}>
