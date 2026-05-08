@@ -97,9 +97,11 @@ export default function SciCommPost() {
           onClick={handlePostSubmit}
           disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile && !(showArticle && articleTitle.trim()) && !(showPoll && pollQuestion.trim()))}
           style={{ 
+          disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim()))}
+          style={{ 
             padding: '6px 16px', borderRadius: '4px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer',
-            background: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showArticle && articleTitle.trim()) && !(showPoll && pollQuestion.trim())) ? '#e4e6eb' : '#1b74e4', 
-            color: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showArticle && articleTitle.trim()) && !(showPoll && pollQuestion.trim())) ? '#bcc0c4' : 'white'
+            background: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? '#e4e6eb' : '#1b74e4', 
+            color: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? '#bcc0c4' : 'white'
           }}
         >
           {isPostingMedia ? 'Posting...' : 'Post'}
@@ -139,12 +141,7 @@ export default function SciCommPost() {
         {postVideo && <div style={{ marginBottom: '8px', position: 'relative' }}><video src={URL.createObjectURL(postVideo)} style={{ maxHeight: '200px', borderRadius: '8px', width: '100%' }} controls /><button onClick={() => setPostVideo(null)} style={{ position: 'absolute', top: 4, right: 4, background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', fontSize: '16px' }}>×</button></div>}
         {postFile && <div style={{ marginBottom: '8px', padding: '10px', background: '#eef3f8', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>📎 {postFile.name}<button onClick={() => setPostFile(null)} style={{ position: 'absolute', top: 6, right: 6, background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: '12px' }}>×</button></div>}
 
-        {/* Article Title */}
-        {showArticle && (
-          <div style={{ marginBottom: '12px', borderLeft: '3px solid #e7a33e', paddingLeft: '12px' }}>
-            <input type="text" placeholder="Article Title (Optional)..." value={articleTitle} onChange={e => setArticleTitle(e.target.value)} style={{ width: '100%', padding: '4px 0', border: 'none', fontSize: '16px', fontWeight: 600, outline: 'none', boxSizing: 'border-box', color: '#050505', background: 'transparent' }} />
-          </div>
-        )}
+
 
         {/* Poll Builder */}
         {showPoll && (
@@ -171,11 +168,6 @@ export default function SciCommPost() {
           <Image size={24} color="#45bd62" /> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Photo/video</span>
           <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files[0]; if(f && f.type.startsWith('video')) setPostVideo(f); else if (f) setPostImage(f); }} style={{ display: 'none' }} />
         </label>
-        
-        <div onClick={() => setShowArticle(!showArticle)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
-          <FileText size={24} color="#1877f2" /> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Write Article</span>
-        </div>
-
         <div onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
           <span style={{ fontSize: '24px', lineHeight: 1 }}>📊</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Create Poll</span>
         </div>
@@ -184,10 +176,6 @@ export default function SciCommPost() {
           <span style={{ fontSize: '24px', lineHeight: 1 }}>📎</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Attach File</span>
           <input type="file" onChange={e => setPostFile(e.target.files[0])} style={{ display: 'none' }} />
         </label>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', borderBottom: '1px solid #e4e6eb', cursor: 'pointer' }}>
-          <span style={{ fontSize: '24px', lineHeight: 1 }}>😀</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Feeling/activity</span>
-        </div>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', cursor: 'pointer' }}>
           <span style={{ fontSize: '24px', lineHeight: 1 }}>📍</span> <span style={{ fontSize: '16px', color: '#050505', fontWeight: 500 }}>Check in</span>
