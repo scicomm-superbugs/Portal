@@ -4,6 +4,7 @@ import { useLiveCollection, db, uploadFile } from '../db';
 import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
+import SciCommStories from './SciCommStories';
 
 export default function SciCommFeed() {
   const { user } = useAuth();
@@ -421,6 +422,9 @@ export default function SciCommFeed() {
 
       {/* Main Feed */}
       <div className="scicomm-feed-main">
+        {/* Stories Horizontal Reel */}
+        <SciCommStories scientists={scientists} />
+
         {/* Banner Slider */}
         {banners.length > 0 && (
           <div className="scicomm-card" style={{ position: 'relative', overflow: 'hidden', marginBottom: '12px' }}>

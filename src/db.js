@@ -304,6 +304,17 @@ export const db = {
       await deleteDoc(doc(firestore, getCollectionName('scicomm_chat_messages'), String(id)));
     }
   },
+  scicomm_stories: {
+    add: async (story) => {
+      await addDoc(collection(firestore, getCollectionName('scicomm_stories')), story);
+    },
+    update: async (id, data) => {
+      await updateDoc(doc(firestore, getCollectionName('scicomm_stories'), String(id)), data);
+    },
+    delete: async (id) => {
+      await deleteDoc(doc(firestore, getCollectionName('scicomm_stories'), String(id)));
+    }
+  },
   scicomm_banners: {
     add: async (banner) => {
       await addDoc(collection(firestore, getCollectionName('scicomm_banners')), banner);
