@@ -41,31 +41,47 @@ export default function SciCommLayout() {
   const connectionsData = useLiveCollection('scicomm_connections') || [];
   const pendingConnections = connectionsData.filter(c => c.status === 'pending' && String(c.toId) === String(user.id));
 
-  // Push notifications
+  // Push notifications - safe wrapper (new Notification() crashes on mobile browsers)
+  const sendPushNotif = (title, body) => {
+    try {
+      if (!('Notification' in window) || Notification.permission !== 'granted') return;
+      // Mobile Chrome requires Service Worker - skip on mobile
+      if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) return;
+      new Notification(title, { body, icon: './aiu_scicomm_logo.png' });
+    } catch (e) {
+      // Silently ignore - e.g. mobile browsers that don't support direct Notification()
+    }
+  };
+
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      // Only request permission on desktop
+      if (!/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        Notification.requestPermission();
+      }
+    }
+  }, []);
   const prevTaskCount = useRef(myPendingTasks.length);
   useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
-  }, []);
-  useEffect(() => {
-    if (myPendingTasks.length > prevTaskCount.current && Notification.permission === 'granted') {
-      new Notification('📋 New Task Assigned!', { body: myPendingTasks[0]?.title, icon: './aiu_scicomm_logo.png' });
+    if (myPendingTasks.length > prevTaskCount.current) {
+      sendPushNotif('📋 New Task Assigned!', myPendingTasks[0]?.title || '');
     }
     prevTaskCount.current = myPendingTasks.length;
   }, [myPendingTasks.length]);
 
   const prevWarningCount = useRef(myWarnings.length);
   useEffect(() => {
-    if (myWarnings.length > prevWarningCount.current && Notification.permission === 'granted') {
-      new Notification('⚠️ Warning Received', { body: myWarnings[0]?.message, icon: './aiu_scicomm_logo.png' });
+    if (myWarnings.length > prevWarningCount.current) {
+      sendPushNotif('⚠️ Warning Received', myWarnings[0]?.message || '');
     }
     prevWarningCount.current = myWarnings.length;
   }, [myWarnings.length]);
 
   const prevUnreadChat = useRef(unreadChatCount);
   useEffect(() => {
-    if (unreadChatCount > prevUnreadChat.current && Notification.permission === 'granted') {
+    if (unreadChatCount > prevUnreadChat.current) {
       const latestUnread = chatMessages.find(m => myRoomIds.has(m.roomId) && m.senderId !== user.id && !(m.readBy || []).includes(user.id));
-      new Notification('💬 New Message', { body: latestUnread ? `${latestUnread.senderName}: ${latestUnread.content?.substring(0, 60) || '📎 File'}` : 'You have a new message', icon: './aiu_scicomm_logo.png' });
+      sendPushNotif('💬 New Message', latestUnread ? `${latestUnread.senderName}: ${latestUnread.content?.substring(0, 60) || '📎 File'}` : 'You have a new message');
     }
     prevUnreadChat.current = unreadChatCount;
   }, [unreadChatCount]);
