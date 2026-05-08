@@ -79,7 +79,22 @@ export default function SciCommLeaderboard() {
     setApplying(false);
   };
 
-  const myApplication = applications.find(a => String(a.userId) === String(user.id));
+  const myApplication = applications.find(a => String(a.userId) === String(user.id) && (a.status === 'pending' || a.status === 'approved'));
+  const myRejectedApp = applications.find(a => String(a.userId) === String(user.id) && a.status === 'rejected');
+
+  const handleReapply = async () => {
+    setApplying(true);
+    try {
+      // Delete old rejected application
+      if (myRejectedApp) await db.scicomm_applications.delete(myRejectedApp.id);
+      await db.scicomm_applications.add({
+        userId: user.id,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      });
+    } catch (err) { console.error(err); }
+    setApplying(false);
+  };
 
   return (
     <div className="scicomm-feed-layout">
@@ -108,13 +123,21 @@ export default function SciCommLeaderboard() {
             
             {myApplication ? (
               <div style={{ padding: '14px 20px', borderRadius: '10px', display: 'inline-block', fontWeight: 600, fontSize: '14px',
-                background: myApplication.status === 'pending' ? '#e0f2fe' : myApplication.status === 'approved' ? '#dcfce7' : '#fee2e2',
-                color: myApplication.status === 'pending' ? '#0369a1' : myApplication.status === 'approved' ? '#166534' : '#991b1b',
-                border: myApplication.status === 'pending' ? '1px solid #7dd3fc' : myApplication.status === 'approved' ? '1px solid #86efac' : '1px solid #fca5a5'
+                background: myApplication.status === 'pending' ? '#e0f2fe' : '#dcfce7',
+                color: myApplication.status === 'pending' ? '#0369a1' : '#166534',
+                border: myApplication.status === 'pending' ? '1px solid #7dd3fc' : '1px solid #86efac'
               }}>
                 {myApplication.status === 'pending' && '⏳ Application Submitted! Under review by Admins.'}
                 {myApplication.status === 'approved' && '🎉 Your application was approved! You are now a SciComm Team member. Refresh the page to see your new access.'}
-                {myApplication.status === 'rejected' && '❌ Your application was not approved at this time. Please update your profile and try again later.'}
+              </div>
+            ) : myRejectedApp ? (
+              <div style={{ display: 'inline-block', maxWidth: '420px' }}>
+                <div style={{ padding: '14px 20px', borderRadius: '10px', fontWeight: 600, fontSize: '14px', background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5', marginBottom: '12px' }}>
+                  ❌ Your previous application was not approved. Update your profile and try again.
+                </div>
+                <button onClick={handleReapply} disabled={applying} className="scicomm-btn-primary" style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', padding: '10px' }}>
+                  <Send size={16} /> {applying ? 'Submitting...' : 'Re-apply to SciComm Team'}
+                </button>
               </div>
             ) : (
               <div style={{ background: 'white', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', display: 'inline-block', textAlign: 'left', maxWidth: '400px' }}>
