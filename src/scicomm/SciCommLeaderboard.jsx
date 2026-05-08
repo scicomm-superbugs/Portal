@@ -1,6 +1,6 @@
 import { db, useLiveCollection } from '../db';
 import { useAuth } from '../context/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Trophy, UserCircle, TrendingUp, Lock, Send, Users, Shield } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AVATARS, AUTO_TAGS, calculateScore, getUnlockedTags, REACTIONS, getUserLevel } from './scicommConstants';
@@ -18,6 +18,12 @@ export default function SciCommLeaderboard() {
   const [applying, setApplying] = useState(false);
 
   const isTeam = user.role === 'scicomm' || user.role === 'admin' || user.role === 'master';
+
+  useEffect(() => {
+    if (isTeam) {
+      localStorage.setItem('has_been_team_' + user.id, 'true');
+    }
+  }, [isTeam, user.id]);
 
   // Only scicomm team members appear on leaderboard (not visitors, not admins/master)
   const teamMembers = scientists.filter(s => s.accountStatus !== 'pending' && s.role === 'scicomm');
@@ -124,12 +130,13 @@ export default function SciCommLeaderboard() {
             
             {myApplication ? (
               <div style={{ padding: '14px 20px', borderRadius: '10px', display: 'inline-block', fontWeight: 600, fontSize: '14px',
-                background: myApplication.status === 'pending' ? '#e0f2fe' : '#dcfce7',
-                color: myApplication.status === 'pending' ? '#0369a1' : '#166534',
-                border: myApplication.status === 'pending' ? '1px solid #7dd3fc' : '1px solid #86efac'
+                background: myApplication.status === 'pending' ? '#e0f2fe' : (localStorage.getItem('has_been_team_' + user.id) ? '#fee2e2' : '#dcfce7'),
+                color: myApplication.status === 'pending' ? '#0369a1' : (localStorage.getItem('has_been_team_' + user.id) ? '#b91c1c' : '#166534'),
+                border: myApplication.status === 'pending' ? '1px solid #7dd3fc' : (localStorage.getItem('has_been_team_' + user.id) ? '1px solid #fca5a5' : '1px solid #86efac')
               }}>
                 {myApplication.status === 'pending' && '⏳ Application Submitted! Under review by Admins.'}
-                {myApplication.status === 'approved' && '🎉 Your application was approved! You are now a SciComm Team member. Refresh the page to see your new access.'}
+                {myApplication.status === 'approved' && !localStorage.getItem('has_been_team_' + user.id) && '🎉 Your application was approved! You are now a SciComm Team member. Refresh the page to see your new access.'}
+                {myApplication.status === 'approved' && localStorage.getItem('has_been_team_' + user.id) && '⚠️ Your profile has been downgraded by admins. You no longer have team access.'}
               </div>
             ) : myRejectedApp ? (
               <div style={{ display: 'inline-block', maxWidth: '420px' }}>
