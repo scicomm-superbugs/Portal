@@ -840,26 +840,35 @@ export default function SciCommFeed() {
 
         <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px' }}>
           <h3 style={{ margin: '0 0 10px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}><Trophy size={18} color="#f59e0b" /> Leaderboard</h3>
-          {scientists.filter(s => s.role !== 'master' && s.role !== 'admin' && s.accountStatus !== 'pending').sort((a, b) => calculateScore(b) - calculateScore(a)).slice(0, 5).map((s, idx) => {
-            const score = calculateScore(s);
-            const level = getUserLevel(score);
-            return (
-              <Link key={s.id} to={`/member/${s.id}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', textDecoration: 'none', color: 'inherit' }}>
-                <div style={{ fontWeight: 800, fontSize: '14px', width: '20px', textAlign: 'center', color: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : '#64748b' }}>
-                  #{idx + 1}
-                </div>
-                {renderAvatar(s, 32)}
-                <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <div style={{ fontWeight: 600, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {s.name}
+          {(() => {
+            const getFeedScore = (s) => {
+              const taskPoints = tasksData.filter(t => t.assignedTo === s.id && t.status === 'completed').reduce((sum, t) => sum + (t.points || 0), 0);
+              const meetingsAttended = meetingsData.filter(m => m.attendees?.includes(s.id)).length;
+              return calculateScore({ taskPoints, meetingsAttended, role: s.role });
+            };
+            return scientists.filter(s => s.role !== 'master' && s.role !== 'admin' && s.accountStatus !== 'pending')
+              .sort((a, b) => getFeedScore(b) - getFeedScore(a))
+              .slice(0, 5).map((s, idx) => {
+              const score = getFeedScore(s);
+              const level = getUserLevel(score);
+              return (
+                <Link key={s.id} to={`/member/${s.id}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', textDecoration: 'none', color: 'inherit' }}>
+                  <div style={{ fontWeight: 800, fontSize: '14px', width: '20px', textAlign: 'center', color: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : '#64748b' }}>
+                    #{idx + 1}
                   </div>
-                  <div style={{ color: level.color, fontSize: '11px', fontWeight: 700 }}>
-                    Lv. {level.level} • {score === Infinity ? 'Infinity' : score} pts
+                  {renderAvatar(s, 32)}
+                  <div style={{ flex: 1, overflow: 'hidden' }}>
+                    <div style={{ fontWeight: 600, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {s.name}
+                    </div>
+                    <div style={{ color: level.color, fontSize: '11px', fontWeight: 700 }}>
+                      Lv. {level.level} • {score === Infinity ? 'Infinity' : score} pts
+                    </div>
                   </div>
-                </div>
-              </Link>
-            );
-          })}
+                </Link>
+              );
+            });
+          })()}
           <Link to="/leaderboard" style={{ display: 'block', textAlign: 'center', marginTop: '12px', padding: '8px', background: '#fffbeb', color: '#b45309', borderRadius: '6px', fontSize: '12px', fontWeight: 600, textDecoration: 'none', transition: 'background 0.2s' }}>
             View Full Leaderboard
           </Link>
