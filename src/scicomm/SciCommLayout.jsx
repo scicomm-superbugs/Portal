@@ -139,7 +139,7 @@ export default function SciCommLayout() {
     return <UserCircle size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.7.2';
+  const PLATFORM_VERSION = 'v3.7.3';
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;
@@ -367,17 +367,17 @@ export default function SciCommLayout() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>📱 Mobile Navigation</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>💬 Advanced Chat Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>Profile Sidebar Menu:</strong> Tap your avatar on mobile to open a new slide-out menu with quick access to your profile, stats, and settings.</li>
-                  <li><strong>Improved Buttons:</strong> Menu actions are now bolder, larger, and much easier to tap on touch screens.</li>
+                  <li><strong>In-Chat Polls:</strong> You can now create and vote in polls directly inside group chats!</li>
+                  <li><strong>Member Tags:</strong> Messages now show Admin, Team, or Visitor tags next to names in groups.</li>
                 </ul>
               </div>
               <div style={{ background: '#dcfce7', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#166534', fontSize: '14px' }}>🔧 Stability & Layout</h4>
+                <h4 style={{ margin: '0 0 6px', color: '#166534', fontSize: '14px' }}>📱 Mobile Experience</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.8' }}>
-                  <li><strong>Dark Mode Fixed:</strong> Bottom navigation bars and popups no longer disappear into the background on mobile when Dark Mode is active.</li>
-                  <li><strong>Scroll Locking:</strong> Opening the mobile sidebar now properly locks the background feed, preventing annoying double-scrolling.</li>
+                  <li><strong>Smooth Chat Scrolling:</strong> The chat window is now locked in place, preventing annoying page shifts while scrolling messages.</li>
+                  <li><strong>Faster Reactions:</strong> Tap and hold time for post reactions reduced to 200ms for a smoother feel.</li>
                 </ul>
               </div>
             </div>
