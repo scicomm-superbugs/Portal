@@ -450,27 +450,65 @@ export default function SciCommFeed() {
 
         {/* Post Composer - hidden on mobile, use /post page instead */}
         {/* Post Composer - hidden on mobile, use /post page instead */}
-        <div className="scicomm-card scicomm-card-padding hide-on-mobile">
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}>
-            {renderAvatar(currentUserData, 40)}
-            <div style={{ flex: 1, background: '#f0f2f5', borderRadius: '24px', padding: '8px 16px', display: 'flex', alignItems: 'center', minHeight: '40px', boxSizing: 'border-box' }}>
+        <div className="scicomm-card hide-on-mobile" style={{ 
+          background: 'rgba(255, 255, 255, 0.8)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          borderRadius: '20px',
+          padding: '24px',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(255,255,255,0.5)',
+          border: '1px solid rgba(226, 232, 240, 0.8)',
+          marginBottom: '20px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Subtle gradient accent at top */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899)' }} />
+          
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', alignItems: 'center' }}>
+            {renderAvatar(currentUserData, 44)}
+            <div style={{ 
+              flex: 1, 
+              background: 'rgba(241, 245, 249, 0.6)', 
+              borderRadius: '30px', 
+              padding: '12px 20px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              minHeight: '48px', 
+              boxSizing: 'border-box',
+              border: '1px solid transparent',
+              transition: 'all 0.3s ease',
+              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)'
+            }}
+            onMouseOver={e => e.currentTarget.style.border = '1px solid rgba(59,130,246,0.3)'}
+            onMouseOut={e => e.currentTarget.style.border = '1px solid transparent'}
+            >
               <input type="text" placeholder="What's on your mind?" value={newPost} onChange={e => setNewPost(e.target.value)} onKeyDown={e => e.key === 'Enter' && handlePostSubmit(e)}
-                style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '16px', outline: 'none', color: '#050505', width: '100%' }} />
+                style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '15px', outline: 'none', color: '#1e293b', width: '100%', fontFamily: 'inherit' }} />
             </div>
           </div>
           
-          <div style={{ borderTop: '1px solid #ced0d4', paddingTop: '12px', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '8px' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', transition: 'background 0.2s' }} onMouseOver={e=>e.currentTarget.style.background='#f0f2f5'} onMouseOut={e=>e.currentTarget.style.background='transparent'}>
-              <Image color="#45bd62" size={20} /> <span style={{ color: '#65676b', fontWeight: 600, fontSize: '14px' }}>Photo/video</span>
-              <input type="file" accept="image/*,video/*,image/gif" onChange={e => { const f = e.target.files[0]; if(f && f.type.startsWith('video')) setPostVideo(f); else if(f) setPostImage(f); }} style={{ display: 'none' }} />
-            </label>
-            <button onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', background: 'none', border: 'none', transition: 'background 0.2s' }} onMouseOver={e=>e.currentTarget.style.background='#f0f2f5'} onMouseOut={e=>e.currentTarget.style.background='transparent'}>
-              <span style={{ fontSize: '20px', lineHeight: 1 }}>📊</span> <span style={{ color: '#65676b', fontWeight: 600, fontSize: '14px' }}>Poll</span>
+          <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', borderRadius: '12px', background: 'transparent', transition: 'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.background='#f1f5f9';}} onMouseOut={e=>{e.currentTarget.style.background='transparent';}}>
+                <Image color="#10b981" size={20} /> <span style={{ color: '#64748b', fontWeight: 600, fontSize: '14px' }}>Photo/video</span>
+                <input type="file" accept="image/*,video/*,image/gif" onChange={e => { const f = e.target.files[0]; if(f && f.type.startsWith('video')) setPostVideo(f); else if(f) setPostImage(f); }} style={{ display: 'none' }} />
+              </label>
+              <button onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', borderRadius: '12px', background: 'transparent', border: 'none', transition: 'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.background='#f1f5f9';}} onMouseOut={e=>{e.currentTarget.style.background='transparent';}}>
+                <span style={{ fontSize: '18px', lineHeight: 1 }}>📊</span> <span style={{ color: '#64748b', fontWeight: 600, fontSize: '14px' }}>Poll</span>
+              </button>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', borderRadius: '12px', background: 'transparent', transition: 'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.background='#f1f5f9';}} onMouseOut={e=>{e.currentTarget.style.background='transparent';}}>
+                <span style={{ fontSize: '18px', lineHeight: 1 }}>📎</span> <span style={{ color: '#64748b', fontWeight: 600, fontSize: '14px' }}>File</span>
+                <input type="file" onChange={e => setPostFile(e.target.files[0])} style={{ display: 'none' }} />
+              </label>
+            </div>
+            
+            <button onClick={handlePostSubmit} disabled={!newPost.trim() && !postImage && !postVideo && !postFile} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: '12px', background: (!newPost.trim() && !postImage && !postVideo && !postFile) ? '#e2e8f0' : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', border: 'none', color: (!newPost.trim() && !postImage && !postVideo && !postFile) ? '#94a3b8' : 'white', fontWeight: 600, fontSize: '14px', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: (!newPost.trim() && !postImage && !postVideo && !postFile) ? 'none' : '0 4px 12px rgba(139,92,246,0.2)' }}
+            onMouseOver={e => { if(newPost.trim() || postImage || postVideo || postFile) e.currentTarget.style.transform = 'translateY(-1px)'; }}
+            onMouseOut={e => { e.currentTarget.style.transform = 'none'; }}
+            >
+              Post <Send size={16} />
             </button>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '8px 16px', borderRadius: '8px', transition: 'background 0.2s' }} onMouseOver={e=>e.currentTarget.style.background='#f0f2f5'} onMouseOut={e=>e.currentTarget.style.background='transparent'}>
-              <span style={{ fontSize: '20px', lineHeight: 1 }}>📎</span> <span style={{ color: '#65676b', fontWeight: 600, fontSize: '14px' }}>File</span>
-              <input type="file" onChange={e => setPostFile(e.target.files[0])} style={{ display: 'none' }} />
-            </label>
           </div>
 
           {/* Active Composer Elements */}

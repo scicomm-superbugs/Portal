@@ -84,29 +84,30 @@ export default function SciCommPost() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', background: 'white', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ maxWidth: '600px', margin: '0 auto', background: '#f8fafc', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #ced0d4' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(226,232,240,0.8)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
-            <ArrowLeft size={24} color="#050505" />
+            <ArrowLeft size={24} color="#1e293b" />
           </button>
-          <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#050505' }}>Create post</h2>
+          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: '#1e293b' }}>Create Post</h2>
         </div>
         <button
           onClick={handlePostSubmit}
           disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim()))}
           style={{ 
-            padding: '6px 16px', borderRadius: '4px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer',
-            background: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? '#e4e6eb' : '#1b74e4', 
-            color: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? '#bcc0c4' : 'white'
+            padding: '8px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer',
+            background: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? '#e2e8f0' : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
+            color: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? '#94a3b8' : 'white',
+            boxShadow: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? 'none' : '0 4px 12px rgba(139,92,246,0.2)'
           }}
         >
           {isPostingMedia ? 'Posting...' : 'Post'}
         </button>
       </div>
 
-      <div style={{ padding: '16px', flex: 1 }}>
+      <div style={{ padding: '20px', flex: 1, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)', borderRadius: '24px 24px 0 0', marginTop: '12px', boxShadow: '0 -10px 30px rgba(0,0,0,0.02)' }}>
         {/* User Info & Privacy */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
           {renderAvatar(currentUserData, 44)}
