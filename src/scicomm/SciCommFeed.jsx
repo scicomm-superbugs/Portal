@@ -29,16 +29,20 @@ const ChunkedVideo = ({ videoUrl }) => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    loadVideo();
+  }, []);
   
   if (!src) {
     return (
-      <div style={{ width: '100%', height: '200px', background: '#f1f5f9', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: '8px' }} onClick={loadVideo}>
-        {loading ? 'Loading video...' : '▶️ Click to load video'}
+      <div style={{ width: '100%', height: '200px', background: '#f1f5f9', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+        <span style={{ fontSize: '14px', color: '#666' }}>⏳ Loading video...</span>
       </div>
     );
   }
   
-  return <video src={src} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />;
+  return <video src={src} autoPlay muted controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />;
 };
 
 export default function SciCommFeed() {
