@@ -1,4 +1,4 @@
-import { useLiveCollection, db } from '../db';
+import { useLiveCollection, db, firestore, getCollectionName } from '../db';
 import { UserPlus, Download, Upload } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useState, useRef, useEffect } from 'react';
@@ -241,7 +241,7 @@ export default function SciCommAdmin() {
                   userId: p.authorId, type: 'reaction', senderId: uid,
                   title: `${getName(uid)} reacted to your post`,
                   message: p.content?.substring(0, 50) || 'Media post',
-                  link: `/feed?postId=${p.id}`, createdAt: p.createdAt || new Date().toISOString(), read: false
+                  link: `/view-post/${p.id}`, createdAt: p.createdAt || new Date().toISOString(), read: false
                 });
                 added++;
               }
@@ -258,7 +258,7 @@ export default function SciCommAdmin() {
                  userId: parentAuthorId, type: 'comment', senderId: c.authorId,
                  title: `${getName(c.authorId)} commented on your post`,
                  message: c.text?.substring(0, 50) || 'Media comment',
-                 link: `/feed?postId=${postId}`, createdAt: c.createdAt || new Date().toISOString(), read: false
+                 link: `/view-post/${postId}`, createdAt: c.createdAt || new Date().toISOString(), read: false
                });
                added++;
             }
@@ -270,7 +270,7 @@ export default function SciCommAdmin() {
                       userId: c.authorId, type: 'reaction', senderId: uid,
                       title: `${getName(uid)} reacted to your comment`,
                       message: c.text?.substring(0, 50) || 'Media',
-                      link: `/feed?postId=${postId}`, createdAt: c.createdAt || new Date().toISOString(), read: false
+                      link: `/view-post/${postId}`, createdAt: c.createdAt || new Date().toISOString(), read: false
                     });
                     added++;
                   }
@@ -287,7 +287,7 @@ export default function SciCommAdmin() {
                   userId: userMatch.id, type: 'mention', senderId: c.authorId,
                   title: `${getName(c.authorId)} mentioned you`,
                   message: c.text?.substring(0, 50) || '...',
-                  link: `/feed?postId=${postId}`, createdAt: c.createdAt || new Date().toISOString(), read: false
+                  link: `/view-post/${postId}`, createdAt: c.createdAt || new Date().toISOString(), read: false
                 });
                 added++;
               }
