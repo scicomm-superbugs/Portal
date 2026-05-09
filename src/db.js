@@ -86,6 +86,7 @@ export const uploadFile = async (file, path, onProgress) => {
     // Resumable upload with progress
     return new Promise((resolve, reject) => {
       const task = uploadBytesResumable(storageRef, file);
+      if (onProgress) onProgress(1); // Show 1% immediately so user knows it started
       const timeout = setTimeout(() => { 
         task.cancel(); 
         reject(new Error('Upload timed out. If this happens often, check your network connection or reduce file size.')); 
