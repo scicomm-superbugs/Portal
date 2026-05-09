@@ -21,6 +21,7 @@ export default function SciCommChat() {
   const [editingMsg, setEditingMsg] = useState(null);
   const [hoveredMessage, setHoveredMessage] = useState(null);
   const [activeMsgMenu, setActiveMsgMenu] = useState(null);
+  const [swipeState, setSwipeState] = useState({ id: null, startX: 0, currentX: 0 });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const isAdmin = user.role === 'admin' || user.role === 'master';
@@ -477,8 +478,38 @@ export default function SciCommChat() {
                 const prev = roomMessages[idx - 1];
                 const isFirstInGroup = !prev || prev.senderId !== m.senderId;
                 const isDeleted = m.deleted;
+                const isSwiping = swipeState.id === m.id;
+                const translateX = isSwiping ? swipeState.currentX - swipeState.startX : 0;
+                const constrainedTranslateX = isMe ? Math.max(-60, Math.min(0, translateX)) : Math.max(0, Math.min(60, translateX));
+
                 return (
-                  <div key={m.id} style={{ display: 'flex', flexDirection: 'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginBottom: '4px' }}>
+                  <div 
+                    key={m.id} 
+                    style={{ 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      alignItems: isMe ? 'flex-end' : 'flex-start', 
+                      marginBottom: '4px',
+                      transform: `translateX(${constrainedTranslateX}px)`,
+                      transition: isSwiping ? 'none' : 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+                    }}
+                    onTouchStart={(e) => {
+                      if (isDeleted) return;
+                      setSwipeState({ id: m.id, startX: e.touches[0].clientX, currentX: e.touches[0].clientX });
+                    }}
+                    onTouchMove={(e) => {
+                      if (swipeState.id !== m.id) return;
+                      setSwipeState(prev => ({ ...prev, currentX: e.touches[0].clientX }));
+                    }}
+                    onTouchEnd={() => {
+                      if (swipeState.id === m.id) {
+                        if (Math.abs(constrainedTranslateX) >= 50) {
+                          setReplyingTo(m);
+                        }
+                        setSwipeState({ id: null, startX: 0, currentX: 0 });
+                      }
+                    }}
+                  >
                     {isFirstInGroup && !isMe && activeRoom.type === 'group' && <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', marginLeft: '12px', marginBottom: '2px' }}>{m.senderName}</div>}
                     <div style={{ 
                       maxWidth: '75%', 
@@ -730,6 +761,10 @@ export default function SciCommChat() {
         }
         
         @media (max-width: 768px) {
+          .scicomm-chat-container {
+            height: calc(100vh - 140px) !important;
+            border-radius: 0 !important;
+          }
           .chat-hide-mobile { display: none !important; }
           .chat-show-mobile { display: flex !important; }
           .scicomm-chat-sidebar {
