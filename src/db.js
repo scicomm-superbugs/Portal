@@ -61,6 +61,27 @@ export const uploadFile = async (file, path, onProgress) => {
     } catch (e) {
       console.error('Base64 compression failed, falling back to Firebase Storage', e);
     }
+  } else if (file.type.startsWith('video/')) {
+    // 🔥 EMERGENCY FALLBACK for videos!
+    // Uploads to Catbox.moe to bypass Firebase Storage CORS and timeout issues!
+    if (onProgress) onProgress(10);
+    try {
+      const formData = new FormData();
+      formData.append('reqtype', 'fileupload');
+      formData.append('fileToUpload', file);
+      
+      const response = await fetch('https://catbox.moe/user/api.php', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) throw new Error('Catbox upload failed');
+      const url = await response.text();
+      if (onProgress) onProgress(100);
+      return url.trim();
+    } catch (e) {
+      console.error('Catbox upload failed, falling back to Firebase Storage', e);
+    }
   } else if (file.size <= 750 * 1024) {
     // 🔥 EMERGENCY FALLBACK for documents (CVs, PDFs) under 750KB
     // Stores them directly as Base64 in Firestore to bypass Storage CORS completely!
