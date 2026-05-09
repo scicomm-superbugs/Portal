@@ -305,11 +305,13 @@ export default function SciCommFeed() {
           type: 'new_post',
           senderId: user.id,
           title: `New post from ${user.name}`,
-          message: newPost.substring(0, 50) + (newPost.length > 50 ? '...' : ''),
+          message: newPost.trim() 
+            ? (newPost.substring(0, 50) + (newPost.length > 50 ? '...' : ''))
+            : (postImage ? "Shared a photo" : (postVideo ? "Shared a video" : (postFile ? "Shared a file" : "New post"))),
           link: `/feed`, 
           createdAt: new Date().toISOString(),
           read: false
-        }).catch(() => {});
+        }).catch(e => console.error("Failed to add notification", e));
       });
 
       setNewPost('');

@@ -171,6 +171,7 @@ export default function SciCommNotifications() {
         color = n.senderId ? 'transparent' : '#10b981';
         bg = n.senderId ? 'transparent' : 'rgba(16, 185, 129, 0.1)';
       } else if (n.type === 'new_post') {
+        category = 'alert';
         icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <Bell size={18} />;
         color = n.senderId ? 'transparent' : '#f59e0b';
         bg = n.senderId ? 'transparent' : 'rgba(245, 158, 11, 0.1)';
