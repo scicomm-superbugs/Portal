@@ -42,6 +42,7 @@ export default function SciCommNotifications() {
     for (const n of unread) {
       try { await db.scicomm_notifications.update(n.id, { read: true }); } catch (e) {}
     }
+    // Also mark chat messages as read? (User might want this but they specifically asked for comment/mention notifications)
   };
 
   useEffect(() => {
@@ -137,7 +138,7 @@ export default function SciCommNotifications() {
         icon = <Heart size={18} />;
         color = '#ec4899';
         bg = 'rgba(236, 72, 153, 0.1)';
-      } else if (n.type.includes('comment')) {
+      } else if (n.type.includes('comment') || n.type === 'reply') {
         icon = <MessageSquare size={18} />;
         color = '#10b981';
         bg = 'rgba(16, 185, 129, 0.1)';
@@ -214,9 +215,34 @@ export default function SciCommNotifications() {
 
   return (
     <div className="scicomm-notifications-page" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 800 }}>Notifications</h2>
-        <button onClick={markAllAsRead} style={{ background: 'none', border: 'none', color: '#1d4ed8', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Mark all as read</button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', background: 'white', padding: '20px', borderRadius: '24px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
+        <div>
+          <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px' }}>Notifications</h2>
+          <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>AI Powered Syncing</div>
+        </div>
+        <button 
+          onClick={markAllAsRead} 
+          style={{ 
+            background: 'linear-gradient(135deg, #3b82f6, #2563eb)', 
+            color: 'white', 
+            border: 'none', 
+            padding: '10px 22px', 
+            borderRadius: '14px', 
+            fontSize: '13px', 
+            fontWeight: 800, 
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 10px 20px rgba(37,99,235,0.2)',
+            transition: 'transform 0.2s'
+          }}
+          onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <Bell size={16} />
+          AI Mark all as Read
+        </button>
       </div>
 
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', overflowX: 'auto', paddingBottom: '4px' }}>

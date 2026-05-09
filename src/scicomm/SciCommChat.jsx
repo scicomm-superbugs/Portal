@@ -31,6 +31,15 @@ export default function SciCommChat() {
   // Mentions logic
   const [mentionQuery, setMentionQuery] = useState('');
   const [showMentions, setShowMentions] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [selectedRoom, roomMessages.length]);
 
   const mentionSuggestions = scientists.filter(s => 
     !mentionQuery || 
@@ -428,7 +437,7 @@ export default function SciCommChat() {
             </div>
 
             {/* Messages */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '8px', background: '#f8fafc' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px', background: '#f8fafc', backgroundImage: 'radial-gradient(#e2e8f0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
               {roomMessages.map((m, idx) => {
                 const isMe = m.senderId === user.id;
                 const prev = roomMessages[idx - 1];
@@ -461,6 +470,7 @@ export default function SciCommChat() {
                   </div>
                 );
               })}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Mention Dropdown */}

@@ -105,6 +105,9 @@ export default function SciCommLayout() {
     prevTaskCount.current = myPendingTasks.length;
   }, [myPendingTasks.length]);
 
+  const generalNotifs = useLiveCollection('scicomm_notifications') || [];
+  const myGeneralNotifs = generalNotifs.filter(n => String(n.userId) === String(user.id) && !n.read);
+
   const prevWarningCount = useRef(myWarnings.length);
   useEffect(() => {
     if (myWarnings.length > prevWarningCount.current) {
@@ -112,6 +115,18 @@ export default function SciCommLayout() {
     }
     prevWarningCount.current = myWarnings.length;
   }, [myWarnings.length]);
+
+  const prevGeneralNotifCount = useRef(myGeneralNotifs.length);
+  useEffect(() => {
+    if (myGeneralNotifs.length > prevGeneralNotifCount.current) {
+      // Find the most recent unread notification that wasn't there before
+      const latest = myGeneralNotifs.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+      if (latest) {
+        sendPushNotif(latest.title, latest.message || 'Check your notifications');
+      }
+    }
+    prevGeneralNotifCount.current = myGeneralNotifs.length;
+  }, [myGeneralNotifs.length]);
 
   const prevUnreadChat = useRef(unreadChatCount);
   useEffect(() => {
