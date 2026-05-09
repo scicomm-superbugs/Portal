@@ -349,6 +349,7 @@ export default function SciCommChat() {
     s.id !== user.id && (!newChatSearch || s.name.toLowerCase().includes(newChatSearch.toLowerCase()) || (s.username||'').toLowerCase().includes(newChatSearch.toLowerCase()))
   );
 
+  return (
     <div className="scicomm-chat-container" style={{ display: 'flex', height: 'calc(100dvh - 100px)', maxWidth: '1000px', margin: '0 auto', gap: '0', overflow: 'hidden', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(16px)', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
       {/* Room List Sidebar */}
       <div style={{ width: '320px', borderRight: '1px solid rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column', flexShrink: 0, background: 'rgba(255,255,255,0.4)' }} className={`scicomm-chat-sidebar ${selectedRoom ? 'chat-hide-mobile' : 'chat-show-mobile'}`}>

@@ -20,7 +20,7 @@ const base64ToBlob = (base64, contentType) => {
   return new Blob(byteArrays, {type: contentType});
 };
 
-const StoryVideo = ({ videoUrl, isPaused, style }) => {
+const StoryVideo = ({ videoUrl, isPaused, style, onEnded }) => {
   const [src, setSrc] = useState(null);
   const fileId = videoUrl.replace('chunked://', '');
   const videoRef = useRef(null);
@@ -71,8 +71,8 @@ const StoryVideo = ({ videoUrl, isPaused, style }) => {
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <video ref={videoRef} src={src} playsInline loop muted={!audioUnlocked} style={style} />
-      <button onClick={toggleAudio} style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 20 }}>
+      <video ref={videoRef} src={src} playsInline muted={!audioUnlocked} style={style} onEnded={onEnded} />
+      <button onClick={toggleAudio} style={{ position: 'absolute', top: '70px', right: '16px', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 20 }}>
         {audioUnlocked ? '🔊' : '🔇'}
       </button>
     </div>
@@ -205,9 +205,13 @@ export default function SciCommStories({ scientists }) {
   // Auto advance
   useEffect(() => {
     if (viewingUserId && !isPaused && !replyText) {
+      const story = storiesByUser[viewingUserId][storyIndex];
+      const isVideo = story && story.mediaType === 'video';
+      const maxDuration = isVideo ? 90000 : 5000; // 90 sec for video, 5 sec for photo
+      
       const timer = setTimeout(() => {
         handleNextStory();
-      }, 5000); // 5 seconds per story
+      }, maxDuration); 
       return () => clearTimeout(timer);
     }
   }, [viewingUserId, storyIndex, isPaused, replyText]);
@@ -395,7 +399,7 @@ export default function SciCommStories({ scientists }) {
               {storiesByUser[viewingUserId][storyIndex].mediaUrl ? (
                 <>
                   {storiesByUser[viewingUserId][storyIndex].mediaType === 'video' ? (
-                    <StoryVideo videoUrl={storiesByUser[viewingUserId][storyIndex].mediaUrl} isPaused={isPaused || replyText.length > 0} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    <StoryVideo videoUrl={storiesByUser[viewingUserId][storyIndex].mediaUrl} isPaused={isPaused || replyText.length > 0} onEnded={() => { if(!isPaused && !replyText) handleNextStory() }} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   ) : (
                     <img src={storiesByUser[viewingUserId][storyIndex].mediaUrl} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   )}
