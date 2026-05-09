@@ -10,20 +10,40 @@ import SciCommStories from './SciCommStories';
 const ChunkedVideo = ({ videoUrl }) => {
   const [src, setSrc] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadedChunks, setLoadedChunks] = useState(0);
+  const [totalChunks, setTotalChunks] = useState(0);
   const fileId = videoUrl.replace('chunked://', '');
   
   const loadVideo = async () => {
     setLoading(true);
     try {
-      const q = query(collection(firestore, getCollectionName('scicomm_file_chunks')), where('fileId', '==', fileId));
-      const snap = await getDocs(q);
-      const chunks = snap.docs.map(doc => doc.data()).sort((a,b) => a.chunkIndex - b.chunkIndex);
+      // Get total chunks count from post metadata if possible, or fetch it
+      // For now, let's just fetch chunks one by one to simulate streaming
+      const chunks = [];
+      let i = 0;
+      let hasMore = true;
       
-      const base64Data = chunks.map(c => c.data.split(',')[1]).join('');
-      const contentType = chunks[0].data.split(',')[0].split(':')[1].split(';')[0];
+      while (hasMore) {
+        const q = query(collection(firestore, getCollectionName('scicomm_file_chunks')), where('fileId', '==', fileId), where('chunkIndex', '==', i));
+        const snap = await getDocs(q);
+        if (snap.empty) {
+          hasMore = false;
+        } else {
+          chunks.push(snap.docs[0].data());
+          i++;
+          setLoadedChunks(i);
+        }
+      }
       
-      const blob = await fetch(`data:${contentType};base64,${base64Data}`).then(res => res.blob());
-      setSrc(URL.createObjectURL(blob));
+      setTotalChunks(i);
+      
+      if (chunks.length > 0) {
+        const base64Data = chunks.map(c => c.data.split(',')[1]).join('');
+        const contentType = chunks[0].data.split(',')[0].split(':')[1].split(';')[0];
+        
+        const blob = await fetch(`data:${contentType};base64,${base64Data}`).then(res => res.blob());
+        setSrc(URL.createObjectURL(blob));
+      }
     } catch (e) {
       console.error('Failed to load chunked video', e);
     }
@@ -37,7 +57,10 @@ const ChunkedVideo = ({ videoUrl }) => {
   if (!src) {
     return (
       <div style={{ width: '100%', height: '200px', background: '#f1f5f9', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
-        <span style={{ fontSize: '14px', color: '#666' }}>⏳ Loading video...</span>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '14px', color: '#666' }}>⏳ Loading video...</span>
+          <span style={{ fontSize: '12px', color: '#888' }}>{loadedChunks > 0 ? `Loaded ${loadedChunks} pieces` : 'Connecting...'}</span>
+        </div>
       </div>
     );
   }
