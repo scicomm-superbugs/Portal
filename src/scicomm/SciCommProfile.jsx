@@ -1,10 +1,94 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { db, useLiveCollection, uploadFile } from '../db';
+import { db, useLiveCollection, uploadFile, firestore, getCollectionName } from '../db';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import bcrypt from 'bcryptjs';
 import { Camera, Edit2, Award, Pin, AlertTriangle, UserCircle, X, Settings, Briefcase, FileText, CheckCircle, GraduationCap, Upload, Lock } from 'lucide-react';
 import { AVATARS, AUTO_TAGS, calculateScore, getUnlockedTags, timeAgo, getUserLevel } from './scicommConstants';
+
+const base64ToBlob = (base64, contentType) => {
+  const byteCharacters = atob(base64);
+  const byteArrays = [];
+  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    const slice = byteCharacters.slice(offset, offset + 512);
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+  return new Blob(byteArrays, {type: contentType});
+};
+
+const FuturisticVideoPreview = ({ videoUrl }) => {
+  const [src, setSrc] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const fileId = videoUrl.replace('chunked://', '');
+  const videoRef = useRef(null);
+  
+  const loadVideo = async () => {
+    setLoading(true);
+    try {
+      const q = query(collection(firestore, getCollectionName('scicomm_file_chunks')), where('fileId', '==', fileId));
+      const snap = await getDocs(q);
+      const chunks = snap.docs.map(doc => doc.data()).sort((a,b) => a.chunkIndex - b.chunkIndex);
+      
+      if (chunks.length > 0) {
+        const base64Data = chunks.map(c => c.data.split(',')[1]).join('');
+        const contentType = chunks[0].data.split(',')[0].split(':')[1].split(';')[0];
+        
+        const blob = base64ToBlob(base64Data, contentType);
+        setSrc(URL.createObjectURL(blob));
+      }
+    } catch (e) {
+      console.error('Failed to load chunked video', e);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadVideo();
+  }, []);
+
+  useEffect(() => {
+    if (!src || !videoRef.current) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          videoRef.current.play().catch(e => console.log('Autoplay blocked', e));
+        } else {
+          videoRef.current.pause();
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    observer.observe(videoRef.current);
+    
+    return () => {
+      if (videoRef.current) observer.unobserve(videoRef.current);
+    };
+  }, [src]);
+
+  if (!src) {
+    return (
+      <div style={{ width: '240px', height: '135px', background: 'rgba(0,0,0,0.8)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', cursor: 'pointer', overflow: 'hidden', marginBottom: '8px' }}>
+        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(29, 78, 216, 0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(29, 78, 216, 0.8)' }}>
+          <div style={{ width: 0, height: 0, borderTop: '8px solid transparent', borderBottom: '8px solid transparent', borderLeft: '12px solid white', marginLeft: '3px' }}></div>
+        </div>
+        <div style={{ position: 'absolute', bottom: '8px', left: '8px', color: 'rgba(255,255,255,0.6)', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <div style={{ width: '10px', height: '10px', border: '2px solid white', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+          Loading...
+        </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  return <video ref={videoRef} src={src} controls={false} muted playsInline loop style={{ width: '240px', height: '135px', borderRadius: '12px', background: '#000', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 4px 15px rgba(0,0,0,0.3)', marginBottom: '8px' }} />;
+};
 
 export default function SciCommProfile() {
   const { user } = useAuth();
@@ -407,13 +491,7 @@ export default function SciCommProfile() {
                     <div style={{ flex: 1 }}>
                       <p style={{ margin: '0 0 4px', fontSize: '14px' }}>{p.content.substring(0, 100)}{p.content.length > 100 ? '...' : ''}</p>
                       {p.imageUrl && <img src={p.imageUrl} alt="" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', marginBottom: '4px', objectFit: 'cover' }} />}
-                      {p.videoUrl && (
-                        <div style={{ maxWidth: '100%', height: '150px', background: '#1a1a1a', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: '4px' }}>
-                          <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <div style={{ width: 0, height: 0, borderTop: '8px solid transparent', borderBottom: '8px solid transparent', borderLeft: '12px solid white', marginLeft: '2px' }}></div>
-                          </div>
-                        </div>
-                      )}
+                      {p.videoUrl && <FuturisticVideoPreview videoUrl={p.videoUrl} />}
                       <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>👍 {Object.values(p.reactions || {}).reduce((s, a) => s + a.length, 0)} • 💬 {(p.comments || []).length} • {timeAgo(p.createdAt)}</div>
                     </div>
                     <button onClick={() => handlePinPost(p.id)} style={{ background: isPinned ? '#1d4ed8' : '#f3f2ef', color: isPinned ? 'white' : '#666', border: 'none', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
