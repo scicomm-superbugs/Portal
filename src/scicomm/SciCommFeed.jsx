@@ -22,57 +22,16 @@ const base64ToBlob = (base64, contentType) => {
   return new Blob(byteArrays, {type: contentType});
 };
 
-const ChunkedVideo = ({ videoUrl }) => {
-  const [src, setSrc] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const fileId = videoUrl.replace('chunked://', '');
-  
-  const loadVideo = async () => {
-    setLoading(true);
-    try {
-      // Fetch all chunks at once to make it fast!
-      const q = query(collection(firestore, getCollectionName('scicomm_file_chunks')), where('fileId', '==', fileId));
-      const snap = await getDocs(q);
-      const chunks = snap.docs.map(doc => doc.data()).sort((a,b) => a.chunkIndex - b.chunkIndex);
-      
-      if (chunks.length > 0) {
-        const base64Data = chunks.map(c => c.data.split(',')[1]).join('');
-        const contentType = chunks[0].data.split(',')[0].split(':')[1].split(';')[0];
-        
-        const blob = base64ToBlob(base64Data, contentType);
-        setSrc(URL.createObjectURL(blob));
-      }
-    } catch (e) {
-      console.error('Failed to load chunked video', e);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    loadVideo();
-  }, []);
-  
-  if (!src) {
-    return (
-      <div style={{ width: '100%', height: '300px', background: '#1a1a1a', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px', position: 'relative', cursor: 'pointer' }}>
-        {/* Facebook-style play button */}
-        <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid rgba(255,255,255,0.6)' }}>
-          <div style={{ width: 0, height: 0, borderTop: '12px solid transparent', borderBottom: '12px solid transparent', borderLeft: '20px solid white', marginLeft: '6px' }}></div>
-        </div>
-        <div style={{ position: 'absolute', bottom: '12px', left: '12px', color: 'rgba(255,255,255,0.8)', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <div style={{ width: '12px', height: '12px', border: '2px solid white', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-          Loading video...
-        </div>
-        <style>{`
-          @keyframes spin {
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
+const ChunkedVideo = () => {
+  return (
+    <div style={{ width: '100%', height: '200px', background: '#f1f5f9', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <span style={{ fontSize: '24px' }}>⚠️</span>
+        <p style={{ fontSize: '14px', color: '#ef4444', marginTop: '8px', fontWeight: 600 }}>This video was uploaded using an old method and cannot be played.</p>
+        <p style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>Please create a new post with your video.</p>
       </div>
-    );
-  }
-  
-  return <video src={src} autoPlay muted controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', background: '#000' }} />;
+    </div>
+  );
 };
 
 export default function SciCommFeed() {
