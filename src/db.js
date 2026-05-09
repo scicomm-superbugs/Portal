@@ -63,46 +63,21 @@ export const uploadFile = async (file, path, onProgress) => {
     }
   } else if (file.type.startsWith('video/')) {
     // 🔥 EMERGENCY FALLBACK for videos!
-    // Splits file into chunks and stores in Firestore to bypass Storage CORS completely!
-    if (onProgress) onProgress(5);
-    try {
-      const CHUNK_SIZE = 500 * 1024; // 500KB
-      const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-      
-      const fileRef = await addDoc(collection(firestore, getCollectionName('scicomm_files')), {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        totalChunks,
-        createdAt: new Date().toISOString()
-      });
-      
-      const fileId = fileRef.id;
-      
-      for (let i = 0; i < totalChunks; i++) {
-        const start = i * CHUNK_SIZE;
-        const end = Math.min(start + CHUNK_SIZE, file.size);
-        const chunk = file.slice(start, end);
-        
-        const base64 = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(chunk);
-          reader.onload = () => resolve(reader.result);
-        });
-        
-        await addDoc(collection(firestore, getCollectionName('scicomm_file_chunks')), {
-          fileId,
-          chunkIndex: i,
-          data: base64
-        });
-        
-        if (onProgress) onProgress(Math.round(((i + 1) / totalChunks) * 100));
-      }
-      
-      return `chunked://${fileId}`;
-    } catch (e) {
-      console.error('Chunked upload failed, falling back to Firebase Storage', e);
-    }
+    // Uploads to Catbox.moe to get a direct streaming link and bypass Firestore lag!
+    if (onProgress) onProgress(10);
+    const formData = new FormData();
+    formData.append('reqtype', 'fileupload');
+    formData.append('fileToUpload', file);
+    
+    const response = await fetch('https://catbox.moe/user/api.php', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) throw new Error('Video host rejected the upload. Please try a smaller file.');
+    const url = await response.text();
+    if (onProgress) onProgress(100);
+    return url.trim();
   } else if (file.size <= 750 * 1024) {
     // 🔥 EMERGENCY FALLBACK for documents (CVs, PDFs) under 750KB
     // Stores them directly as Base64 in Firestore to bypass Storage CORS completely!
