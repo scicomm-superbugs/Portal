@@ -23,6 +23,7 @@ export default function SciCommNotifications() {
   const myTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
   const myWarnings = warningsData.filter(w => String(w.userId) === String(user.id));
   const pendingAccounts = isAdmin ? scientists.filter(s => s.accountStatus === 'pending') : [];
+  const pendingApps = isAdmin ? applicationsData.filter(a => a.status === 'pending') : [];
   const pendingConnections = connectionsData.filter(c => c.status === 'pending' && String(c.toId) === String(user.id));
   const upcomingMeetings = meetingsData.filter(m => {
     const isInvited = (m.members || []).includes(user.id) || m.allMembers;
@@ -161,6 +162,19 @@ export default function SciCommNotifications() {
       link: '/leaderboard',
       read: a.read || false,
       rawId: a.id
+    })),
+    ...pendingApps.map(a => ({
+      type: 'application_pending',
+      category: 'admin',
+      icon: <UserPlus size={18} />,
+      color: '#f59e0b',
+      bg: 'rgba(245, 158, 11, 0.1)',
+      title: `New Team Application`,
+      sub: `${a.name || 'A user'} applied to join SciComm Team`,
+      time: a.createdAt,
+      id: 'app_admin_' + a.id,
+      link: '/admin',
+      read: false
     })),
     ...(() => {
       const groupedGenNotifs = [];
@@ -311,40 +325,60 @@ export default function SciCommNotifications() {
   const unreadNotifications = filteredNotifications.filter(n => n.read === false);
   const readNotifications = filteredNotifications.filter(n => n.read !== false);
 
-  const renderNotificationItem = (n) => (
-    <Link 
-      key={n.id} 
-      to={n.link || '#'} 
-      onClick={() => handleNotificationClick(n)}
-      style={{ 
-        display: 'flex', 
-        gap: '16px', 
-        padding: '16px', 
-        textDecoration: 'none', 
-        color: 'inherit', 
-        borderRadius: '20px', 
-        transition: 'all 0.2s',
-        background: n.read === false ? 'rgba(29, 78, 216, 0.05)' : 'transparent',
-        opacity: n.read === false ? 1 : 0.6,
-        marginBottom: '4px',
-        border: n.read === false ? '1px solid rgba(29, 78, 216, 0.1)' : '1px solid transparent'
-      }}
-      onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
-      onMouseLeave={e => e.currentTarget.style.background = n.read === false ? 'rgba(29, 78, 216, 0.05)' : 'transparent'}
-    >
-      <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: n.bg, color: n.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        {n.icon}
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
-          <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: n.read === false ? 800 : 500, color: '#0f172a' }}>{n.title}</p>
-          {n.time && <span style={{ fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap' }}>{timeAgo(n.time)}</span>}
+  const renderNotificationItem = (n) => {
+    const isUnread = n.read === false;
+    return (
+      <Link 
+        key={n.id} 
+        to={n.link || '#'} 
+        onClick={() => handleNotificationClick(n)}
+        style={{ 
+          display: 'flex', 
+          gap: '16px', 
+          padding: '16px 20px', 
+          textDecoration: 'none', 
+          color: 'inherit', 
+          background: isUnread ? '#f0f7ff' : '#ffffff',
+          borderBottom: '1px solid #f1f5f9',
+          transition: 'all 0.2s ease',
+          alignItems: 'center'
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = isUnread ? '#e0f2fe' : '#f8fafc'}
+        onMouseLeave={e => e.currentTarget.style.background = isUnread ? '#f0f7ff' : '#ffffff'}
+      >
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: n.bg, color: n.color, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', border: '1px solid #f1f5f9' }}>
+            {n.icon}
+          </div>
+          {n.type !== 'chat' && n.type !== 'warning' && n.type !== 'task' && n.type !== 'pending' && n.type !== 'application_pending' && (
+            <div style={{ position: 'absolute', bottom: '-4px', right: '-4px', width: '24px', height: '24px', background: n.color === 'transparent' ? '#3b82f6' : n.color, borderRadius: '50%', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+              {n.type === 'reaction' ? <Heart size={12} fill="white" /> : 
+               n.type === 'comment' || n.type === 'reply' ? <MessageSquare size={12} fill="white" /> : 
+               n.type === 'mention' ? <AtSign size={12} /> : 
+               n.type === 'connection_accepted' ? <UserCheck size={12} /> :
+               n.type === 'group_added' ? <MessageCircle size={12} fill="white" /> :
+               n.type === 'task_submitted' ? <Briefcase size={12} /> :
+               <Bell size={12} />}
+            </div>
+          )}
         </div>
-        <p style={{ margin: 0, fontSize: '14px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{n.sub}</p>
-      </div>
-      {n.read === false && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6', marginTop: '10px' }} />}
-    </Link>
-  );
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+            <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: isUnread ? 700 : 500, color: isUnread ? '#0f172a' : '#334155', lineHeight: '1.4' }}>
+              {n.title}
+            </p>
+          </div>
+          <p style={{ margin: 0, fontSize: '14px', color: isUnread ? '#3b82f6' : '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: isUnread ? 600 : 400 }}>
+            {n.sub}
+          </p>
+          <span style={{ fontSize: '12px', color: isUnread ? '#2563eb' : '#94a3b8', fontWeight: isUnread ? 600 : 400, marginTop: '6px', display: 'block' }}>
+            {timeAgo(n.time)}
+          </span>
+        </div>
+        {isUnread && <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#2563eb', flexShrink: 0, boxShadow: '0 0 0 4px rgba(37,99,235,0.1)' }} />}
+      </Link>
+    );
+  };
 
   return (
     <div className="scicomm-notifications-page" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
@@ -399,15 +433,14 @@ export default function SciCommNotifications() {
         ))}
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', background: 'white', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
         {unreadNotifications.length > 0 && (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', padding: '0 8px' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6' }} />
-              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>New Notifications</h3>
-              <div style={{ flex: 1, height: '1px', background: '#f1f5f9' }} />
+            <div style={{ padding: '16px 20px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>New Notifications</h3>
+              <div style={{ background: '#3b82f6', color: 'white', fontSize: '12px', fontWeight: 700, padding: '2px 8px', borderRadius: '12px' }}>{unreadNotifications.length}</div>
             </div>
-            <div className="scicomm-card" style={{ padding: '8px', borderRadius: '24px', border: '1px solid rgba(29, 78, 216, 0.1)' }}>
+            <div>
               {unreadNotifications.map(renderNotificationItem)}
             </div>
           </div>
@@ -415,18 +448,17 @@ export default function SciCommNotifications() {
 
         {readNotifications.length > 0 && (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', padding: '0 8px' }}>
-              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Activity History</h3>
-              <div style={{ flex: 1, height: '1px', background: '#f1f5f9' }} />
+            <div style={{ padding: '16px 20px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', borderTop: unreadNotifications.length > 0 ? '1px solid #e2e8f0' : 'none', display: 'flex', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Earlier</h3>
             </div>
-            <div className="scicomm-card" style={{ padding: '8px', borderRadius: '24px', background: '#fcfcfc' }}>
+            <div>
               {readNotifications.map(renderNotificationItem)}
             </div>
           </div>
         )}
 
         {filteredNotifications.length === 0 && (
-          <div className="scicomm-card" style={{ textAlign: 'center', padding: '80px 20px', borderRadius: '32px' }}>
+          <div style={{ textAlign: 'center', padding: '80px 20px' }}>
             <div style={{ fontSize: '64px', marginBottom: '24px' }}>✨</div>
             <h3 style={{ margin: '0 0 12px', fontSize: '22px', fontWeight: 900 }}>Everything is clear!</h3>
             <p style={{ color: '#64748b', fontSize: '16px', maxWidth: '300px', margin: '0 auto' }}>You've caught up with all your scientific alerts and messages.</p>

@@ -105,10 +105,13 @@ export default function SciCommLayout() {
 
   const generalNotifs = useLiveCollection('scicomm_notifications') || [];
   const myGeneralNotifs = generalNotifs.filter(n => String(n.userId) === String(user.id) && !n.read);
-  const myApplications = (useLiveCollection('scicomm_applications') || []).filter(a => String(a.userId) === String(user.id) && !a.read);
+  const applicationsData = useLiveCollection('scicomm_applications') || [];
+  const myApplications = applicationsData.filter(a => String(a.userId) === String(user.id) && !a.read);
+  const pendingApps = isAdmin ? applicationsData.filter(a => a.status === 'pending') : [];
 
   const notifCount = myWarnings.length 
     + (isAdmin ? pendingAccounts.length : 0) 
+    + (isAdmin ? pendingApps.length : 0)
     + unreadChatCount 
     + myGeneralNotifs.length 
     + myPendingTasks.length 
