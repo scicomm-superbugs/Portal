@@ -179,7 +179,14 @@ export default function SciCommMemberProfile() {
         {memberPosts.length === 0 ? <p style={{ color: '#666' }}>No posts yet.</p> : memberPosts.slice(0, 10).map(p => (
           <div key={p.id} style={{ padding: '10px 0', borderBottom: '1px solid #eef3f8' }}>
             <p style={{ margin: '0 0 4px', fontSize: '14px' }}>{p.content?.substring(0, 150)}{(p.content?.length || 0) > 150 ? '...' : ''}</p>
-            {p.imageUrl && <img src={p.imageUrl} alt="" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', marginBottom: '4px' }} />}
+            {p.imageUrl && <img src={p.imageUrl} alt="" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', marginBottom: '4px', objectFit: 'cover' }} />}
+            {p.videoUrl && (
+              <div style={{ maxWidth: '100%', height: '150px', background: '#1a1a1a', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: '4px' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 0, height: 0, borderTop: '8px solid transparent', borderBottom: '8px solid transparent', borderLeft: '12px solid white', marginLeft: '2px' }}></div>
+                </div>
+              </div>
+            )}
             <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>
               👍 {Object.values(p.reactions || {}).reduce((s, a) => s + a.length, 0)} • 💬 {(p.comments || []).length} • {timeAgo(p.createdAt)}
               {p.recognized && ' • ⭐ Recognized'}
