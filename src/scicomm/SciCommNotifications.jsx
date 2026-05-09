@@ -159,17 +159,17 @@ export default function SciCommNotifications() {
       let category = 'social';
 
       if (n.type === 'mention') {
-        icon = <AtSign size={18} />;
-        color = '#06b6d4';
-        bg = 'rgba(6, 182, 212, 0.1)';
+        icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <AtSign size={18} />;
+        color = n.senderId ? 'transparent' : '#06b6d4';
+        bg = n.senderId ? 'transparent' : 'rgba(6, 182, 212, 0.1)';
       } else if (n.type.includes('reaction')) {
-        icon = <Heart size={18} />;
-        color = '#ec4899';
-        bg = 'rgba(236, 72, 153, 0.1)';
+        icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <Heart size={18} />;
+        color = n.senderId ? 'transparent' : '#ec4899';
+        bg = n.senderId ? 'transparent' : 'rgba(236, 72, 153, 0.1)';
       } else if (n.type.includes('comment') || n.type === 'reply') {
-        icon = <MessageSquare size={18} />;
-        color = '#10b981';
-        bg = 'rgba(16, 185, 129, 0.1)';
+        icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <MessageSquare size={18} />;
+        color = n.senderId ? 'transparent' : '#10b981';
+        bg = n.senderId ? 'transparent' : 'rgba(16, 185, 129, 0.1)';
       } else if (n.type === 'master_deletion') {
         icon = <Trash2 size={18} />;
         color = '#ef4444';
@@ -266,7 +266,6 @@ export default function SciCommNotifications() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', background: 'white', padding: '20px', borderRadius: '24px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
         <div>
           <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px' }}>Notifications</h2>
-          <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>AI Powered Syncing</div>
         </div>
         <button 
           onClick={markAllAsRead} 

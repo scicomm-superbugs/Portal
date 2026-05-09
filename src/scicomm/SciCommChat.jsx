@@ -21,6 +21,8 @@ export default function SciCommChat() {
   const [editingMsg, setEditingMsg] = useState(null);
   const [hoveredMessage, setHoveredMessage] = useState(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(true);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const isAdmin = user.role === 'admin' || user.role === 'master';
 
   // Overlay states
   const [showNewChat, setShowNewChat] = useState(false);
@@ -238,6 +240,7 @@ export default function SciCommChat() {
       if (userMatch && String(userMatch.id) !== String(user.id)) {
         db.scicomm_notifications.add({
           userId: userMatch.id, type: 'mention',
+          senderId: user.id,
           title: `${user.name} mentioned you in a chat`,
           message: msgText.substring(0, 50) + '...',
           link: `/chat`, createdAt: new Date().toISOString(), read: false
@@ -248,6 +251,18 @@ export default function SciCommChat() {
     setMsgText('');
     setReplyingTo(null);
   };
+
+  const handleDeleteMessage = async (msgId) => {
+    setDeleteConfirm({
+      title: 'Delete Message',
+      message: 'Are you sure you want to permanently delete this message?',
+      onConfirm: async () => {
+        try { await db.scicomm_chat_messages.delete(msgId); } catch (e) { console.error(e); }
+        setDeleteConfirm(null);
+      }
+    });
+  };
+
 
   const unreadPerRoom = (roomId) => allMessages.filter(m =>
     m.roomId === roomId && m.senderId !== user.id && !(m.readBy || []).includes(user.id)
@@ -477,10 +492,27 @@ export default function SciCommChat() {
                         {m.content}
                       </div>
                       <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', opacity: 0.6 }}>{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                      
+                      {(isMe || isAdmin) && (
+                        <div 
+                          className="msg-actions"
+                          style={{ 
+                            position: 'absolute', 
+                            top: '50%', 
+                            transform: 'translateY(-50%)',
+                            [isMe ? 'left' : 'right']: '-36px',
+                            display: 'none',
+                            gap: '4px'
+                          }}
+                        >
+                          <button onClick={() => handleDeleteMessage(m.id)} style={{ background: 'white', border: '1px solid #fee2e2', color: '#ef4444', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }} title="Delete Message"><Trash2 size={14} /></button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
               })}
+              <style>{`.msg-actions { display: none; } div[style*="position: relative"]:hover .msg-actions { display: flex !important; }`}</style>
               <div ref={messagesEndRef} />
             </div>
 
@@ -647,10 +679,25 @@ export default function SciCommChat() {
           </div>
         )}
       </div>
-
+      {deleteConfirm && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s' }}>
+          <div style={{ background: 'white', padding: '32px', borderRadius: '24px', width: '90%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#fee2e2', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <Trash2 size={32} />
+            </div>
+            <h3 style={{ margin: '0 0 12px', fontSize: '22px', fontWeight: 900, textAlign: 'center', color: '#0f172a' }}>{deleteConfirm.title}</h3>
+            <p style={{ margin: '0 0 24px', color: '#64748b', fontSize: '15px', textAlign: 'center', lineHeight: '1.5' }}>{deleteConfirm.message}</p>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button onClick={() => setDeleteConfirm(null)} style={{ flex: 1, padding: '14px', borderRadius: '16px', background: '#f1f5f9', border: 'none', fontWeight: 800, color: '#64748b', fontSize: '15px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#e2e8f0'} onMouseLeave={e=>e.currentTarget.style.background='#f1f5f9'}>Cancel</button>
+              <button onClick={deleteConfirm.onConfirm} style={{ flex: 1, padding: '14px', borderRadius: '16px', background: '#ef4444', border: 'none', fontWeight: 800, color: 'white', fontSize: '15px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(239, 68, 68, 0.4)' }} onMouseEnter={e=>e.currentTarget.style.background='#dc2626'} onMouseLeave={e=>e.currentTarget.style.background='#ef4444'}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
       <style>{`
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         
         .scicomm-chat-sidebar {
           transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);

@@ -106,6 +106,8 @@ export default function SciCommFeed() {
 
   const scientists = useLiveCollection('scientists') || [];
   const currentUserData = scientists.find(s => String(s.id) === String(user.id));
+  const isAdmin = user.role === 'admin' || user.role === 'master';
+
   const postsRaw = useLiveCollection('scicomm_posts') || [];
   const bannersRaw = useLiveCollection('scicomm_banners') || [];
   const connectionsRaw = useLiveCollection('scicomm_connections') || [];
@@ -136,49 +138,56 @@ export default function SciCommFeed() {
   const [editingComment, setEditingComment] = useState(null); // { id, path, text }
   const [editingPost, setEditingPost] = useState(null); // { id, content, imageUrl, removeImage?, newImage? }
   const [activeCommentMenu, setActiveCommentMenu] = useState(null); // string id_path
+  const [deleteConfirm, setDeleteConfirm] = useState(null); // { title, message, onConfirm }
   
   const handleDeleteComment = async (post, path) => {
-    if (!window.confirm('Are you sure you want to remove this comment?')) return;
-    const comments = JSON.parse(JSON.stringify(post.comments || []));
-    let targetParent = { replies: comments };
-    let target = comments;
-    let lastIdx = -1;
+    setDeleteConfirm({
+      title: 'Remove Comment',
+      message: 'Are you sure you want to remove this comment? This action cannot be undone.',
+      onConfirm: async () => {
+        const comments = JSON.parse(JSON.stringify(post.comments || []));
+        let targetParent = { replies: comments };
+        let target = comments;
+        let lastIdx = -1;
 
-    for (let i = 0; i < path.length; i++) {
-      lastIdx = path[i];
-      if (i < path.length - 1) {
-        targetParent = target[lastIdx];
-        target = target[lastIdx].replies;
+        for (let i = 0; i < path.length; i++) {
+          lastIdx = path[i];
+          if (i < path.length - 1) {
+            targetParent = target[lastIdx];
+            target = target[lastIdx].replies;
+          }
+        }
+
+        const commentAuthorId = target[lastIdx].authorId;
+        
+        if (isAdmin && String(commentAuthorId) !== String(user.id)) {
+          // Admin moderation
+          target[lastIdx].deletedByAdmin = true;
+          target[lastIdx].text = "[DELETED BY ADMIN]";
+          target[lastIdx].imageUrl = null;
+          
+          // Notify user
+          db.scicomm_notifications.add({
+            userId: commentAuthorId,
+            type: 'master_deletion',
+            title: '🛡️ Admin Moderation',
+            message: 'Your comment was removed by an administrator for violating community guidelines.',
+            link: '/feed',
+            createdAt: new Date().toISOString(),
+            read: false
+          });
+        } else {
+          // Regular delete
+          target.splice(lastIdx, 1);
+        }
+
+        try {
+          await db.scicomm_posts.update(post.id, { comments });
+          setActiveCommentMenu(null);
+        } catch (e) { console.error(e); }
+        setDeleteConfirm(null);
       }
-    }
-
-    const commentAuthorId = target[lastIdx].authorId;
-    
-    if (isAdmin && String(commentAuthorId) !== String(user.id)) {
-      // Admin moderation
-      target[lastIdx].deletedByAdmin = true;
-      target[lastIdx].text = "[DELETED BY ADMIN]";
-      target[lastIdx].imageUrl = null;
-      
-      // Notify user
-      db.scicomm_notifications.add({
-        userId: commentAuthorId,
-        type: 'master_deletion',
-        title: '🛡️ Admin Moderation',
-        message: 'Your comment was removed by an administrator for violating community guidelines.',
-        link: '/feed',
-        createdAt: new Date().toISOString(),
-        read: false
-      });
-    } else {
-      // Regular delete
-      target.splice(lastIdx, 1);
-    }
-
-    try {
-      await db.scicomm_posts.update(post.id, { comments });
-      setActiveCommentMenu(null);
-    } catch (e) { console.error(e); }
+    });
   };
 
   const handleSaveEditComment = async (post) => {
@@ -218,8 +227,6 @@ export default function SciCommFeed() {
   if (myLinks.length > 0 && typeof myLinks[0] === 'object') {
     myLinks = defaultQuickLinks; // Reset if they had the old object format
   }
-
-  const isAdmin = user.role === 'admin' || user.role === 'master';
 
   const banners = [...bannersRaw].sort((a,b) => (a.order||0) - (b.order||0));
   const posts = [...postsRaw].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -392,6 +399,7 @@ export default function SciCommFeed() {
       if (targetAuthorId !== user.id) {
         db.scicomm_notifications.add({
           userId: targetAuthorId, type: isReply ? 'reply' : 'comment',
+          senderId: user.id,
           title: `${user.name} ${isReply ? 'replied to your comment' : 'commented on your post'}`,
           message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
           link: `/feed`, createdAt: new Date().toISOString(), read: false
@@ -406,6 +414,7 @@ export default function SciCommFeed() {
         if (userMatch && String(userMatch.id) !== String(user.id)) {
           db.scicomm_notifications.add({
             userId: userMatch.id, type: 'mention',
+            senderId: user.id,
             title: `${user.name} mentioned you in a comment`,
             message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
             link: `/feed`, createdAt: new Date().toISOString(), read: false
@@ -477,26 +486,37 @@ export default function SciCommFeed() {
     if (!post) return;
 
     if (isAdmin && String(post.authorId) !== String(user.id)) {
-      if (window.confirm('🛡️ Moderation: Blur this post for everyone?')) {
-        try { 
-          await db.scicomm_posts.update(postId, { deletedByAdmin: true }); 
-          db.scicomm_notifications.add({
-            userId: post.authorId,
-            type: 'master_deletion',
-            title: '🛡️ Admin Moderation',
-            message: 'Your post was removed by an administrator for violating community guidelines.',
-            link: '/feed',
-            createdAt: new Date().toISOString(),
-            read: false
-          });
-        } catch (err) { console.error(err); }
-      }
+      setDeleteConfirm({
+        title: 'Moderation: Blur Post',
+        message: 'Are you sure you want to blur this post for everyone? This action is for violating community guidelines.',
+        onConfirm: async () => {
+          try { 
+            await db.scicomm_posts.update(postId, { deletedByAdmin: true }); 
+            db.scicomm_notifications.add({
+              userId: post.authorId,
+              type: 'master_deletion',
+              title: '🛡️ Admin Moderation',
+              message: 'Your post was removed by an administrator for violating community guidelines.',
+              link: '/feed',
+              createdAt: new Date().toISOString(),
+              read: false
+            });
+          } catch (err) { console.error(err); }
+          setActiveReactionPicker(null);
+          setDeleteConfirm(null);
+        }
+      });
     } else {
-      if (window.confirm('Delete this post permanently?')) {
-        try { await db.scicomm_posts.delete(postId); } catch (err) { console.error(err); }
-      }
+      setDeleteConfirm({
+        title: 'Delete Post',
+        message: 'Are you sure you want to delete this post permanently? This action cannot be undone.',
+        onConfirm: async () => {
+          try { await db.scicomm_posts.delete(postId); } catch (err) { console.error(err); }
+          setActiveReactionPicker(null);
+          setDeleteConfirm(null);
+        }
+      });
     }
-    setActiveReactionPicker(null);
   };
 
   const getTotalReactions = (post) => {
@@ -1294,6 +1314,27 @@ export default function SciCommFeed() {
         </div>
       )}
 
+      {deleteConfirm && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s' }}>
+          <div style={{ background: 'white', padding: '32px', borderRadius: '24px', width: '90%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#fee2e2', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <Trash2 size={32} />
+            </div>
+            <h3 style={{ margin: '0 0 12px', fontSize: '22px', fontWeight: 900, textAlign: 'center', color: '#0f172a' }}>{deleteConfirm.title}</h3>
+            <p style={{ margin: '0 0 24px', color: '#64748b', fontSize: '15px', textAlign: 'center', lineHeight: '1.5' }}>{deleteConfirm.message}</p>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button onClick={() => setDeleteConfirm(null)} style={{ flex: 1, padding: '14px', borderRadius: '16px', background: '#f1f5f9', border: 'none', fontWeight: 800, color: '#64748b', fontSize: '15px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#e2e8f0'} onMouseLeave={e=>e.currentTarget.style.background='#f1f5f9'}>Cancel</button>
+              <button onClick={deleteConfirm.onConfirm} style={{ flex: 1, padding: '14px', borderRadius: '16px', background: '#ef4444', border: 'none', fontWeight: 800, color: 'white', fontSize: '15px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(239, 68, 68, 0.4)' }} onMouseEnter={e=>e.currentTarget.style.background='#dc2626'} onMouseLeave={e=>e.currentTarget.style.background='#ef4444'}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <style>{`
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+      `}</style>
     </div>
   );
 }
