@@ -18,6 +18,7 @@ export default function SciCommFeed() {
   const recognitions = useLiveCollection('scicomm_recognitions') || [];
 
   const [newPost, setNewPost] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [commentText, setCommentText] = useState({});
   const [showComments, setShowComments] = useState({});
   const [activeReactionPicker, setActiveReactionPicker] = useState(null);
@@ -101,12 +102,13 @@ export default function SciCommFeed() {
     }
     try {
       setIsPostingMedia(true);
+      setUploadProgress(0);
       let imageUrl = null, videoUrl = null, fileUrl = null, fileName = null;
       if (postImage) {
-        imageUrl = await uploadFile(postImage, `posts/${user.id}_${Date.now()}_${postImage.name}`);
+        imageUrl = await uploadFile(postImage, `posts/${user.id}_${Date.now()}_${postImage.name}`, setUploadProgress);
       }
       if (postVideo) {
-        videoUrl = await uploadFile(postVideo, `posts/${user.id}_${Date.now()}_${postVideo.name}`);
+        videoUrl = await uploadFile(postVideo, `posts/${user.id}_${Date.now()}_${postVideo.name}`, setUploadProgress);
       }
       if (postFile) {
         fileUrl = await uploadFile(postFile, `posts/${user.id}_${Date.now()}_${postFile.name}`);
@@ -509,7 +511,7 @@ export default function SciCommFeed() {
             onMouseOver={e => { if(!isPostingMedia && (newPost.trim() || postImage || postVideo || postFile)) e.currentTarget.style.transform = 'translateY(-1px)'; }}
             onMouseOut={e => { e.currentTarget.style.transform = 'none'; }}
             >
-              {isPostingMedia ? 'Posting...' : 'Post'} <Send size={16} />
+              {isPostingMedia ? `Uploading ${uploadProgress}%...` : 'Post'} <Send size={16} />
             </button>
           </div>
 
