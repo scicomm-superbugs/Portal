@@ -97,6 +97,13 @@ const ChunkedVideo = ({ videoUrl }) => {
 
 export default function SciCommFeed() {
   const { user } = useAuth();
+  const [audioUnlocked, setAudioUnlocked] = useState(sessionStorage.getItem('audio_unlocked') === 'true');
+
+  const handleUnlockAudio = () => {
+    sessionStorage.setItem('audio_unlocked', 'true');
+    setAudioUnlocked(true);
+  };
+
   const scientists = useLiveCollection('scientists') || [];
   const currentUserData = scientists.find(s => String(s.id) === String(user.id));
   const postsRaw = useLiveCollection('scicomm_posts') || [];
@@ -481,6 +488,18 @@ export default function SciCommFeed() {
 
   return (
     <div className="scicomm-feed-layout">
+      {/* Audio Unlock Modal */}
+      {!audioUnlocked && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'white', padding: '24px', borderRadius: '12px', textAlign: 'center', maxWidth: '400px', width: '90%' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px' }}>Welcome to SciComm Hub!</h2>
+            <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>Tap below to enter the feed and enable video sound.</p>
+            <button onClick={handleUnlockAudio} style={{ background: '#2563eb', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', width: '100%' }}>
+              Enter Hub
+            </button>
+          </div>
+        </div>
+      )}
       {/* Left Sidebar */}
       <div className="scicomm-sidebar-left hide-on-mobile">
         <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
