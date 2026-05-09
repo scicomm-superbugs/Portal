@@ -16,6 +16,7 @@ export default function SciCommChat() {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [msgText, setMsgText] = useState('');
   const [showNewChat, setShowNewChat] = useState(false);
+  const [showNewGroup, setShowNewGroup] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [editingMsg, setEditingMsg] = useState(null);
@@ -27,6 +28,7 @@ export default function SciCommChat() {
   const [newChatSearch, setNewChatSearch] = useState('');
   
   const [showGroupSettings, setShowGroupSettings] = useState(false);
+  const [showAddMembers, setShowAddMembers] = useState(false);
   const [groupNameEdit, setGroupNameEdit] = useState('');
   const [groupDescEdit, setGroupDescEdit] = useState('');
   const [groupMembersEdit, setGroupMembersEdit] = useState([]);
@@ -124,7 +126,7 @@ export default function SciCommChat() {
       lastMessageAt: new Date().toISOString()
     });
     setSelectedRoom(roomId);
-    setShowNewChat(false);
+    setShowNewGroup(false);
     setNewGroupName('');
     setSelectedMembers([]);
   };
@@ -145,6 +147,7 @@ export default function SciCommChat() {
     setGroupDescEdit(activeRoom.description || '');
     setGroupMembersEdit([...(activeRoom.members || [])].filter(id => id !== user.id));
     setShowGroupSettings(true);
+    setShowAddMembers(false);
   };
   
   const saveGroupSettings = async () => {
@@ -357,7 +360,10 @@ export default function SciCommChat() {
         {/* Sidebar Header */}
         <div style={{ padding: '20px 16px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 800, background: 'linear-gradient(90deg, #1d4ed8, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Messages</h3>
-          <button onClick={() => setShowNewChat(!showNewChat)} style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(59,130,246,0.3)', transition: 'transform 0.2s' }} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='none'}><Plus size={20} /></button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={() => { setShowNewGroup(!showNewGroup); setShowNewChat(false); }} style={{ background: 'white', color: '#3b82f6', border: '1px solid #e2e8f0', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', transition: 'transform 0.2s' }} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='none'} title="New Group"><Users size={18} /></button>
+            <button onClick={() => { setShowNewChat(!showNewChat); setShowNewGroup(false); }} style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(59,130,246,0.3)', transition: 'transform 0.2s' }} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='none'} title="New Chat"><Plus size={20} /></button>
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -381,18 +387,21 @@ export default function SciCommChat() {
 
         {/* New Chat Overlay */}
         {showNewChat && (
-          <div style={{ padding: '16px', borderBottom: '1px solid rgba(0,0,0,0.05)', background: 'rgba(255,255,255,0.95)', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: '14px', fontWeight: 700, marginBottom: '12px', color: '#0f172a' }}>Start a Conversation</div>
+          <div style={{ padding: '16px', borderBottom: '1px solid rgba(0,0,0,0.05)', background: 'rgba(255,255,255,0.95)', borderTop: '1px solid rgba(0,0,0,0.05)', animation: 'fadeIn 0.2s' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a' }}>Start a Conversation</div>
+              <button onClick={() => setShowNewChat(false)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><X size={16} /></button>
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', background: '#f1f5f9', borderRadius: '16px', padding: '6px 12px', gap: '8px', marginBottom: '12px' }}>
               <Search size={14} color="#64748b" />
               <input type="text" placeholder="Search people..." value={newChatSearch} onChange={e => setNewChatSearch(e.target.value)} style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%', fontSize: '13px' }} />
             </div>
             
-            <div style={{ maxHeight: '180px', overflowY: 'auto', paddingRight: '4px', marginBottom: '12px' }}>
+            <div style={{ maxHeight: '250px', overflowY: 'auto', paddingRight: '4px' }}>
               {filteredNewChatUsers.slice(0, 20).map(m => {
                 const isFriend = myConnectedIds.has(String(m.id));
                 return (
-                  <div key={m.id} onClick={() => createPrivateRoom(m.id, m.name)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px', cursor: 'pointer', borderRadius: '12px', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#e2e8f0'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                  <div key={m.id} onClick={() => createPrivateRoom(m.id, m.name)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px', cursor: 'pointer', borderRadius: '12px', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                       {renderAvatar(m, 32)}
                       <div>
@@ -404,20 +413,38 @@ export default function SciCommChat() {
                 );
               })}
             </div>
-            
-            <div style={{ borderTop: '1px solid rgba(0,0,0,0.05)', paddingTop: '12px' }}>
-              <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: '#0f172a' }}>Create Group</div>
-              <input type="text" placeholder="Group name..." value={newGroupName} onChange={e => setNewGroupName(e.target.value)} style={{ width: '100%', padding: '10px', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '13px', marginBottom: '8px', boxSizing: 'border-box' }} />
-              <div style={{ maxHeight: '100px', overflowY: 'auto', marginBottom: '8px' }}>
-                {filteredNewChatUsers.slice(0, 20).map(m => (
-                  <label key={m.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', marginBottom: '6px', cursor: 'pointer', padding: '4px', borderRadius: '8px' }} onMouseEnter={e => e.currentTarget.style.background = '#e2e8f0'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                    <input type="checkbox" checked={selectedMembers.includes(m.id)} onChange={e => setSelectedMembers(e.target.checked ? [...selectedMembers, m.id] : selectedMembers.filter(id => id !== m.id))} />
-                    {m.name}
-                  </label>
-                ))}
-              </div>
-              <button className="scicomm-btn-primary" onClick={createGroupRoom} style={{ width: '100%', padding: '10px', fontSize: '13px', justifyContent: 'center', borderRadius: '12px' }}>Create Group</button>
+          </div>
+        )}
+
+        {/* New Group Overlay */}
+        {showNewGroup && (
+          <div style={{ padding: '16px', borderBottom: '1px solid rgba(0,0,0,0.05)', background: 'rgba(255,255,255,0.95)', borderTop: '1px solid rgba(0,0,0,0.05)', animation: 'fadeIn 0.2s' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a' }}>Create New Group</div>
+              <button onClick={() => setShowNewGroup(false)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><X size={16} /></button>
             </div>
+            
+            <div style={{ marginBottom: '12px' }}>
+              <input type="text" placeholder="Group name..." value={newGroupName} onChange={e => setNewGroupName(e.target.value)} style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: '12px', fontSize: '14px', boxSizing: 'border-box', outline: 'none', background: '#f8fafc' }} />
+            </div>
+
+            <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '8px', color: '#64748b' }}>Select Members</div>
+            <div style={{ display: 'flex', alignItems: 'center', background: '#f1f5f9', borderRadius: '12px', padding: '6px 12px', gap: '8px', marginBottom: '10px' }}>
+              <Search size={12} color="#64748b" />
+              <input type="text" placeholder="Filter..." value={newChatSearch} onChange={e => setNewChatSearch(e.target.value)} style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%', fontSize: '12px' }} />
+            </div>
+
+            <div style={{ maxHeight: '200px', overflowY: 'auto', marginBottom: '16px', paddingRight: '4px' }}>
+              {filteredNewChatUsers.slice(0, 20).map(m => (
+                <label key={m.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px', borderRadius: '10px', cursor: 'pointer', transition: 'background 0.2s', background: selectedMembers.includes(m.id) ? '#eff6ff' : 'transparent' }} onMouseEnter={e => e.currentTarget.style.background = selectedMembers.includes(m.id) ? '#eff6ff' : '#f8fafc'} onMouseLeave={e => e.currentTarget.style.background = selectedMembers.includes(m.id) ? '#eff6ff' : 'transparent'}>
+                  <input type="checkbox" checked={selectedMembers.includes(m.id)} onChange={e => setSelectedMembers(e.target.checked ? [...selectedMembers, m.id] : selectedMembers.filter(id => id !== m.id))} style={{ borderRadius: '4px' }} />
+                  {renderAvatar(m, 28)}
+                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#0f172a' }}>{m.name}</span>
+                </label>
+              ))}
+            </div>
+            
+            <button className="scicomm-btn-primary" onClick={createGroupRoom} disabled={!newGroupName.trim() || selectedMembers.length === 0} style={{ width: '100%', padding: '12px', fontSize: '14px', justifyContent: 'center', borderRadius: '12px', opacity: (!newGroupName.trim() || selectedMembers.length === 0) ? 0.6 : 1 }}>Create Group</button>
           </div>
         )}
 
@@ -714,28 +741,74 @@ export default function SciCommChat() {
                   </div>
 
                   <div style={{ marginBottom: '20px' }}>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, color: '#475569', marginBottom: '8px' }}>Manage Members</label>
-                    <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '12px', maxHeight: '200px', overflowY: 'auto' }}>
-                      {scientists.map(m => {
-                        if (m.id === user.id) return null;
-                        const isMember = groupMembersEdit.includes(m.id);
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                      <label style={{ fontSize: '13px', fontWeight: 700, color: '#475569' }}>Group Members ({(activeRoom.members || []).length})</label>
+                      <button onClick={() => setShowAddMembers(true)} style={{ background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '20px', padding: '6px 14px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}><Plus size={14} /> Add People</button>
+                    </div>
+                    
+                    <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '12px', maxHeight: '250px', overflowY: 'auto' }}>
+                      {(activeRoom.members || []).map(id => {
+                        const m = scientists.find(s => String(s.id) === String(id));
+                        if (!m) return null;
+                        const isMe = m.id === user.id;
                         return (
-                          <div key={m.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px', borderRadius: '12px', background: isMember ? 'white' : 'transparent', border: isMember ? '1px solid #e2e8f0' : '1px solid transparent', marginBottom: '4px', transition: 'all 0.2s' }}>
+                          <div key={m.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px', borderRadius: '12px', background: 'white', border: '1px solid #e2e8f0', marginBottom: '6px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                               {renderAvatar(m, 32)}
-                              <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>{m.name}</div>
+                              <div>
+                                <div style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>{m.name} {isMe && '(You)'}</div>
+                                <div style={{ fontSize: '11px', color: '#64748b' }}>{m.department || 'Member'}</div>
+                              </div>
                             </div>
-                            <button onClick={() => {
-                              if (isMember) setGroupMembersEdit(groupMembersEdit.filter(id => id !== m.id));
-                              else setGroupMembersEdit([...groupMembersEdit, m.id]);
-                            }} style={{ background: isMember ? '#fee2e2' : '#e0f2fe', color: isMember ? '#ef4444' : '#0284c7', border: 'none', borderRadius: '20px', padding: '6px 12px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
-                              {isMember ? 'Remove' : 'Add'}
-                            </button>
+                            {!isMe && (
+                              <button onClick={() => {
+                                setGroupMembersEdit(groupMembersEdit.filter(mid => mid !== m.id));
+                                // Auto-save member removal if desired, or let them click save
+                                const newMembers = (activeRoom.members || []).filter(mid => mid !== m.id);
+                                const newNames = { ...activeRoom.memberNames };
+                                delete newNames[m.id];
+                                db.scicomm_chat_rooms.update(selectedRoom, { members: newMembers, memberNames: newNames });
+                              }} style={{ background: '#fee2e2', color: '#ef4444', border: 'none', borderRadius: '50%', width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} title="Remove from group"><Trash2 size={14} /></button>
+                            )}
                           </div>
                         );
                       })}
                     </div>
                   </div>
+
+                  {/* Add Members Sub-Overlay */}
+                  {showAddMembers && (
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'white', zIndex: 110, display: 'flex', flexDirection: 'column', animation: 'fadeIn 0.2s', padding: '24px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                        <h4 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>Add New Members</h4>
+                        <button onClick={() => setShowAddMembers(false)} style={{ background: '#f1f5f9', border: 'none', cursor: 'pointer', color: '#64748b', padding: '8px', borderRadius: '50%' }}><X size={18} /></button>
+                      </div>
+                      
+                      <div style={{ display: 'flex', alignItems: 'center', background: '#f1f5f9', borderRadius: '16px', padding: '10px 16px', gap: '10px', marginBottom: '16px' }}>
+                        <Search size={18} color="#64748b" />
+                        <input type="text" placeholder="Search people to add..." value={newChatSearch} onChange={e => setNewChatSearch(e.target.value)} style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%', fontSize: '15px' }} />
+                      </div>
+
+                      <div style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
+                        {scientists.filter(s => !activeRoom.members?.includes(s.id) && (s.name.toLowerCase().includes(newChatSearch.toLowerCase()) || (s.username||'').toLowerCase().includes(newChatSearch.toLowerCase()))).map(m => (
+                          <div key={m.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', borderRadius: '14px', border: '1px solid #e2e8f0', marginBottom: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                              {renderAvatar(m, 36)}
+                              <div style={{ fontSize: '14px', fontWeight: 600 }}>{m.name}</div>
+                            </div>
+                            <button onClick={async () => {
+                              const newMembers = [...(activeRoom.members || []), m.id];
+                              const newNames = { ...activeRoom.memberNames, [m.id]: m.name };
+                              await db.scicomm_chat_rooms.update(selectedRoom, { members: newMembers, memberNames: newNames });
+                              // Success feedback could go here
+                            }} style={{ background: '#e0f2fe', color: '#0369a1', border: 'none', borderRadius: '10px', padding: '8px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>Add to Group</button>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <button onClick={() => setShowAddMembers(false)} style={{ width: '100%', padding: '14px', marginTop: '16px', borderRadius: '12px', border: 'none', background: '#3b82f6', color: 'white', fontWeight: 700, fontSize: '15px', cursor: 'pointer' }}>Done</button>
+                    </div>
+                  )}
                 </div>
 
                 <div style={{ padding: '20px', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', gap: '12px' }}>
