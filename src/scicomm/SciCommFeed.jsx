@@ -492,10 +492,10 @@ export default function SciCommFeed() {
       {!audioUnlocked && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: 'white', padding: '24px', borderRadius: '12px', textAlign: 'center', maxWidth: '400px', width: '90%' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px' }}>Welcome to SciComm Hub!</h2>
-            <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>Tap below to enter the feed and enable video sound.</p>
+            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px' }}>Welcome back, {user.name}!</h2>
+            <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>Great to see you again. Let's check out what's new today!</p>
             <button onClick={handleUnlockAudio} style={{ background: '#2563eb', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', width: '100%' }}>
-              Enter Hub
+              Let's Go
             </button>
           </div>
         </div>
