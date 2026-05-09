@@ -31,6 +31,20 @@ export default function SciCommChat() {
   // Mentions logic
   const [mentionQuery, setMentionQuery] = useState('');
   const [showMentions, setShowMentions] = useState(false);
+  const myRooms = chatRooms.filter(r => (r.members || []).includes(user.id))
+    .sort((a, b) => new Date(b.lastMessageAt || 0) - new Date(a.lastMessageAt || 0));
+  
+  const myRequests = myRooms.filter(r => r.status === 'request' && r.initiator !== user.id);
+  const myActiveRooms = myRooms.filter(r => r.status !== 'request' || r.initiator === user.id);
+
+  const activeRoom = myRooms.find(r => r.id === selectedRoom);
+  const roomMessages = allMessages.filter(m => m.roomId === selectedRoom)
+    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+  const myConnectedIds = new Set(connections
+    .filter(c => c.status === 'accepted' && (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id)))
+    .map(c => String(c.fromId) === String(user.id) ? String(c.toId) : String(c.fromId)));
+
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -78,20 +92,6 @@ export default function SciCommChat() {
   const [newChatSearch, setNewChatSearch] = useState('');
   const [newGroupName, setNewGroupName] = useState('');
   const [selectedMembers, setSelectedMembers] = useState([]);
-
-  const myRooms = chatRooms.filter(r => (r.members || []).includes(user.id))
-    .sort((a, b) => new Date(b.lastMessageAt || 0) - new Date(a.lastMessageAt || 0));
-  
-  const myRequests = myRooms.filter(r => r.status === 'request' && r.initiator !== user.id);
-  const myActiveRooms = myRooms.filter(r => r.status !== 'request' || r.initiator === user.id);
-
-  const activeRoom = myRooms.find(r => r.id === selectedRoom);
-  const roomMessages = allMessages.filter(m => m.roomId === selectedRoom)
-    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
-  const myConnectedIds = new Set(connections
-    .filter(c => c.status === 'accepted' && (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id)))
-    .map(c => String(c.fromId) === String(user.id) ? String(c.toId) : String(c.fromId)));
 
   const filteredActiveRooms = myActiveRooms.filter(r => {
     const title = r.type === 'group' ? r.name : (r.memberNames?.[r.members.find(id => id !== user.id)] || 'Chat');
