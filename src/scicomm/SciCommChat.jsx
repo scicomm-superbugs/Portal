@@ -172,6 +172,20 @@ export default function SciCommChat() {
       lastMessageAt: new Date().toISOString(),
       status: 'active'
     });
+
+    selectedMembers.forEach(memberId => {
+      db.scicomm_notifications.add({
+        userId: memberId,
+        type: 'group_added',
+        senderId: user.id,
+        title: `${user.name.split(' ')[0]} added you to a group chat`,
+        message: newGroupName,
+        link: '/chat',
+        createdAt: new Date().toISOString(),
+        read: false
+      }).catch(console.error);
+    });
+
     setSelectedRoom(roomId);
     setShowNewGroup(false);
     setNewGroupName('');
@@ -211,6 +225,23 @@ export default function SciCommChat() {
       members: [user.id, ...groupMembersEdit],
       memberNames
     });
+
+    // Notify newly added members (basic approach: just notify all current non-sender members about update)
+    groupMembersEdit.forEach(memberId => {
+      if (!activeRoom.members.includes(memberId)) {
+        db.scicomm_notifications.add({
+          userId: memberId,
+          type: 'group_added',
+          senderId: user.id,
+          title: `${user.name.split(' ')[0]} added you to a group chat`,
+          message: groupNameEdit || 'Group Chat',
+          link: '/chat',
+          createdAt: new Date().toISOString(),
+          read: false
+        }).catch(console.error);
+      }
+    });
+
     setShowGroupSettings(false);
   };
 

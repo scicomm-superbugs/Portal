@@ -1,6 +1,6 @@
 import { useLiveCollection, db } from '../db';
 import { useAuth } from '../context/AuthContext';
-import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, UserPlus, Heart, MessageSquare, AtSign, Trash2 } from 'lucide-react';
+import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, UserPlus, Heart, MessageSquare, AtSign, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { timeAgo } from './scicommConstants';
 import { Link } from 'react-router-dom';
@@ -47,6 +47,9 @@ export default function SciCommNotifications() {
   };
 
   const handleNotificationClick = async (n) => {
+    if (n.type === 'application' && !n.read && n.rawId) {
+      try { await db.scicomm_applications.update(n.rawId, { read: true }); } catch (e) {}
+    }
     if (n.isGeneral && !n.read) {
       try { await db.scicomm_notifications.update(n.rawId, { read: true }); } catch (e) {}
     }
@@ -90,7 +93,8 @@ export default function SciCommNotifications() {
       sub: t.title, 
       time: t.createdAt, 
       id: 't_' + t.id, 
-      link: '/tasks' 
+      link: '/tasks',
+      read: false
     })),
     ...myWarnings.filter(w => w.status !== 'removed').map(w => ({ 
       type: 'warning', 
@@ -102,7 +106,8 @@ export default function SciCommNotifications() {
       sub: w.message, 
       time: w.issuedAt, 
       id: 'w_' + w.id, 
-      link: '/profile' 
+      link: '/profile',
+      read: w.seen || false
     })),
     ...pendingAccounts.map(s => ({ 
       type: 'pending', 
@@ -114,7 +119,8 @@ export default function SciCommNotifications() {
       sub: `${s.name} is awaiting approval`, 
       time: s.createdAt || new Date().toISOString(), 
       id: 'p_' + s.id, 
-      link: '/admin' 
+      link: '/admin',
+      read: false
     })),
     ...pendingConnections.map(c => ({ 
       type: 'connection', 
@@ -126,7 +132,8 @@ export default function SciCommNotifications() {
       sub: `${c.fromName} wants to connect with you`, 
       time: c.createdAt, 
       id: 'c_' + c.id, 
-      link: '/network' 
+      link: '/network',
+      read: false
     })),
     ...upcomingMeetings.map(m => ({ 
       type: 'meeting', 
@@ -138,7 +145,8 @@ export default function SciCommNotifications() {
       sub: `${m.title} at ${m.time || ''}`, 
       time: m.createdAt, 
       id: 'm_' + m.id, 
-      link: '/meetings' 
+      link: '/meetings',
+      read: false
     })),
     ...applicationsData.filter(a => String(a.userId) === String(user.id)).map(a => ({
       type: 'application',
@@ -150,7 +158,9 @@ export default function SciCommNotifications() {
       sub: a.status === 'approved' ? 'Welcome to the SciComm Team!' : (a.status === 'pending' ? 'Your application is being reviewed.' : 'Your application was not approved.'),
       time: a.reviewedAt || a.createdAt,
       id: 'app_' + a.id,
-      link: '/leaderboard'
+      link: '/leaderboard',
+      read: a.read || false,
+      rawId: a.id
     })),
     ...(() => {
       const groupedGenNotifs = [];
@@ -225,6 +235,29 @@ export default function SciCommNotifications() {
           color = '#ef4444';
           bg = 'rgba(239, 68, 68, 0.1)';
           category = 'alert';
+        } else if (n.type === 'connection_accepted') {
+          icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <UserCheck size={18} />;
+          color = n.senderId ? 'transparent' : '#10b981';
+          bg = n.senderId ? 'transparent' : 'rgba(16, 185, 129, 0.1)';
+        } else if (n.type === 'task_submitted') {
+          icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <Briefcase size={18} />;
+          color = n.senderId ? 'transparent' : '#8b5cf6';
+          bg = n.senderId ? 'transparent' : 'rgba(139, 92, 246, 0.1)';
+          category = 'work';
+        } else if (n.type === 'task_approved') {
+          icon = <CheckCircle size={18} />;
+          color = '#10b981';
+          bg = 'rgba(16, 185, 129, 0.1)';
+          category = 'work';
+        } else if (n.type === 'task_rejected') {
+          icon = <AlertCircle size={18} />;
+          color = '#ef4444';
+          bg = 'rgba(239, 68, 68, 0.1)';
+          category = 'work';
+        } else if (n.type === 'group_added') {
+          icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <MessageCircle size={18} />;
+          color = n.senderId ? 'transparent' : '#1d4ed8';
+          bg = n.senderId ? 'transparent' : 'rgba(29, 78, 216, 0.1)';
         }
 
         return {
@@ -265,7 +298,8 @@ export default function SciCommNotifications() {
         sub: `${r.count} new message${r.count > 1 ? 's' : ''} from ${r.senderName}`,
         time: r.lastTime,
         id: 'chat_' + r.roomId,
-        link: '/chat'
+        link: '/chat',
+        read: false
       }));
     })()
   ].sort((a, b) => new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime());

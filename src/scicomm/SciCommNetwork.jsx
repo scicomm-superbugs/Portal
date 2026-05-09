@@ -59,7 +59,20 @@ export default function SciCommNetwork() {
   };
 
   const handleAccept = async (connId) => {
+    const conn = connections.find(c => c.id === connId);
     await db.scicomm_connections.update(connId, { status: 'accepted', acceptedAt: new Date().toISOString() });
+    if (conn) {
+      await db.scicomm_notifications.add({
+        userId: conn.fromId,
+        type: 'connection_accepted',
+        senderId: user.id,
+        title: `${user.name.split(' ')[0]} accepted your connection request`,
+        message: 'You are now connected',
+        link: '/network',
+        createdAt: new Date().toISOString(),
+        read: false
+      });
+    }
   };
 
   const handleReject = async (connId) => {

@@ -46,6 +46,20 @@ export default function SciCommTasks() {
       submissionValue: finalUrl,
       submittedAt: new Date().toISOString()
     });
+
+    const task = tasksData.find(t => t.id === taskId);
+    if (task && task.assignedBy) {
+      await db.scicomm_notifications.add({
+        userId: task.assignedBy,
+        type: 'task_submitted',
+        senderId: user.id,
+        title: `${user.name.split(' ')[0]} submitted a task for review`,
+        message: task.title,
+        link: '/tasks',
+        createdAt: new Date().toISOString(),
+        read: false
+      });
+    }
     
     setIsUploading(false);
     setActiveTask(null);
@@ -59,10 +73,36 @@ export default function SciCommTasks() {
   const handleApproveTask = async (taskId) => {
     const points = parseInt(evalPoints[taskId]) || 25;
     await db.tasks.update(taskId, { status: 'Approved', approvedAt: new Date().toISOString(), awardedPoints: points, evalNote: evalNote[taskId] || '' });
+    const task = tasksData.find(t => t.id === taskId);
+    if (task) {
+      await db.scicomm_notifications.add({
+        userId: task.assignedTo,
+        type: 'task_approved',
+        senderId: user.id,
+        title: `Your task was approved!`,
+        message: `${task.title} (+${points} pts)`,
+        link: '/tasks',
+        createdAt: new Date().toISOString(),
+        read: false
+      });
+    }
   };
 
   const handleRejectTask = async (taskId) => {
     await db.tasks.update(taskId, { status: 'In Progress', submissionValue: null, submittedAt: null });
+    const task = tasksData.find(t => t.id === taskId);
+    if (task) {
+      await db.scicomm_notifications.add({
+        userId: task.assignedTo,
+        type: 'task_rejected',
+        senderId: user.id,
+        title: `Your task requires revisions`,
+        message: task.title,
+        link: '/tasks',
+        createdAt: new Date().toISOString(),
+        read: false
+      });
+    }
   };
 
   const handleDelete = async (id) => { if (window.confirm("Delete?")) await db.tasks.delete(id); };
