@@ -19,6 +19,8 @@ export default function SciCommAdmin() {
   const applicationsData = useLiveCollection('scicomm_applications') || [];
   const pendingApps = applicationsData.filter(a => a.status === 'pending');
   const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
+  const storiesData = useLiveCollection('scicomm_stories') || [];
+  const activeStories = storiesData.filter(s => new Date(s.expiresAt) > new Date());
   const isMaster = user.role === 'master';
 
   const [activeTab, setActiveTab] = useState('pending');
@@ -38,6 +40,7 @@ export default function SciCommAdmin() {
   const handleDemote = async (id) => { await db.scientists.update(id, { role: 'scientist' }); flash('Demoted to Visitor.'); };
   const handleRemoveUser = async (id) => { if (window.confirm("Remove?")) await db.scientists.delete(id); };
   const handleRemovePost = async (id) => { if (window.confirm("Delete post?")) await db.scicomm_posts.delete(id); };
+  const handleRemoveStory = async (id) => { if (window.confirm("Delete story?")) await db.scicomm_stories.delete(id); };
 
   const handleAssignTask = async (e) => {
     e.preventDefault();
@@ -91,6 +94,7 @@ export default function SciCommAdmin() {
     { id: 'warnings', label: 'Warnings', icon: <AlertTriangle size={14} /> },
     { id: 'meetings', label: 'Meetings', icon: <Link2 size={14} /> },
     { id: 'posts', label: 'Posts', icon: <Trash2 size={14} /> },
+    { id: 'stories', label: 'Stories', icon: <Image size={14} /> },
     { id: 'analytics', label: 'Analytics', icon: <BarChart3 size={14} /> },
     { id: 'data', label: 'Data', icon: <Database size={14} /> },
   ];
@@ -425,6 +429,32 @@ export default function SciCommAdmin() {
                 <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>{p.content.substring(0, 80)}{p.content.length > 80 ? '...' : ''}</p>
               </div>
               <button onClick={() => handleRemovePost(p.id)} style={{ background: '#fee2e2', border: 'none', color: '#991b1b', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', flexShrink: 0 }}><Trash2 size={12} /> Remove</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* STORIES */}
+      {activeTab === 'stories' && (
+        <div className="scicomm-card scicomm-card-padding">
+          <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>📖 Stories Management ({activeStories.length})</h3>
+          {activeStories.length === 0 ? <p style={{ color: '#666', textAlign: 'center', padding: '24px' }}>No active stories.</p> : activeStories.map(s => (
+            <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #eef3f8' }}>
+              <div style={{ flex: 1 }}>
+                <strong style={{ fontSize: '13px' }}>{s.authorName}</strong>
+                <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>{s.content || 'Media only'}</p>
+                <div style={{ fontSize: '11px', color: '#94a3b8' }}>Expires: {new Date(s.expiresAt).toLocaleString()}</div>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                {s.mediaUrl && (
+                  s.mediaType === 'video' ? (
+                    <video src={s.mediaUrl} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+                  ) : (
+                    <img src={s.mediaUrl} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }} />
+                  )
+                )}
+                <button onClick={() => handleRemoveStory(s.id)} style={{ background: '#fee2e2', border: 'none', color: '#991b1b', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', flexShrink: 0 }}><Trash2 size={12} /> Remove</button>
+              </div>
             </div>
           ))}
         </div>
