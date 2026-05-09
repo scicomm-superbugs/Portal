@@ -491,7 +491,9 @@ export default function SciCommChat() {
                       alignItems: isMe ? 'flex-end' : 'flex-start', 
                       marginBottom: '4px',
                       transform: `translateX(${constrainedTranslateX}px)`,
-                      transition: isSwiping ? 'none' : 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+                      transition: isSwiping ? 'none' : 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                      zIndex: activeMsgMenu === m.id ? 100 : 1,
+                      position: 'relative'
                     }}
                     onTouchStart={(e) => {
                       if (isDeleted) return;
