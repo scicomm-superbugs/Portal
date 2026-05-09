@@ -269,7 +269,7 @@ export default function SciCommNotifications() {
           onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
         >
           <Bell size={16} />
-          Sync All Activity
+          Mark all as read
         </button>
       </div>
 
@@ -320,6 +320,7 @@ export default function SciCommNotifications() {
                     borderRadius: '16px', 
                     transition: 'all 0.2s',
                     background: n.read === false ? 'rgba(29, 78, 216, 0.03)' : 'transparent',
+                    opacity: n.read === false ? 1 : 0.6,
                     marginBottom: '2px',
                     position: 'relative'
                   }}
