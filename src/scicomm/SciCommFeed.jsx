@@ -972,28 +972,70 @@ export default function SciCommFeed() {
                     </div>
                   </div>
                 ) : (
-                  <div style={{ border: '1px solid #e0dfdc', borderRadius: '8px', padding: '16px', marginBottom: '12px' }}>
-                    <div style={{ fontWeight: 600, fontSize: '15px', marginBottom: '12px' }}>📊 {post.poll.question}</div>
-                    {post.poll.options.map(opt => {
-                      const votes = post.poll.votes || {};
-                      const totalVotes = Object.keys(votes).length;
-                      const optVotes = Object.values(votes).filter(v => v === opt.id).length;
-                      const percent = totalVotes === 0 ? 0 : Math.round((optVotes / totalVotes) * 100);
-                      const myVote = votes[user.id] === opt.id;
-                      return (
-                        <div key={opt.id} onClick={() => handleVote(post, opt.id)} style={{ position: 'relative', background: myVote ? '#eff6ff' : '#f3f2ef', border: myVote ? '1px solid #1d4ed8' : '1px solid transparent', borderRadius: '4px', padding: '8px 12px', marginBottom: '6px', cursor: 'pointer', overflow: 'hidden' }}>
-                          <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: `${percent}%`, background: myVote ? '#bfdbfe' : '#e0dfdc', opacity: 0.5, zIndex: 0 }}></div>
-                          <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                            <span style={{ fontWeight: myVote ? 700 : 400 }}>{opt.text}</span>
-                            <span style={{ fontWeight: myVote ? 700 : 400 }}>{percent}%</span>
+                  <div style={{ position: 'relative' }}>
+                    {post.deletedByAdmin ? (
+                      <div style={{ 
+                        background: 'rgba(254, 226, 226, 0.5)', 
+                        padding: '24px', 
+                        borderRadius: '12px', 
+                        border: '2px dashed #fecaca', 
+                        textAlign: 'center',
+                        backdropFilter: 'blur(8px)',
+                        margin: '0 0 12px'
+                      }}>
+                        <div style={{ fontSize: '32px', marginBottom: '12px' }}>🛡️</div>
+                        <h4 style={{ margin: '0 0 8px', color: '#dc2626', fontWeight: 800 }}>CONTENT REMOVED BY ADMINISTRATOR</h4>
+                        <p style={{ margin: 0, fontSize: '13px', color: '#991b1b', lineHeight: 1.5 }}>
+                          This post was found to be in violation of Science Communication community standards and has been moderated by a Master or Admin.
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <p style={{ 
+                          margin: '0 0 8px', 
+                          fontSize: '14px', 
+                          lineHeight: '1.5', 
+                          whiteSpace: 'pre-wrap', 
+                          unicodeBidi: 'plaintext', 
+                          direction: /[\u0600-\u06FF]/.test(post.content || '') ? 'rtl' : 'ltr',
+                          textAlign: /[\u0600-\u06FF]/.test(post.content || '') ? 'right' : 'left'
+                        }}>{renderPostText(post.content)}</p>
+                        {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
+                        {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}
+                        {post.videoUrl && (
+                          post.videoUrl.startsWith('chunked://') ? (
+                            <ChunkedVideo videoUrl={post.videoUrl} />
+                          ) : (
+                            <video src={post.videoUrl} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />
+                          )
+                        )}
+                        {post.fileUrl && <a href={post.fileUrl} target="_blank" rel="noreferrer" style={{ display: 'block', padding: '10px 14px', background: '#eef3f8', borderRadius: '8px', marginBottom: '8px', color: '#2563eb', textDecoration: 'none', fontWeight: 600, fontSize: '13px' }}>📎 {post.fileName || 'Download Attachment'}</a>}
+                        
+                        {post.poll && (
+                          <div style={{ border: '1px solid #e0dfdc', borderRadius: '8px', padding: '16px', marginBottom: '12px' }}>
+                            <div style={{ fontWeight: 600, fontSize: '15px', marginBottom: '12px' }}>📊 {post.poll.question}</div>
+                            {post.poll.options.map(opt => {
+                              const votes = post.poll.votes || {};
+                              const totalVotes = Object.keys(votes).length;
+                              const optVotes = Object.values(votes).filter(v => v === opt.id).length;
+                              const percent = totalVotes === 0 ? 0 : Math.round((optVotes / totalVotes) * 100);
+                              const myVote = votes[user.id] === opt.id;
+                              return (
+                                <div key={opt.id} onClick={() => handleVote(post, opt.id)} style={{ position: 'relative', background: myVote ? '#eff6ff' : '#f3f2ef', border: myVote ? '1px solid #1d4ed8' : '1px solid transparent', borderRadius: '4px', padding: '8px 12px', marginBottom: '6px', cursor: 'pointer', overflow: 'hidden' }}>
+                                  <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: `${percent}%`, background: myVote ? '#bfdbfe' : '#e0dfdc', opacity: 0.5, zIndex: 0 }}></div>
+                                  <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ fontWeight: myVote ? 700 : 400 }}>{opt.text}</span>
+                                    <span style={{ fontWeight: myVote ? 700 : 400 }}>{percent}%</span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                            <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.5)', marginTop: '8px' }}>{Object.keys(post.poll.votes || {}).length} votes</div>
                           </div>
-                        </div>
-                      );
-                    })}
-                    <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.5)', marginTop: '8px' }}>{Object.keys(post.poll.votes || {}).length} votes</div>
+                        )}
+                      </>
+                    )}
                   </div>
-                )}
-                  </>
                 )}
               </div>
 
