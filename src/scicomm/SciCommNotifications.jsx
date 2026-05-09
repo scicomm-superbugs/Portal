@@ -1,7 +1,7 @@
 import { useLiveCollection, db } from '../db';
 import { useAuth } from '../context/AuthContext';
-import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, UserPlus } from 'lucide-react';
-import { useEffect } from 'react';
+import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, UserPlus, Heart, MessageSquare, AtSign, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { timeAgo } from './scicommConstants';
 import { Link } from 'react-router-dom';
 
@@ -16,6 +16,9 @@ export default function SciCommNotifications() {
   const applicationsData = useLiveCollection('scicomm_applications') || [];
   const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
   const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
+  const generalNotifications = useLiveCollection('scicomm_notifications') || [];
+
+  const [activeTab, setActiveTab] = useState('all');
 
   const myTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
   const myWarnings = warningsData.filter(w => String(w.userId) === String(user.id));
@@ -26,7 +29,6 @@ export default function SciCommNotifications() {
     return isInvited && new Date(m.date) >= new Date(new Date().toDateString());
   });
 
-  const generalNotifications = useLiveCollection('scicomm_notifications') || [];
   const myGeneralNotifs = generalNotifications.filter(n => String(n.userId) === String(user.id));
 
   const handleNotificationClick = async (n) => {
@@ -35,60 +37,134 @@ export default function SciCommNotifications() {
     }
   };
 
-  // Mark warnings seen
+  const markAllAsRead = async () => {
+    const unread = myGeneralNotifs.filter(n => !n.read);
+    for (const n of unread) {
+      try { await db.scicomm_notifications.update(n.id, { read: true }); } catch (e) {}
+    }
+  };
+
   useEffect(() => {
     myWarnings.filter(w => !w.seen).forEach(async (w) => {
       try { await db.scicomm_warnings.update(w.id, { seen: true }); } catch (e) {}
     });
   }, [myWarnings.length]);
 
-  useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
-  }, []);
-
-  const notifications = [
-    ...myTasks.map(t => ({ type: 'task', icon: <Briefcase size={18} color="#1d4ed8" />, bg: '#eff6ff', title: `📋 New task: ${t.title}`, sub: `Due: ${t.dueDate ? new Date(t.dueDate).toLocaleDateString() : 'TBD'} • Priority: ${t.priority || 'Medium'}`, time: t.createdAt, id: 't_' + t.id, link: '/tasks' })),
-    ...myWarnings.filter(w => w.status !== 'removed').map(w => ({ type: 'warning', icon: <AlertTriangle size={18} color="#ef4444" />, bg: '#fee2e2', title: `⚠️ Warning ${w.warningNumber}/3 from ${w.issuedBy}`, sub: w.message, time: w.issuedAt, id: 'w_' + w.id, link: '/profile' })),
-    ...pendingAccounts.map(s => ({ type: 'pending', icon: <UserCheck size={18} color="#f59e0b" />, bg: '#fef3c7', title: `👤 New account: ${s.name}`, sub: `@${s.username} — Awaiting approval`, time: '', id: 'p_' + s.id, link: '/admin' })),
-    ...pendingConnections.map(c => ({ type: 'connection', icon: <UserCheck size={18} color="#3b82f6" />, bg: '#dbeafe', title: `🤝 ${c.fromName} wants to connect`, sub: 'Accept or ignore in Network tab', time: c.createdAt, id: 'c_' + c.id, link: '/network' })),
-    ...upcomingMeetings.slice(0, 3).map(m => ({ type: 'meeting', icon: <Calendar size={18} color="#8b5cf6" />, bg: '#ede9fe', title: `📅 Upcoming: ${m.title}`, sub: `${new Date(m.date).toLocaleDateString()} ${m.time || ''}`, time: m.createdAt, id: 'm_' + m.id, link: '/meetings' })),
-    // Application status notifications for the applicant
-    ...applicationsData.filter(a => String(a.userId) === String(user.id) && a.status !== 'pending').map(a => ({
+  const allNotifications = [
+    ...myTasks.map(t => ({ 
+      type: 'task', 
+      category: 'work',
+      icon: <Briefcase size={18} />, 
+      color: '#1d4ed8',
+      bg: 'rgba(29, 78, 216, 0.1)', 
+      title: `New Task Assigned`, 
+      sub: t.title, 
+      time: t.createdAt, 
+      id: 't_' + t.id, 
+      link: '/tasks' 
+    })),
+    ...myWarnings.filter(w => w.status !== 'removed').map(w => ({ 
+      type: 'warning', 
+      category: 'alert',
+      icon: <AlertTriangle size={18} />, 
+      color: '#ef4444',
+      bg: 'rgba(239, 68, 68, 0.1)', 
+      title: `Warning Issued (${w.warningNumber}/3)`, 
+      sub: w.message, 
+      time: w.issuedAt, 
+      id: 'w_' + w.id, 
+      link: '/profile' 
+    })),
+    ...pendingAccounts.map(s => ({ 
+      type: 'pending', 
+      category: 'admin',
+      icon: <UserCheck size={18} />, 
+      color: '#f59e0b',
+      bg: 'rgba(245, 158, 11, 0.1)', 
+      title: `New Scientist Account`, 
+      sub: `${s.name} is awaiting approval`, 
+      time: s.createdAt || new Date().toISOString(), 
+      id: 'p_' + s.id, 
+      link: '/admin' 
+    })),
+    ...pendingConnections.map(c => ({ 
+      type: 'connection', 
+      category: 'social',
+      icon: <UserPlus size={18} />, 
+      color: '#3b82f6',
+      bg: 'rgba(59, 130, 246, 0.1)', 
+      title: `Connection Request`, 
+      sub: `${c.fromName} wants to connect with you`, 
+      time: c.createdAt, 
+      id: 'c_' + c.id, 
+      link: '/network' 
+    })),
+    ...upcomingMeetings.map(m => ({ 
+      type: 'meeting', 
+      category: 'work',
+      icon: <Calendar size={18} />, 
+      color: '#8b5cf6',
+      bg: 'rgba(139, 92, 246, 0.1)', 
+      title: `Meeting Scheduled`, 
+      sub: `${m.title} at ${m.time || ''}`, 
+      time: m.createdAt, 
+      id: 'm_' + m.id, 
+      link: '/meetings' 
+    })),
+    ...applicationsData.filter(a => String(a.userId) === String(user.id)).map(a => ({
       type: 'application',
-      icon: <UserPlus size={18} color={a.status === 'approved' ? '#16a34a' : '#ef4444'} />,
-      bg: a.status === 'approved' ? '#dcfce7' : '#fee2e2',
-      title: a.status === 'approved' ? '🎉 SciComm Team Application Approved!' : '❌ SciComm Team Application Not Approved',
-      sub: a.status === 'approved' ? 'Welcome to the team! You now have access to Tasks & Meetings.' : 'Your application was reviewed and not approved. Update your profile and try again.',
+      category: 'social',
+      icon: <UserPlus size={18} />,
+      color: a.status === 'approved' ? '#16a34a' : (a.status === 'pending' ? '#f59e0b' : '#ef4444'),
+      bg: a.status === 'approved' ? 'rgba(22, 163, 74, 0.1)' : (a.status === 'pending' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)'),
+      title: `Team Application ${a.status.charAt(0).toUpperCase() + a.status.slice(1)}`,
+      sub: a.status === 'approved' ? 'Welcome to the SciComm Team!' : (a.status === 'pending' ? 'Your application is being reviewed.' : 'Your application was not approved.'),
       time: a.reviewedAt || a.createdAt,
       id: 'app_' + a.id,
       link: '/leaderboard'
     })),
-    // Pending application notifications for the applicant
-    ...applicationsData.filter(a => String(a.userId) === String(user.id) && a.status === 'pending').map(a => ({
-      type: 'application',
-      icon: <UserPlus size={18} color="#f59e0b" />,
-      bg: '#fef3c7',
-      title: '⏳ SciComm Team Application Pending',
-      sub: 'Your application is under review by admins.',
-      time: a.createdAt,
-      id: 'app_' + a.id,
-      link: '/leaderboard'
-    })),
-    // Admin notification for new applications
-    ...(isAdmin ? applicationsData.filter(a => a.status === 'pending').map(a => {
-      const applicant = scientists.find(s => String(s.id) === String(a.userId));
+    ...myGeneralNotifs.map(n => {
+      let icon = <Bell size={18} />;
+      let color = '#3b82f6';
+      let bg = 'rgba(59, 130, 246, 0.1)';
+      let category = 'social';
+
+      if (n.type === 'mention') {
+        icon = <AtSign size={18} />;
+        color = '#06b6d4';
+        bg = 'rgba(6, 182, 212, 0.1)';
+      } else if (n.type.includes('reaction')) {
+        icon = <Heart size={18} />;
+        color = '#ec4899';
+        bg = 'rgba(236, 72, 153, 0.1)';
+      } else if (n.type.includes('comment')) {
+        icon = <MessageSquare size={18} />;
+        color = '#10b981';
+        bg = 'rgba(16, 185, 129, 0.1)';
+      } else if (n.type === 'master_deletion') {
+        icon = <Trash2 size={18} />;
+        color = '#ef4444';
+        bg = 'rgba(239, 68, 68, 0.1)';
+        category = 'alert';
+      }
+
       return {
-        type: 'application_admin',
-        icon: <UserPlus size={18} color="#8b5cf6" />,
-        bg: '#ede9fe',
-        title: `📝 New Team Application: ${applicant?.name || 'Unknown'}`,
-        sub: 'Review in Admin Dashboard → Applications tab',
-        time: a.createdAt,
-        id: 'appadm_' + a.id,
-        link: '/admin'
+        ...n,
+        type: n.type,
+        category,
+        icon,
+        color,
+        bg,
+        title: n.title,
+        sub: n.message || 'Click to view',
+        time: n.createdAt,
+        id: 'gen_' + n.id,
+        link: n.link,
+        read: n.read,
+        rawId: n.id,
+        isGeneral: true
       };
-    }) : []),
-    // Unread chat message notifications
+    }),
     ...(() => {
       const myRoomIds = new Set(chatRooms.filter(r => (r.members || []).includes(user.id)).map(r => r.id));
       const unreadByRoom = {};
@@ -101,74 +177,119 @@ export default function SciCommNotifications() {
       });
       return Object.values(unreadByRoom).map(r => ({
         type: 'chat',
-        icon: <MessageCircle size={18} color="#0891b2" />,
-        bg: '#ecfeff',
-        title: `💬 ${r.count} unread message${r.count > 1 ? 's' : ''} from ${r.senderName}`,
-        sub: 'Click to open chat',
+        category: 'social',
+        icon: <MessageCircle size={18} />,
+        color: '#0ea5e9',
+        bg: 'rgba(14, 165, 233, 0.1)',
+        title: `Unread Messages`,
+        sub: `${r.count} new message${r.count > 1 ? 's' : ''} from ${r.senderName}`,
         time: r.lastTime,
         id: 'chat_' + r.roomId,
         link: '/chat'
       }));
-    })(),
-    ...myGeneralNotifs.map(n => ({
-      type: n.type,
-      icon: n.type === 'mention' ? <UserCheck size={18} color="#0891b2" /> : n.type.includes('reaction') ? <Bell size={18} color="#f59e0b" /> : <MessageCircle size={18} color="#3b82f6" />,
-      bg: n.type === 'mention' ? '#ecfeff' : n.type.includes('reaction') ? '#fef3c7' : '#eff6ff',
-      title: n.title,
-      sub: n.type.includes('reaction') ? `Reaction: ${n.icon}` : 'Click to view',
-      time: n.createdAt,
-      id: 'gen_' + n.id,
-      link: n.link,
-      read: n.read,
-      rawId: n.id,
-      isGeneral: true
-    })),
+    })()
   ].sort((a, b) => new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime());
 
+  const filteredNotifications = activeTab === 'all' 
+    ? allNotifications 
+    : allNotifications.filter(n => n.category === activeTab);
+
+  // Grouping by date
+  const groups = filteredNotifications.reduce((acc, n) => {
+    const date = new Date(n.time || Date.now());
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    let group = 'Earlier';
+    if (date.toDateString() === today.toDateString()) group = 'Today';
+    else if (date.toDateString() === yesterday.toDateString()) group = 'Yesterday';
+
+    if (!acc[group]) acc[group] = [];
+    acc[group].push(n);
+    return acc;
+  }, {});
+
+  const groupOrder = ['Today', 'Yesterday', 'Earlier'];
+
   return (
-    <div className="scicomm-feed-layout">
-      <div className="scicomm-sidebar-left hide-on-mobile">
-        <div className="scicomm-card scicomm-card-padding">
-          <h3 style={{ margin: '0 0 12px', fontSize: '16px' }}>Notifications</h3>
-          {[
-            { label: 'Social', count: myGeneralNotifs.filter(n => !n.read).length, color: '#0891b2' },
-            { label: 'Tasks', count: myTasks.length, color: '#1d4ed8' },
-            { label: 'Warnings', count: myWarnings.filter(w => w.status !== 'removed').length, color: '#ef4444' },
-            { label: 'Connections', count: pendingConnections.length, color: '#3b82f6' },
-            { label: 'Meetings', count: upcomingMeetings.length, color: '#8b5cf6' },
-            { label: 'Applications', count: applicationsData.filter(a => String(a.userId) === String(user.id)).length + (isAdmin ? applicationsData.filter(a => a.status === 'pending').length : 0), color: '#8b5cf6' },
-            ...(isAdmin ? [{ label: 'Pending Accounts', count: pendingAccounts.length, color: '#f59e0b' }] : []),
-          ].map((item, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px' }}>
-              <span style={{ color: 'rgba(0,0,0,0.6)' }}>{item.label}</span>
-              <strong style={{ color: item.color }}>{item.count}</strong>
-            </div>
-          ))}
-        </div>
+    <div className="scicomm-notifications-page" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 800 }}>Notifications</h2>
+        <button onClick={markAllAsRead} style={{ background: 'none', border: 'none', color: '#1d4ed8', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>Mark all as read</button>
       </div>
 
-      <div className="scicomm-feed-main">
-        <div className="scicomm-card scicomm-card-padding">
-          <h2 style={{ margin: '0 0 16px', fontSize: '18px' }}>🔔 Notifications</h2>
-          {notifications.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-              <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎉</div>
-              <h3 style={{ margin: '0 0 8px' }}>All caught up!</h3>
-              <p style={{ fontSize: '14px' }}>No new notifications.</p>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', overflowX: 'auto', paddingBottom: '4px' }}>
+        {['all', 'social', 'work', 'alert', 'admin'].map(tab => (
+          <button 
+            key={tab} 
+            onClick={() => setActiveTab(tab)} 
+            style={{ 
+              padding: '8px 16px', 
+              borderRadius: '20px', 
+              border: 'none', 
+              fontSize: '13px', 
+              fontWeight: 600, 
+              cursor: 'pointer',
+              background: activeTab === tab ? '#1d4ed8' : '#f1f5f9',
+              color: activeTab === tab ? 'white' : '#64748b',
+              transition: 'all 0.2s'
+            }}
+          >
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      <div className="scicomm-card" style={{ padding: '8px', borderRadius: '20px' }}>
+        {allNotifications.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🌈</div>
+            <h3 style={{ margin: '0 0 8px', fontSize: '18px' }}>All caught up!</h3>
+            <p style={{ color: '#64748b', fontSize: '14px' }}>No new notifications to show right now.</p>
+          </div>
+        ) : (
+          groupOrder.map(groupName => groups[groupName] && (
+            <div key={groupName}>
+              <h3 style={{ fontSize: '12px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', padding: '16px 16px 8px', letterSpacing: '1px' }}>{groupName}</h3>
+              {groups[groupName].map(n => (
+                <Link 
+                  key={n.id} 
+                  to={n.link || '#'} 
+                  onClick={() => handleNotificationClick(n)}
+                  style={{ 
+                    display: 'flex', 
+                    gap: '16px', 
+                    padding: '16px', 
+                    textDecoration: 'none', 
+                    color: 'inherit', 
+                    borderRadius: '16px', 
+                    transition: 'all 0.2s',
+                    background: n.read === false ? 'rgba(29, 78, 216, 0.03)' : 'transparent',
+                    marginBottom: '2px',
+                    position: 'relative'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                  onMouseLeave={e => e.currentTarget.style.background = n.read === false ? 'rgba(29, 78, 216, 0.03)' : 'transparent'}
+                >
+                  <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: n.bg, color: n.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {n.icon}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                      <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: n.read === false ? 700 : 500, color: '#0f172a' }}>{n.title}</p>
+                      {n.time && <span style={{ fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap' }}>{timeAgo(n.time)}</span>}
+                    </div>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{n.sub}</p>
+                  </div>
+                  {n.read === false && (
+                    <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', width: '8px', height: '8px', borderRadius: '50%', background: '#1d4ed8' }} />
+                  )}
+                </Link>
+              ))}
             </div>
-          ) : notifications.map(n => (
-            <Link key={n.id} to={n.link || '#'} onClick={() => handleNotificationClick(n)} style={{ display: 'flex', gap: '12px', padding: '14px 12px', borderBottom: '1px solid #eef3f8', textDecoration: 'none', color: 'inherit', borderRadius: '8px', transition: 'all 0.15s', opacity: n.read ? 0.6 : 1, background: n.read ? 'transparent' : '#f4f4f5' }}
-              onMouseEnter={e => e.currentTarget.style.background = n.read ? '#f9fafb' : '#e4e4e7'} onMouseLeave={e => e.currentTarget.style.background = n.read ? 'transparent' : '#f4f4f5'}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: n.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{n.icon}</div>
-              <div style={{ flex: 1 }}>
-                <p style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: n.read ? 500 : 700 }}>{n.title}</p>
-                <p style={{ margin: 0, fontSize: '13px', color: 'rgba(0,0,0,0.6)' }}>{n.sub}</p>
-                {n.time && <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', marginTop: '6px' }}>{timeAgo(n.time)}</div>}
-              </div>
-              {!n.read && n.isGeneral && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6', alignSelf: 'center' }} />}
-            </Link>
-          ))}
-        </div>
+          ))
+        )}
       </div>
     </div>
   );

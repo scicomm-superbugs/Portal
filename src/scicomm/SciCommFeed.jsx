@@ -133,8 +133,67 @@ export default function SciCommFeed() {
 
   const [isEditingLinks, setIsEditingLinks] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
-  const [tempLinks, setTempLinks] = useState([]);
-  const [editingPost, setEditingPost] = useState(null); // { id, content, imageUrl }
+  const [editingComment, setEditingComment] = useState(null); // { id, path, text }
+  const [activeCommentMenu, setActiveCommentMenu] = useState(null); // string id_path
+  
+  const handleDeleteComment = async (post, path) => {
+    if (!window.confirm('Are you sure you want to remove this comment?')) return;
+    const comments = JSON.parse(JSON.stringify(post.comments || []));
+    let targetParent = { replies: comments };
+    let target = comments;
+    let lastIdx = -1;
+
+    for (let i = 0; i < path.length; i++) {
+      lastIdx = path[i];
+      if (i < path.length - 1) {
+        targetParent = target[lastIdx];
+        target = target[lastIdx].replies;
+      }
+    }
+
+    const commentAuthorId = target[lastIdx].authorId;
+    
+    if (isAdmin && String(commentAuthorId) !== String(user.id)) {
+      // Admin moderation
+      target[lastIdx].deletedByAdmin = true;
+      target[lastIdx].text = "[DELETED BY ADMIN]";
+      target[lastIdx].imageUrl = null;
+      
+      // Notify user
+      db.scicomm_notifications.add({
+        userId: commentAuthorId,
+        type: 'master_deletion',
+        title: '🛡️ Admin Moderation',
+        message: 'Your comment was removed by an administrator for violating community guidelines.',
+        link: '/feed',
+        createdAt: new Date().toISOString(),
+        read: false
+      });
+    } else {
+      // Regular delete
+      target.splice(lastIdx, 1);
+    }
+
+    try {
+      await db.scicomm_posts.update(post.id, { comments });
+      setActiveCommentMenu(null);
+    } catch (e) { console.error(e); }
+  };
+
+  const handleSaveEditComment = async (post) => {
+    if (!editingComment) return;
+    const { path, text } = editingComment;
+    const comments = JSON.parse(JSON.stringify(post.comments || []));
+    let target = comments;
+    for (let i = 0; i < path.length; i++) {
+      if (i < path.length - 1) target = target[path[i]].replies;
+      else target[path[i]].text = text;
+    }
+    try {
+      await db.scicomm_posts.update(post.id, { comments });
+      setEditingComment(null);
+    } catch (e) { console.error(e); }
+  };
   const [commentImage, setCommentImage] = useState({}); // { [key]: File }
   const [showEmojiPicker, setShowEmojiPicker] = useState(null); // key string
   const [showReactors, setShowReactors] = useState(null); // { reactions: {like: [...ids], love: [...]}, title: 'Post' }
@@ -270,6 +329,19 @@ export default function SciCommFeed() {
     try {
       await db.scicomm_posts.update(post.id, { reactions });
       setActiveReactionPicker(null);
+
+      // Notification for reaction
+      if (idx === -1 && String(post.authorId) !== String(user.id)) {
+        const rd = REACTIONS.find(r => r.key === reactionKey);
+        db.scicomm_notifications.add({
+          userId: post.authorId,
+          type: 'reaction',
+          title: `${user.name} reacted ${rd?.emoji || ''} to your post`,
+          link: '/feed',
+          createdAt: new Date().toISOString(),
+          read: false
+        }).catch(() => {});
+      }
     } catch (err) { console.error(err); }
   };
 
@@ -366,11 +438,17 @@ export default function SciCommFeed() {
     target.reactions = reactions;
     try {
       await db.scicomm_posts.update(post.id, { comments });
-      if (isAdding && target.authorId !== user.id) {
+      
+      // Notification for reaction on comment
+      if (isAdding && String(target.authorId) !== String(user.id)) {
+        const rd = REACTIONS.find(r => r.key === reactionKey);
         db.scicomm_notifications.add({
-          userId: target.authorId, type: 'comment_reaction', icon: reactionKey,
-          title: `${user.name} reacted to your comment`,
-          link: `/feed`, createdAt: new Date().toISOString(), read: false
+          userId: target.authorId,
+          type: 'reaction',
+          title: `${user.name} reacted ${rd?.emoji || ''} to your comment`,
+          link: '/feed',
+          createdAt: new Date().toISOString(),
+          read: false
         }).catch(() => {});
       }
     } catch (err) { console.error(err); }
@@ -390,8 +468,28 @@ export default function SciCommFeed() {
   };
 
   const handleDeletePost = async (postId) => {
-    if (window.confirm('Delete this post permanently?')) {
-      try { await db.scicomm_posts.delete(postId); } catch (err) { console.error(err); }
+    const post = postsRaw.find(p => p.id === postId);
+    if (!post) return;
+
+    if (isAdmin && String(post.authorId) !== String(user.id)) {
+      if (window.confirm('🛡️ Moderation: Blur this post for everyone?')) {
+        try { 
+          await db.scicomm_posts.update(postId, { deletedByAdmin: true }); 
+          db.scicomm_notifications.add({
+            userId: post.authorId,
+            type: 'master_deletion',
+            title: '🛡️ Admin Moderation',
+            message: 'Your post was removed by an administrator for violating community guidelines.',
+            link: '/feed',
+            createdAt: new Date().toISOString(),
+            read: false
+          });
+        } catch (err) { console.error(err); }
+      }
+    } else {
+      if (window.confirm('Delete this post permanently?')) {
+        try { await db.scicomm_posts.delete(postId); } catch (err) { console.error(err); }
+      }
     }
     setActiveReactionPicker(null);
   };
@@ -523,29 +621,85 @@ export default function SciCommFeed() {
       const myReaction = Object.entries(cReactions).find(([, arr]) => arr.includes(user.id))?.[0];
       const cAuthor = getAuthor(c.authorId);
       
+      const isDeleted = c.deletedByAdmin;
+      
       return (
-        <div key={i} style={{ marginBottom: path.length === 0 ? '12px' : '8px', marginTop: path.length > 0 ? '8px' : '0', paddingLeft: path.length > 0 ? '12px' : '0', borderLeft: path.length > 0 ? '2px solid #e0dfdc' : 'none' }}>
+        <div key={i} style={{ marginBottom: path.length === 0 ? '12px' : '8px', marginTop: path.length > 0 ? '8px' : '0', paddingLeft: path.length > 0 ? '12px' : '0', borderLeft: path.length > 0 ? '2px solid #e0dfdc' : 'none', position: 'relative' }}>
           <div style={{ display: 'flex', gap: path.length === 0 ? '8px' : '6px' }}>
-            <Link to={`/member/${c.authorId}`} style={{ flexShrink: 0 }}>{renderAvatar(cAuthor, path.length === 0 ? 32 : 24)}</Link>
+            <Link to={`/member/${c.authorId}`} style={{ flexShrink: 0, opacity: isDeleted ? 0.3 : 1 }}>{renderAvatar(cAuthor, path.length === 0 ? 32 : 24)}</Link>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ background: path.length === 0 ? '#f3f2ef' : '#eef3f8', borderRadius: '0 8px 8px 8px', padding: '6px 12px', display: 'inline-block', maxWidth: '100%' }}>
+              <div style={{ 
+                background: isDeleted ? 'rgba(254, 226, 226, 0.4)' : (path.length === 0 ? '#f3f2ef' : '#eef3f8'), 
+                borderRadius: '0 12px 12px 12px', 
+                padding: '8px 14px', 
+                display: 'inline-block', 
+                maxWidth: '100%',
+                position: 'relative',
+                border: isDeleted ? '1px dashed #fecaca' : 'none',
+                backdropFilter: isDeleted ? 'blur(4px)' : 'none'
+              }}>
                 <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: path.length === 0 ? '13px' : '12px' }}>{c.authorName}</strong></Link>
-                <p style={{ margin: '2px 0 0', fontSize: path.length === 0 ? '13px' : '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{renderPostText(c.text)}</p>
-                {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
+                {isDeleted ? (
+                  <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '18px' }}>🛡️</span>
+                    <p style={{ margin: 0, fontSize: '11px', color: '#991b1b', fontWeight: 700, lineHeight: 1.3 }}>
+                      MODERATED CONTENT: Removed by admin for community safety.
+                    </p>
+                  </div>
+                ) : (
+                  editingComment?.id === post.id && JSON.stringify(editingComment?.path) === JSON.stringify(currentPath) ? (
+                    <div style={{ marginTop: '4px' }}>
+                      <textarea 
+                        value={editingComment.text} 
+                        onChange={e => setEditingComment(prev => ({...prev, text: e.target.value}))}
+                        style={{ width: '100%', minHeight: '40px', padding: '6px', border: '1px solid #1d4ed8', borderRadius: '4px', fontSize: '13px' }}
+                      />
+                      <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
+                        <button onClick={() => handleSaveEditComment(post)} className="scicomm-btn-primary" style={{ padding: '2px 8px', fontSize: '11px' }}>Save</button>
+                        <button onClick={() => setEditingComment(null)} className="scicomm-btn-secondary" style={{ padding: '2px 8px', fontSize: '11px' }}>Cancel</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <p style={{ margin: '2px 0 0', fontSize: path.length === 0 ? '13px' : '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{renderPostText(c.text)}</p>
+                      {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
+                    </>
+                  )
+                )}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '4px' }}>
-                <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>{timeAgo(c.createdAt)}</span>
-                {['like', 'love', 'fire'].map(rk => {
-                  const rd = REACTIONS.find(r => r.key === rk);
-                  const isActive = myReaction === rk;
-                  return (
-                    <button key={rk} onClick={() => handleReactionOnComment(post, currentPath, rk)} title={cReactions[rk]?.map(id => getAuthor(id)?.name).join(', ')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: isActive ? 700 : 500, color: isActive ? rd.color : 'rgba(0,0,0,0.5)', padding: '2px 0', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                      {rd.emoji} {(cReactions[rk]?.length || 0) > 0 && <span style={{ cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); setShowReactors({ reactions: cReactions, title: 'Reactions' }); }}>{cReactions[rk].length}</span>}
-                    </button>
-                  );
-                })}
-                <button onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: 600, color: isReplying ? '#1d4ed8' : 'rgba(0,0,0,0.5)', padding: '2px 0' }}>Reply</button>
-              </div>
+              
+              {!isDeleted && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '4px' }}>
+                  <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>{timeAgo(c.createdAt)}</span>
+                  {['like', 'love', 'fire'].map(rk => {
+                    const rd = REACTIONS.find(r => r.key === rk);
+                    const isActive = myReaction === rk;
+                    return (
+                      <button key={rk} onClick={() => handleReactionOnComment(post, currentPath, rk)} title={cReactions[rk]?.map(id => getAuthor(id)?.name).join(', ')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: isActive ? 700 : 500, color: isActive ? rd.color : 'rgba(0,0,0,0.5)', padding: '2px 0', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                        {rd.emoji} {(cReactions[rk]?.length || 0) > 0 && <span style={{ cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); setShowReactors({ reactions: cReactions, title: 'Reactions' }); }}>{cReactions[rk].length}</span>}
+                      </button>
+                    );
+                  })}
+                  <button onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: 600, color: isReplying ? '#1d4ed8' : 'rgba(0,0,0,0.5)', padding: '2px 0' }}>Reply</button>
+                  
+                  {/* Edit/Delete Options */}
+                  <div style={{ position: 'relative' }}>
+                    <button onClick={(e) => { e.stopPropagation(); setActiveCommentMenu(activeCommentMenu === `${post.id}_${currentPath.join('_')}` ? null : `${post.id}_${currentPath.join('_')}`); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)', padding: '2px' }}><MoreHorizontal size={14} /></button>
+                    {activeCommentMenu === `${post.id}_${currentPath.join('_')}` && (
+                      <div style={{ position: 'absolute', left: '100%', top: 0, background: 'white', border: '1px solid #e0dfdc', borderRadius: '8px', padding: '4px 0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 60, minWidth: '120px', marginLeft: '4px' }}>
+                        {(String(c.authorId) === String(user.id)) && (
+                          <button onClick={() => { setEditingComment({ id: post.id, path: currentPath, text: c.text }); setActiveCommentMenu(null); }} style={{ display: 'block', width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '12px', textAlign: 'left' }}>✏️ Edit</button>
+                        )}
+                        {(String(c.authorId) === String(user.id) || isAdmin) && (
+                          <button onClick={() => handleDeleteComment(post, currentPath)} style={{ display: 'block', width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '12px', textAlign: 'left', color: '#ef4444' }}>
+                            {isAdmin && String(c.authorId) !== String(user.id) ? '🛡️ Admin Remove' : '🗑️ Delete'}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               
               {/* Replies */}
               {(c.replies || []).length > 0 && (
@@ -818,28 +972,6 @@ export default function SciCommFeed() {
                     </div>
                   </div>
                 ) : (
-                  <>
-                    <p style={{ 
-                      margin: '0 0 8px', 
-                      fontSize: '14px', 
-                      lineHeight: '1.5', 
-                      whiteSpace: 'pre-wrap', 
-                      unicodeBidi: 'plaintext', 
-                      direction: /[\u0600-\u06FF]/.test(post.content || '') ? 'rtl' : 'ltr',
-                      textAlign: /[\u0600-\u06FF]/.test(post.content || '') ? 'right' : 'left'
-                    }}>{renderPostText(post.content)}</p>
-                    {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
-                    {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}
-                    {post.videoUrl && (
-                      post.videoUrl.startsWith('chunked://') ? (
-                        <ChunkedVideo videoUrl={post.videoUrl} />
-                      ) : (
-                        <video src={post.videoUrl} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />
-                      )
-                    )}
-                {post.fileUrl && <a href={post.fileUrl} target="_blank" rel="noreferrer" style={{ display: 'block', padding: '10px 14px', background: '#eef3f8', borderRadius: '8px', marginBottom: '8px', color: '#2563eb', textDecoration: 'none', fontWeight: 600, fontSize: '13px' }}>📎 {post.fileName || 'Download Attachment'}</a>}
-                
-                {post.poll && (
                   <div style={{ border: '1px solid #e0dfdc', borderRadius: '8px', padding: '16px', marginBottom: '12px' }}>
                     <div style={{ fontWeight: 600, fontSize: '15px', marginBottom: '12px' }}>📊 {post.poll.question}</div>
                     {post.poll.options.map(opt => {

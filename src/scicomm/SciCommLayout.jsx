@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard, Lock } from 'lucide-react';
+import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard, Lock, FolderKanban } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
 import { useState, useEffect, useRef } from 'react';
@@ -235,12 +235,12 @@ export default function SciCommLayout() {
                   )}
                   {isTeam ? (
                     <div onClick={() => setShowComingSoon(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                      <LayoutDashboard size={24} color="#14b8a6" />
+                      <FolderKanban size={24} color="#14b8a6" />
                       <span style={{ fontSize: '13px', fontWeight: 600 }}>Projects</span>
                     </div>
                   ) : (
                     <div onClick={() => setShowApplyModal(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                      <LayoutDashboard size={24} color="#94a3b8" />
+                      <FolderKanban size={24} color="#94a3b8" />
                       <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Projects</span>
                       <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
                     </div>

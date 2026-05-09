@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db, useLiveCollection, uploadFile } from '../db';
 import { Image, Video, FileText, Send, ArrowLeft, UserCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AVATARS, isSpamPost } from './scicommConstants';
 
 export default function SciCommPost() {
@@ -23,6 +23,38 @@ export default function SciCommPost() {
   const [pollOptions, setPollOptions] = useState([{id:1, text:''}, {id:2, text:''}]);
   const [isPostingMedia, setIsPostingMedia] = useState(false);
   const [postError, setPostError] = useState('');
+
+  // Mentions logic
+  const [mentionQuery, setMentionQuery] = useState('');
+  const [showMentions, setShowMentions] = useState(false);
+
+  const mentionSuggestions = scientists.filter(s => 
+    !mentionQuery || 
+    s.name.toLowerCase().includes(mentionQuery.toLowerCase()) || 
+    (s.username || '').toLowerCase().includes(mentionQuery.toLowerCase())
+  ).slice(0, 5);
+
+  const handleInputChange = (val) => {
+    setNewPost(val);
+    const atIdx = val.lastIndexOf('@');
+    if (atIdx >= 0) {
+      const afterAt = val.slice(atIdx + 1);
+      if (!afterAt.includes(' ')) {
+        setMentionQuery(afterAt);
+        setShowMentions(true);
+        return;
+      }
+    }
+    setShowMentions(false);
+  };
+
+  const insertMention = (person) => {
+    const atIdx = newPost.lastIndexOf('@');
+    const prefix = newPost.slice(0, atIdx);
+    const username = person.username || person.name.replace(/\s+/g, '');
+    setNewPost(prefix + '@' + username + ' ');
+    setShowMentions(false);
+  };
 
   const renderAvatar = (person, size = 44) => {
     if (person?.avatar) return <img src={person.avatar} alt="" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }} />;
@@ -76,6 +108,22 @@ export default function SciCommPost() {
       }
 
       await db.scicomm_posts.add(postData);
+      
+      // Mentions Notification
+      const mentions = content.match(/@\w+/g) || [];
+      mentions.forEach(mention => {
+        const username = mention.slice(1).toLowerCase();
+        const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+        if (userMatch && String(userMatch.id) !== String(user.id)) {
+          db.scicomm_notifications.add({
+            userId: userMatch.id, type: 'mention',
+            title: `${user.name} mentioned you in a post`,
+            message: content.substring(0, 50) + '...',
+            link: `/feed`, createdAt: new Date().toISOString(), read: false
+          }).catch(() => {});
+        }
+      });
+
       navigate('/');
     } catch (err) {
       setPostError('Failed to post: ' + err.message);
@@ -107,7 +155,7 @@ export default function SciCommPost() {
         </button>
       </div>
 
-      <div style={{ padding: '20px', flex: 1, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)', borderRadius: '24px 24px 0 0', marginTop: '12px', boxShadow: '0 -10px 30px rgba(0,0,0,0.02)' }}>
+      <div style={{ padding: '20px', flex: 1, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)', borderRadius: '24px 24px 0 0', marginTop: '12px', boxShadow: '0 -10px 30px rgba(0,0,0,0.02)', position: 'relative' }}>
         {/* User Info & Privacy */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
           {renderAvatar(currentUserData, 44)}
@@ -116,13 +164,28 @@ export default function SciCommPost() {
           </div>
         </div>
 
+        {/* Mention Dropdown */}
+        {showMentions && mentionSuggestions.length > 0 && (
+          <div style={{ position: 'absolute', top: '140px', left: '20px', right: '20px', background: 'white', borderRadius: '12px', boxShadow: '0 10px 40px rgba(0,0,0,0.15)', border: '1px solid #e2e8f0', zIndex: 100, maxHeight: '200px', overflowY: 'auto' }}>
+            {mentionSuggestions.map(s => (
+              <div key={s.id} onClick={() => insertMention(s)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onMouseOver={e => e.currentTarget.style.background='#f8fafc'} onMouseOut={e => e.currentTarget.style.background='white'}>
+                {renderAvatar(s, 32)}
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '14px' }}>{s.name}</div>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>@{s.username || s.name.replace(/\s+/g, '')}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Textarea */}
         <textarea
-          placeholder="What's on your mind?"
+          placeholder="What's on your mind? (type @ to mention someone)"
           value={newPost}
-          onChange={e => setNewPost(e.target.value)}
+          onChange={e => handleInputChange(e.target.value)}
           style={{
-            width: '100%', minHeight: '80px', border: 'none', outline: 'none',
+            width: '100%', minHeight: '120px', border: 'none', outline: 'none',
             fontSize: '18px', lineHeight: '1.3', resize: 'vertical',
             boxSizing: 'border-box', fontFamily: 'inherit', color: '#050505'
           }}
