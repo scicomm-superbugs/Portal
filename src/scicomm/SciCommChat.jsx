@@ -59,11 +59,16 @@ export default function SciCommChat() {
     scrollToBottom();
   }, [selectedRoom, roomMessages.length]);
 
-  const mentionSuggestions = scientists.filter(s => 
-    !mentionQuery || 
-    s.name.toLowerCase().includes(mentionQuery.toLowerCase()) || 
-    (s.username || '').toLowerCase().includes(mentionQuery.toLowerCase())
-  ).slice(0, 5);
+  const mentionSuggestions = activeRoom ? [
+    ...(activeRoom.type === 'group' && (!mentionQuery || 'all'.includes(mentionQuery.toLowerCase())) ? [{ id: 'all', name: 'All Members', username: 'all' }] : []),
+    ...scientists.filter(s => 
+      activeRoom.members.includes(s.id) && 
+      String(s.id) !== String(user.id) &&
+      (!mentionQuery || 
+       s.name.toLowerCase().includes(mentionQuery.toLowerCase()) || 
+       (s.username || '').toLowerCase().includes(mentionQuery.toLowerCase()))
+    )
+  ].slice(0, 5) : [];
 
   const handleInputChange = (val) => {
     setMsgText(val);
@@ -236,10 +241,30 @@ export default function SciCommChat() {
     
     // Mentions Notification
     const mentions = msgText.match(/@\w+/g) || [];
+    const notifiedIds = new Set();
+    
     mentions.forEach(mention => {
       const username = mention.slice(1).toLowerCase();
+      
+      if (username === 'all' && activeRoom?.type === 'group') {
+        activeRoom.members.forEach(memberId => {
+          if (String(memberId) !== String(user.id) && !notifiedIds.has(String(memberId))) {
+            notifiedIds.add(String(memberId));
+            db.scicomm_notifications.add({
+              userId: memberId, type: 'mention',
+              senderId: user.id,
+              title: `${user.name} mentioned everyone in ${activeRoom.name}`,
+              message: msgText.substring(0, 50) + '...',
+              link: `/chat`, createdAt: new Date().toISOString(), read: false
+            }).catch(() => {});
+          }
+        });
+        return;
+      }
+      
       const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
-      if (userMatch && String(userMatch.id) !== String(user.id)) {
+      if (userMatch && activeRoom?.members.includes(userMatch.id) && String(userMatch.id) !== String(user.id) && !notifiedIds.has(String(userMatch.id))) {
+        notifiedIds.add(String(userMatch.id));
         db.scicomm_notifications.add({
           userId: userMatch.id, type: 'mention',
           senderId: user.id,
@@ -586,7 +611,11 @@ export default function SciCommChat() {
               <div style={{ position: 'absolute', bottom: '80px', left: '20px', right: '20px', background: 'white', borderRadius: '12px', boxShadow: '0 10px 40px rgba(0,0,0,0.15)', border: '1px solid #e2e8f0', zIndex: 100, maxHeight: '200px', overflowY: 'auto' }}>
                 {mentionSuggestions.map(s => (
                   <div key={s.id} onClick={() => insertMention(s)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onMouseOver={e => e.currentTarget.style.background='#f8fafc'} onMouseOut={e => e.currentTarget.style.background='white'}>
-                    {renderAvatar(s, 32)}
+                    {s.id === 'all' ? (
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Users size={16} color="#1d4ed8" />
+                      </div>
+                    ) : renderAvatar(s, 32)}
                     <div>
                       <div style={{ fontWeight: 700, fontSize: '14px' }}>{s.name}</div>
                       <div style={{ fontSize: '11px', color: '#64748b' }}>@{s.username || s.name.replace(/\s+/g, '')}</div>
