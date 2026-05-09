@@ -89,8 +89,8 @@ export const uploadFile = async (file, path, onProgress) => {
       if (onProgress) onProgress(1); // Show 1% immediately so user knows it started
       const timeout = setTimeout(() => { 
         task.cancel(); 
-        reject(new Error('Upload timed out. If this happens often, check your network connection or reduce file size.')); 
-      }, 300000); // 5 minute timeout for large files
+        reject(new Error('Upload timed out. This usually means Firebase Storage CORS rules are not configured in your Google Cloud Console for this domain.')); 
+      }, 60000); // 1 minute timeout
       
       task.on('state_changed',
         (snapshot) => {
@@ -108,7 +108,7 @@ export const uploadFile = async (file, path, onProgress) => {
   } else {
     // Simple upload for small files with timeout wrapper
     return new Promise(async (resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error('Upload timed out. If this happens often, check your network connection.')), 300000);
+      const timeout = setTimeout(() => reject(new Error('Upload timed out. This usually means Firebase Storage CORS rules are not configured in your Google Cloud Console.')), 60000);
       try {
         await uploadBytes(storageRef, file);
         const url = await getDownloadURL(storageRef);
