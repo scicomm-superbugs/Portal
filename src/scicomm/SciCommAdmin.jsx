@@ -203,10 +203,22 @@ export default function SciCommAdmin() {
   };
 
   const handleBackfillNotifications = async () => {
-    if (!window.confirm('Backfill notifications? This will scan all existing posts and chats and send missed notifications for reactions, comments, and mentions. This may cause a flood of notifications for users.')) return;
+    if (!window.confirm('Backfill notifications? This will delete all existing general notifications and regenerate them with correct names. This is a heavy operation.')) return;
     
     let added = 0;
     try {
+      flash('Clearing old notifications...');
+      const notifsSnap = await import('firebase/firestore').then(m => m.getDocs(m.collection(firestore, getCollectionName('scicomm_notifications'))));
+      for (const docSnap of notifsSnap.docs) {
+        await db.scicomm_notifications.delete(docSnap.id);
+      }
+      flash('Old notifications cleared. Generating new ones...');
+
+      const getName = (id) => {
+        const s = scientists.find(x => String(x.id) === String(id));
+        return s ? s.name.split(' ')[0] : 'Someone';
+      };
+
       // 1. Backfill Post Reactions & Comments
       for (const p of posts) {
         // Post Reactions
@@ -216,7 +228,7 @@ export default function SciCommAdmin() {
               if (String(uid) !== String(p.authorId)) {
                 await db.scicomm_notifications.add({
                   userId: p.authorId, type: 'reaction', senderId: uid,
-                  title: `Someone reacted to your post`,
+                  title: `${getName(uid)} reacted to your post`,
                   message: p.content?.substring(0, 50) || 'Media post',
                   link: '/feed', createdAt: p.createdAt || new Date().toISOString(), read: false
                 });
@@ -233,7 +245,7 @@ export default function SciCommAdmin() {
             if (String(c.authorId) !== String(parentAuthorId)) {
                await db.scicomm_notifications.add({
                  userId: parentAuthorId, type: 'comment', senderId: c.authorId,
-                 title: `Someone commented on your post`,
+                 title: `${getName(c.authorId)} commented on your post`,
                  message: c.text?.substring(0, 50) || 'Media comment',
                  link: '/feed', createdAt: c.createdAt || new Date().toISOString(), read: false
                });
@@ -245,7 +257,7 @@ export default function SciCommAdmin() {
                   if (String(uid) !== String(c.authorId)) {
                     await db.scicomm_notifications.add({
                       userId: c.authorId, type: 'reaction', senderId: uid,
-                      title: `Someone reacted to your comment`,
+                      title: `${getName(uid)} reacted to your comment`,
                       message: c.text?.substring(0, 50) || 'Media',
                       link: '/feed', createdAt: c.createdAt || new Date().toISOString(), read: false
                     });
@@ -262,7 +274,7 @@ export default function SciCommAdmin() {
               if (userMatch && String(userMatch.id) !== String(c.authorId)) {
                 await db.scicomm_notifications.add({
                   userId: userMatch.id, type: 'mention', senderId: c.authorId,
-                  title: `Someone mentioned you`,
+                  title: `${getName(c.authorId)} mentioned you`,
                   message: c.text?.substring(0, 50) || '...',
                   link: '/feed', createdAt: c.createdAt || new Date().toISOString(), read: false
                 });
@@ -286,7 +298,7 @@ export default function SciCommAdmin() {
                  if (String(memberId) !== String(m.senderId)) {
                     await db.scicomm_notifications.add({
                       userId: memberId, type: 'mention', senderId: m.senderId,
-                      title: `Mentioned @all in chat`,
+                      title: `${getName(m.senderId)} mentioned @all in chat`,
                       message: m.content?.substring(0, 50) || '...',
                       link: '/chat', createdAt: m.createdAt || new Date().toISOString(), read: false
                     });
@@ -300,7 +312,7 @@ export default function SciCommAdmin() {
             if (userMatch && String(userMatch.id) !== String(m.senderId)) {
               await db.scicomm_notifications.add({
                 userId: userMatch.id, type: 'mention', senderId: m.senderId,
-                title: `Mentioned you in chat`,
+                title: `${getName(m.senderId)} mentioned you in chat`,
                 message: m.content?.substring(0, 50) || '...',
                 link: '/chat', createdAt: m.createdAt || new Date().toISOString(), read: false
               });
@@ -309,7 +321,7 @@ export default function SciCommAdmin() {
           }
         }
       }
-      flash(`Successfully backfilled ${added} missed notifications!`);
+      flash(`Successfully backfilled ${added} correct notifications!`);
     } catch (e) {
       console.error(e);
       flash("Error during backfill. See console.");
