@@ -138,6 +138,7 @@ export default function SciCommFeed() {
       setPollOptions([{id:1, text:''}, {id:2, text:''}]);
     } catch (err) {
       console.error("Failed to post", err);
+      setPostError('Failed to post: ' + err.message);
     }
     setIsPostingMedia(false);
   };
