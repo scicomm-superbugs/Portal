@@ -118,17 +118,12 @@ export default function SciCommFeed() {
     return () => clearInterval(t);
   }, [banners.length]);
 
-  // Post submission with spam check
-  const handlePostSubmit = async (e) => {
-    e?.preventDefault();
-    if (!newPost.trim() && !postImage && !postVideo && !postFile && (!showPoll || !pollQuestion.trim())) return;
-    setPostError('');
-    const myRecentPosts = posts.filter(p => String(p.authorId) === String(user.id)).slice(0, 5);
-    if (isSpamPost(newPost, myRecentPosts)) {
-      setPostError('⚠️ Your post was flagged. Please write something unique and meaningful (min 10 chars).');
-      return;
-    }
-    try {
+    // Post submission with spam check disabled as requested by user
+    const handlePostSubmit = async (e) => {
+      e?.preventDefault();
+      if (!newPost.trim() && !postImage && !postVideo && !postFile && (!showPoll || !pollQuestion.trim())) return;
+      setPostError('');
+      try {
       setIsPostingMedia(true);
       setUploadProgress(0);
       let imageUrl = null, videoUrl = null, fileUrl = null, fileName = null;
