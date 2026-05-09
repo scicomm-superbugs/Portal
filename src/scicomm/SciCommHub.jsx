@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Briefcase, Calendar, Trophy, Video, Shield, Users, Bell, Lock, FolderKanban } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function SciCommHub() {
   const { user } = useAuth();
@@ -12,6 +12,24 @@ export default function SciCommHub() {
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
   const myPendingTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
   const upcomingMeetings = meetingsData.filter(m => ((m.members || []).includes(user.id) || m.allMembers) && new Date(m.date) >= new Date(new Date().toDateString()));
+
+  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('scicommDarkMode') === 'true');
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsDarkMode(localStorage.getItem('scicommDarkMode') === 'true');
+    };
+    window.addEventListener('storage', handleStorageChange);
+    // Also set up an observer to watch for class changes on body
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.body.classList.contains('scicomm-dark-mode'));
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      observer.disconnect();
+    };
+  }, []);
 
   const navigate = useNavigate();
   const [showApplyModal, setShowApplyModal] = useState(false);
@@ -30,8 +48,7 @@ export default function SciCommHub() {
   return (
     <div style={{ padding: '20px 16px', minHeight: 'calc(100vh - 160px)' }}>
       <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-        <div style={{ fontSize: '28px', marginBottom: '4px' }}>🔬</div>
-        <h1 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 700 }}>SciComm Hub</h1>
+        <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '100px', maxWidth: '80%', marginBottom: '12px', objectFit: 'contain' }} onError={e => e.target.style.display='none'} />
         <p style={{ margin: 0, fontSize: '13px', color: 'rgba(0,0,0,0.5)' }}>Quick access to everything</p>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', maxWidth: '400px', margin: '0 auto' }}>
