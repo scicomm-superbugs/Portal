@@ -72,7 +72,7 @@ const StoryVideo = ({ videoUrl, isPaused, style, onEnded }) => {
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <video ref={videoRef} src={src} playsInline muted={!audioUnlocked} style={style} onEnded={onEnded} />
-      <button onClick={toggleAudio} style={{ position: 'absolute', top: '70px', right: '16px', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 20 }}>
+      <button onClick={toggleAudio} style={{ position: 'absolute', top: '120px', right: '16px', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 20 }}>
         {audioUnlocked ? '🔊' : '🔇'}
       </button>
     </div>
@@ -99,104 +99,66 @@ export default function SciCommStories({ scientists }) {
 
   const [viewingUserId, setViewingUserId] = useState(null);
   const [storyIndex, setStoryIndex] = useState(0);
-  const [showViewers, setShowViewers] = useState(false);
-  const [replyText, setReplyText] = useState('');
   const [isPaused, setIsPaused] = useState(false);
+  const [replyText, setReplyText] = useState('');
+  const [showViewers, setShowViewers] = useState(false);
 
-  // Filter active stories
-  const now = new Date();
-  const activeStories = allStories.filter(s => new Date(s.expiresAt) > now);
+  // Group stories by user
+  const storiesByUser = allStories.reduce((acc, s) => {
+    if (!acc[s.authorId]) acc[s.authorId] = [];
+    acc[s.authorId].push(s);
+    return acc;
+  }, {});
 
-  // Group by user
-  const storiesByUser = {};
-  activeStories.forEach(s => {
-    if (!storiesByUser[s.authorId]) storiesByUser[s.authorId] = [];
-    storiesByUser[s.authorId].push(s);
+  // Sort each user's stories by time
+  Object.keys(storiesByUser).forEach(uid => {
+    storiesByUser[uid].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   });
 
-  // Sort groups: current user first, then by latest story
   const groupUserIds = Object.keys(storiesByUser).sort((a, b) => {
-    if (a === String(user.id)) return -1;
-    if (b === String(user.id)) return 1;
-    const aLatest = Math.max(...storiesByUser[a].map(s => new Date(s.createdAt).getTime()));
-    const bLatest = Math.max(...storiesByUser[b].map(s => new Date(s.createdAt).getTime()));
-    return bLatest - aLatest;
+    // Current user first, then others by latest story
+    if (String(a) === String(user.id)) return -1;
+    if (String(b) === String(user.id)) return 1;
+    const aLatest = storiesByUser[a][storiesByUser[a].length - 1];
+    const bLatest = storiesByUser[b][storiesByUser[b].length - 1];
+    return new Date(bLatest.createdAt) - new Date(aLatest.createdAt);
   });
-
-  const handleCreateStory = async () => {
-    if (!mediaFile && !caption) return;
-    setCreating(true);
-    try {
-      let finalMediaUrl = '';
-      let finalMediaType = 'image';
-
-      if (mediaFile) {
-        finalMediaType = mediaFile.type.startsWith('video/') ? 'video' : 'image';
-        const path = `stories/${user.id}_${Date.now()}_${mediaFile.name}`;
-        finalMediaUrl = await uploadFile(mediaFile, path, setUploadProgress);
-      }
-
-      const expiresAt = new Date();
-      expiresAt.setHours(expiresAt.getHours() + Number(duration));
-      await db.scicomm_stories.add({
-        authorId: user.id,
-        authorName: user.name,
-        mediaUrl: finalMediaUrl,
-        mediaType: finalMediaType,
-        content: caption,
-        createdAt: new Date().toISOString(),
-        expiresAt: expiresAt.toISOString(),
-        viewers: []
-      });
-      setShowCreateModal(false);
-      setMediaFile(null);
-      setUploadProgress(0);
-      setCaption('');
-      setDuration(24);
-    } catch (e) {
-      console.error(e);
-      alert(e.message || 'Upload failed');
-    }
-    setCreating(false);
-  };
 
   const handleNextStory = () => {
-    if (!viewingUserId) return;
-    const userStories = storiesByUser[viewingUserId];
-    if (storyIndex < userStories.length - 1) {
-      setStoryIndex(i => i + 1);
+    const currentUserStories = storiesByUser[viewingUserId];
+    if (storyIndex < currentUserStories.length - 1) {
+      setStoryIndex(storyIndex + 1);
     } else {
-      // Next user
-      const currentUserGroupIdx = groupUserIds.indexOf(viewingUserId);
-      if (currentUserGroupIdx < groupUserIds.length - 1) {
-        setViewingUserId(groupUserIds[currentUserGroupIdx + 1]);
+      const currentUserPos = groupUserIds.indexOf(String(viewingUserId));
+      if (currentUserPos < groupUserIds.length - 1) {
+        setViewingUserId(groupUserIds[currentUserPos + 1]);
         setStoryIndex(0);
       } else {
-        setViewingUserId(null); // End of stories
+        setViewingUserId(null);
       }
     }
   };
 
   const handlePrevStory = () => {
-    if (!viewingUserId) return;
     if (storyIndex > 0) {
-      setStoryIndex(i => i - 1);
+      setStoryIndex(storyIndex - 1);
     } else {
-      // Prev user
-      const currentUserGroupIdx = groupUserIds.indexOf(viewingUserId);
-      if (currentUserGroupIdx > 0) {
-        const prevUser = groupUserIds[currentUserGroupIdx - 1];
-        setViewingUserId(prevUser);
-        setStoryIndex(storiesByUser[prevUser].length - 1);
+      const currentUserPos = groupUserIds.indexOf(String(viewingUserId));
+      if (currentUserPos > 0) {
+        setViewingUserId(groupUserIds[currentUserPos - 1]);
+        const prevUserStories = storiesByUser[groupUserIds[currentUserPos - 1]];
+        setStoryIndex(prevUserStories.length - 1);
+      } else {
+        setViewingUserId(null);
       }
     }
   };
 
-  // Add view to story
-  React.useEffect(() => {
-    if (viewingUserId) {
-      const story = storiesByUser[viewingUserId]?.[storyIndex];
-      if (story && !story.viewers?.includes(user.id) && String(story.authorId) !== String(user.id)) {
+  // Mark story as viewed
+  useEffect(() => {
+    if (viewingUserId && storyIndex >= 0) {
+      const story = storiesByUser[viewingUserId][storyIndex];
+      if (story && String(story.authorId) !== String(user.id) && !(story.viewers || []).includes(user.id)) {
         db.scicomm_stories.update(story.id, { viewers: [...(story.viewers || []), user.id] });
       }
     }
@@ -270,6 +232,38 @@ export default function SciCommStories({ scientists }) {
     }
   };
 
+  const handleUpload = async () => {
+    if (!mediaFile && !caption) return;
+    setCreating(true);
+    try {
+      let mediaUrl = '';
+      let mediaType = 'text';
+      if (mediaFile) {
+        mediaUrl = await uploadFile(mediaFile, `stories/${user.id}/${Date.now()}_${mediaFile.name}`);
+        mediaType = mediaFile.type.startsWith('video/') ? 'video' : 'image';
+      }
+
+      await db.scicomm_stories.add({
+        authorId: user.id,
+        authorName: user.name,
+        content: caption,
+        mediaUrl,
+        mediaType,
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + duration * 3600 * 1000).toISOString(),
+        viewers: [],
+        likes: []
+      });
+      setShowCreateModal(false);
+      setMediaFile(null);
+      setCaption('');
+    } catch (e) {
+      alert('Failed to share story');
+    } finally {
+      setCreating(false);
+    }
+  };
+
   return (
     <>
       <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '12px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -299,79 +293,41 @@ export default function SciCommStories({ scientists }) {
                 latestStory.mediaType === 'video' ? (
                   <StoryVideo videoUrl={latestStory.mediaUrl} isPaused={true} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
-                  <img src={latestStory.mediaUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={latestStory.mediaUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 )
               ) : (
-                <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', padding: '12px', color: 'white', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+                <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '10px', textAlign: 'center' }}>
                   {latestStory.content}
                 </div>
               )}
-              <div style={{ position: 'absolute', top: '8px', left: '8px', width: '32px', height: '32px', borderRadius: '50%', border: allViewed ? '2px solid #e2e8f0' : '2px solid #3b82f6', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: '8px', left: '8px', border: allViewed ? '2px solid #e0dfdc' : '2px solid #1d4ed8', borderRadius: '50%', padding: '2px' }}>
                 {renderAvatar(scientist, 32)}
               </div>
-              <div style={{ position: 'absolute', bottom: '0', left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', padding: '16px 8px 8px', color: 'white', fontSize: '11px', fontWeight: 600, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                {scientist.name.split(' ')[0]}
+              <div style={{ position: 'absolute', bottom: '8px', left: '8px', right: '8px', fontSize: '11px', fontWeight: 600, color: 'white', textShadow: '0 1px 2px rgba(0,0,0,0.8)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {scientist.name}
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Create Story Modal */}
-      {showCreateModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div className="scicomm-card scicomm-card-padding" style={{ width: '100%', maxWidth: '400px', maxHeight: '90vh', overflowY: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ margin: 0 }}>Create Story</h3>
-              <button onClick={() => setShowCreateModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20} /></button>
-            </div>
-            <div style={{ marginBottom: '12px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Photo or Video (Optional)</label>
-              <input type="file" accept="image/*,video/*" onChange={e => {
-                if (e.target.files && e.target.files[0]) {
-                  setMediaFile(e.target.files[0]);
-                } else {
-                  setMediaFile(null);
-                }
-              }} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', boxSizing: 'border-box' }} />
-              {uploadProgress > 0 && uploadProgress < 100 && (
-                <div style={{ marginTop: '8px', fontSize: '12px', color: '#1d4ed8' }}>Uploading... {uploadProgress}%</div>
-              )}
-            </div>
-            <div style={{ marginBottom: '12px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Text (Optional)</label>
-              <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="What's on your mind?" rows={3} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', boxSizing: 'border-box', fontFamily: 'inherit', marginBottom: '8px' }} />
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {['😀', '😂', '😍', '🔥', '👍', '❤️', '🙌', '🎉', '💡', '🧪'].map(emoji => (
-                  <button key={emoji} onClick={() => setCaption(c => c + emoji)} style={{ background: '#f3f2ef', border: 'none', borderRadius: '4px', padding: '6px', cursor: 'pointer', fontSize: '16px' }}>{emoji}</button>
-                ))}
-              </div>
-            </div>
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Story Duration</label>
-              <select value={duration} onChange={e => setDuration(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }}>
-                <option value={24}>24 Hours</option>
-                <option value={48}>2 Days</option>
-                <option value={168}>1 Week</option>
-              </select>
-            </div>
-            <button onClick={handleCreateStory} disabled={creating || (!mediaFile && !caption)} className="scicomm-btn-primary" style={{ width: '100%', padding: '12px', justifyContent: 'center' }}>
-              {creating ? 'Posting...' : 'Share to Story'}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Story Viewer Modal */}
-      {viewingUserId && storiesByUser[viewingUserId] && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'black', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ position: 'relative', width: '100%', maxWidth: '450px', height: '100%', maxHeight: '900px', display: 'flex', flexDirection: 'column' }}>
+      {/* Story Viewer */}
+      {viewingUserId && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'black', zIndex: 9999, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ maxWidth: '500px', width: '100%', height: '100%', margin: '0 auto', position: 'relative', display: 'flex', flexDirection: 'column' }}>
             
-            {/* Progress Bars */}
-            <div style={{ display: 'flex', gap: '4px', padding: '12px 8px 0', position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+            {/* Progress Bar */}
+            <div style={{ position: 'absolute', top: '12px', left: '12px', right: '12px', zIndex: 10, display: 'flex', gap: '4px' }}>
               {storiesByUser[viewingUserId].map((_, idx) => (
-                <div key={idx} style={{ flex: 1, height: '3px', background: 'rgba(255,255,255,0.3)', borderRadius: '2px', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', background: 'white', width: idx < storyIndex ? '100%' : idx === storyIndex ? '100%' : '0%', transition: idx === storyIndex ? 'width 5s linear' : 'none' }} />
+                <div key={idx} style={{ height: '2px', flex: 1, background: idx < storyIndex ? 'white' : 'rgba(255,255,255,0.3)', borderRadius: '1px', overflow: 'hidden' }}>
+                  {idx === storyIndex && (
+                    <div style={{ 
+                      height: '100%', 
+                      background: 'white', 
+                      width: '0%', 
+                      animation: isPaused ? 'none' : `progress ${storiesByUser[viewingUserId][storyIndex].mediaType === 'video' ? 90 : 5}s linear forwards` 
+                    }} />
+                  )}
                 </div>
               ))}
             </div>
@@ -448,50 +404,102 @@ export default function SciCommStories({ scientists }) {
               const hasLiked = (storiesByUser[viewingUserId][storyIndex].likes || []).includes(user.id);
               return (
                 <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', zIndex: 10, display: 'flex', gap: '12px', alignItems: 'center' }} onClick={e => e.stopPropagation()}>
-                  <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
-                    <input type="text" placeholder="Reply to story..." 
-                      value={replyText} onChange={e => setReplyText(e.target.value)}
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.3)', padding: '0 16px' }}>
+                    <input 
+                      type="text" 
+                      placeholder="Send message..." 
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
                       onFocus={() => setIsPaused(true)}
-                      onBlur={() => { if (!replyText) setIsPaused(false); }}
-                      onKeyDown={e => { if (e.key === 'Enter') handleReply(); }}
-                      style={{ width: '100%', padding: '12px 16px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(0,0,0,0.5)', color: 'white', outline: 'none' }} />
-                    {replyText && <button onClick={handleReply} style={{ position: 'absolute', right: '8px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Send size={16} /></button>}
+                      onBlur={() => setIsPaused(false)}
+                      style={{ flex: 1, background: 'none', border: 'none', color: 'white', height: '40px', outline: 'none', fontSize: '14px' }} 
+                    />
+                    {replyText.trim() && (
+                      <button onClick={handleReply} style={{ background: 'none', border: 'none', color: '#60a5fa', fontWeight: 700, cursor: 'pointer' }}>Send</button>
+                    )}
                   </div>
-                  <button onClick={handleLikeStory} style={{ background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.3)', color: hasLiked ? '#ef4444' : 'white', borderRadius: '50%', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, transition: 'transform 0.2s' }} onMouseDown={e => e.currentTarget.style.transform = 'scale(0.9)'} onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}>
+                  <button onClick={handleLikeStory} style={{ background: 'none', border: 'none', color: hasLiked ? '#ef4444' : 'white', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                     <Heart size={24} fill={hasLiked ? '#ef4444' : 'none'} />
+                  </button>
+                  <button style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                    <Send size={24} />
                   </button>
                 </div>
               );
             })()}
 
-            {/* Viewers List Modal */}
-            {showViewers && String(viewingUserId) === String(user.id) && (
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'white', borderTopLeftRadius: '16px', borderTopRightRadius: '16px', padding: '16px', zIndex: 20, maxHeight: '60%', overflowY: 'auto', boxShadow: '0 -4px 12px rgba(0,0,0,0.1)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <h3 style={{ margin: 0, fontSize: '16px', color: '#0f172a' }}>👁 {storiesByUser[viewingUserId][storyIndex].viewers?.length || 0} Viewers</h3>
-                  <button onClick={(e) => { e.stopPropagation(); setShowViewers(false); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}><X size={20} /></button>
-                </div>
-                {(storiesByUser[viewingUserId][storyIndex].viewers || []).length > 0 ? (
-                  (storiesByUser[viewingUserId][storyIndex].viewers).map((vid, i) => {
-                    const viewer = scientists.find(s => String(s.id) === String(vid)) || { name: 'Unknown User' };
-                    return (
-                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
-                        {renderAvatar(viewer, 36)}
-                        <div>
-                          <div style={{ fontWeight: 600, fontSize: '13px', color: '#0f172a' }}>{viewer.name}</div>
-                          <div style={{ fontSize: '11px', color: '#64748b' }}>{viewer.department || 'Member'}</div>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ padding: '20px 0', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>No views yet.</div>
-                )}
-              </div>
-            )}
           </div>
         </div>
       )}
+
+      {/* Create Modal */}
+      {showCreateModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'white', borderRadius: '16px', maxWidth: '400px', width: '100%', overflow: 'hidden' }}>
+            <div style={{ padding: '16px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>Share Story</h3>
+              <button onClick={() => setShowCreateModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}><X size={20} /></button>
+            </div>
+            <div style={{ padding: '20px' }}>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>Photo or Video</label>
+                <div style={{ border: '2px dashed #cbd5e1', borderRadius: '12px', padding: '32px', textAlign: 'center', cursor: 'pointer' }} onClick={() => document.getElementById('story-file').click()}>
+                  <Plus size={32} color="#94a3b8" style={{ margin: '0 auto 8px' }} />
+                  <div style={{ fontSize: '13px', color: '#64748b' }}>{mediaFile ? mediaFile.name : 'Click to select media'}</div>
+                  <input type="file" id="story-file" hidden accept="image/*,video/*" onChange={e => setMediaFile(e.target.files[0])} />
+                </div>
+              </div>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>Caption (Optional)</label>
+                <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="Add a caption..." style={{ width: '100%', padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '14px', resize: 'none' }} rows={3} />
+              </div>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>Duration</label>
+                <select value={duration} onChange={e => setDuration(Number(e.target.value))} style={{ width: '100%', padding: '10px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '14px' }}>
+                  <option value={24}>24 Hours</option>
+                  <option value={48}>48 Hours</option>
+                  <option value={72}>3 Days</option>
+                  <option value={168}>1 Week</option>
+                </select>
+              </div>
+              <button onClick={handleUpload} disabled={creating || (!mediaFile && !caption)} style={{ width: '100%', padding: '14px', background: '#1d4ed8', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', opacity: (creating || (!mediaFile && !caption)) ? 0.6 : 1 }}>
+                {creating ? 'Sharing...' : 'Share Story'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Viewers List Modal */}
+      {showViewers && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 10001, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ background: 'white', borderRadius: '16px', maxWidth: '400px', width: '100%', maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ padding: '16px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>Story Views</h3>
+              <button onClick={() => setShowViewers(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}><X size={20} /></button>
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>
+              {storiesByUser[viewingUserId][storyIndex].viewers?.length > 0 ? (
+                storiesByUser[viewingUserId][storyIndex].viewers.map(uid => {
+                  const s = scientists.find(sc => String(sc.id) === String(uid));
+                  return (
+                    <div key={uid} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', borderBottom: '1px solid #f1f5f9' }}>
+                      {renderAvatar(s, 32)}
+                      <div style={{ fontSize: '14px', fontWeight: 600 }}>{s?.name || 'Unknown User'}</div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div style={{ textAlign: 'center', padding: '32px', color: '#64748b' }}>No views yet</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes progress { from { width: 0%; } to { width: 100%; } }
+      `}</style>
     </>
   );
 }
