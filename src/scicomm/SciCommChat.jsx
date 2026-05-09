@@ -262,7 +262,8 @@ export default function SciCommChat() {
         try { 
           await db.scicomm_chat_messages.update(msg.id, { 
             deleted: true, 
-            deletedBy: isMe ? 'user' : 'admin' 
+            deletedBy: isMe ? 'user' : 'admin',
+            deletedByName: user.name
           }); 
         } catch (e) { console.error(e); }
         setDeleteConfirm(null);
@@ -498,7 +499,7 @@ export default function SciCommChat() {
                         textAlign: /[\u0600-\u06FF]/.test(m.content || '') ? 'right' : 'left',
                         whiteSpace: 'pre-wrap'
                       }}>
-                        {isDeleted ? `🚫 This message was deleted ${m.deletedBy === 'admin' ? 'by an admin' : 'by the user'}.` : m.content}
+                        {isDeleted ? `🚫 This message was deleted by ${m.deletedByName || (m.deletedBy === 'admin' ? 'an admin' : 'the user')}${m.deletedBy === 'admin' && m.deletedByName ? ' (Admin)' : ''}.` : m.content}
                       </div>
                       <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', opacity: 0.6 }}>{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                       
