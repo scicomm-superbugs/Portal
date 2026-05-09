@@ -325,6 +325,8 @@
   justify-content: space-around;
   align-items: center;
   padding-bottom: env(safe-area-inset-bottom);
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden;
 }
 
 .scicomm-mobile-item {
