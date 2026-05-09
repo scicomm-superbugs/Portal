@@ -275,7 +275,7 @@ export default function SciCommSinglePost() {
                   <div style={{ position: 'relative' }}>
                     <button onClick={() => setActiveCommentMenu(activeCommentMenu === `${currentPath.join('_')}` ? null : `${currentPath.join('_')}`)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)' }}><MoreHorizontal size={14} /></button>
                     {activeCommentMenu === `${currentPath.join('_')}` && (
-                      <div style={{ position: 'absolute', left: '100%', top: 0, background: 'white', border: '1px solid #e0dfdc', borderRadius: '8px', padding: '4px 0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 60, minWidth: '100px', marginLeft: '4px' }}>
+                      <div style={{ position: 'absolute', left: '100%', top: 0, background: 'var(--scicomm-surface)', border: '1px solid #e0dfdc', borderRadius: '8px', padding: '4px 0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 60, minWidth: '100px', marginLeft: '4px' }}>
                         {String(c.authorId) === String(user.id) && <button onClick={() => { setEditingComment({ path: currentPath, text: c.text }); setActiveCommentMenu(null); }} style={{ display: 'block', width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '12px', textAlign: 'left' }}>Edit</button>}
                         {(String(c.authorId) === String(user.id) || isAdmin) && <button onClick={() => handleDeleteComment(post, currentPath)} style={{ display: 'block', width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '12px', textAlign: 'left', color: '#ef4444' }}>Delete</button>}
                       </div>
@@ -320,14 +320,14 @@ export default function SciCommSinglePost() {
                 <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>{post.authorName}</h4></Link>
                 {author?.role === 'master' && <span style={{ background: '#f59e0b', color: 'white', padding: '1px 6px', borderRadius: '8px', fontSize: '10px', fontWeight: 700 }}>👑 Master</span>}
               </div>
-              <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px' }}>{author?.department || 'Member'}</div>
+              <div style={{ color: 'var(--scicomm-text-muted)', fontSize: '13px' }}>{author?.department || 'Member'}</div>
               <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '12px' }}>{timeAgo(post.createdAt)} • 🌐{post.recognized && ' ⭐ Master Recognized'}</div>
             </div>
             {(isAdmin || String(post.authorId) === String(user.id)) && (
               <div style={{ position: 'relative' }}>
                 <button onClick={() => setActiveReactionPicker(activeReactionPicker === 'menu' ? null : 'menu')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.4)' }}><MoreHorizontal size={20} /></button>
                 {activeReactionPicker === 'menu' && (
-                  <div style={{ position: 'absolute', right: 0, top: '100%', background: 'white', border: '1px solid #e0dfdc', borderRadius: '12px', padding: '8px 0', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '160px' }}>
+                  <div style={{ position: 'absolute', right: 0, top: '100%', background: 'var(--scicomm-surface)', border: '1px solid #e0dfdc', borderRadius: '12px', padding: '8px 0', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '160px' }}>
                     <button onClick={() => { if(window.confirm('Delete this post?')) { db.scicomm_posts.delete(post.id); navigate('/'); } }} style={{ display: 'block', width: '100%', padding: '10px 16px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '14px', textAlign: 'left', color: '#ef4444', fontWeight: 600 }}>🗑️ Delete Post</button>
                   </div>
                 )}
@@ -342,7 +342,7 @@ export default function SciCommSinglePost() {
 
         {/* Reaction summary + comment count */}
         {(totalReactions > 0 || commentCount > 0) && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 16px 8px', fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 16px 8px', fontSize: '12px', color: 'var(--scicomm-text-muted)' }}>
             <span style={{ cursor: totalReactions > 0 ? 'pointer' : 'default' }} onClick={() => totalReactions > 0 && setShowReactors({ reactions: post.reactions || {}, title: 'Post Reactions' })}>
               {reactionSummary.map(r => r.emoji).join('')} {totalReactions > 0 && totalReactions}
             </span>
@@ -356,7 +356,7 @@ export default function SciCommSinglePost() {
               {myReaction ? REACTIONS.find(r => r.key === myReaction)?.emoji : <ThumbsUp size={18} />} {myReaction ? REACTIONS.find(r => r.key === myReaction)?.label : 'Like'}
             </button>
             {activeReactionPicker === post.id && (
-              <div style={{ position: 'absolute', bottom: '100%', left: '10px', background: 'white', borderRadius: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)', padding: '6px 8px', display: 'flex', gap: '2px', zIndex: 50 }}>
+              <div style={{ position: 'absolute', bottom: '100%', left: '10px', background: 'var(--scicomm-surface)', borderRadius: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)', padding: '6px 8px', display: 'flex', gap: '2px', zIndex: 50 }}>
                 {REACTIONS.map(r => (
                   <button key={r.key} onClick={() => handleReaction(post, r.key)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }} onMouseEnter={e => e.target.style.transform = 'scale(1.3)'} onMouseLeave={e => e.target.style.transform = 'scale(1)'}>{r.emoji}</button>
                 ))}
@@ -367,12 +367,12 @@ export default function SciCommSinglePost() {
           <button className="scicomm-post-btn" style={{ flex: 1 }}><Share2 size={18} /> Share</button>
         </div>
 
-        <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '0 0 16px 16px' }}>
+        <div style={{ background: 'var(--scicomm-bg-subtle)', padding: '16px', borderRadius: '0 0 16px 16px' }}>
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center' }}>
             {renderAvatar(getAuthor(user.id), 32)}
             <div style={{ flex: 1, position: 'relative' }}>
-              <textarea placeholder="Write a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText({...commentText, [post.id]: e.target.value})} style={{ width: '100%', padding: '10px 16px', borderRadius: '24px', border: '1px solid #e0dfdc', outline: 'none', fontSize: '13px', resize: 'none', minHeight: '40px' }} rows={1} />
-              <button onClick={() => handleAddComment(post)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer' }}><Send size={18} /></button>
+              <textarea placeholder="Write a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText({...commentText, [post.id]: e.target.value})} style={{ width: '100%', padding: '10px 16px', borderRadius: '24px', border: '1px solid var(--scicomm-border)', backgroundColor: 'var(--scicomm-surface)', color: 'var(--scicomm-text)', outline: 'none', fontSize: '13px', resize: 'none', minHeight: '40px' }} rows={1} />
+              <button onClick={() => handleAddComment(post)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--scicomm-accent)', cursor: 'pointer' }}><Send size={18} /></button>
             </div>
           </div>
 
@@ -383,8 +383,8 @@ export default function SciCommSinglePost() {
       {/* Reactors Modal */}
       {showReactors && (
         <div onClick={() => setShowReactors(null)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: '12px', width: '100%', maxWidth: '400px', maxHeight: '70vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #e0dfdc' }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: 'var(--scicomm-surface)', borderRadius: '12px', width: '100%', maxWidth: '400px', maxHeight: '70vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--scicomm-border)' }}>
               <h3 style={{ margin: 0, fontSize: '16px' }}>{showReactors.title}</h3>
               <button onClick={() => setShowReactors(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: '#666' }}>✕</button>
             </div>

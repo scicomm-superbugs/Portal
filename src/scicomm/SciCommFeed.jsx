@@ -643,7 +643,7 @@ export default function SciCommFeed() {
   const MentionDropdown = ({ inputKey }) => {
     if (mentionKey !== inputKey || mentionSuggestions.length === 0) return null;
     return (
-      <div style={{ position: 'absolute', bottom: '100%', left: 0, right: 0, background: 'white', borderRadius: '8px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', border: '1px solid #e0dfdc', zIndex: 50, maxHeight: '180px', overflowY: 'auto', marginBottom: '4px' }}>
+      <div style={{ position: 'absolute', bottom: '100%', left: 0, right: 0, background: 'var(--scicomm-surface)', borderRadius: '8px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', border: '1px solid #e0dfdc', zIndex: 50, maxHeight: '180px', overflowY: 'auto', marginBottom: '4px' }}>
         {mentionSuggestions.map(s => (
           <div key={s.id} onClick={() => insertMention(inputKey, s)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', cursor: 'pointer', fontSize: '13px', transition: 'background 0.1s' }}
             onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
@@ -756,28 +756,28 @@ export default function SciCommFeed() {
               
               {!isDeleted && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '4px' }}>
-                  <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>{timeAgo(c.createdAt)}</span>
+                  <span style={{ fontSize: '11px', color: 'var(--scicomm-text-muted)' }}>{timeAgo(c.createdAt)}</span>
                   {['like', 'love', 'fire'].map(rk => {
                     const rd = REACTIONS.find(r => r.key === rk);
                     const isActive = myReaction === rk;
                     return (
-                      <button key={rk} onClick={() => handleReactionOnComment(post, currentPath, rk)} title={cReactions[rk]?.map(id => getAuthor(id)?.name).join(', ')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: isActive ? 700 : 500, color: isActive ? rd.color : 'rgba(0,0,0,0.5)', padding: '2px 0', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                      <button key={rk} onClick={() => handleReactionOnComment(post, currentPath, rk)} title={cReactions[rk]?.map(id => getAuthor(id)?.name).join(', ')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: isActive ? 700 : 500, color: isActive ? rd.color : 'var(--scicomm-text-muted)', padding: '2px 0', display: 'flex', alignItems: 'center', gap: '2px' }}>
                         {rd.emoji} {(cReactions[rk]?.length || 0) > 0 && <span style={{ cursor: 'pointer' }} onClick={(e) => { e.stopPropagation(); setShowReactors({ reactions: cReactions, title: 'Reactions' }); }}>{cReactions[rk].length}</span>}
                       </button>
                     );
                   })}
-                  <button onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: 600, color: isReplying ? '#1d4ed8' : 'rgba(0,0,0,0.5)', padding: '2px 0' }}>Reply</button>
+                  <button onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: 600, color: isReplying ? 'var(--scicomm-accent)' : 'var(--scicomm-text-muted)', padding: '2px 0' }}>Reply</button>
                   
                   {/* Edit/Delete Options */}
                   <div style={{ position: 'relative' }}>
-                    <button onClick={(e) => { e.stopPropagation(); setActiveCommentMenu(activeCommentMenu === `${post.id}_${currentPath.join('_')}` ? null : `${post.id}_${currentPath.join('_')}`); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)', padding: '2px' }}><MoreHorizontal size={14} /></button>
+                    <button onClick={(e) => { e.stopPropagation(); setActiveCommentMenu(activeCommentMenu === `${post.id}_${currentPath.join('_')}` ? null : `${post.id}_${currentPath.join('_')}`); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--scicomm-text-muted)', padding: '2px' }}><MoreHorizontal size={14} /></button>
                     {activeCommentMenu === `${post.id}_${currentPath.join('_')}` && (
-                      <div style={{ position: 'absolute', left: '100%', top: 0, background: 'white', border: '1px solid #e0dfdc', borderRadius: '8px', padding: '4px 0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 60, minWidth: '120px', marginLeft: '4px' }}>
+                      <div style={{ position: 'absolute', left: '100%', top: 0, background: 'var(--scicomm-surface)', border: '1px solid var(--scicomm-border)', borderRadius: '8px', padding: '4px 0', boxShadow: '0 4px 12px var(--scicomm-shadow)', zIndex: 60, minWidth: '120px', marginLeft: '4px' }}>
                         {(String(c.authorId) === String(user.id)) && (
-                          <button onClick={() => { setEditingComment({ id: post.id, path: currentPath, text: c.text }); setActiveCommentMenu(null); }} style={{ display: 'block', width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '12px', textAlign: 'left' }}>✏️ Edit</button>
+                          <button onClick={() => { setEditingComment({ id: post.id, path: currentPath, text: c.text }); setActiveCommentMenu(null); }} style={{ display: 'block', width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '12px', textAlign: 'left', color: 'var(--scicomm-text)' }}>✏️ Edit</button>
                         )}
                         {(String(c.authorId) === String(user.id) || isAdmin) && (
-                          <button onClick={() => handleDeleteComment(post, currentPath)} style={{ display: 'block', width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '12px', textAlign: 'left', color: '#ef4444' }}>
+                          <button onClick={() => handleDeleteComment(post, currentPath)} style={{ display: 'block', width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '12px', textAlign: 'left', color: 'var(--scicomm-error)' }}>
                             {isAdmin && String(c.authorId) !== String(user.id) ? '🛡️ Admin Remove' : '🗑️ Delete'}
                           </button>
                         )}
@@ -799,14 +799,14 @@ export default function SciCommFeed() {
                 <div style={{ marginTop: '6px' }}>
                   <div style={{ display: 'flex', gap: '6px', alignItems: 'center', position: 'relative' }}>
                     <MentionDropdown inputKey={replyKey} />
-                    <textarea placeholder={`Reply to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} onChange={e => handleCommentInput(replyKey, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* newline */ } }} onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none', fontFamily: 'inherit' }} rows={1} autoFocus />
+                    <textarea placeholder={`Reply to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} onChange={e => handleCommentInput(replyKey, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* newline */ } }} onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)} style={{ flex: 1, border: '1px solid var(--scicomm-border)', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none', fontFamily: 'inherit', background: 'var(--scicomm-surface)', color: 'var(--scicomm-text)' }} rows={1} autoFocus />
                     <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>😀</button>
                     <label style={{ cursor: 'pointer', fontSize: '14px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                     <button className="scicomm-btn-primary" style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
-                    <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '16px' }}>&times;</button>
+                    <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--scicomm-text-muted)', fontSize: '16px' }}>&times;</button>
                   </div>
-                  {showEmojiPicker === replyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px', background: '#f9fafb', padding: '6px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
-                  {commentImage[replyKey] && <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>📎 {commentImage[replyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '10px' }}>✕</button></div>}
+                  {showEmojiPicker === replyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px', background: 'var(--scicomm-surface-alt)', padding: '6px', borderRadius: '8px', border: '1px solid var(--scicomm-border)' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
+                  {commentImage[replyKey] && <div style={{ fontSize: '10px', color: 'var(--scicomm-text-muted)', marginTop: '2px' }}>📎 {commentImage[replyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: 'var(--scicomm-error)', cursor: 'pointer', fontSize: '10px' }}>✕</button></div>}
                 </div>
               )}
             </div>
@@ -820,11 +820,11 @@ export default function SciCommFeed() {
     <div className="scicomm-feed-layout">
       {/* Audio Unlock Modal */}
       {!audioUnlocked && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: 'white', padding: '24px', borderRadius: '12px', textAlign: 'center', maxWidth: '400px', width: '90%' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--scicomm-overlay)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'var(--scicomm-surface)', padding: '24px', borderRadius: '12px', textAlign: 'center', maxWidth: '400px', width: '90%' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px' }}>Welcome back, {user.name}!</h2>
-            <p style={{ fontSize: '14px', color: '#666', marginBottom: '20px' }}>Great to see you again. Let's check out what's new today!</p>
-            <button onClick={handleUnlockAudio} style={{ background: '#2563eb', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', width: '100%' }}>
+            <p style={{ fontSize: '14px', color: 'var(--scicomm-text-muted)', marginBottom: '20px' }}>Great to see you again. Let's check out what's new today!</p>
+            <button onClick={handleUnlockAudio} style={{ background: 'var(--scicomm-accent)', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', width: '100%' }}>
               Let's Go
             </button>
           </div>
@@ -834,42 +834,42 @@ export default function SciCommFeed() {
       <div className="scicomm-sidebar-left hide-on-mobile">
         <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
         <div className="scicomm-card" style={{ textAlign: 'center', overflow: 'hidden', cursor: 'pointer', transition: 'box-shadow 0.2s' }}>
-          <div style={{ width: '100%', aspectRatio: '4 / 1', background: currentUserData?.coverPhoto ? `url(${currentUserData.coverPhoto}) center/cover` : 'linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%)' }}></div>
+          <div style={{ width: '100%', aspectRatio: '4 / 1', background: currentUserData?.coverPhoto ? `url(${currentUserData.coverPhoto}) center/cover` : 'var(--scicomm-accent)' }}></div>
           <div style={{marginTop:'-28px'}}>{renderAvatar(currentUserData, 56)}</div>
           <div style={{ padding: '8px 12px 12px' }}>
             <h3 style={{ margin: '4px 0 2px', fontSize: '15px' }}>{user.name}</h3>
-            <p style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px', margin: '0 0 8px' }}>{currentUserData?.department || 'Science Communicator'}</p>
+            <p style={{ color: 'var(--scicomm-text-muted)', fontSize: '12px', margin: '0 0 8px' }}>{currentUserData?.department || 'Science Communicator'}</p>
             <div style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, display: 'inline-block', marginBottom: '8px', border: `1px solid ${myLevel.color}40` }}>
               Lv. {myLevel.level}{myLevel.title ? ' ' + myLevel.title : ''}
             </div>
             {myLevel.next && (
               <div style={{ marginBottom: '12px' }}>
-                <div style={{ width: '100%', height: '6px', background: '#eef3f8', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: '100%', height: '6px', background: 'var(--scicomm-highlight)', borderRadius: '4px', overflow: 'hidden' }}>
                   <div style={{ width: `${myLevel.progress}%`, height: '100%', background: `linear-gradient(90deg, ${myLevel.color}, ${myLevel.next.color})`, borderRadius: '4px' }} />
                 </div>
-                <div style={{ fontSize: '10px', color: 'rgba(0,0,0,0.5)', marginTop: '4px' }}>
+                <div style={{ fontSize: '10px', color: 'var(--scicomm-text-muted)', marginTop: '4px' }}>
                   {myScore} / {myLevel.next.threshold} to {myLevel.next.title}
                 </div>
               </div>
             )}
-            <div style={{ borderTop: '1px solid #e0dfdc', marginTop: '4px', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-              <span style={{ color: 'rgba(0,0,0,0.6)' }}>Score</span>
-              <strong style={{ color: myScore === Infinity ? '#b45309' : '#1d4ed8' }}>{myScore === Infinity ? 'Infinity' : myScore}</strong>
+            <div style={{ borderTop: '1px solid var(--scicomm-border)', marginTop: '4px', paddingTop: '8px', display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+              <span style={{ color: 'var(--scicomm-text-muted)' }}>Score</span>
+              <strong style={{ color: myScore === Infinity ? 'var(--scicomm-warning)' : 'var(--scicomm-accent)' }}>{myScore === Infinity ? 'Infinity' : myScore}</strong>
             </div>
           </div>
         </div>
         </Link>
         <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px', fontSize: '13px' }}>
-          <div onClick={() => setShowAnalytics(true)} style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.8)', fontWeight: 600, marginBottom: '12px', cursor: 'pointer', padding: '4px 0' }}>
+          <div onClick={() => setShowAnalytics(true)} style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--scicomm-text)', fontWeight: 600, marginBottom: '12px', cursor: 'pointer', padding: '4px 0' }}>
             <span>Profile viewers</span>
-            <span style={{ color: '#1d4ed8' }}>{profileViewers}</span>
+            <span style={{ color: 'var(--scicomm-accent)' }}>{profileViewers}</span>
           </div>
-          <div onClick={() => setShowAnalytics(true)} style={{ display: 'flex', justifyContent: 'space-between', color: 'rgba(0,0,0,0.8)', fontWeight: 600, cursor: 'pointer', padding: '4px 0' }}>
+          <div onClick={() => setShowAnalytics(true)} style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--scicomm-text)', fontWeight: 600, cursor: 'pointer', padding: '4px 0' }}>
             <span>Post impressions</span>
-            <span style={{ color: '#1d4ed8' }}>{postImpressions}</span>
+            <span style={{ color: 'var(--scicomm-accent)' }}>{postImpressions}</span>
           </div>
         </div>
-        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}>🚀 What's New in v3.7.2</button>
+        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: 'var(--scicomm-error)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='var(--scicomm-error-dark)'} onMouseOut={e => e.currentTarget.style.background='var(--scicomm-error)'}>🚀 What's New in v3.7.2</button>
       </div>
 
       {/* Main Feed */}
@@ -884,16 +884,16 @@ export default function SciCommFeed() {
               {banners.map((b, i) => (
                 <div key={b.id} style={{ minWidth: '100%', position: 'relative' }}>
                   <img src={b.imageUrl} alt={b.title || 'Banner'} style={{ width: '100%', height: '180px', objectFit: 'cover' }} onError={e => e.target.style.display='none'} />
-                  {b.title && <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.7))', color: 'white', padding: '16px', fontSize: '14px', fontWeight: 600 }}>{b.title}</div>}
+                  {b.title && <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, var(--scicomm-overlay))', color: '#fff', padding: '16px', fontSize: '14px', fontWeight: 600 }}>{b.title}</div>}
                 </div>
               ))}
             </div>
             {banners.length > 1 && (
               <>
-                <button onClick={() => setBannerIdx(i => (i - 1 + banners.length) % banners.length)} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.9)', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ChevronLeft size={18} /></button>
-                <button onClick={() => setBannerIdx(i => (i + 1) % banners.length)} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.9)', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ChevronRight size={18} /></button>
+                <button onClick={() => setBannerIdx(i => (i - 1 + banners.length) % banners.length)} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'var(--scicomm-surface)', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ChevronLeft size={18} /></button>
+                <button onClick={() => setBannerIdx(i => (i + 1) % banners.length)} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'var(--scicomm-surface)', border: 'none', borderRadius: '50%', width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ChevronRight size={18} /></button>
                 <div style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '6px' }}>
-                  {banners.map((_, i) => <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: i === bannerIdx ? 'white' : 'rgba(255,255,255,0.5)', cursor: 'pointer' }} onClick={() => setBannerIdx(i)} />)}
+                  {banners.map((_, i) => <div key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: i === bannerIdx ? '#fff' : 'rgba(255,255,255,0.5)', cursor: 'pointer' }} onClick={() => setBannerIdx(i)} />)}
                 </div>
               </>
             )}
@@ -902,25 +902,25 @@ export default function SciCommFeed() {
 
         {/* Post Composer - hidden on mobile, use /post page instead */}
         <div className="scicomm-card hide-on-mobile" style={{ 
-          background: 'rgba(255, 255, 255, 0.8)',
+          background: 'var(--scicomm-surface-trans)',
           backdropFilter: 'blur(10px)',
           WebkitBackdropFilter: 'blur(10px)',
           borderRadius: '20px',
           padding: '24px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(255,255,255,0.5)',
-          border: '1px solid rgba(226, 232, 240, 0.8)',
+          boxShadow: 'var(--scicomm-card-shadow)',
+          border: '1px solid var(--scicomm-border)',
           marginBottom: '20px',
           position: 'relative',
           overflow: 'hidden'
         }}>
           {/* Subtle gradient accent at top */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'var(--scicomm-gradient)' }} />
           
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', alignItems: 'center' }}>
             {renderAvatar(currentUserData, 44)}
             <div style={{ 
               flex: 1, 
-              background: 'rgba(241, 245, 249, 0.6)', 
+              background: 'var(--scicomm-highlight)', 
               borderRadius: '30px', 
               padding: '12px 20px', 
               display: 'flex', 
@@ -929,33 +929,33 @@ export default function SciCommFeed() {
               boxSizing: 'border-box',
               border: '1px solid transparent',
               transition: 'all 0.3s ease',
-              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)'
+              boxShadow: 'inset 0 2px 4px var(--scicomm-shadow-inset)'
             }}
-            onMouseOver={e => e.currentTarget.style.border = '1px solid rgba(59,130,246,0.3)'}
+            onMouseOver={e => e.currentTarget.style.border = '1px solid var(--scicomm-accent)'}
             onMouseOut={e => e.currentTarget.style.border = '1px solid transparent'}
             >
               <textarea placeholder="What's on your mind?" value={newPost} onChange={e => setNewPost(e.target.value)}
                 rows={Math.max(2, newPost.split('\n').length)}
-                style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '15px', outline: 'none', color: '#1e293b', width: '100%', fontFamily: 'inherit', resize: 'none', paddingTop: '8px' }} />
+                style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '15px', outline: 'none', color: 'var(--scicomm-text)', width: '100%', fontFamily: 'inherit', resize: 'none', paddingTop: '8px' }} />
             </div>
           </div>
           
-          <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ borderTop: '1px solid var(--scicomm-border)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', borderRadius: '12px', background: 'transparent', transition: 'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.background='#f1f5f9';}} onMouseOut={e=>{e.currentTarget.style.background='transparent';}}>
-                <Image color="#10b981" size={20} /> <span style={{ color: '#64748b', fontWeight: 600, fontSize: '14px' }}>Photo/video</span>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', borderRadius: '12px', background: 'transparent', transition: 'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.background='var(--scicomm-hover)';}} onMouseOut={e=>{e.currentTarget.style.background='transparent';}}>
+                <Image color="var(--scicomm-success)" size={20} /> <span style={{ color: 'var(--scicomm-text-muted)', fontWeight: 600, fontSize: '14px' }}>Photo/video</span>
                 <input type="file" accept="image/*,video/*,image/gif" onChange={e => { const f = e.target.files[0]; if(f && f.type.startsWith('video')) setPostVideo(f); else if(f) setPostImage(f); }} style={{ display: 'none' }} />
               </label>
-              <button onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', borderRadius: '12px', background: 'transparent', border: 'none', transition: 'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.background='#f1f5f9';}} onMouseOut={e=>{e.currentTarget.style.background='transparent';}}>
-                <span style={{ fontSize: '18px', lineHeight: 1 }}>📊</span> <span style={{ color: '#64748b', fontWeight: 600, fontSize: '14px' }}>Poll</span>
+              <button onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', borderRadius: '12px', background: 'transparent', border: 'none', transition: 'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.background='var(--scicomm-hover)';}} onMouseOut={e=>{e.currentTarget.style.background='transparent';}}>
+                <span style={{ fontSize: '18px', lineHeight: 1 }}>📊</span> <span style={{ color: 'var(--scicomm-text-muted)', fontWeight: 600, fontSize: '14px' }}>Poll</span>
               </button>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', borderRadius: '12px', background: 'transparent', transition: 'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.background='#f1f5f9';}} onMouseOut={e=>{e.currentTarget.style.background='transparent';}}>
-                <span style={{ fontSize: '18px', lineHeight: 1 }}>📎</span> <span style={{ color: '#64748b', fontWeight: 600, fontSize: '14px' }}>File</span>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 16px', borderRadius: '12px', background: 'transparent', transition: 'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.background='var(--scicomm-hover)';}} onMouseOut={e=>{e.currentTarget.style.background='transparent';}}>
+                <span style={{ fontSize: '18px', lineHeight: 1 }}>📎</span> <span style={{ color: 'var(--scicomm-text-muted)', fontWeight: 600, fontSize: '14px' }}>File</span>
                 <input type="file" onChange={e => setPostFile(e.target.files[0])} style={{ display: 'none' }} />
               </label>
             </div>
             
-            <button onClick={handlePostSubmit} disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: '12px', background: (isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)) ? '#e2e8f0' : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', border: 'none', color: (isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)) ? '#94a3b8' : 'white', fontWeight: 600, fontSize: '14px', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: (isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)) ? 'none' : '0 4px 12px rgba(139,92,246,0.2)' }}
+            <button onClick={handlePostSubmit} disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: '12px', background: (isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)) ? 'var(--scicomm-border)' : 'var(--scicomm-gradient)', border: 'none', color: '#fff', fontWeight: 600, fontSize: '14px', cursor: 'pointer', transition: 'all 0.3s ease', boxShadow: (isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile)) ? 'none' : '0 4px 12px var(--scicomm-shadow-accent)' }}
             onMouseOver={e => { if(!isPostingMedia && (newPost.trim() || postImage || postVideo || postFile)) e.currentTarget.style.transform = 'translateY(-1px)'; }}
             onMouseOut={e => { e.currentTarget.style.transform = 'none'; }}
             >
@@ -965,27 +965,27 @@ export default function SciCommFeed() {
 
           {/* Active Composer Elements */}
           {(showPoll || postImage || postVideo || postFile || postError || newPost.trim()) && (
-            <div style={{ marginTop: '12px', borderTop: '1px solid #ced0d4', paddingTop: '12px' }}>
-              {postError && <div style={{ color: '#ef4444', fontSize: '12px', marginBottom: '8px', padding: '6px 10px', background: '#fee2e2', borderRadius: '8px' }}>{postError}</div>}
+            <div style={{ marginTop: '12px', borderTop: '1px solid var(--scicomm-border)', paddingTop: '12px' }}>
+              {postError && <div style={{ color: 'var(--scicomm-error)', fontSize: '12px', marginBottom: '8px', padding: '6px 10px', background: 'var(--scicomm-error-light)', borderRadius: '8px' }}>{postError}</div>}
 
-              {postImage && <div style={{ marginBottom: '8px', position: 'relative' }}><img src={URL.createObjectURL(postImage)} alt="" style={{ maxHeight: '200px', borderRadius: '8px' }} /><button onClick={() => setPostImage(null)} style={{ position: 'absolute', top: 4, right: 4, background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer' }}>×</button></div>}
-              {postVideo && <div style={{ marginBottom: '8px', position: 'relative' }}><video src={URL.createObjectURL(postVideo)} style={{ maxHeight: '200px', borderRadius: '8px' }} controls /><button onClick={() => setPostVideo(null)} style={{ position: 'absolute', top: 4, right: 4, background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer' }}>×</button></div>}
-              {postFile && <div style={{ marginBottom: '8px', padding: '8px', background: '#eef3f8', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>📎 {postFile.name}<button onClick={() => setPostFile(null)} style={{ position: 'absolute', top: 4, right: 4, background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: '12px' }}>×</button></div>}
+              {postImage && <div style={{ marginBottom: '8px', position: 'relative' }}><img src={URL.createObjectURL(postImage)} alt="" style={{ maxHeight: '200px', borderRadius: '8px' }} /><button onClick={() => setPostImage(null)} style={{ position: 'absolute', top: 4, right: 4, background: 'var(--scicomm-error)', color: '#fff', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer' }}>×</button></div>}
+              {postVideo && <div style={{ marginBottom: '8px', position: 'relative' }}><video src={URL.createObjectURL(postVideo)} style={{ maxHeight: '200px', borderRadius: '8px' }} controls /><button onClick={() => setPostVideo(null)} style={{ position: 'absolute', top: 4, right: 4, background: 'var(--scicomm-error)', color: '#fff', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer' }}>×</button></div>}
+              {postFile && <div style={{ marginBottom: '8px', padding: '8px', background: 'var(--scicomm-highlight)', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>📎 {postFile.name}<button onClick={() => setPostFile(null)} style={{ position: 'absolute', top: 4, right: 4, background: 'var(--scicomm-error)', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: '12px' }}>×</button></div>}
 
               {showPoll && (
-                <div style={{ marginBottom: '12px', border: '1px solid #ced0d4', borderRadius: '8px', padding: '12px' }}>
-                  <input type="text" placeholder="Ask a question..." value={pollQuestion} onChange={e => setPollQuestion(e.target.value)} style={{ width: '100%', padding: '8px 12px', border: '1px solid #ced0d4', borderRadius: '4px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', marginBottom: '8px' }} />
+                <div style={{ marginBottom: '12px', border: '1px solid var(--scicomm-border)', borderRadius: '8px', padding: '12px' }}>
+                  <input type="text" placeholder="Ask a question..." value={pollQuestion} onChange={e => setPollQuestion(e.target.value)} style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--scicomm-border)', borderRadius: '4px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', marginBottom: '8px', background: 'var(--scicomm-surface)', color: 'var(--scicomm-text)' }} />
                   {pollOptions.map((opt, i) => (
                     <div key={opt.id} style={{ display: 'flex', gap: '8px', marginBottom: '6px' }}>
                       <input type="text" placeholder={`Option ${i+1}`} value={opt.text} onChange={e => {
                         const newOpts = [...pollOptions];
                         newOpts[i].text = e.target.value;
                         setPollOptions(newOpts);
-                      }} style={{ flex: 1, padding: '6px 10px', border: '1px solid #ced0d4', borderRadius: '4px', fontSize: '13px', outline: 'none' }} />
-                      {pollOptions.length > 2 && <button onClick={() => setPollOptions(pollOptions.filter(o => o.id !== opt.id))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '18px' }}>×</button>}
+                      }} style={{ flex: 1, padding: '6px 10px', border: '1px solid var(--scicomm-border)', borderRadius: '4px', fontSize: '13px', outline: 'none', background: 'var(--scicomm-surface)', color: 'var(--scicomm-text)' }} />
+                      {pollOptions.length > 2 && <button onClick={() => setPollOptions(pollOptions.filter(o => o.id !== opt.id))} style={{ background: 'none', border: 'none', color: 'var(--scicomm-error)', cursor: 'pointer', fontSize: '18px' }}>×</button>}
                     </div>
                   ))}
-                  {pollOptions.length < 5 && <button onClick={() => setPollOptions([...pollOptions, {id: Date.now(), text: ''}])} style={{ background: 'none', border: 'none', color: '#1b74e4', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}>+ Add Option</button>}
+                  {pollOptions.length < 5 && <button onClick={() => setPollOptions([...pollOptions, {id: Date.now(), text: ''}])} style={{ background: 'none', border: 'none', color: 'var(--scicomm-accent)', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}>+ Add Option</button>}
                 </div>
               )}
 
@@ -996,9 +996,9 @@ export default function SciCommFeed() {
 
         {/* Posts */}
         {posts.length === 0 ? (
-          <div className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+          <div className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', padding: '40px', color: 'var(--scicomm-text-muted)' }}>
             <div style={{ fontSize: '48px', marginBottom: '12px' }}>📢</div>
-            <h3 style={{ margin: '0 0 8px' }}>No posts yet</h3>
+            <h3 style={{ margin: '0 0 8px', color: 'var(--scicomm-text)' }}>No posts yet</h3>
             <p style={{ fontSize: '14px' }}>Be the first to spark a discussion!</p>
           </div>
         ) : posts.map(post => {
@@ -1019,8 +1019,8 @@ export default function SciCommFeed() {
               style={{ 
                 marginBottom: '8px', 
                 overflow: 'visible',
-                border: isHighlighted ? '2px solid #3b82f6' : 'none',
-                boxShadow: isHighlighted ? '0 10px 25px rgba(59, 130, 246, 0.15)' : 'none',
+                border: isHighlighted ? '2px solid var(--scicomm-accent)' : 'none',
+                boxShadow: isHighlighted ? '0 10px 25px var(--scicomm-shadow-accent)' : 'none',
                 transition: 'all 0.3s ease'
               }}
             >
@@ -1029,14 +1029,14 @@ export default function SciCommFeed() {
                   <Link to={`/member/${post.authorId}`} style={{ cursor: 'pointer', flexShrink: 0 }}>{renderAvatar(author, 48)}</Link>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                      <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>{post.authorName}</h4></Link>
-                      {author?.role === 'master' && <span style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>👑 Master</span>}
-                      {author?.role === 'admin' && <span style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>🛡️ Admin</span>}
-                      {author?.role === 'scicomm' && <span style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>🔬 SciComm</span>}
-                      {(!author?.role || author?.role === 'visitor' || author?.role === 'scientist') && <span style={{ background: 'linear-gradient(135deg, #94a3b8, #64748b)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>👤 Visitor</span>}
+                      <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'var(--scicomm-text)' }}><h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>{post.authorName}</h4></Link>
+                      {author?.role === 'master' && <span style={{ background: 'var(--scicomm-master)', color: '#fff', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>👑 Master</span>}
+                      {author?.role === 'admin' && <span style={{ background: 'var(--scicomm-accent)', color: '#fff', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>🛡️ Admin</span>}
+                      {author?.role === 'scicomm' && <span style={{ background: 'var(--scicomm-error)', color: '#fff', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>🔬 SciComm</span>}
+                      {(!author?.role || author?.role === 'visitor' || author?.role === 'scientist') && <span style={{ background: 'var(--scicomm-text-muted)', color: '#fff', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>👤 Visitor</span>}
                     </div>
-                    <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px' }}>{author?.department || 'Member'}</div>
-                    <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>
+                    <div style={{ color: 'var(--scicomm-text-muted)', fontSize: '12px' }}>{author?.department || 'Member'}</div>
+                    <div style={{ color: 'var(--scicomm-text-muted)', fontSize: '11px' }}>
                       <Link to={`/view-post/${post.id}`} style={{ color: 'inherit', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.textDecoration='underline'} onMouseLeave={e => e.currentTarget.style.textDecoration='none'}>
                         {timeAgo(post.createdAt)}
                       </Link> • 🌐{post.recognized && ' ⭐ Master Recognized'}{post.editedAt && ' • ✏️ edited'}
@@ -1044,12 +1044,12 @@ export default function SciCommFeed() {
                   </div>
                   {(isAdmin || String(post.authorId) === String(user.id)) && (
                     <div style={{ position: 'relative' }}>
-                      <button onClick={() => setActiveReactionPicker(activeReactionPicker === 'menu_'+post.id ? null : 'menu_'+post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}><MoreHorizontal size={18} /></button>
+                      <button onClick={() => setActiveReactionPicker(activeReactionPicker === 'menu_'+post.id ? null : 'menu_'+post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--scicomm-text-muted)' }}><MoreHorizontal size={18} /></button>
                       {activeReactionPicker === 'menu_'+post.id && (
-                        <div style={{ position: 'absolute', right: 0, top: '100%', background: 'white', border: '1px solid #e0dfdc', borderRadius: '8px', padding: '4px 0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 10, minWidth: '180px' }}>
-                          {isAdmin && <button onClick={async () => { await db.scicomm_posts.update(post.id, { recognized: true, recognizedBy: user.name, recognizedAt: new Date().toISOString() }); setActiveReactionPicker(null); }} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left' }}>⭐ Recognize Contribution</button>}
-                          {(String(post.authorId) === String(user.id) || isAdmin) && <button onClick={() => { setEditingPost({ id: post.id, content: post.content || '', imageUrl: post.imageUrl || null }); setActiveReactionPicker(null); }} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left' }}>✏️ Edit Post</button>}
-                          {(String(post.authorId) === String(user.id) || isAdmin) && <button onClick={() => handleDeletePost(post.id)} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left', color: '#ef4444' }}>🗑️ Delete Post</button>}
+                        <div style={{ position: 'absolute', right: 0, top: '100%', background: 'var(--scicomm-surface)', border: '1px solid var(--scicomm-border)', borderRadius: '8px', padding: '4px 0', boxShadow: '0 4px 12px var(--scicomm-shadow)', zIndex: 10, minWidth: '180px' }}>
+                          {isAdmin && <button onClick={async () => { await db.scicomm_posts.update(post.id, { recognized: true, recognizedBy: user.name, recognizedAt: new Date().toISOString() }); setActiveReactionPicker(null); }} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left', color: 'var(--scicomm-text)' }}>⭐ Recognize Contribution</button>}
+                          {(String(post.authorId) === String(user.id) || isAdmin) && <button onClick={() => { setEditingPost({ id: post.id, content: post.content || '', imageUrl: post.imageUrl || null }); setActiveReactionPicker(null); }} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left', color: 'var(--scicomm-text)' }}>✏️ Edit Post</button>}
+                          {(String(post.authorId) === String(user.id) || isAdmin) && <button onClick={() => handleDeletePost(post.id)} style={{ display: 'block', width: '100%', padding: '8px 14px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '13px', textAlign: 'left', color: 'var(--scicomm-error)' }}>🗑️ Delete Post</button>}
                         </div>
                       )}
                     </div>
@@ -1058,15 +1058,15 @@ export default function SciCommFeed() {
                 {/* Post content - edit mode or display */}
                 {editingPost?.id === post.id ? (
                   <div style={{ marginBottom: '8px' }}>
-                    <textarea value={editingPost.content} onChange={e => setEditingPost(p => ({...p, content: e.target.value}))} style={{ width: '100%', minHeight: '80px', border: '1px solid #1d4ed8', borderRadius: '8px', padding: '10px', fontSize: '14px', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
+                    <textarea value={editingPost.content} onChange={e => setEditingPost(p => ({...p, content: e.target.value}))} style={{ width: '100%', minHeight: '80px', border: '1px solid var(--scicomm-accent)', borderRadius: '8px', padding: '10px', fontSize: '14px', resize: 'vertical', outline: 'none', boxSizing: 'border-box', background: 'var(--scicomm-surface)', color: 'var(--scicomm-text)' }} />
                     {editingPost.imageUrl && !editingPost.removeImage && (
                       <div style={{ position: 'relative', marginTop: '8px' }}>
                         <img src={editingPost.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', maxHeight: '200px', objectFit: 'cover' }} />
-                        <button onClick={() => setEditingPost(p => ({...p, removeImage: true}))} style={{ position: 'absolute', top: 4, right: 4, background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer', fontSize: '14px' }}>×</button>
+                        <button onClick={() => setEditingPost(p => ({...p, removeImage: true}))} style={{ position: 'absolute', top: 4, right: 4, background: 'var(--scicomm-error)', color: '#fff', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer', fontSize: '14px' }}>×</button>
                       </div>
                     )}
                     <div style={{ display: 'flex', gap: '8px', marginTop: '8px', alignItems: 'center' }}>
-                      <label style={{ cursor: 'pointer', fontSize: '12px', color: '#1d4ed8', fontWeight: 600 }}>📷 Change Image<input type="file" accept="image/*" onChange={e => setEditingPost(p => ({...p, newImage: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                      <label style={{ cursor: 'pointer', fontSize: '12px', color: 'var(--scicomm-accent)', fontWeight: 600 }}>📷 Change Image<input type="file" accept="image/*" onChange={e => setEditingPost(p => ({...p, newImage: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                       <div style={{ flex: 1 }} />
                       <button onClick={() => setEditingPost(null)} className="scicomm-btn-secondary" style={{ padding: '6px 14px', fontSize: '12px' }}>Cancel</button>
                       <button onClick={() => handleEditPost(post.id)} className="scicomm-btn-primary" style={{ padding: '6px 14px', fontSize: '12px' }}>Save</button>
@@ -1076,17 +1076,17 @@ export default function SciCommFeed() {
                   <div style={{ position: 'relative' }}>
                     {post.deletedByAdmin ? (
                       <div style={{ 
-                        background: 'rgba(254, 226, 226, 0.5)', 
+                        background: 'var(--scicomm-error-light)', 
                         padding: '24px', 
                         borderRadius: '12px', 
-                        border: '2px dashed #fecaca', 
+                        border: '2px dashed var(--scicomm-error)', 
                         textAlign: 'center',
                         backdropFilter: 'blur(8px)',
                         margin: '0 0 12px'
                       }}>
                         <div style={{ fontSize: '32px', marginBottom: '12px' }}>🛡️</div>
-                        <h4 style={{ margin: '0 0 8px', color: '#dc2626', fontWeight: 800 }}>CONTENT REMOVED BY ADMINISTRATOR</h4>
-                        <p style={{ margin: 0, fontSize: '13px', color: '#991b1b', lineHeight: 1.5 }}>
+                        <h4 style={{ margin: '0 0 8px', color: 'var(--scicomm-error)', fontWeight: 800 }}>CONTENT REMOVED BY ADMINISTRATOR</h4>
+                        <p style={{ margin: 0, fontSize: '13px', color: 'var(--scicomm-error-dark)', lineHeight: 1.5 }}>
                           This post was found to be in violation of Science Communication community standards and has been moderated by a Master or Admin.
                         </p>
                       </div>
@@ -1099,9 +1099,10 @@ export default function SciCommFeed() {
                           whiteSpace: 'pre-wrap', 
                           unicodeBidi: 'plaintext', 
                           direction: /[\u0600-\u06FF]/.test(post.content || '') ? 'rtl' : 'ltr',
-                          textAlign: /[\u0600-\u06FF]/.test(post.content || '') ? 'right' : 'left'
+                          textAlign: /[\u0600-\u06FF]/.test(post.content || '') ? 'right' : 'left',
+                          color: 'var(--scicomm-text)'
                         }}>{renderPostText(post.content)}</p>
-                        {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
+                        {post.articleTitle && <div style={{ padding: '10px 14px', background: 'var(--scicomm-gradient-gold)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: 'var(--scicomm-gold-dark)' }}>📝 {post.articleTitle}</div>}
                         {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}
                         {post.videoUrl && (
                           post.videoUrl.startsWith('chunked://') ? (
@@ -1110,11 +1111,11 @@ export default function SciCommFeed() {
                             <video src={post.videoUrl} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />
                           )
                         )}
-                        {post.fileUrl && <a href={post.fileUrl} target="_blank" rel="noreferrer" style={{ display: 'block', padding: '10px 14px', background: '#eef3f8', borderRadius: '8px', marginBottom: '8px', color: '#2563eb', textDecoration: 'none', fontWeight: 600, fontSize: '13px' }}>📎 {post.fileName || 'Download Attachment'}</a>}
+                        {post.fileUrl && <a href={post.fileUrl} target="_blank" rel="noreferrer" style={{ display: 'block', padding: '10px 14px', background: 'var(--scicomm-highlight)', borderRadius: '8px', marginBottom: '8px', color: 'var(--scicomm-accent)', textDecoration: 'none', fontWeight: 600, fontSize: '13px' }}>📎 {post.fileName || 'Download Attachment'}</a>}
                         
                         {post.poll && (
-                          <div style={{ border: '1px solid #e0dfdc', borderRadius: '8px', padding: '16px', marginBottom: '12px' }}>
-                            <div style={{ fontWeight: 600, fontSize: '15px', marginBottom: '12px' }}>📊 {post.poll.question}</div>
+                          <div style={{ border: '1px solid var(--scicomm-border)', borderRadius: '8px', padding: '16px', marginBottom: '12px' }}>
+                            <div style={{ fontWeight: 600, fontSize: '15px', marginBottom: '12px', color: 'var(--scicomm-text)' }}>📊 {post.poll.question}</div>
                             {post.poll.options.map(opt => {
                               const votes = post.poll.votes || {};
                               const totalVotes = Object.keys(votes).length;
@@ -1122,16 +1123,16 @@ export default function SciCommFeed() {
                               const percent = totalVotes === 0 ? 0 : Math.round((optVotes / totalVotes) * 100);
                               const myVote = votes[user.id] === opt.id;
                               return (
-                                <div key={opt.id} onClick={() => handleVote(post, opt.id)} style={{ position: 'relative', background: myVote ? '#eff6ff' : '#f3f2ef', border: myVote ? '1px solid #1d4ed8' : '1px solid transparent', borderRadius: '4px', padding: '8px 12px', marginBottom: '6px', cursor: 'pointer', overflow: 'hidden' }}>
-                                  <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: `${percent}%`, background: myVote ? '#bfdbfe' : '#e0dfdc', opacity: 0.5, zIndex: 0 }}></div>
-                                  <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                <div key={opt.id} onClick={() => handleVote(post, opt.id)} style={{ position: 'relative', background: myVote ? 'var(--scicomm-accent-light)' : 'var(--scicomm-surface-alt)', border: myVote ? '1px solid var(--scicomm-accent)' : '1px solid transparent', borderRadius: '4px', padding: '8px 12px', marginBottom: '6px', cursor: 'pointer', overflow: 'hidden' }}>
+                                  <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: `${percent}%`, background: myVote ? 'var(--scicomm-accent-muted)' : 'var(--scicomm-border)', opacity: 0.5, zIndex: 0 }}></div>
+                                  <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--scicomm-text)' }}>
                                     <span style={{ fontWeight: myVote ? 700 : 400 }}>{opt.text}</span>
                                     <span style={{ fontWeight: myVote ? 700 : 400 }}>{percent}%</span>
                                   </div>
                                 </div>
                               );
                             })}
-                            <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.5)', marginTop: '8px' }}>{Object.keys(post.poll.votes || {}).length} votes</div>
+                            <div style={{ fontSize: '11px', color: 'var(--scicomm-text-muted)', marginTop: '8px' }}>{Object.keys(post.poll.votes || {}).length} votes</div>
                           </div>
                         )}
                       </>
@@ -1142,14 +1143,14 @@ export default function SciCommFeed() {
 
               {/* Reaction summary + comment count */}
               {(totalReactions > 0 || commentCount > 0) && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 16px 8px', fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 16px 8px', fontSize: '12px', color: 'var(--scicomm-text-muted)' }}>
                   <span style={{ cursor: totalReactions > 0 ? 'pointer' : 'default' }} onClick={() => totalReactions > 0 && setShowReactors({ reactions: post.reactions || {}, title: 'Post Reactions' })}>{reactionSummary.map(r => r.emoji).join('')} {totalReactions > 0 && totalReactions}</span>
                   <span style={{ cursor: 'pointer' }} onClick={() => setShowComments(p => ({ ...p, [post.id]: !p[post.id] }))}>{commentCount > 0 ? `${commentCount} comment${commentCount > 1 ? 's' : ''}` : ''}</span>
                 </div>
               )}
 
               {/* Action bar with reaction picker */}
-              <div style={{ display: 'flex', borderTop: '1px solid #e0dfdc', position: 'relative' }}>
+              <div style={{ display: 'flex', borderTop: '1px solid var(--scicomm-border)', position: 'relative' }}>
                 <div style={{ flex: 1, position: 'relative', userSelect: 'none', WebkitUserSelect: 'none' }}
                   onMouseEnter={() => setActiveReactionPicker(post.id)}
                   onMouseLeave={() => setActiveReactionPicker(null)}
@@ -1157,12 +1158,12 @@ export default function SciCommFeed() {
                   onTouchEnd={() => clearTimeout(window.reactionTimer)}
                   onTouchMove={() => clearTimeout(window.reactionTimer)}
                   onContextMenu={(e) => { e.preventDefault(); setActiveReactionPicker(post.id); }}>
-                  <button className={`scicomm-post-btn ${myReaction ? 'liked' : ''}`} style={{ color: currentReactionDef?.color || 'rgba(0,0,0,0.6)', width: '100%' }} onClick={() => handleReaction(post, myReaction || 'like')}>
+                  <button className={`scicomm-post-btn ${myReaction ? 'liked' : ''}`} style={{ color: currentReactionDef?.color || 'var(--scicomm-text-muted)', width: '100%' }} onClick={() => handleReaction(post, myReaction || 'like')}>
                     {currentReactionDef ? currentReactionDef.emoji : '👍'} {currentReactionDef?.label || 'Like'}
                   </button>
                   {/* Reaction Picker */}
                   {activeReactionPicker === post.id && (
-                    <div style={{ position: 'absolute', bottom: '100%', left: '10px', background: 'white', borderRadius: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)', padding: '6px 8px', display: 'flex', gap: '2px', zIndex: 50 }}>
+                    <div style={{ position: 'absolute', bottom: '100%', left: '10px', background: 'var(--scicomm-surface)', borderRadius: '24px', boxShadow: '0 4px 16px var(--scicomm-shadow)', padding: '6px 8px', display: 'flex', gap: '2px', zIndex: 50 }}>
                       {REACTIONS.map(r => (
                         <button key={r.key} onClick={() => handleReaction(post, r.key)} title={r.label}
                           style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }}
@@ -1183,20 +1184,20 @@ export default function SciCommFeed() {
 
               {/* Comments section */}
               {isCommentsOpen && (
-                <div style={{ padding: '8px 16px 16px', borderTop: '1px solid #e0dfdc' }}>
+                <div style={{ padding: '8px 16px 16px', borderTop: '1px solid var(--scicomm-border)' }}>
                   <CommentNode post={post} comments={post.comments || []} path={[]} />
                   {/* Main comment input */}
                   <div style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center', position: 'relative' }}>
                     <MentionDropdown inputKey={post.id} />
                     <textarea placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} onChange={e => handleCommentInput(post.id, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* let it add newline */ } }}
                       onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)}
-                      style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit' }} rows={1} />
+                      style={{ flex: 1, border: '1px solid var(--scicomm-border)', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit', background: 'var(--scicomm-surface)', color: 'var(--scicomm-text)' }} rows={1} />
                     <button onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px' }}>😀</button>
                     <label style={{ cursor: 'pointer', padding: '4px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                     <button className="scicomm-btn-primary" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '24px', height: '40px' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
                   </div>
-                  {showEmojiPicker === post.id && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px', background: '#f9fafb', padding: '8px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [post.id]: (prev[post.id]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
-                  {commentImage[post.id] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>📎 {commentImage[post.id].name} <button onClick={() => setCommentImage(prev => ({...prev, [post.id]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
+                  {showEmojiPicker === post.id && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px', background: 'var(--scicomm-surface-alt)', padding: '8px', borderRadius: '8px', border: '1px solid var(--scicomm-border)' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [post.id]: (prev[post.id]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
+                  {commentImage[post.id] && <div style={{ fontSize: '11px', color: 'var(--scicomm-text-muted)', marginTop: '4px' }}>📎 {commentImage[post.id].name} <button onClick={() => setCommentImage(prev => ({...prev, [post.id]: null}))} style={{ background: 'none', border: 'none', color: 'var(--scicomm-error)', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
                 </div>
               )}
             </div>
@@ -1208,17 +1209,17 @@ export default function SciCommFeed() {
       <div className="scicomm-sidebar-right hide-on-mobile">
         <div className="scicomm-card scicomm-card-padding">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <h3 style={{ margin: 0, fontSize: '15px' }}>📌 Quick Links</h3>
-            <button onClick={() => { setTempLinks([...myLinks]); setIsEditingLinks(!isEditingLinks); }} style={{ background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer' }}><Settings size={14} /></button>
+            <h3 style={{ margin: 0, fontSize: '15px', color: 'var(--scicomm-text)' }}>📌 Quick Links</h3>
+            <button onClick={() => { setTempLinks([...myLinks]); setIsEditingLinks(!isEditingLinks); }} style={{ background: 'none', border: 'none', color: 'var(--scicomm-accent)', cursor: 'pointer' }}><Settings size={14} /></button>
           </div>
           
           {isEditingLinks ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Toggle the links you want to pin:</div>
+              <div style={{ fontSize: '12px', color: 'var(--scicomm-text-muted)', marginBottom: '4px' }}>Toggle the links you want to pin:</div>
               {AVAILABLE_QUICK_LINKS.map((link) => {
                 const isActive = tempLinks.includes(link.id);
                 return (
-                  <label key={link.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px', padding: '6px', borderRadius: '4px', background: isActive ? '#eff6ff' : 'transparent', border: isActive ? '1px solid #bfdbfe' : '1px solid transparent' }}>
+                  <label key={link.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px', padding: '6px', borderRadius: '4px', background: isActive ? 'var(--scicomm-accent-light)' : 'transparent', border: isActive ? '1px solid var(--scicomm-accent-muted)' : '1px solid transparent' }}>
                     <input type="checkbox" checked={isActive} onChange={() => {
                       if (isActive) setTempLinks(tempLinks.filter(id => id !== link.id));
                       else setTempLinks([...tempLinks, link.id]);
@@ -1235,7 +1236,7 @@ export default function SciCommFeed() {
                 const link = AVAILABLE_QUICK_LINKS.find(l => l.id === id);
                 if (!link) return null;
                 return (
-                  <Link key={link.id} to={link.url} style={{ display: 'block', color: '#1d4ed8', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>{link.icon} {link.title}</Link>
+                  <Link key={link.id} to={link.url} style={{ display: 'block', color: 'var(--scicomm-accent)', fontSize: '13px', marginBottom: '6px', textDecoration: 'none', fontWeight: 600 }}>{link.icon} {link.title}</Link>
                 );
               })}
             </div>
@@ -1244,18 +1245,18 @@ export default function SciCommFeed() {
         
         {recognitions.length > 0 && (
           <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px' }}>
-            <h3 style={{ margin: '0 0 10px', fontSize: '15px' }}>🌟 Spotlights</h3>
+            <h3 style={{ margin: '0 0 10px', fontSize: '15px', color: 'var(--scicomm-text)' }}>🌟 Spotlights</h3>
             {recognitions.filter(r => r.type === 'post_of_month').map(r => {
               const targetPost = postsRaw.find(x => x.id === r.targetId);
               if (!targetPost) return null;
               return (
                 <div key={r.id} style={{ marginBottom: '12px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 800, color: '#1d4ed8', marginBottom: '4px' }}>POST OF THE MONTH</div>
+                  <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--scicomm-accent)', marginBottom: '4px' }}>POST OF THE MONTH</div>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     {renderAvatar(getAuthor(targetPost.authorId), 32)}
                     <div>
-                      <div style={{ fontSize: '13px', fontWeight: 600 }}>{targetPost.authorName}</div>
-                      <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>{targetPost.content.substring(0, 30)}...</div>
+                      <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--scicomm-text)' }}>{targetPost.authorName}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--scicomm-text-muted)' }}>{targetPost.content.substring(0, 30)}...</div>
                     </div>
                   </div>
                 </div>
@@ -1265,7 +1266,7 @@ export default function SciCommFeed() {
         )}
 
         <div className="scicomm-card scicomm-card-padding" style={{ marginTop: '8px' }}>
-          <h3 style={{ margin: '0 0 10px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}><Trophy size={18} color="#f59e0b" /> Leaderboard</h3>
+          <h3 style={{ margin: '0 0 10px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--scicomm-text)' }}><Trophy size={18} color="var(--scicomm-gold)" /> Leaderboard</h3>
           {(() => {
             const getFeedScore = (s) => {
               const taskPoints = tasksData.filter(t => t.assignedTo === s.id && t.status === 'completed').reduce((sum, t) => sum + (t.points || 0), 0);
@@ -1279,12 +1280,12 @@ export default function SciCommFeed() {
               const level = getUserLevel(score);
               return (
                 <Link key={s.id} to={`/member/${s.id}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', textDecoration: 'none', color: 'inherit' }}>
-                  <div style={{ fontWeight: 800, fontSize: '14px', width: '20px', textAlign: 'center', color: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : '#64748b' }}>
+                  <div style={{ fontWeight: 800, fontSize: '14px', width: '20px', textAlign: 'center', color: idx === 0 ? 'var(--scicomm-gold)' : idx === 1 ? 'var(--scicomm-text-muted)' : idx === 2 ? 'var(--scicomm-gold-dark)' : 'var(--scicomm-text-muted)' }}>
                     #{idx + 1}
                   </div>
                   {renderAvatar(s, 32)}
                   <div style={{ flex: 1, overflow: 'hidden' }}>
-                    <div style={{ fontWeight: 600, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontWeight: 600, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--scicomm-text)' }}>
                       {s.name}
                     </div>
                     <div style={{ color: level.color, fontSize: '11px', fontWeight: 700 }}>
@@ -1295,7 +1296,7 @@ export default function SciCommFeed() {
               );
             });
           })()}
-          <Link to="/leaderboard" style={{ display: 'block', textAlign: 'center', marginTop: '12px', padding: '8px', background: '#fffbeb', color: '#b45309', borderRadius: '6px', fontSize: '12px', fontWeight: 600, textDecoration: 'none', transition: 'background 0.2s' }}>
+          <Link to="/leaderboard" style={{ display: 'block', textAlign: 'center', marginTop: '12px', padding: '8px', background: 'var(--scicomm-surface-alt)', color: 'var(--scicomm-gold-dark)', borderRadius: '6px', fontSize: '12px', fontWeight: 600, textDecoration: 'none', transition: 'background 0.2s' }}>
             View Full Leaderboard
           </Link>
         </div>
@@ -1352,8 +1353,8 @@ export default function SciCommFeed() {
       {/* Who Reacted Modal */}
       {showReactors && (
         <div onClick={() => setShowReactors(null)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: '12px', width: '100%', maxWidth: '400px', maxHeight: '70vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #e0dfdc' }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: 'var(--scicomm-surface)', borderRadius: '12px', width: '100%', maxWidth: '400px', maxHeight: '70vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--scicomm-border)' }}>
               <h3 style={{ margin: 0, fontSize: '16px' }}>{showReactors.title}</h3>
               <button onClick={() => setShowReactors(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: '#666' }}>✕</button>
             </div>
@@ -1392,7 +1393,7 @@ export default function SciCommFeed() {
 
       {deleteConfirm && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s' }}>
-          <div style={{ background: 'white', padding: '32px', borderRadius: '24px', width: '90%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+          <div style={{ background: 'var(--scicomm-surface)', padding: '32px', borderRadius: '24px', width: '90%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
             <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#fee2e2', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <Trash2 size={32} />
             </div>

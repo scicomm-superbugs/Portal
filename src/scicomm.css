@@ -1,22 +1,39 @@
-/* ======================================================
-   AIU SciComm LinkedIn-Style Theme
-   Completely independent from CompChem/Alamein index.css
-   ====================================================== */
+:root {
+  --scicomm-bg: #f3f2ef;
+  --scicomm-surface: #ffffff;
+  --scicomm-border: #e0dfdc;
+  --scicomm-text: rgba(0,0,0,0.9);
+  --scicomm-text-muted: rgba(0,0,0,0.6);
+  --scicomm-link: #0a66c2;
+  --scicomm-input: #eef3f8;
+  --scicomm-hover: #f3f2ef;
+}
+
+.scicomm-dark-mode {
+  --scicomm-bg: #0b0f19;
+  --scicomm-surface: #1d2226;
+  --scicomm-border: #38434f;
+  --scicomm-text: #f9fafb;
+  --scicomm-text-muted: #94a3b8;
+  --scicomm-link: #70b5f9;
+  --scicomm-input: #12171d;
+  --scicomm-hover: #2d333a;
+}
 
 /* Reset body styling when in scicomm */
 .scicomm-app {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  background-color: #f3f2ef;
+  background-color: var(--scicomm-bg);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: rgba(0,0,0,0.9);
+  color: var(--scicomm-text);
 }
 
 /* ===== HEADER ===== */
 .scicomm-header {
-  background-color: #fff;
-  border-bottom: 1px solid #e0dfdc;
+  background-color: var(--scicomm-surface);
+  border-bottom: 1px solid var(--scicomm-border);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -47,7 +64,7 @@
 .scicomm-search-box {
   display: flex;
   align-items: center;
-  background-color: #eef3f8;
+  background-color: var(--scicomm-input);
   border-radius: 4px;
   padding: 0 8px;
   height: 34px;
@@ -61,7 +78,7 @@
   margin-left: 8px;
   width: 100%;
   font-size: 14px;
-  color: rgba(0,0,0,0.9);
+  color: var(--scicomm-text);
 }
 
 /* ===== NAV ===== */
@@ -76,7 +93,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: rgba(0,0,0,0.6);
+  color: var(--scicomm-text-muted);
   text-decoration: none;
   min-width: 76px;
   height: 100%;
@@ -86,11 +103,11 @@
 }
 
 .scicomm-nav-item:hover {
-  color: rgba(0,0,0,0.9);
+  color: var(--scicomm-text);
 }
 
 .scicomm-nav-item.active {
-  color: rgba(0,0,0,0.9);
+  color: var(--scicomm-text);
 }
 
 .scicomm-nav-item.active::after {
@@ -150,8 +167,8 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: white;
-  border: 1px solid #e0dfdc;
+  background: var(--scicomm-surface);
+  border: 1px solid var(--scicomm-border);
   border-radius: 0 0 8px 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   min-width: 260px;
@@ -166,7 +183,7 @@
 .dropdown-item {
   padding: 10px 16px;
   text-decoration: none;
-  color: rgba(0,0,0,0.9);
+  color: var(--scicomm-text);
   font-size: 14px;
   border: none;
   background: none;
@@ -197,7 +214,7 @@
 
 /* ===== CARDS ===== */
 .scicomm-card {
-  background: white;
+  background: var(--scicomm-surface);
   border-radius: 8px;
   border: 1px solid #e0dfdc;
   margin-bottom: 8px;
@@ -222,7 +239,7 @@
 
 /* ===== TEXT ===== */
 .scicomm-text-muted {
-  color: rgba(0,0,0,0.6);
+  color: var(--scicomm-text-muted);
   font-size: 12px;
 }
 
@@ -274,7 +291,7 @@
   padding: 8px 12px;
   border: none;
   background: none;
-  color: rgba(0,0,0,0.6);
+  color: var(--scicomm-text-muted);
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
@@ -296,7 +313,7 @@
   padding: 12px 8px;
   border: none;
   background: none;
-  color: rgba(0,0,0,0.6);
+  color: var(--scicomm-text-muted);
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
@@ -318,7 +335,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: white;
+  background: var(--scicomm-surface);
   border-top: 1px solid #e0dfdc;
   height: 56px;
   z-index: 100;
@@ -333,7 +350,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: rgba(0,0,0,0.6);
+  color: var(--scicomm-text-muted);
   text-decoration: none;
   font-size: 10px;
   font-weight: 500;
@@ -345,7 +362,7 @@
 }
 
 .scicomm-mobile-item.active {
-  color: rgba(0,0,0,0.9);
+  color: var(--scicomm-text);
 }
 
 /* LinkedIn-style Post button */
@@ -562,12 +579,6 @@
 
 /* ===== DARK MODE ===== */
 .scicomm-dark-mode {
-  filter: invert(0.92) hue-rotate(180deg);
+  /* No global filters - handled by variables */
 }
-.scicomm-dark-mode img,
-.scicomm-dark-mode video,
-.scicomm-dark-mode .avatar-emoji,
-.scicomm-dark-mode [style*="url("],
-.scicomm-dark-mode [style*="background: url"] {
-  filter: invert(1) hue-rotate(180deg);
-}
+
