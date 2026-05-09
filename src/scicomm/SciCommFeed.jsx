@@ -26,6 +26,7 @@ const ChunkedVideo = ({ videoUrl }) => {
   const [src, setSrc] = useState(null);
   const [loading, setLoading] = useState(false);
   const fileId = videoUrl.replace('chunked://', '');
+  const videoRef = useRef(null);
   
   const loadVideo = async () => {
     setLoading(true);
@@ -50,6 +51,26 @@ const ChunkedVideo = ({ videoUrl }) => {
   useEffect(() => {
     loadVideo();
   }, []);
+
+  useEffect(() => {
+    if (!src || !videoRef.current) return;
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          videoRef.current.play().catch(e => console.log('Autoplay blocked', e));
+        } else {
+          videoRef.current.pause();
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    observer.observe(videoRef.current);
+    
+    return () => {
+      if (videoRef.current) observer.unobserve(videoRef.current);
+    };
+  }, [src]);
   
   if (!src) {
     return (
@@ -71,7 +92,7 @@ const ChunkedVideo = ({ videoUrl }) => {
     );
   }
   
-  return <video src={src} autoPlay muted controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', background: '#000' }} />;
+  return <video ref={videoRef} src={src} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', background: '#000' }} />;
 };
 
 export default function SciCommFeed() {
@@ -206,6 +227,22 @@ export default function SciCommFeed() {
       setPostError('Failed to post: ' + err.message);
     }
     setIsPostingMedia(false);
+  };
+
+  const handleShare = async (post) => {
+    const shareData = {
+      title: 'SciComm Post',
+      text: post.content,
+      url: window.location.href
+    };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch (err) { console.error('Share failed', err); }
+    } else {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      } catch (err) { console.error('Clipboard failed', err); }
+    }
   };
 
   // Multi-reaction toggle
@@ -755,7 +792,7 @@ export default function SciCommFeed() {
                 <button className="scicomm-post-btn" style={{ flex: 1 }} onClick={() => setShowComments(p => ({ ...p, [post.id]: !p[post.id] }))}>
                   <MessageSquare size={18} /> Comment
                 </button>
-                <button className="scicomm-post-btn" style={{ flex: 1 }}>
+                <button className="scicomm-post-btn" style={{ flex: 1 }} onClick={() => handleShare(post)}>
                   <Share2 size={18} /> Share
                 </button>
               </div>
