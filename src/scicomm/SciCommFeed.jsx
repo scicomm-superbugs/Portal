@@ -287,6 +287,27 @@ export default function SciCommFeed() {
         comments: [],
         pinned: false
       });
+
+      // Notify connected users about the new post
+      const myConnections = connectionsRaw.filter(c => 
+        c.status === 'accepted' && 
+        (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id))
+      );
+      
+      myConnections.forEach(c => {
+        const otherId = String(c.fromId) === String(user.id) ? c.toId : c.fromId;
+        db.scicomm_notifications.add({
+          userId: otherId,
+          type: 'new_post',
+          senderId: user.id,
+          title: `New post from ${user.name}`,
+          message: newPost.substring(0, 50) + (newPost.length > 50 ? '...' : ''),
+          link: `/feed`, 
+          createdAt: new Date().toISOString(),
+          read: false
+        }).catch(() => {});
+      });
+
       setNewPost('');
       setPostImage(null);
       setPostVideo(null);
