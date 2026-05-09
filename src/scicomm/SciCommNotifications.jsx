@@ -53,11 +53,24 @@ export default function SciCommNotifications() {
   };
 
   const markAllAsRead = async () => {
-    const unread = myGeneralNotifs.filter(n => !n.read);
-    for (const n of unread) {
-      try { await db.scicomm_notifications.update(n.id, { read: true }); } catch (e) {}
-    }
-    // Also mark chat messages as read? (User might want this but they specifically asked for comment/mention notifications)
+    // 1. Mark general notifications (comments, mentions, reactions) as read
+    const unreadGen = myGeneralNotifs.filter(n => !n.read);
+    const genPromises = unreadGen.map(n => 
+      db.scicomm_notifications.update(n.id, { read: true }).catch(e => console.error(e))
+    );
+
+    // 2. Mark chat messages as read
+    const myRoomIds = chatRooms.filter(r => (r.members || []).includes(user.id)).map(r => r.id);
+    const unreadMessages = chatMessages.filter(m => 
+      myRoomIds.includes(m.roomId) && 
+      m.senderId !== user.id && 
+      !(m.readBy || []).includes(user.id)
+    );
+    const chatPromises = unreadMessages.map(m => 
+      db.scicomm_chat_messages.update(m.id, { readBy: [...(m.readBy || []), user.id] }).catch(e => console.error(e))
+    );
+
+    await Promise.all([...genPromises, ...chatPromises]);
   };
 
   useEffect(() => {
@@ -256,7 +269,7 @@ export default function SciCommNotifications() {
           onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
         >
           <Bell size={16} />
-          AI Mark all as Read
+          Sync All Activity
         </button>
       </div>
 
