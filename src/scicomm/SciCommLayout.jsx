@@ -204,11 +204,11 @@ export default function SciCommLayout() {
           </div>
           {/* Mobile: Chat icon top-right with unread badge */}
           <Link to="/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative' }}>
-            <MessageCircle size={24} color="var(--scicomm-text-muted)" />
+            <MessageCircle size={24} color="rgba(0,0,0,0.6)" />
             {unreadChatCount > 0 && (
               <span style={{
                 position: 'absolute', top: '-6px', right: '-6px',
-                background: 'var(--scicomm-accent)', color: 'var(--scicomm-surface)', borderRadius: '50%',
+                background: '#ef4444', color: 'white', borderRadius: '50%',
                 width: '18px', height: '18px', fontSize: '10px', fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 lineHeight: 1, pointerEvents: 'none'
@@ -230,7 +230,7 @@ export default function SciCommLayout() {
                 <h3 style={{ margin: '0 0 12px', fontSize: '14px', color: 'rgba(0,0,0,0.6)' }}>Your WorkSpace</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                   {isTeam ? (
-                    <Link to="/tasks" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: 'var(--scicomm-bg)', border: '1px solid var(--scicomm-border)', color: 'var(--scicomm-text)', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                    <Link to="/tasks" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                       <Briefcase size={24} color="#3b82f6" />
                       <span style={{ fontSize: '13px', fontWeight: 600 }}>Tasks</span>
                       {myPendingTasks.length > 0 && <span className="scicomm-notif-badge" style={{ position: 'absolute', top: 8, right: 8 }}>{myPendingTasks.length}</span>}
@@ -242,13 +242,13 @@ export default function SciCommLayout() {
                       <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
                     </div>
                   )}
-                  <Link to="/calendar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: 'var(--scicomm-bg)', border: '1px solid var(--scicomm-border)', color: 'var(--scicomm-text)', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                  <Link to="/calendar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                     <Calendar size={24} color="#8b5cf6" />
                     <span style={{ fontSize: '13px', fontWeight: 600 }}>Calendar</span>
                     {upcomingMeetings.length > 0 && <span className="scicomm-notif-badge" style={{ position: 'absolute', top: 8, right: 8 }}>{upcomingMeetings.length}</span>}
                   </Link>
                   {isTeam ? (
-                    <Link to="/meetings" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: 'var(--scicomm-bg)', border: '1px solid var(--scicomm-border)', color: 'var(--scicomm-text)', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                    <Link to="/meetings" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                       <Video size={24} color="#10b981" />
                       <span style={{ fontSize: '13px', fontWeight: 600 }}>Meetings</span>
                     </Link>
@@ -271,7 +271,7 @@ export default function SciCommLayout() {
                       <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
                     </div>
                   )}
-                  <Link to="/leaderboard" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: 'var(--scicomm-bg)', border: '1px solid var(--scicomm-border)', color: 'var(--scicomm-text)', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                  <Link to="/leaderboard" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                     <Trophy size={24} color="#f59e0b" />
                     <span style={{ fontSize: '13px', fontWeight: 600 }}>Leaderboard</span>
                   </Link>
@@ -290,12 +290,12 @@ export default function SciCommLayout() {
               {renderAvatar(24)}
               <span className="nav-text">Me ▼</span>
               <div className="scicomm-dropdown">
-                <div style={{padding:'12px 16px', borderBottom: '1px solid var(--scicomm-border)'}}>
+                <div style={{padding:'12px 16px', borderBottom:'1px solid #e0dfdc'}}>
                   <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
                     {renderAvatar(44)}
                     <div>
                       <div style={{fontWeight:600,fontSize:'14px'}}>{user.name}</div>
-                      <div style={{fontSize:'12px',color: 'var(--scicomm-text-muted)'}}>{me?.department || 'Member'}</div>
+                      <div style={{fontSize:'12px',color:'rgba(0,0,0,0.6)'}}>{me?.department || 'Member'}</div>
                     </div>
                   </div>
                   <Link to="/profile" className="scicomm-btn-secondary" style={{marginTop:'8px',display:'block',textAlign:'center',textDecoration:'none',padding:'4px 12px',fontSize:'13px'}}>View Profile</Link>
@@ -396,7 +396,7 @@ export default function SciCommLayout() {
       {/* Version Changelog Popup */}
       {showChangelog && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div style={{ background: 'var(--scicomm-surface)', color: 'var(--scicomm-text)' }}>
+          <div style={{ background: 'white', borderRadius: '16px', padding: '28px', maxWidth: '480px', width: '100%', maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
               <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
                 <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '160px' }} onError={e => e.target.style.display='none'} />
