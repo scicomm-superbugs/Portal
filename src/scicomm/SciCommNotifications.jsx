@@ -152,53 +152,99 @@ export default function SciCommNotifications() {
       id: 'app_' + a.id,
       link: '/leaderboard'
     })),
-    ...myGeneralNotifs.map(n => {
-      let icon = <Bell size={18} />;
-      let color = '#3b82f6';
-      let bg = 'rgba(59, 130, 246, 0.1)';
-      let category = 'social';
+    ...(() => {
+      const groupedGenNotifs = [];
+      const groups = {};
+      
+      myGeneralNotifs.forEach(n => {
+        if (n.type === 'reaction' || n.type === 'comment' || n.type === 'reply' || n.type === 'mention') {
+          const key = `${n.type}_${n.message || 'unknown'}`;
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(n);
+        } else {
+          groupedGenNotifs.push(n);
+        }
+      });
+      
+      Object.values(groups).forEach(group => {
+        if (group.length === 1) {
+          groupedGenNotifs.push(group[0]);
+        } else {
+          group.sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          const latest = group[0];
+          const senders = [...new Set(group.map(g => String(g.senderId)).filter(id => id && id !== 'undefined'))];
+          
+          if (senders.length <= 1) {
+            groupedGenNotifs.push(latest);
+          } else {
+            const firstSender = getAuthor(senders[0]);
+            const mainName = firstSender ? firstSender.name.split(' ')[0] : 'Someone';
+            const numOthers = senders.length - 1;
+            
+            let action = 'interacted with';
+            if (latest.type === 'reaction') action = 'reacted to';
+            else if (latest.type === 'comment') action = 'commented on';
+            else if (latest.type === 'reply') action = 'replied to a comment on';
+            else if (latest.type === 'mention') action = 'mentioned you in';
+            
+            const newTitle = `${mainName} and ${numOthers} other${numOthers > 1 ? 's' : ''} ${action} your post`;
+            
+            groupedGenNotifs.push({
+              ...latest,
+              title: newTitle
+            });
+          }
+        }
+      });
 
-      if (n.type === 'mention') {
-        icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <AtSign size={18} />;
-        color = n.senderId ? 'transparent' : '#06b6d4';
-        bg = n.senderId ? 'transparent' : 'rgba(6, 182, 212, 0.1)';
-      } else if (n.type.includes('reaction')) {
-        icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <Heart size={18} />;
-        color = n.senderId ? 'transparent' : '#ec4899';
-        bg = n.senderId ? 'transparent' : 'rgba(236, 72, 153, 0.1)';
-      } else if (n.type.includes('comment') || n.type === 'reply') {
-        icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <MessageSquare size={18} />;
-        color = n.senderId ? 'transparent' : '#10b981';
-        bg = n.senderId ? 'transparent' : 'rgba(16, 185, 129, 0.1)';
-      } else if (n.type === 'new_post') {
-        category = 'alert';
-        icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <Bell size={18} />;
-        color = n.senderId ? 'transparent' : '#f59e0b';
-        bg = n.senderId ? 'transparent' : 'rgba(245, 158, 11, 0.1)';
-      } else if (n.type === 'master_deletion') {
-        icon = <Trash2 size={18} />;
-        color = '#ef4444';
-        bg = 'rgba(239, 68, 68, 0.1)';
-        category = 'alert';
-      }
+      return groupedGenNotifs.map(n => {
+        let icon = <Bell size={18} />;
+        let color = '#3b82f6';
+        let bg = 'rgba(59, 130, 246, 0.1)';
+        let category = 'social';
 
-      return {
-        ...n,
-        type: n.type,
-        category,
-        icon,
-        color,
-        bg,
-        title: n.title,
-        sub: n.message || 'Click to view',
-        time: n.createdAt,
-        id: 'gen_' + n.id,
-        link: n.link,
-        read: n.read,
-        rawId: n.id,
-        isGeneral: true
-      };
-    }),
+        if (n.type === 'mention') {
+          icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <AtSign size={18} />;
+          color = n.senderId ? 'transparent' : '#06b6d4';
+          bg = n.senderId ? 'transparent' : 'rgba(6, 182, 212, 0.1)';
+        } else if (n.type === 'reaction') {
+          icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <Heart size={18} />;
+          color = n.senderId ? 'transparent' : '#ec4899';
+          bg = n.senderId ? 'transparent' : 'rgba(236, 72, 153, 0.1)';
+        } else if (n.type === 'comment' || n.type === 'reply') {
+          icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <MessageSquare size={18} />;
+          color = n.senderId ? 'transparent' : '#10b981';
+          bg = n.senderId ? 'transparent' : 'rgba(16, 185, 129, 0.1)';
+        } else if (n.type === 'new_post') {
+          category = 'alert';
+          icon = n.senderId ? renderAvatar(getAuthor(n.senderId), 48) : <Bell size={18} />;
+          color = n.senderId ? 'transparent' : '#f59e0b';
+          bg = n.senderId ? 'transparent' : 'rgba(245, 158, 11, 0.1)';
+        } else if (n.type === 'master_deletion') {
+          icon = <Trash2 size={18} />;
+          color = '#ef4444';
+          bg = 'rgba(239, 68, 68, 0.1)';
+          category = 'alert';
+        }
+
+        return {
+          ...n,
+          type: n.type,
+          category,
+          icon,
+          color,
+          bg,
+          title: n.title,
+          sub: n.message || 'Click to view',
+          time: n.createdAt,
+          id: 'gen_' + n.id,
+          link: n.link,
+          read: n.read,
+          rawId: n.id,
+          isGeneral: true
+        };
+      });
+    })(),
     ...(() => {
       const myRoomIds = new Set(chatRooms.filter(r => (r.members || []).includes(user.id)).map(r => r.id));
       const unreadByRoom = {};

@@ -33,8 +33,6 @@ export default function SciCommLayout() {
   const isAdmin = user.role === 'admin' || user.role === 'master';
   const isTeam = user.role === 'scicomm' || isAdmin;
 
-  const notifCount = myWarnings.length + (isAdmin ? pendingAccounts.length : 0) + unreadChatCount;
-
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -107,6 +105,8 @@ export default function SciCommLayout() {
 
   const generalNotifs = useLiveCollection('scicomm_notifications') || [];
   const myGeneralNotifs = generalNotifs.filter(n => String(n.userId) === String(user.id) && !n.read);
+
+  const notifCount = myWarnings.length + (isAdmin ? pendingAccounts.length : 0) + unreadChatCount + myGeneralNotifs.length;
 
   const prevWarningCount = useRef(myWarnings.length);
   useEffect(() => {

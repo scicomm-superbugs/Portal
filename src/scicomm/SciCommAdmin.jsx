@@ -202,6 +202,120 @@ export default function SciCommAdmin() {
     e.target.value = '';
   };
 
+  const handleBackfillNotifications = async () => {
+    if (!window.confirm('Backfill notifications? This will scan all existing posts and chats and send missed notifications for reactions, comments, and mentions. This may cause a flood of notifications for users.')) return;
+    
+    let added = 0;
+    try {
+      // 1. Backfill Post Reactions & Comments
+      for (const p of posts) {
+        // Post Reactions
+        if (p.reactions) {
+          for (const [rKey, uIds] of Object.entries(p.reactions)) {
+            for (const uid of uIds) {
+              if (String(uid) !== String(p.authorId)) {
+                await db.scicomm_notifications.add({
+                  userId: p.authorId, type: 'reaction', senderId: uid,
+                  title: `Someone reacted to your post`,
+                  message: p.content?.substring(0, 50) || 'Media post',
+                  link: '/feed', createdAt: p.createdAt || new Date().toISOString(), read: false
+                });
+                added++;
+              }
+            }
+          }
+        }
+        
+        // Post Comments
+        const processComments = async (comments, parentAuthorId) => {
+          if (!comments) return;
+          for (const c of comments) {
+            if (String(c.authorId) !== String(parentAuthorId)) {
+               await db.scicomm_notifications.add({
+                 userId: parentAuthorId, type: 'comment', senderId: c.authorId,
+                 title: `Someone commented on your post`,
+                 message: c.text?.substring(0, 50) || 'Media comment',
+                 link: '/feed', createdAt: c.createdAt || new Date().toISOString(), read: false
+               });
+               added++;
+            }
+            if (c.reactions) {
+              for (const [rKey, uIds] of Object.entries(c.reactions)) {
+                for (const uid of uIds) {
+                  if (String(uid) !== String(c.authorId)) {
+                    await db.scicomm_notifications.add({
+                      userId: c.authorId, type: 'reaction', senderId: uid,
+                      title: `Someone reacted to your comment`,
+                      message: c.text?.substring(0, 50) || 'Media',
+                      link: '/feed', createdAt: c.createdAt || new Date().toISOString(), read: false
+                    });
+                    added++;
+                  }
+                }
+              }
+            }
+            // Mentions in comments
+            const mentions = c.text?.match(/@\w+/g) || [];
+            for (const mention of mentions) {
+              const username = mention.slice(1).toLowerCase();
+              const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+              if (userMatch && String(userMatch.id) !== String(c.authorId)) {
+                await db.scicomm_notifications.add({
+                  userId: userMatch.id, type: 'mention', senderId: c.authorId,
+                  title: `Someone mentioned you`,
+                  message: c.text?.substring(0, 50) || '...',
+                  link: '/feed', createdAt: c.createdAt || new Date().toISOString(), read: false
+                });
+                added++;
+              }
+            }
+            if (c.replies) await processComments(c.replies, c.authorId);
+          }
+        };
+        await processComments(p.comments, p.authorId);
+      }
+
+      // 2. Chat Mentions & Group Additions (Approximate)
+      for (const m of chatMessages) {
+        const mentions = m.content?.match(/@\w+/g) || [];
+        for (const mention of mentions) {
+          if (mention.toLowerCase() === '@all') {
+            const room = chatRooms.find(r => r.id === m.roomId);
+            if (room && room.isGroup) {
+               for (const memberId of room.members) {
+                 if (String(memberId) !== String(m.senderId)) {
+                    await db.scicomm_notifications.add({
+                      userId: memberId, type: 'mention', senderId: m.senderId,
+                      title: `Mentioned @all in chat`,
+                      message: m.content?.substring(0, 50) || '...',
+                      link: '/chat', createdAt: m.createdAt || new Date().toISOString(), read: false
+                    });
+                    added++;
+                 }
+               }
+            }
+          } else {
+            const username = mention.slice(1).toLowerCase();
+            const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+            if (userMatch && String(userMatch.id) !== String(m.senderId)) {
+              await db.scicomm_notifications.add({
+                userId: userMatch.id, type: 'mention', senderId: m.senderId,
+                title: `Mentioned you in chat`,
+                message: m.content?.substring(0, 50) || '...',
+                link: '/chat', createdAt: m.createdAt || new Date().toISOString(), read: false
+              });
+              added++;
+            }
+          }
+        }
+      }
+      flash(`Successfully backfilled ${added} missed notifications!`);
+    } catch (e) {
+      console.error(e);
+      flash("Error during backfill. See console.");
+    }
+  };
+
   // Analytics data
   const getAnalytics = (member) => {
     const completedTasks = tasksData.filter(t => String(t.assignedTo) === String(member.id) && (t.status === 'Completed' || t.status === 'Approved')).length;
@@ -544,6 +658,13 @@ export default function SciCommAdmin() {
               <Upload size={16} /> Import from Excel
             </button>
             <input ref={fileInputRef} type="file" accept=".xlsx,.xls" onChange={handleImportExcel} style={{ display: 'none' }} />
+          </div>
+
+          {/* System Tools */}
+          <div style={{ padding: '16px', background: '#f0fdf4', borderRadius: '10px', border: '1px solid #bbf7d0', marginBottom: '24px' }}>
+            <h4 style={{ margin: '0 0 8px', fontSize: '15px', color: '#166534' }}>🔧 System Maintenance</h4>
+            <p style={{ fontSize: '13px', color: '#14532d', margin: '0 0 12px' }}>Generate missed notifications for all past posts, comments, reactions, and chat mentions.</p>
+            <button onClick={handleBackfillNotifications} style={{ background: '#16a34a', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>Generate Past Notifications</button>
           </div>
 
           {/* Reset Points */}
