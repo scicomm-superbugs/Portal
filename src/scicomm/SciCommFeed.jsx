@@ -7,6 +7,21 @@ import { Link } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
 import SciCommStories from './SciCommStories';
 
+const base64ToBlob = (base64, contentType) => {
+  const byteCharacters = atob(base64);
+  const byteArrays = [];
+  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    const slice = byteCharacters.slice(offset, offset + 512);
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+  return new Blob(byteArrays, {type: contentType});
+};
+
 const ChunkedVideo = ({ videoUrl }) => {
   const [src, setSrc] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,8 +32,6 @@ const ChunkedVideo = ({ videoUrl }) => {
   const loadVideo = async () => {
     setLoading(true);
     try {
-      // Get total chunks count from post metadata if possible, or fetch it
-      // For now, let's just fetch chunks one by one to simulate streaming
       const chunks = [];
       let i = 0;
       let hasMore = true;
@@ -41,7 +54,7 @@ const ChunkedVideo = ({ videoUrl }) => {
         const base64Data = chunks.map(c => c.data.split(',')[1]).join('');
         const contentType = chunks[0].data.split(',')[0].split(':')[1].split(';')[0];
         
-        const blob = await fetch(`data:${contentType};base64,${base64Data}`).then(res => res.blob());
+        const blob = base64ToBlob(base64Data, contentType);
         setSrc(URL.createObjectURL(blob));
       }
     } catch (e) {
