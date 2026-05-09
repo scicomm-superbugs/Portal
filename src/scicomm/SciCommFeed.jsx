@@ -1,10 +1,45 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useLiveCollection, db, uploadFile } from '../db';
+import { useLiveCollection, db, uploadFile, firestore, getCollectionName } from '../db';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2, X, Trophy, Smile } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
 import SciCommStories from './SciCommStories';
+
+const ChunkedVideo = ({ videoUrl }) => {
+  const [src, setSrc] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const fileId = videoUrl.replace('chunked://', '');
+  
+  const loadVideo = async () => {
+    setLoading(true);
+    try {
+      const q = query(collection(firestore, getCollectionName('scicomm_file_chunks')), where('fileId', '==', fileId));
+      const snap = await getDocs(q);
+      const chunks = snap.docs.map(doc => doc.data()).sort((a,b) => a.chunkIndex - b.chunkIndex);
+      
+      const base64Data = chunks.map(c => c.data.split(',')[1]).join('');
+      const contentType = chunks[0].data.split(',')[0].split(':')[1].split(';')[0];
+      
+      const blob = await fetch(`data:${contentType};base64,${base64Data}`).then(res => res.blob());
+      setSrc(URL.createObjectURL(blob));
+    } catch (e) {
+      console.error('Failed to load chunked video', e);
+    }
+    setLoading(false);
+  };
+  
+  if (!src) {
+    return (
+      <div style={{ width: '100%', height: '200px', background: '#f1f5f9', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginBottom: '8px' }} onClick={loadVideo}>
+        {loading ? 'Loading video...' : '▶️ Click to load video'}
+      </div>
+    );
+  }
+  
+  return <video src={src} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />;
+};
 
 export default function SciCommFeed() {
   const { user } = useAuth();
@@ -621,7 +656,13 @@ export default function SciCommFeed() {
                     }}>{renderPostText(post.content)}</p>
                     {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
                     {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}
-                    {post.videoUrl && <video src={post.videoUrl} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />}
+                    {post.videoUrl && (
+                      post.videoUrl.startsWith('chunked://') ? (
+                        <ChunkedVideo videoUrl={post.videoUrl} />
+                      ) : (
+                        <video src={post.videoUrl} controls playsInline style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px' }} />
+                      )
+                    )}
                 {post.fileUrl && <a href={post.fileUrl} target="_blank" rel="noreferrer" style={{ display: 'block', padding: '10px 14px', background: '#eef3f8', borderRadius: '8px', marginBottom: '8px', color: '#2563eb', textDecoration: 'none', fontWeight: 600, fontSize: '13px' }}>📎 {post.fileName || 'Download Attachment'}</a>}
                 
                 {post.poll && (
