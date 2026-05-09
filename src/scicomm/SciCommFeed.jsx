@@ -289,9 +289,13 @@ export default function SciCommFeed() {
       });
 
       // Notify connected users about the new post
-      const myConnections = connectionsRaw.filter(c => 
-        c.status === 'accepted' && 
-        (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id))
+      const q = query(
+        collection(firestore, getCollectionName('scicomm_connections')), 
+        where('status', '==', 'accepted')
+      );
+      const connectionsSnap = await getDocs(q);
+      const myConnections = connectionsSnap.docs.map(doc => doc.data()).filter(c => 
+        String(c.fromId) === String(user.id) || String(c.toId) === String(user.id)
       );
       
       myConnections.forEach(c => {
