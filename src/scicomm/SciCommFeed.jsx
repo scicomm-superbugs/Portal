@@ -338,6 +338,7 @@ export default function SciCommFeed() {
           userId: post.authorId,
           type: 'reaction',
           title: `${user.name} reacted ${rd?.emoji || ''} to your post`,
+          message: post.content?.substring(0, 50) + '...',
           link: '/feed',
           createdAt: new Date().toISOString(),
           read: false
@@ -392,6 +393,7 @@ export default function SciCommFeed() {
         db.scicomm_notifications.add({
           userId: targetAuthorId, type: isReply ? 'reply' : 'comment',
           title: `${user.name} ${isReply ? 'replied to your comment' : 'commented on your post'}`,
+          message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
           link: `/feed`, createdAt: new Date().toISOString(), read: false
         }).catch(() => {});
       }
@@ -405,6 +407,7 @@ export default function SciCommFeed() {
           db.scicomm_notifications.add({
             userId: userMatch.id, type: 'mention',
             title: `${user.name} mentioned you in a comment`,
+            message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
             link: `/feed`, createdAt: new Date().toISOString(), read: false
           }).catch(() => {});
         }
@@ -447,6 +450,7 @@ export default function SciCommFeed() {
           userId: target.authorId,
           type: 'reaction',
           title: `${user.name} reacted ${rd?.emoji || ''} to your comment`,
+          message: target.text?.substring(0, 50) + '...',
           link: '/feed',
           createdAt: new Date().toISOString(),
           read: false

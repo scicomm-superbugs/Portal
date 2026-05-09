@@ -31,6 +31,21 @@ export default function SciCommNotifications() {
 
   const myGeneralNotifs = generalNotifications.filter(n => String(n.userId) === String(user.id));
 
+  const getAuthor = (id) => scientists.find(s => String(s.id) === String(id));
+  const getAvatar = (member) => {
+    if (member?.avatar) return { type: 'img', src: member.avatar };
+    const av = AVATARS.find(a => a.id === member?.avatarId);
+    if (av) return { type: 'emoji', emoji: av.svg, bg: av.bg };
+    return { type: 'fallback' };
+  };
+
+  const renderAvatar = (member, size = 48) => {
+    const av = getAvatar(member);
+    if (av.type === 'img') return <img src={av.src} alt="" style={{ width: size, height: size, borderRadius: '14px', objectFit: 'cover', flexShrink: 0 }} />;
+    if (av.type === 'emoji') return <div style={{ width: size, height: size, borderRadius: '14px', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.5, flexShrink: 0 }}>{av.emoji}</div>;
+    return <div style={{ width: size, height: size, borderRadius: '14px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><UserCircle size={size * 0.6} color="#94a3b8" /></div>;
+  };
+
   const handleNotificationClick = async (n) => {
     if (n.isGeneral && !n.read) {
       try { await db.scicomm_notifications.update(n.rawId, { read: true }); } catch (e) {}
@@ -171,7 +186,7 @@ export default function SciCommNotifications() {
       const unreadByRoom = {};
       chatMessages.forEach(m => {
         if (myRoomIds.has(m.roomId) && m.senderId !== user.id && !(m.readBy || []).includes(user.id)) {
-          if (!unreadByRoom[m.roomId]) unreadByRoom[m.roomId] = { count: 0, senderName: m.senderName, roomId: m.roomId, lastTime: m.createdAt };
+          if (!unreadByRoom[m.roomId]) unreadByRoom[m.roomId] = { count: 0, senderName: m.senderName, senderId: m.senderId, roomId: m.roomId, lastTime: m.createdAt };
           unreadByRoom[m.roomId].count++;
           if (m.createdAt > unreadByRoom[m.roomId].lastTime) unreadByRoom[m.roomId].lastTime = m.createdAt;
         }
@@ -179,9 +194,9 @@ export default function SciCommNotifications() {
       return Object.values(unreadByRoom).map(r => ({
         type: 'chat',
         category: 'social',
-        icon: <MessageCircle size={18} />,
-        color: '#0ea5e9',
-        bg: 'rgba(14, 165, 233, 0.1)',
+        icon: renderAvatar(getAuthor(r.senderId), 48),
+        color: 'transparent',
+        bg: 'transparent',
         title: `Unread Messages`,
         sub: `${r.count} new message${r.count > 1 ? 's' : ''} from ${r.senderName}`,
         time: r.lastTime,
