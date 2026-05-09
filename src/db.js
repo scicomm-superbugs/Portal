@@ -17,7 +17,8 @@ const app = initializeApp(firebaseConfig);
 export const firestore = initializeFirestore(app, {});
 export const storage = getStorage(app);
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+// File size limit removed by user request
+// const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 const compressImageToBase64 = (file, maxWidth = 1000) => {
   return new Promise((resolve, reject) => {
@@ -48,7 +49,6 @@ const compressImageToBase64 = (file, maxWidth = 1000) => {
 
 export const uploadFile = async (file, path, onProgress) => {
   if (!file) throw new Error('No file provided');
-  if (file.size > MAX_FILE_SIZE) throw new Error(`File too large (max ${MAX_FILE_SIZE / 1024 / 1024}MB)`);
   
   // 🔥 EMERGENCY FALLBACK: If it's an image, convert to Base64 and return immediately.
   // This completely bypasses Firebase Storage CORS and timeout issues for Profile Pics & Banners!
