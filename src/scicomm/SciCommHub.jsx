@@ -154,7 +154,7 @@ export default function SciCommHub() {
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #14b8a6, #3b82f6)' }} />
             
             <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #ccfbf1 0%, #eff6ff 100%)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 8px 16px rgba(20, 184, 166, 0.15)' }}>
-              <LayoutDashboard size={40} color="#14b8a6" />
+              <FolderKanban size={40} color="#14b8a6" />
             </div>
             
             <h2 style={{ margin: '0 0 12px', fontSize: '24px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.5px' }}>Coming Soon! 🚀</h2>
