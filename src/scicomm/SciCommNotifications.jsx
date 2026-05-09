@@ -26,6 +26,15 @@ export default function SciCommNotifications() {
     return isInvited && new Date(m.date) >= new Date(new Date().toDateString());
   });
 
+  const generalNotifications = useLiveCollection('scicomm_notifications') || [];
+  const myGeneralNotifs = generalNotifications.filter(n => String(n.userId) === String(user.id));
+
+  const handleNotificationClick = async (n) => {
+    if (n.isGeneral && !n.read) {
+      try { await db.scicomm_notifications.update(n.rawId, { read: true }); } catch (e) {}
+    }
+  };
+
   // Mark warnings seen
   useEffect(() => {
     myWarnings.filter(w => !w.seen).forEach(async (w) => {
@@ -101,6 +110,19 @@ export default function SciCommNotifications() {
         link: '/chat'
       }));
     })(),
+    ...myGeneralNotifs.map(n => ({
+      type: n.type,
+      icon: n.type === 'mention' ? <UserCheck size={18} color="#0891b2" /> : n.type.includes('reaction') ? <Bell size={18} color="#f59e0b" /> : <MessageCircle size={18} color="#3b82f6" />,
+      bg: n.type === 'mention' ? '#ecfeff' : n.type.includes('reaction') ? '#fef3c7' : '#eff6ff',
+      title: n.title,
+      sub: n.type.includes('reaction') ? `Reaction: ${n.icon}` : 'Click to view',
+      time: n.createdAt,
+      id: 'gen_' + n.id,
+      link: n.link,
+      read: n.read,
+      rawId: n.id,
+      isGeneral: true
+    })),
   ].sort((a, b) => new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime());
 
   return (
@@ -109,6 +131,7 @@ export default function SciCommNotifications() {
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 12px', fontSize: '16px' }}>Notifications</h3>
           {[
+            { label: 'Social', count: myGeneralNotifs.filter(n => !n.read).length, color: '#0891b2' },
             { label: 'Tasks', count: myTasks.length, color: '#1d4ed8' },
             { label: 'Warnings', count: myWarnings.filter(w => w.status !== 'removed').length, color: '#ef4444' },
             { label: 'Connections', count: pendingConnections.length, color: '#3b82f6' },
@@ -134,14 +157,15 @@ export default function SciCommNotifications() {
               <p style={{ fontSize: '14px' }}>No new notifications.</p>
             </div>
           ) : notifications.map(n => (
-            <Link key={n.id} to={n.link || '#'} style={{ display: 'flex', gap: '12px', padding: '14px 8px', borderBottom: '1px solid #eef3f8', textDecoration: 'none', color: 'inherit', borderRadius: '8px', transition: 'background 0.15s' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#f9fafb'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+            <Link key={n.id} to={n.link || '#'} onClick={() => handleNotificationClick(n)} style={{ display: 'flex', gap: '12px', padding: '14px 12px', borderBottom: '1px solid #eef3f8', textDecoration: 'none', color: 'inherit', borderRadius: '8px', transition: 'all 0.15s', opacity: n.read ? 0.6 : 1, background: n.read ? 'transparent' : '#f4f4f5' }}
+              onMouseEnter={e => e.currentTarget.style.background = n.read ? '#f9fafb' : '#e4e4e7'} onMouseLeave={e => e.currentTarget.style.background = n.read ? 'transparent' : '#f4f4f5'}>
               <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: n.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{n.icon}</div>
               <div style={{ flex: 1 }}>
-                <p style={{ margin: '0 0 2px', fontSize: '14px', fontWeight: 600 }}>{n.title}</p>
+                <p style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: n.read ? 500 : 700 }}>{n.title}</p>
                 <p style={{ margin: 0, fontSize: '13px', color: 'rgba(0,0,0,0.6)' }}>{n.sub}</p>
-                {n.time && <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', marginTop: '4px' }}>{timeAgo(n.time)}</div>}
+                {n.time && <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', marginTop: '6px' }}>{timeAgo(n.time)}</div>}
               </div>
+              {!n.read && n.isGeneral && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6', alignSelf: 'center' }} />}
             </Link>
           ))}
         </div>

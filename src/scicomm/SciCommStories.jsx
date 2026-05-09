@@ -1,8 +1,83 @@
-import React, { useState } from 'react';
-import { Plus, X, UserCircle, Heart, Send } from 'lucide-react';
-import { db, useLiveCollection, uploadFile } from '../db';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, X, UserCircle, Heart, Send, ChevronLeft, ChevronRight } from 'lucide-react';
+import { db, useLiveCollection, uploadFile, firestore, getCollectionName } from '../db';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
 import { AVATARS } from './scicommConstants';
+
+const base64ToBlob = (base64, contentType) => {
+  const byteCharacters = atob(base64);
+  const byteArrays = [];
+  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    const slice = byteCharacters.slice(offset, offset + 512);
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+  return new Blob(byteArrays, {type: contentType});
+};
+
+const StoryVideo = ({ videoUrl, isPaused, style }) => {
+  const [src, setSrc] = useState(null);
+  const fileId = videoUrl.replace('chunked://', '');
+  const videoRef = useRef(null);
+  const [audioUnlocked, setAudioUnlocked] = useState(sessionStorage.getItem('audio_unlocked') === 'true');
+  
+  useEffect(() => {
+    const loadVideo = async () => {
+      if (!videoUrl.startsWith('chunked://')) {
+        setSrc(videoUrl);
+        return;
+      }
+      try {
+        const q = query(collection(firestore, getCollectionName('scicomm_file_chunks')), where('fileId', '==', fileId));
+        const snap = await getDocs(q);
+        const chunks = snap.docs.map(doc => doc.data()).sort((a,b) => a.chunkIndex - b.chunkIndex);
+        if (chunks.length > 0) {
+          const base64Data = chunks.map(c => c.data.split(',')[1]).join('');
+          const contentType = chunks[0].data.split(',')[0].split(':')[1].split(';')[0];
+          const blob = base64ToBlob(base64Data, contentType);
+          setSrc(URL.createObjectURL(blob));
+        }
+      } catch (e) {
+        console.error('Failed to load chunked video', e);
+      }
+    };
+    loadVideo();
+  }, [fileId, videoUrl]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isPaused) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play().catch(e => console.log('Autoplay blocked', e));
+      }
+    }
+  }, [isPaused, src]);
+
+  const toggleAudio = (e) => {
+    e.stopPropagation();
+    const next = !audioUnlocked;
+    setAudioUnlocked(next);
+    if (next) sessionStorage.setItem('audio_unlocked', 'true');
+    else sessionStorage.removeItem('audio_unlocked');
+  };
+
+  if (!src) return <div style={{ ...style, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', background: '#111' }}>Loading...</div>;
+
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <video ref={videoRef} src={src} playsInline loop muted={!audioUnlocked} style={style} />
+      <button onClick={toggleAudio} style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(0,0,0,0.5)', color: 'white', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 20 }}>
+        {audioUnlocked ? '🔊' : '🔇'}
+      </button>
+    </div>
+  );
+};
 
 export default function SciCommStories({ scientists }) {
   const { user } = useAuth();
@@ -26,6 +101,7 @@ export default function SciCommStories({ scientists }) {
   const [storyIndex, setStoryIndex] = useState(0);
   const [showViewers, setShowViewers] = useState(false);
   const [replyText, setReplyText] = useState('');
+  const [isPaused, setIsPaused] = useState(false);
 
   // Filter active stories
   const now = new Date();
@@ -127,14 +203,14 @@ export default function SciCommStories({ scientists }) {
   }, [viewingUserId, storyIndex]);
 
   // Auto advance
-  React.useEffect(() => {
-    if (viewingUserId) {
+  useEffect(() => {
+    if (viewingUserId && !isPaused && !replyText) {
       const timer = setTimeout(() => {
         handleNextStory();
       }, 5000); // 5 seconds per story
       return () => clearTimeout(timer);
     }
-  }, [viewingUserId, storyIndex]);
+  }, [viewingUserId, storyIndex, isPaused, replyText]);
 
   const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
 
@@ -217,7 +293,7 @@ export default function SciCommStories({ scientists }) {
             <div key={uid} onClick={() => { setViewingUserId(uid); setStoryIndex(0); }} style={{ width: '100px', height: '160px', flexShrink: 0, borderRadius: '12px', background: 'white', position: 'relative', overflow: 'hidden', cursor: 'pointer', border: '1px solid #e0dfdc', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
               {latestStory.mediaUrl ? (
                 latestStory.mediaType === 'video' ? (
-                  <video src={latestStory.mediaUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <StoryVideo videoUrl={latestStory.mediaUrl} isPaused={true} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
                   <img src={latestStory.mediaUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 )
@@ -313,11 +389,13 @@ export default function SciCommStories({ scientists }) {
             </div>
 
             {/* Content */}
-            <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111' }}>
+            <div 
+              style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111' }}
+            >
               {storiesByUser[viewingUserId][storyIndex].mediaUrl ? (
                 <>
                   {storiesByUser[viewingUserId][storyIndex].mediaType === 'video' ? (
-                    <video src={storiesByUser[viewingUserId][storyIndex].mediaUrl} autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    <StoryVideo videoUrl={storiesByUser[viewingUserId][storyIndex].mediaUrl} isPaused={isPaused || replyText.length > 0} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   ) : (
                     <img src={storiesByUser[viewingUserId][storyIndex].mediaUrl} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   )}
@@ -335,8 +413,21 @@ export default function SciCommStories({ scientists }) {
             </div>
 
             {/* Nav Areas */}
-            <div onClick={handlePrevStory} style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: '30%', zIndex: 5, cursor: 'pointer' }} />
-            <div onClick={handleNextStory} style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: '70%', zIndex: 5, cursor: 'pointer' }} />
+            <div 
+              onPointerDown={() => setIsPaused(true)}
+              onPointerUp={() => { setIsPaused(false); handlePrevStory(); }}
+              onPointerLeave={() => setIsPaused(false)}
+              style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: '30%', zIndex: 5, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '16px' }}>
+              <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '50%', color: 'white', display: 'flex', padding: '8px', opacity: 0.7 }}><ChevronLeft size={32} /></div>
+            </div>
+            
+            <div 
+              onPointerDown={() => setIsPaused(true)}
+              onPointerUp={() => { setIsPaused(false); handleNextStory(); }}
+              onPointerLeave={() => setIsPaused(false)}
+              style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: '70%', zIndex: 5, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '16px' }}>
+              <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '50%', color: 'white', display: 'flex', padding: '8px', opacity: 0.7 }}><ChevronRight size={32} /></div>
+            </div>
 
             {/* Views counter for own story */}
             {String(viewingUserId) === String(user.id) && (
@@ -356,6 +447,8 @@ export default function SciCommStories({ scientists }) {
                   <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
                     <input type="text" placeholder="Reply to story..." 
                       value={replyText} onChange={e => setReplyText(e.target.value)}
+                      onFocus={() => setIsPaused(true)}
+                      onBlur={() => { if (!replyText) setIsPaused(false); }}
                       onKeyDown={e => { if (e.key === 'Enter') handleReply(); }}
                       style={{ width: '100%', padding: '12px 16px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(0,0,0,0.5)', color: 'white', outline: 'none' }} />
                     {replyText && <button onClick={handleReply} style={{ position: 'absolute', right: '8px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Send size={16} /></button>}

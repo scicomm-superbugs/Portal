@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Briefcase, Calendar, Trophy, Video, Shield, Users, Bell, Lock } from 'lucide-react';
+import { Briefcase, Calendar, Trophy, Video, Shield, Users, Bell, Lock, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
 import { useState } from 'react';
@@ -16,9 +16,12 @@ export default function SciCommHub() {
   const navigate = useNavigate();
   const [showApplyModal, setShowApplyModal] = useState(false);
 
+  const [showComingSoon, setShowComingSoon] = useState(false);
+
   const items = [
     { to: '/tasks', icon: <Briefcase size={32} />, label: 'Tasks', color: isTeam ? '#3b82f6' : '#94a3b8', bg: isTeam ? '#eff6ff' : '#f8fafc', badge: myPendingTasks.length, locked: !isTeam },
     { to: '/meetings', icon: <Video size={32} />, label: 'Meetings', color: isTeam ? '#8b5cf6' : '#94a3b8', bg: isTeam ? '#f5f3ff' : '#f8fafc', badge: 0, locked: !isTeam },
+    { isProjects: true, icon: <LayoutDashboard size={32} />, label: 'Projects', color: isTeam ? '#14b8a6' : '#94a3b8', bg: isTeam ? '#ccfbf1' : '#f8fafc', badge: 0, locked: !isTeam },
     { to: '/leaderboard', icon: <Trophy size={32} />, label: 'Leaderboard', color: '#f59e0b', bg: '#fffbeb', badge: 0 },
     { to: '/calendar', icon: <Calendar size={32} />, label: 'Calendar', color: '#10b981', bg: '#ecfdf5', badge: upcomingMeetings.length },
     ...(isAdmin ? [{ to: '/admin', icon: <Shield size={32} />, label: 'Admin', color: '#1d4ed8', bg: '#eff6ff', badge: 0 }] : []),
@@ -65,6 +68,18 @@ export default function SciCommHub() {
               border: '1px solid #e0dfdc', position: 'relative',
               boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
               cursor: 'pointer'
+            }}>
+              {content}
+            </div>
+          ) : item.isProjects ? (
+            <div key={item.label} onClick={() => setShowComingSoon(true)} style={{
+              textDecoration: 'none', color: 'inherit',
+              background: 'white', borderRadius: '16px', padding: '24px 16px',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
+              border: '1px solid #e0dfdc', position: 'relative',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+              cursor: 'pointer',
+              transition: 'transform 0.15s, box-shadow 0.15s',
             }}>
               {content}
             </div>
@@ -117,6 +132,39 @@ export default function SciCommHub() {
                 Apply Now
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Coming Soon Modal */}
+      {showComingSoon && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(10px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ 
+            background: 'white', 
+            borderRadius: '24px', 
+            padding: '32px', 
+            maxWidth: '440px', 
+            width: '100%', 
+            textAlign: 'center',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.5)',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #14b8a6, #3b82f6)' }} />
+            
+            <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #ccfbf1 0%, #eff6ff 100%)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 8px 16px rgba(20, 184, 166, 0.15)' }}>
+              <LayoutDashboard size={40} color="#14b8a6" />
+            </div>
+            
+            <h2 style={{ margin: '0 0 12px', fontSize: '24px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.5px' }}>Coming Soon! 🚀</h2>
+            <p style={{ margin: '0 0 28px', fontSize: '15px', color: '#64748b', lineHeight: '1.6' }}>
+              We're crafting an amazing new <strong>Projects</strong> experience for the SciComm team. It's not quite ready yet, but it will be worth the wait!
+            </p>
+            
+            <button onClick={() => setShowComingSoon(false)} style={{ width: '100%', padding: '14px', borderRadius: '14px', border: 'none', background: 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)', color: 'white', fontWeight: 700, fontSize: '15px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(20, 184, 166, 0.3)', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'none'}>
+              Awesome, I'll wait!
+            </button>
           </div>
         </div>
       )}

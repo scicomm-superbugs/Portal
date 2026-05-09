@@ -18,6 +18,8 @@ export default function SciCommChat() {
   const [showNewChat, setShowNewChat] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [editingMsg, setEditingMsg] = useState(null);
+  const [replyingTo, setReplyingTo] = useState(null);
   const messagesEnd = useRef(null);
 
   // Auto-open chat if ?with= param
@@ -125,19 +127,34 @@ export default function SciCommChat() {
 
   const sendMessage = async () => {
     if (!msgText.trim() || !selectedRoom) return;
-    const room = rooms.find(r => r.id === selectedRoom);
-    const otherMembers = (room?.members || []).filter(id => id !== user.id);
-    await db.scicomm_chat_messages.add({
+
+    if (editingMsg) {
+      await db.scicomm_chat_messages.update(editingMsg, { content: msgText });
+      setEditingMsg(null);
+      setMsgText('');
+      return;
+    }
+
+    const msgData = {
       roomId: selectedRoom,
       senderId: user.id,
       senderName: user.name,
       content: msgText,
-      type: 'text',
-      readBy: [user.id], // sender has already read it
+      type: replyingTo ? 'reply' : 'text',
+      readBy: [user.id],
       createdAt: new Date().toISOString()
-    });
+    };
+
+    if (replyingTo) {
+      msgData.replyToId = replyingTo.id;
+      msgData.replyToSender = replyingTo.senderName;
+      msgData.replyToContent = replyingTo.content;
+    }
+
+    await db.scicomm_chat_messages.add(msgData);
     await db.scicomm_chat_rooms.update(selectedRoom, { lastMessageAt: new Date().toISOString(), lastMessage: msgText, lastSender: user.name });
     setMsgText('');
+    setReplyingTo(null);
   };
 
   const handleFileUpload = async (e) => {
@@ -380,11 +397,19 @@ export default function SciCommChat() {
                           {m.storyContent && <div style={{ fontSize: '13px', fontStyle: 'italic', opacity: 0.8 }}>"{m.storyContent}"</div>}
                         </div>
                       )}
+                      {m.type === 'reply' && m.replyToContent && (
+                        <div style={{ marginBottom: '8px', padding: '8px', background: isMe ? 'rgba(255,255,255,0.2)' : '#f3f4f6', borderRadius: '8px', borderLeft: `4px solid ${isMe ? 'white' : '#1d4ed8'}` }}>
+                          <div style={{ fontSize: '11px', fontWeight: 600, marginBottom: '4px', opacity: 0.8 }}>Replying to {m.replyToSender}</div>
+                          <div style={{ fontSize: '12px', opacity: 0.9, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.replyToContent.substring(0, 150)}{m.replyToContent.length > 150 ? '...' : ''}</div>
+                        </div>
+                      )}
                       {m.content && (
                         <div style={{ 
                           unicodeBidi: 'plaintext', 
                           direction: /[\u0600-\u06FF]/.test(m.content || '') ? 'rtl' : 'ltr',
-                          textAlign: /[\u0600-\u06FF]/.test(m.content || '') ? 'right' : 'left'
+                          textAlign: /[\u0600-\u06FF]/.test(m.content || '') ? 'right' : 'left',
+                          whiteSpace: 'pre-wrap', 
+                          wordBreak: 'break-word'
                         }}>
                           {renderMessageText(m.content, isMe)}
                         </div>
@@ -394,7 +419,7 @@ export default function SciCommChat() {
                       {m.reactions && Object.keys(m.reactions).length > 0 && (
                         <div style={{ display: 'flex', gap: '4px', marginTop: '6px', flexWrap: 'wrap' }}>
                           {Object.entries(m.reactions).map(([emoji, userIds]) => (
-                            <div key={emoji} onClick={() => handleReact(m.id, emoji)} style={{ background: isMe ? 'rgba(255,255,255,0.2)' : '#f1f5f9', padding: '2px 6px', borderRadius: '10px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '2px', cursor: 'pointer' }}>
+                            <div key={emoji} onClick={() => handleReact(m.id, emoji)} title={userIds.map(id => scientists.find(s => String(s.id) === String(id))?.name || 'User').join(', ')} style={{ background: isMe ? 'rgba(255,255,255,0.2)' : '#f1f5f9', padding: '2px 6px', borderRadius: '10px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '2px', cursor: 'pointer' }}>
                               <span>{emoji}</span>
                               <span style={{ opacity: 0.8 }}>{userIds.length}</span>
                             </div>
@@ -405,7 +430,6 @@ export default function SciCommChat() {
                       <div style={{ fontSize: '10px', marginTop: '4px', opacity: 0.7, textAlign: 'right' }}>{timeAgo(m.createdAt)}</div>
                     </div>
 
-                    {/* Quick Reactions Tooltip */}
                     {hoveredMessage === m.id && (
                       <div style={{
                         position: 'absolute',
@@ -417,6 +441,7 @@ export default function SciCommChat() {
                         padding: '4px 8px',
                         display: 'flex',
                         gap: '6px',
+                        alignItems: 'center',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                         border: '1px solid #e0dfdc',
                         zIndex: 10
@@ -426,6 +451,10 @@ export default function SciCommChat() {
                             {emoji}
                           </span>
                         ))}
+                        <div style={{ width: '1px', height: '16px', background: '#e0dfdc', margin: '0 4px' }} />
+                        <span onClick={() => setReplyingTo(m)} style={{ cursor: 'pointer', fontSize: '11px', color: '#1d4ed8', fontWeight: 600 }}>Reply</span>
+                        {isMe && <span onClick={() => { setEditingMsg(m.id); setMsgText(m.content); }} style={{ cursor: 'pointer', fontSize: '11px', color: '#1d4ed8', fontWeight: 600 }}>Edit</span>}
+                        {isMe && <span onClick={() => db.scicomm_chat_messages.delete(m.id)} style={{ cursor: 'pointer', fontSize: '11px', color: '#ef4444', fontWeight: 600 }}>Remove</span>}
                       </div>
                     )}
                   </div>
@@ -439,13 +468,23 @@ export default function SciCommChat() {
                 {EMOJI_LIST.map(e => <button key={e} onClick={() => { setMsgText(prev => prev + e); setShowEmoji(false); }} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '4px' }}>{e}</button>)}
               </div>
             )}
-            <div style={{ display: 'flex', gap: '6px', padding: '10px 12px', borderTop: '1px solid #e0dfdc', alignItems: 'center' }}>
-              <button onClick={() => setShowEmoji(!showEmoji)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: '4px' }}><Smile size={20} /></button>
-              <label style={{ cursor: 'pointer', color: '#666', padding: '4px', display: 'flex' }}><Paperclip size={20} /><input type="file" onChange={handleFileUpload} style={{ display: 'none' }} /></label>
-              <button onClick={() => setShowPollCreator(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: '4px' }}><BarChart2 size={20} /></button>
-              <input type="text" value={msgText} onChange={e => setMsgText(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMessage()}
-                placeholder="Type a message..." style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '24px', fontSize: '14px', outline: 'none', minWidth: 0 }} />
-              <button className="scicomm-btn-primary" onClick={sendMessage} style={{ padding: '10px 14px', flexShrink: 0 }}><Send size={16} /></button>
+            {/* Context Banner */}
+            {(replyingTo || editingMsg) && (
+              <div style={{ padding: '8px 16px', background: '#f8fafc', borderTop: '1px solid #e0dfdc', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <span style={{ fontWeight: 600, color: '#1d4ed8' }}>{editingMsg ? 'Editing message' : `Replying to ${replyingTo.senderName}`}</span>
+                  <div style={{ color: '#64748b', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{(editingMsg ? msgText : replyingTo.content)?.substring(0, 50)}...</div>
+                </div>
+                <button onClick={() => { setReplyingTo(null); setEditingMsg(null); setMsgText(''); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: '4px' }}><X size={16} /></button>
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: '6px', padding: '10px 12px', borderTop: '1px solid #e0dfdc', alignItems: 'flex-end' }}>
+              <button onClick={() => setShowEmoji(!showEmoji)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: '8px 4px' }}><Smile size={20} /></button>
+              <label style={{ cursor: 'pointer', color: '#666', padding: '8px 4px', display: 'flex' }}><Paperclip size={20} /><input type="file" onChange={handleFileUpload} style={{ display: 'none' }} /></label>
+              <button onClick={() => setShowPollCreator(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: '8px 4px' }}><BarChart2 size={20} /></button>
+              <textarea value={msgText} onChange={e => setMsgText(e.target.value)} 
+                placeholder="Type a message..." style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '16px', fontSize: '14px', outline: 'none', minWidth: 0, resize: 'none', minHeight: '40px', maxHeight: '120px', fontFamily: 'inherit' }} rows={1} />
+              <button className="scicomm-btn-primary" onClick={sendMessage} style={{ padding: '10px 14px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '16px', height: '40px' }}><Send size={16} /></button>
             </div>
 
             {/* Poll Creator Modal */}

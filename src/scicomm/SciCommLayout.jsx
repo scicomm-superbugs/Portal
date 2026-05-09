@@ -40,6 +40,7 @@ export default function SciCommLayout() {
   const [searchText, setSearchText] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('scicommDarkMode') === 'true');
   const [showApplyModal, setShowApplyModal] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const postsRaw = useLiveCollection('scicomm_posts') || [];
   
   // Calculate stats for sidebar
@@ -232,6 +233,18 @@ export default function SciCommLayout() {
                       <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
                     </div>
                   )}
+                  {isTeam ? (
+                    <div onClick={() => setShowComingSoon(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                      <LayoutDashboard size={24} color="#14b8a6" />
+                      <span style={{ fontSize: '13px', fontWeight: 600 }}>Projects</span>
+                    </div>
+                  ) : (
+                    <div onClick={() => setShowApplyModal(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                      <LayoutDashboard size={24} color="#94a3b8" />
+                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Projects</span>
+                      <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
+                    </div>
+                  )}
                   <Link to="/leaderboard" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                     <Trophy size={24} color="#f59e0b" />
                     <span style={{ fontSize: '13px', fontWeight: 600 }}>Leaderboard</span>
@@ -419,6 +432,39 @@ export default function SciCommLayout() {
                 Apply Now
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Coming Soon Modal */}
+      {showComingSoon && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(10px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ 
+            background: 'white', 
+            borderRadius: '24px', 
+            padding: '32px', 
+            maxWidth: '440px', 
+            width: '100%', 
+            textAlign: 'center',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.5)',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #14b8a6, #3b82f6)' }} />
+            
+            <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #ccfbf1 0%, #eff6ff 100%)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', boxShadow: '0 8px 16px rgba(20, 184, 166, 0.15)' }}>
+              <LayoutDashboard size={40} color="#14b8a6" />
+            </div>
+            
+            <h2 style={{ margin: '0 0 12px', fontSize: '24px', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.5px' }}>Coming Soon! 🚀</h2>
+            <p style={{ margin: '0 0 28px', fontSize: '15px', color: '#64748b', lineHeight: '1.6' }}>
+              We're crafting an amazing new <strong>Projects</strong> experience for the SciComm team. It's not quite ready yet, but it will be worth the wait!
+            </p>
+            
+            <button onClick={() => setShowComingSoon(false)} style={{ width: '100%', padding: '14px', borderRadius: '14px', border: 'none', background: 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)', color: 'white', fontWeight: 700, fontSize: '15px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(20, 184, 166, 0.3)', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'none'}>
+              Awesome, I'll wait!
+            </button>
           </div>
         </div>
       )}
