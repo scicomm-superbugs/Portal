@@ -31,6 +31,7 @@ import SciCommMemberProfile from './scicomm/SciCommMemberProfile';
 import SciCommHub from './scicomm/SciCommHub';
 import SciCommPost from './scicomm/SciCommPost';
 import SciCommApply from './scicomm/SciCommApply';
+import SciCommSinglePost from './scicomm/SciCommSinglePost';
 
 // Read workspace once at module level (stable — only changes on Portal page redirect)
 const isSciComm = localStorage.getItem('workspaceId') === 'aiuscicomm';
@@ -64,6 +65,7 @@ function App() {
                 <Route path="member/:memberId" element={<SciCommMemberProfile />} />
                 <Route path="hub" element={<SciCommHub />} />
                 <Route path="post" element={<SciCommPost />} />
+                <Route path="view-post/:postId" element={<SciCommSinglePost />} />
                 <Route element={<ProtectedRoute requireAdmin={true} />}>
                   <Route path="admin" element={<SciCommAdmin />} />
                 </Route>

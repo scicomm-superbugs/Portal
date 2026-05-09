@@ -283,7 +283,8 @@ export const db = {
   },
   scicomm_posts: {
     add: async (post) => {
-      await addDoc(collection(firestore, getCollectionName('scicomm_posts')), post);
+      const ref = await addDoc(collection(firestore, getCollectionName('scicomm_posts')), post);
+      return ref.id;
     },
     update: async (id, data) => {
       await updateDoc(doc(firestore, getCollectionName('scicomm_posts'), String(id)), data);

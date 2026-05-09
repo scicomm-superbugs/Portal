@@ -324,7 +324,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `New post from ${user.name}`,
           message: postMsg,
-          link: `/feed?postId=${newPostId}`, 
+          link: `/view-post/${newPostId}`, 
           createdAt: new Date().toISOString(),
           read: false
         }).catch(e => console.error("Failed to add post notification", e));
@@ -390,7 +390,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `${user.name} reacted ${rd?.emoji || ''} to your post`,
           message: post.content?.substring(0, 50) + '...',
-          link: `/feed?postId=${post.id}`,
+          link: `/view-post/${post.id}`,
           createdAt: new Date().toISOString(),
           read: false
         }).catch(e => console.error("Reaction notification failed", e));
@@ -449,7 +449,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `${user.name} ${isReply ? 'replied to a comment on your post' : 'commented on your post'}`,
           message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
-          link: `/feed?postId=${post.id}`, createdAt: new Date().toISOString(), read: false
+          link: `/view-post/${post.id}`, createdAt: new Date().toISOString(), read: false
         }).catch(e => console.error("Post owner notification failed", e));
       }
       
@@ -461,7 +461,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `${user.name} replied to your comment`,
           message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
-          link: `/feed?postId=${post.id}`, createdAt: new Date().toISOString(), read: false
+          link: `/view-post/${post.id}`, createdAt: new Date().toISOString(), read: false
         }).catch(e => console.error("Reply notification failed", e));
       }
       
@@ -477,7 +477,7 @@ export default function SciCommFeed() {
             senderId: user.id,
             title: `${user.name} mentioned you in a comment`,
             message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
-            link: `/feed?postId=${post.id}`, createdAt: new Date().toISOString(), read: false
+            link: `/view-post/${post.id}`, createdAt: new Date().toISOString(), read: false
           }).catch(e => console.error("Mention notification failed", e));
         }
       });
@@ -521,7 +521,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `${user.name} reacted ${rd?.emoji || ''} to your comment`,
           message: target.text?.substring(0, 50) + '...',
-          link: `/feed?postId=${post.id}`,
+          link: `/view-post/${post.id}`,
           createdAt: new Date().toISOString(),
           read: false
         }).catch(e => console.error("Comment reaction notification failed", e));
@@ -1036,7 +1036,11 @@ export default function SciCommFeed() {
                       {(!author?.role || author?.role === 'visitor' || author?.role === 'scientist') && <span style={{ background: 'linear-gradient(135deg, #94a3b8, #64748b)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>👤 Visitor</span>}
                     </div>
                     <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px' }}>{author?.department || 'Member'}</div>
-                    <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>{timeAgo(post.createdAt)} • 🌐{post.recognized && ' ⭐ Master Recognized'}{post.editedAt && ' • ✏️ edited'}</div>
+                    <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>
+                      <Link to={`/view-post/${post.id}`} style={{ color: 'inherit', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.textDecoration='underline'} onMouseLeave={e => e.currentTarget.style.textDecoration='none'}>
+                        {timeAgo(post.createdAt)}
+                      </Link> • 🌐{post.recognized && ' ⭐ Master Recognized'}{post.editedAt && ' • ✏️ edited'}
+                    </div>
                   </div>
                   {(isAdmin || String(post.authorId) === String(user.id)) && (
                     <div style={{ position: 'relative' }}>

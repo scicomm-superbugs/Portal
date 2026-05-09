@@ -274,8 +274,14 @@ export default function SciCommNotifications() {
           bg = n.senderId ? 'transparent' : 'rgba(29, 78, 216, 0.1)';
         }
 
+        let finalLink = n.link || '/';
+        if (typeof finalLink === 'string' && finalLink.startsWith('/feed?postId=')) {
+          finalLink = finalLink.replace('/feed?postId=', '/view-post/');
+        }
+
         return {
           ...n,
+          link: finalLink,
           type: n.type,
           category,
           icon,

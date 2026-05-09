@@ -107,7 +107,7 @@ export default function SciCommPost() {
         };
       }
 
-      await db.scicomm_posts.add(postData);
+      const newPostId = await db.scicomm_posts.add(postData);
       
       // Mentions Notification
       const mentions = content.match(/@\w+/g) || [];
@@ -117,9 +117,10 @@ export default function SciCommPost() {
         if (userMatch && String(userMatch.id) !== String(user.id)) {
           db.scicomm_notifications.add({
             userId: userMatch.id, type: 'mention',
+            senderId: user.id,
             title: `${user.name} mentioned you in a post`,
             message: content.substring(0, 50) + '...',
-            link: `/feed`, createdAt: new Date().toISOString(), read: false
+            link: `/view-post/${newPostId}`, createdAt: new Date().toISOString(), read: false
           }).catch(() => {});
         }
       });
