@@ -223,23 +223,43 @@ export default function SciCommNotifications() {
     ? allNotifications 
     : allNotifications.filter(n => n.category === activeTab);
 
-  // Grouping by date
-  const groups = filteredNotifications.reduce((acc, n) => {
-    const date = new Date(n.time || Date.now());
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
+  const unreadNotifications = filteredNotifications.filter(n => n.read === false);
+  const readNotifications = filteredNotifications.filter(n => n.read !== false);
 
-    let group = 'Earlier';
-    if (date.toDateString() === today.toDateString()) group = 'Today';
-    else if (date.toDateString() === yesterday.toDateString()) group = 'Yesterday';
-
-    if (!acc[group]) acc[group] = [];
-    acc[group].push(n);
-    return acc;
-  }, {});
-
-  const groupOrder = ['Today', 'Yesterday', 'Earlier'];
+  const renderNotificationItem = (n) => (
+    <Link 
+      key={n.id} 
+      to={n.link || '#'} 
+      onClick={() => handleNotificationClick(n)}
+      style={{ 
+        display: 'flex', 
+        gap: '16px', 
+        padding: '16px', 
+        textDecoration: 'none', 
+        color: 'inherit', 
+        borderRadius: '20px', 
+        transition: 'all 0.2s',
+        background: n.read === false ? 'rgba(29, 78, 216, 0.05)' : 'transparent',
+        opacity: n.read === false ? 1 : 0.6,
+        marginBottom: '4px',
+        border: n.read === false ? '1px solid rgba(29, 78, 216, 0.1)' : '1px solid transparent'
+      }}
+      onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+      onMouseLeave={e => e.currentTarget.style.background = n.read === false ? 'rgba(29, 78, 216, 0.05)' : 'transparent'}
+    >
+      <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: n.bg, color: n.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        {n.icon}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+          <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: n.read === false ? 800 : 500, color: '#0f172a' }}>{n.title}</p>
+          {n.time && <span style={{ fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap' }}>{timeAgo(n.time)}</span>}
+        </div>
+        <p style={{ margin: 0, fontSize: '14px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{n.sub}</p>
+      </div>
+      {n.read === false && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6', marginTop: '10px' }} />}
+    </Link>
+  );
 
   return (
     <div className="scicomm-notifications-page" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
@@ -295,55 +315,38 @@ export default function SciCommNotifications() {
         ))}
       </div>
 
-      <div className="scicomm-card" style={{ padding: '8px', borderRadius: '20px' }}>
-        {allNotifications.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🌈</div>
-            <h3 style={{ margin: '0 0 8px', fontSize: '18px' }}>All caught up!</h3>
-            <p style={{ color: '#64748b', fontSize: '14px' }}>No new notifications to show right now.</p>
-          </div>
-        ) : (
-          groupOrder.map(groupName => groups[groupName] && (
-            <div key={groupName}>
-              <h3 style={{ fontSize: '12px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', padding: '16px 16px 8px', letterSpacing: '1px' }}>{groupName}</h3>
-              {groups[groupName].map(n => (
-                <Link 
-                  key={n.id} 
-                  to={n.link || '#'} 
-                  onClick={() => handleNotificationClick(n)}
-                  style={{ 
-                    display: 'flex', 
-                    gap: '16px', 
-                    padding: '16px', 
-                    textDecoration: 'none', 
-                    color: 'inherit', 
-                    borderRadius: '16px', 
-                    transition: 'all 0.2s',
-                    background: n.read === false ? 'rgba(29, 78, 216, 0.03)' : 'transparent',
-                    opacity: n.read === false ? 1 : 0.6,
-                    marginBottom: '2px',
-                    position: 'relative'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
-                  onMouseLeave={e => e.currentTarget.style.background = n.read === false ? 'rgba(29, 78, 216, 0.03)' : 'transparent'}
-                >
-                  <div style={{ width: '48px', height: '48px', borderRadius: '16px', background: n.bg, color: n.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {n.icon}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
-                      <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: n.read === false ? 700 : 500, color: '#0f172a' }}>{n.title}</p>
-                      {n.time && <span style={{ fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap' }}>{timeAgo(n.time)}</span>}
-                    </div>
-                    <p style={{ margin: 0, fontSize: '14px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{n.sub}</p>
-                  </div>
-                  {n.read === false && (
-                    <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', width: '8px', height: '8px', borderRadius: '50%', background: '#1d4ed8' }} />
-                  )}
-                </Link>
-              ))}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {unreadNotifications.length > 0 && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', padding: '0 8px' }}>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6' }} />
+              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: '#1e293b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>New Notifications</h3>
+              <div style={{ flex: 1, height: '1px', background: '#f1f5f9' }} />
             </div>
-          ))
+            <div className="scicomm-card" style={{ padding: '8px', borderRadius: '24px', border: '1px solid rgba(29, 78, 216, 0.1)' }}>
+              {unreadNotifications.map(renderNotificationItem)}
+            </div>
+          </div>
+        )}
+
+        {readNotifications.length > 0 && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', padding: '0 8px' }}>
+              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Activity History</h3>
+              <div style={{ flex: 1, height: '1px', background: '#f1f5f9' }} />
+            </div>
+            <div className="scicomm-card" style={{ padding: '8px', borderRadius: '24px', background: '#fcfcfc' }}>
+              {readNotifications.map(renderNotificationItem)}
+            </div>
+          </div>
+        )}
+
+        {filteredNotifications.length === 0 && (
+          <div className="scicomm-card" style={{ textAlign: 'center', padding: '80px 20px', borderRadius: '32px' }}>
+            <div style={{ fontSize: '64px', marginBottom: '24px' }}>✨</div>
+            <h3 style={{ margin: '0 0 12px', fontSize: '22px', fontWeight: 900 }}>Everything is clear!</h3>
+            <p style={{ color: '#64748b', fontSize: '16px', maxWidth: '300px', margin: '0 auto' }}>You've caught up with all your scientific alerts and messages.</p>
+          </div>
         )}
       </div>
     </div>

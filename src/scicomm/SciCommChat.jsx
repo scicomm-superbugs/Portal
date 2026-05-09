@@ -86,6 +86,7 @@ export default function SciCommChat() {
   // Group Settings states
   const [groupNameEdit, setGroupNameEdit] = useState('');
   const [groupDescEdit, setGroupDescEdit] = useState('');
+  const [groupAvatarEdit, setGroupAvatarEdit] = useState('');
   const [groupMembersEdit, setGroupMembersEdit] = useState([]);
   
   // New Room states
@@ -183,6 +184,7 @@ export default function SciCommChat() {
     if (!activeRoom) return;
     setGroupNameEdit(activeRoom.name || '');
     setGroupDescEdit(activeRoom.description || '');
+    setGroupAvatarEdit(activeRoom.avatar || '');
     setGroupMembersEdit(activeRoom.members.filter(id => id !== user.id));
     setShowGroupSettings(true);
   };
@@ -196,6 +198,7 @@ export default function SciCommChat() {
     await db.scicomm_chat_rooms.update(selectedRoom, {
       name: groupNameEdit,
       description: groupDescEdit,
+      avatar: groupAvatarEdit,
       members: [user.id, ...groupMembersEdit],
       memberNames
     });
@@ -310,9 +313,13 @@ export default function SciCommChat() {
                   background: isActive ? '#f0f7ff' : 'transparent',
                   marginBottom: '4px'
                 }} onMouseEnter={e => !isActive && (e.currentTarget.style.background = '#f8fafc')} onMouseLeave={e => !isActive && (e.currentTarget.style.background = 'transparent')}>
-                  <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }}>
                     {r.type === 'group' ? (
-                      <div style={{ width: 48, height: 48, borderRadius: '16px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={24} color="white" /></div>
+                      r.avatar ? (
+                        <img src={r.avatar} alt="Group" style={{ width: 48, height: 48, borderRadius: '16px', objectFit: 'cover' }} />
+                      ) : (
+                        <div style={{ width: 48, height: 48, borderRadius: '16px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={24} color="white" /></div>
+                      )
                     ) : renderAvatar(other, 48)}
                     {unread > 0 && <div style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#1d4ed8', color: 'white', borderRadius: '50%', width: '20px', height: '20px', fontSize: '10px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' }}>{unread}</div>}
                   </div>
@@ -423,7 +430,11 @@ export default function SciCommChat() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <button onClick={() => setMobileSidebarOpen(true)} className="chat-show-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', marginLeft: '-12px' }}><ArrowLeft size={24} /></button>
                 {activeRoom.type === 'group' ? (
-                  <div style={{ width: 44, height: 44, borderRadius: '14px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={22} color="#1d4ed8" /></div>
+                  activeRoom.avatar ? (
+                    <img src={activeRoom.avatar} alt="Group" style={{ width: 44, height: 44, borderRadius: '14px', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: 44, height: 44, borderRadius: '14px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={22} color="#1d4ed8" /></div>
+                  )
                 ) : renderAvatar(getRoomOther(activeRoom), 44)}
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '16px', color: '#0f172a' }}>{getRoomTitle(activeRoom)}</div>
@@ -534,6 +545,26 @@ export default function SciCommChat() {
               <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 900 }}>Group Settings</h3>
             </div>
             <div style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
+                <div style={{ position: 'relative', width: '100px', height: '100px', marginBottom: '16px' }}>
+                  {groupAvatarEdit ? (
+                    <img src={groupAvatarEdit} alt="Group" style={{ width: '100%', height: '100%', borderRadius: '32px', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={40} color="white" /></div>
+                  )}
+                  <label style={{ position: 'absolute', bottom: '-8px', right: '-8px', width: '36px', height: '36px', borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', border: '1px solid #f1f5f9' }}>
+                    <Image size={18} color="#1d4ed8" />
+                    <input type="file" accept="image/*" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = await uploadFile(file);
+                        setGroupAvatarEdit(url);
+                      }
+                    }} style={{ display: 'none' }} />
+                  </label>
+                </div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#1d4ed8' }}>Change Group Photo</div>
+              </div>
               <div style={{ marginBottom: '24px' }}>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#94a3b8', letterSpacing: '1px', marginBottom: '8px' }}>GROUP NAME</label>
                 <input type="text" value={groupNameEdit} onChange={e => setGroupNameEdit(e.target.value)} style={{ width: '100%', padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '15px', outline: 'none' }} />
