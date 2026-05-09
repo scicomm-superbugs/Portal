@@ -530,6 +530,12 @@ export default function SciCommChat() {
                         textAlign: /[\u0600-\u06FF]/.test(m.content || '') ? 'right' : 'left',
                         whiteSpace: 'pre-wrap'
                       }}>
+                        {m.replyToContent && (
+                          <div style={{ background: isMe ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)', padding: '6px 10px', borderRadius: '8px', marginBottom: '6px', borderLeft: `3px solid ${isMe ? 'white' : '#1d4ed8'}`, fontSize: '12px' }}>
+                            <div style={{ fontWeight: 700, marginBottom: '2px', opacity: 0.9 }}>{m.replyToSender}</div>
+                            <div style={{ opacity: 0.8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.replyToContent}</div>
+                          </div>
+                        )}
                         {isDeleted ? `🚫 This message was deleted by ${m.deletedByName || (m.deletedBy === 'admin' ? 'an admin' : 'the user')}${m.deletedBy === 'admin' && m.deletedByName ? ' (Admin)' : ''}.` : m.content}
                       </div>
                       <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', opacity: 0.6 }}>{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
@@ -589,7 +595,16 @@ export default function SciCommChat() {
             )}
 
             {/* Input Bar */}
-            <div style={{ padding: '20px 24px', background: 'white', borderTop: '1px solid #e2e8f0' }}>
+            <div style={{ padding: '20px 24px', background: 'white', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+              {replyingTo && (
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '10px 16px', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid #1d4ed8', marginBottom: '12px' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#1d4ed8', marginBottom: '2px' }}>Replying to {replyingTo.senderName}</div>
+                    <div style={{ fontSize: '13px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{replyingTo.deleted ? '🚫 This message was deleted.' : replyingTo.content}</div>
+                  </div>
+                  <button onClick={() => setReplyingTo(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '4px' }}>×</button>
+                </div>
+              )}
               {activeRoom.status === 'request' && activeRoom.initiator !== user.id ? (
                 <div style={{ textAlign: 'center' }}>
                   <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '16px' }}>{getRoomTitle(activeRoom)} wants to message you.</p>
@@ -768,7 +783,7 @@ export default function SciCommChat() {
           .chat-hide-mobile { display: none !important; }
           .chat-show-mobile { display: flex !important; }
           .scicomm-chat-sidebar {
-            position: absolute;
+            position: absolute !important;
             top: 0; left: 0; bottom: 0;
             width: 100% !important;
             transform: translateX(-100%);
