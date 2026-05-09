@@ -20,6 +20,7 @@ export default function SciCommChat() {
   const [replyingTo, setReplyingTo] = useState(null);
   const [editingMsg, setEditingMsg] = useState(null);
   const [hoveredMessage, setHoveredMessage] = useState(null);
+  const [activeMsgMenu, setActiveMsgMenu] = useState(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const isAdmin = user.role === 'admin' || user.role === 'master';
@@ -493,21 +494,35 @@ export default function SciCommChat() {
                       </div>
                       <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', opacity: 0.6 }}>{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                       
-                      {(isMe || isAdmin) && (
-                        <div 
-                          className="msg-actions"
-                          style={{ 
-                            position: 'absolute', 
-                            top: '50%', 
-                            transform: 'translateY(-50%)',
-                            [isMe ? 'left' : 'right']: '-36px',
-                            display: 'none',
-                            gap: '4px'
-                          }}
+                      <div 
+                        className="msg-actions"
+                        style={{ 
+                          position: 'absolute', 
+                          top: '50%', 
+                          transform: 'translateY(-50%)',
+                          [isMe ? 'left' : 'right']: '-36px',
+                          display: activeMsgMenu === m.id ? 'flex' : 'none',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          zIndex: activeMsgMenu === m.id ? 60 : 1
+                        }}
+                      >
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); setActiveMsgMenu(activeMsgMenu === m.id ? null : m.id); }} 
+                          style={{ background: 'white', border: '1px solid #e2e8f0', color: '#64748b', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }} 
+                          title="More options"
                         >
-                          <button onClick={() => handleDeleteMessage(m.id)} style={{ background: 'white', border: '1px solid #fee2e2', color: '#ef4444', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }} title="Delete Message"><Trash2 size={14} /></button>
-                        </div>
-                      )}
+                          <MoreHorizontal size={14} />
+                        </button>
+                        
+                        {activeMsgMenu === m.id && (
+                          <div style={{ position: 'absolute', top: '100%', [isMe ? 'left' : 'right']: 0, marginTop: '4px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 100, padding: '4px', minWidth: '140px' }}>
+                            <button onClick={() => { setReplyingTo(m); setActiveMsgMenu(null); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#0f172a', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#f1f5f9'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Reply</button>
+                            {isMe && <button onClick={() => { setEditingMsg(m.id); setMsgText(m.content); setActiveMsgMenu(null); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#0f172a', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#f1f5f9'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Edit</button>}
+                            {(isMe || isAdmin) && <button onClick={() => { setActiveMsgMenu(null); handleDeleteMessage(m.id); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#ef4444', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#fee2e2'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Delete</button>}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
