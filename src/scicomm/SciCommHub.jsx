@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Briefcase, Calendar, Trophy, Video, Shield, Users, Bell, Lock, LayoutDashboard } from 'lucide-react';
+import { Briefcase, Calendar, Trophy, Video, Shield, Users, Bell, Lock, FolderKanban } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
 import { useState } from 'react';
@@ -21,7 +21,7 @@ export default function SciCommHub() {
   const items = [
     { to: '/tasks', icon: <Briefcase size={32} />, label: 'Tasks', color: isTeam ? '#3b82f6' : '#94a3b8', bg: isTeam ? '#eff6ff' : '#f8fafc', badge: myPendingTasks.length, locked: !isTeam },
     { to: '/meetings', icon: <Video size={32} />, label: 'Meetings', color: isTeam ? '#8b5cf6' : '#94a3b8', bg: isTeam ? '#f5f3ff' : '#f8fafc', badge: 0, locked: !isTeam },
-    { isProjects: true, icon: <LayoutDashboard size={32} />, label: 'Projects', color: isTeam ? '#14b8a6' : '#94a3b8', bg: isTeam ? '#ccfbf1' : '#f8fafc', badge: 0, locked: !isTeam },
+    { isProjects: true, icon: <FolderKanban size={32} />, label: 'Projects', color: isTeam ? '#14b8a6' : '#94a3b8', bg: isTeam ? '#ccfbf1' : '#f8fafc', badge: 0, locked: !isTeam },
     { to: '/leaderboard', icon: <Trophy size={32} />, label: 'Leaderboard', color: '#f59e0b', bg: '#fffbeb', badge: 0 },
     { to: '/calendar', icon: <Calendar size={32} />, label: 'Calendar', color: '#10b981', bg: '#ecfdf5', badge: upcomingMeetings.length },
     ...(isAdmin ? [{ to: '/admin', icon: <Shield size={32} />, label: 'Admin', color: '#1d4ed8', bg: '#eff6ff', badge: 0 }] : []),

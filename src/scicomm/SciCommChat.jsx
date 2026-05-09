@@ -839,7 +839,6 @@ export default function SciCommChat() {
         
         @media (max-width: 768px) {
           .scicomm-chat-container {
-            height: calc(100vh - 140px) !important;
             border-radius: 0 !important;
           }
           .chat-hide-mobile { display: none !important; }

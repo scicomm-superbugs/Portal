@@ -499,7 +499,7 @@
   .scicomm-chat-container {
     position: fixed !important;
     top: 56px !important;
-    bottom: 56px !important;
+    bottom: calc(56px + env(safe-area-inset-bottom)) !important;
     left: 0 !important;
     right: 0 !important;
     height: auto !important;
