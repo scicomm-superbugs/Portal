@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db, uploadFile, firestore, getCollectionName } from '../db';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2, X, Trophy, Smile } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
 import SciCommStories from './SciCommStories';
 
@@ -139,6 +139,25 @@ export default function SciCommFeed() {
   const [editingPost, setEditingPost] = useState(null); // { id, content, imageUrl, removeImage?, newImage? }
   const [activeCommentMenu, setActiveCommentMenu] = useState(null); // string id_path
   const [deleteConfirm, setDeleteConfirm] = useState(null); // { title, message, onConfirm }
+
+  const [searchParams] = useSearchParams();
+  const highlightedPostId = searchParams.get('postId');
+
+  useEffect(() => {
+    if (highlightedPostId && postsRaw.length > 0) {
+      setTimeout(() => {
+        const el = document.getElementById(`post-${highlightedPostId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.style.transition = 'box-shadow 0.5s ease';
+          el.style.boxShadow = '0 0 0 4px rgba(37, 99, 235, 0.5)';
+          setTimeout(() => {
+            el.style.boxShadow = '0 4px 15px rgba(0,0,0,0.03)';
+          }, 2000);
+        }
+      }, 500);
+    }
+  }, [highlightedPostId, postsRaw.length]);
   
   const handleDeleteComment = async (post, path) => {
     setDeleteConfirm({
@@ -272,7 +291,7 @@ export default function SciCommFeed() {
         fileUrl = await uploadFile(postFile, `posts/${user.id}_${Date.now()}_${postFile.name}`);
         fileName = postFile.name;
       }
-      await db.scicomm_posts.add({
+      const newPostId = await db.scicomm_posts.add({
         content: newPost,
         imageUrl,
         videoUrl,
@@ -305,7 +324,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `New post from ${user.name}`,
           message: postMsg,
-          link: `/feed`, 
+          link: `/feed?postId=${newPostId}`, 
           createdAt: new Date().toISOString(),
           read: false
         }).catch(e => console.error("Failed to add post notification", e));
@@ -371,7 +390,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `${user.name} reacted ${rd?.emoji || ''} to your post`,
           message: post.content?.substring(0, 50) + '...',
-          link: '/feed',
+          link: `/feed?postId=${post.id}`,
           createdAt: new Date().toISOString(),
           read: false
         }).catch(e => console.error("Reaction notification failed", e));
@@ -430,7 +449,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `${user.name} ${isReply ? 'replied to a comment on your post' : 'commented on your post'}`,
           message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
-          link: `/feed`, createdAt: new Date().toISOString(), read: false
+          link: `/feed?postId=${post.id}`, createdAt: new Date().toISOString(), read: false
         }).catch(e => console.error("Post owner notification failed", e));
       }
       
@@ -442,7 +461,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `${user.name} replied to your comment`,
           message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
-          link: `/feed`, createdAt: new Date().toISOString(), read: false
+          link: `/feed?postId=${post.id}`, createdAt: new Date().toISOString(), read: false
         }).catch(e => console.error("Reply notification failed", e));
       }
       
@@ -458,7 +477,7 @@ export default function SciCommFeed() {
             senderId: user.id,
             title: `${user.name} mentioned you in a comment`,
             message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
-            link: `/feed`, createdAt: new Date().toISOString(), read: false
+            link: `/feed?postId=${post.id}`, createdAt: new Date().toISOString(), read: false
           }).catch(e => console.error("Mention notification failed", e));
         }
       });
@@ -502,7 +521,7 @@ export default function SciCommFeed() {
           senderId: user.id,
           title: `${user.name} reacted ${rd?.emoji || ''} to your comment`,
           message: target.text?.substring(0, 50) + '...',
-          link: '/feed',
+          link: `/feed?postId=${post.id}`,
           createdAt: new Date().toISOString(),
           read: false
         }).catch(e => console.error("Comment reaction notification failed", e));
@@ -882,7 +901,6 @@ export default function SciCommFeed() {
         )}
 
         {/* Post Composer - hidden on mobile, use /post page instead */}
-        {/* Post Composer - hidden on mobile, use /post page instead */}
         <div className="scicomm-card hide-on-mobile" style={{ 
           background: 'rgba(255, 255, 255, 0.8)',
           backdropFilter: 'blur(10px)',
@@ -991,9 +1009,21 @@ export default function SciCommFeed() {
           const commentCount = countAllComments(post.comments || []);
           const isCommentsOpen = showComments[post.id];
           const currentReactionDef = myReaction ? REACTIONS.find(r => r.key === myReaction) : null;
+          const isHighlighted = post.id === highlightedPostId;
 
           return (
-            <div key={post.id} className="scicomm-card" style={{ marginBottom: '8px', overflow: 'visible' }}>
+            <div 
+              key={post.id} 
+              id={`post-${post.id}`} 
+              className="scicomm-card" 
+              style={{ 
+                marginBottom: '8px', 
+                overflow: 'visible',
+                border: isHighlighted ? '2px solid #3b82f6' : 'none',
+                boxShadow: isHighlighted ? '0 10px 25px rgba(59, 130, 246, 0.15)' : 'none',
+                transition: 'all 0.3s ease'
+              }}
+            >
               <div className="scicomm-card-padding">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                   <Link to={`/member/${post.authorId}`} style={{ cursor: 'pointer', flexShrink: 0 }}>{renderAvatar(author, 48)}</Link>

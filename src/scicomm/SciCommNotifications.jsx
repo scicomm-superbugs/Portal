@@ -126,9 +126,9 @@ export default function SciCommNotifications() {
     ...pendingConnections.map(c => ({ 
       type: 'connection', 
       category: 'social',
-      icon: <UserPlus size={18} />, 
-      color: '#3b82f6',
-      bg: 'rgba(59, 130, 246, 0.1)', 
+      icon: c.fromId ? renderAvatar(getAuthor(c.fromId), 48) : <UserPlus size={18} />, 
+      color: c.fromId ? 'transparent' : '#3b82f6',
+      bg: c.fromId ? 'transparent' : 'rgba(59, 130, 246, 0.1)', 
       title: `Connection Request`, 
       sub: `${c.fromName} wants to connect with you`, 
       time: c.createdAt, 
@@ -152,9 +152,9 @@ export default function SciCommNotifications() {
     ...applicationsData.filter(a => String(a.userId) === String(user.id)).map(a => ({
       type: 'application',
       category: 'social',
-      icon: <UserPlus size={18} />,
-      color: a.status === 'approved' ? '#16a34a' : (a.status === 'pending' ? '#f59e0b' : '#ef4444'),
-      bg: a.status === 'approved' ? 'rgba(22, 163, 74, 0.1)' : (a.status === 'pending' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)'),
+      icon: renderAvatar(getAuthor(a.userId), 48),
+      color: 'transparent',
+      bg: 'transparent',
       title: `Team Application ${a.status.charAt(0).toUpperCase() + a.status.slice(1)}`,
       sub: a.status === 'approved' ? 'Welcome to the SciComm Team!' : (a.status === 'pending' ? 'Your application is being reviewed.' : 'Your application was not approved.'),
       time: a.reviewedAt || a.createdAt,
@@ -166,14 +166,14 @@ export default function SciCommNotifications() {
     ...pendingApps.map(a => ({
       type: 'application_pending',
       category: 'admin',
-      icon: <UserPlus size={18} />,
-      color: '#f59e0b',
-      bg: 'rgba(245, 158, 11, 0.1)',
+      icon: renderAvatar(getAuthor(a.userId), 48),
+      color: 'transparent',
+      bg: 'transparent',
       title: `New Team Application`,
       sub: `${a.name || 'A user'} applied to join SciComm Team`,
       time: a.createdAt,
       id: 'app_admin_' + a.id,
-      link: '/admin',
+      link: '/admin?tab=applications',
       read: false
     })),
     ...(() => {
@@ -341,7 +341,8 @@ export default function SciCommNotifications() {
           background: isUnread ? '#f0f7ff' : '#ffffff',
           borderBottom: '1px solid #f1f5f9',
           transition: 'all 0.2s ease',
-          alignItems: 'center'
+          alignItems: 'center',
+          opacity: isUnread ? 1 : 0.65
         }}
         onMouseEnter={e => e.currentTarget.style.background = isUnread ? '#e0f2fe' : '#f8fafc'}
         onMouseLeave={e => e.currentTarget.style.background = isUnread ? '#f0f7ff' : '#ffffff'}

@@ -1,7 +1,8 @@
 import { useLiveCollection, db } from '../db';
 import { UserPlus, Download, Upload } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckCircle, Clock, Award, BarChart3, Image, Link2, Database } from 'lucide-react';
 import { AVATARS, calculateScore, getUnlockedTags, REACTIONS } from './scicommConstants';
 import SciCommMeetings from './SciCommMeetings';
@@ -23,7 +24,14 @@ export default function SciCommAdmin() {
   const activeStories = storiesData.filter(s => new Date(s.expiresAt) > new Date());
   const isMaster = user.role === 'master';
 
-  const [activeTab, setActiveTab] = useState('pending');
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') || 'pending';
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    const t = searchParams.get('tab');
+    if (t) setActiveTab(t);
+  }, [searchParams]);
   const [taskForm, setTaskForm] = useState({ title: '', description: '', assignedTo: '', dueDate: '', priority: 'Medium' });
   const [warningForm, setWarningForm] = useState({ userId: '', message: '', note: '' });
   const [msg, setMsg] = useState('');
@@ -207,10 +215,13 @@ export default function SciCommAdmin() {
     
     let added = 0;
     try {
-      flash('Clearing old notifications...');
+      flash('Clearing old feed notifications...');
       const notifsSnap = await import('firebase/firestore').then(m => m.getDocs(m.collection(firestore, getCollectionName('scicomm_notifications'))));
       for (const docSnap of notifsSnap.docs) {
-        await db.scicomm_notifications.delete(docSnap.id);
+        const type = docSnap.data().type;
+        if (['reaction', 'comment', 'mention', 'reply', 'new_post'].includes(type)) {
+          await db.scicomm_notifications.delete(docSnap.id);
+        }
       }
       flash('Old notifications cleared. Generating new ones...');
 
@@ -230,7 +241,7 @@ export default function SciCommAdmin() {
                   userId: p.authorId, type: 'reaction', senderId: uid,
                   title: `${getName(uid)} reacted to your post`,
                   message: p.content?.substring(0, 50) || 'Media post',
-                  link: '/feed', createdAt: p.createdAt || new Date().toISOString(), read: false
+                  link: `/feed?postId=${p.id}`, createdAt: p.createdAt || new Date().toISOString(), read: false
                 });
                 added++;
               }
@@ -239,7 +250,7 @@ export default function SciCommAdmin() {
         }
         
         // Post Comments
-        const processComments = async (comments, parentAuthorId) => {
+        const processComments = async (comments, parentAuthorId, postId) => {
           if (!comments) return;
           for (const c of comments) {
             if (String(c.authorId) !== String(parentAuthorId)) {
@@ -247,7 +258,7 @@ export default function SciCommAdmin() {
                  userId: parentAuthorId, type: 'comment', senderId: c.authorId,
                  title: `${getName(c.authorId)} commented on your post`,
                  message: c.text?.substring(0, 50) || 'Media comment',
-                 link: '/feed', createdAt: c.createdAt || new Date().toISOString(), read: false
+                 link: `/feed?postId=${postId}`, createdAt: c.createdAt || new Date().toISOString(), read: false
                });
                added++;
             }
@@ -259,7 +270,7 @@ export default function SciCommAdmin() {
                       userId: c.authorId, type: 'reaction', senderId: uid,
                       title: `${getName(uid)} reacted to your comment`,
                       message: c.text?.substring(0, 50) || 'Media',
-                      link: '/feed', createdAt: c.createdAt || new Date().toISOString(), read: false
+                      link: `/feed?postId=${postId}`, createdAt: c.createdAt || new Date().toISOString(), read: false
                     });
                     added++;
                   }
@@ -276,15 +287,15 @@ export default function SciCommAdmin() {
                   userId: userMatch.id, type: 'mention', senderId: c.authorId,
                   title: `${getName(c.authorId)} mentioned you`,
                   message: c.text?.substring(0, 50) || '...',
-                  link: '/feed', createdAt: c.createdAt || new Date().toISOString(), read: false
+                  link: `/feed?postId=${postId}`, createdAt: c.createdAt || new Date().toISOString(), read: false
                 });
                 added++;
               }
             }
-            if (c.replies) await processComments(c.replies, c.authorId);
+            if (c.replies) await processComments(c.replies, c.authorId, postId);
           }
         };
-        await processComments(p.comments, p.authorId);
+        await processComments(p.comments, p.authorId, p.id);
       }
 
       // 2. Chat Mentions & Group Additions (Approximate)
