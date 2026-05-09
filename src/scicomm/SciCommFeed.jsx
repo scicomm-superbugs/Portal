@@ -289,29 +289,22 @@ export default function SciCommFeed() {
       });
 
       // Notify connected users about the new post
-      const q = query(
-        collection(firestore, getCollectionName('scicomm_connections')), 
-        where('status', '==', 'accepted')
-      );
-      const connectionsSnap = await getDocs(q);
-      const myConnections = connectionsSnap.docs.map(doc => doc.data()).filter(c => 
-        String(c.fromId) === String(user.id) || String(c.toId) === String(user.id)
-      );
-      
-      myConnections.forEach(c => {
-        const otherId = String(c.fromId) === String(user.id) ? c.toId : c.fromId;
-        db.scicomm_notifications.add({
-          userId: otherId,
-          type: 'new_post',
-          senderId: user.id,
-          title: `New post from ${user.name}`,
-          message: newPost.trim() 
-            ? (newPost.substring(0, 50) + (newPost.length > 50 ? '...' : ''))
-            : (postImage ? "Shared a photo" : (postVideo ? "Shared a video" : (postFile ? "Shared a file" : "New post"))),
-          link: `/feed`, 
-          createdAt: new Date().toISOString(),
-          read: false
-        }).catch(e => console.error("Failed to add notification", e));
+      // Notify all scientists about the new post
+      scientists.forEach(s => {
+        if (String(s.id) !== String(user.id)) {
+          db.scicomm_notifications.add({
+            userId: s.id,
+            type: 'new_post',
+            senderId: user.id,
+            title: `New post from ${user.name}`,
+            message: newPost.trim() 
+              ? (newPost.substring(0, 50) + (newPost.length > 50 ? '...' : ''))
+              : (postImage ? "Shared a photo" : (postVideo ? "Shared a video" : (postFile ? "Shared a file" : "New post"))),
+            link: `/feed`, 
+            createdAt: new Date().toISOString(),
+            read: false
+          }).catch(e => console.error("Failed to add notification", e));
+        }
       });
 
       setNewPost('');
