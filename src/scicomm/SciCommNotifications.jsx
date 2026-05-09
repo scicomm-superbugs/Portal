@@ -1,8 +1,8 @@
 import { useLiveCollection, db } from '../db';
 import { useAuth } from '../context/AuthContext';
-import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, UserPlus, Heart, MessageSquare, AtSign, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, UserPlus, Heart, MessageSquare, AtSign, Trash2, CheckCircle, AlertCircle, UserCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { timeAgo } from './scicommConstants';
+import { timeAgo, AVATARS } from './scicommConstants';
 import { Link } from 'react-router-dom';
 
 export default function SciCommNotifications() {
