@@ -48,7 +48,7 @@ export default function SciCommHub() {
   return (
     <div style={{ padding: '20px 16px', minHeight: 'calc(100vh - 160px)' }}>
       <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-        <img src={isDarkMode ? "/aiu_scicomm_dark.png" : "/aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '150px', maxWidth: '100%', width: 'auto', marginBottom: '16px', objectFit: 'contain' }} onError={e => e.target.style.display='none'} />
+        <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '150px', maxWidth: '100%', width: 'auto', marginBottom: '16px', objectFit: 'contain' }} onError={e => e.target.style.display='none'} />
         <p style={{ margin: 0, fontSize: '13px', color: 'rgba(0,0,0,0.5)' }}>Quick access to everything</p>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', maxWidth: '400px', margin: '0 auto' }}>
