@@ -253,12 +253,18 @@ export default function SciCommChat() {
     setReplyingTo(null);
   };
 
-  const handleDeleteMessage = async (msgId) => {
+  const handleDeleteMessage = async (msg) => {
+    const isMe = msg.senderId === user.id;
     setDeleteConfirm({
       title: 'Delete Message',
-      message: 'Are you sure you want to permanently delete this message?',
+      message: 'Are you sure you want to delete this message? It will be replaced with a deleted notice.',
       onConfirm: async () => {
-        try { await db.scicomm_chat_messages.delete(msgId); } catch (e) { console.error(e); }
+        try { 
+          await db.scicomm_chat_messages.update(msg.id, { 
+            deleted: true, 
+            deletedBy: isMe ? 'user' : 'admin' 
+          }); 
+        } catch (e) { console.error(e); }
         setDeleteConfirm(null);
       }
     });
@@ -469,6 +475,7 @@ export default function SciCommChat() {
                 const isMe = m.senderId === user.id;
                 const prev = roomMessages[idx - 1];
                 const isFirstInGroup = !prev || prev.senderId !== m.senderId;
+                const isDeleted = m.deleted;
                 return (
                   <div key={m.id} style={{ display: 'flex', flexDirection: 'column', alignItems: isMe ? 'flex-end' : 'flex-start', marginBottom: '4px' }}>
                     {isFirstInGroup && !isMe && activeRoom.type === 'group' && <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', marginLeft: '12px', marginBottom: '2px' }}>{m.senderName}</div>}
@@ -476,13 +483,14 @@ export default function SciCommChat() {
                       maxWidth: '75%', 
                       padding: '10px 16px', 
                       borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                      background: isMe ? '#1d4ed8' : 'white',
-                      color: isMe ? 'white' : '#1e293b',
+                      background: isDeleted ? (isMe ? 'rgba(29, 78, 216, 0.1)' : '#f8fafc') : (isMe ? '#1d4ed8' : 'white'),
+                      color: isDeleted ? '#94a3b8' : (isMe ? 'white' : '#1e293b'),
                       fontSize: '14px',
                       lineHeight: '1.5',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-                      border: isMe ? 'none' : '1px solid #e2e8f0',
-                      position: 'relative'
+                      boxShadow: isDeleted ? 'none' : '0 2px 8px rgba(0,0,0,0.03)',
+                      border: isDeleted ? '1px dashed #cbd5e1' : (isMe ? 'none' : '1px solid #e2e8f0'),
+                      position: 'relative',
+                      fontStyle: isDeleted ? 'italic' : 'normal'
                     }}>
                       <div style={{ 
                         unicodeBidi: 'plaintext', 
@@ -490,39 +498,41 @@ export default function SciCommChat() {
                         textAlign: /[\u0600-\u06FF]/.test(m.content || '') ? 'right' : 'left',
                         whiteSpace: 'pre-wrap'
                       }}>
-                        {m.content}
+                        {isDeleted ? `🚫 This message was deleted ${m.deletedBy === 'admin' ? 'by an admin' : 'by the user'}.` : m.content}
                       </div>
                       <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', opacity: 0.6 }}>{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                       
-                      <div 
-                        className="msg-actions"
-                        style={{ 
-                          position: 'absolute', 
-                          top: '50%', 
-                          transform: 'translateY(-50%)',
-                          [isMe ? 'left' : 'right']: '-36px',
-                          display: activeMsgMenu === m.id ? 'flex' : 'none',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          zIndex: activeMsgMenu === m.id ? 60 : 1
-                        }}
-                      >
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); setActiveMsgMenu(activeMsgMenu === m.id ? null : m.id); }} 
-                          style={{ background: 'white', border: '1px solid #e2e8f0', color: '#64748b', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }} 
-                          title="More options"
+                      {!isDeleted && (
+                        <div 
+                          className="msg-actions"
+                          style={{ 
+                            position: 'absolute', 
+                            top: '50%', 
+                            transform: 'translateY(-50%)',
+                            [isMe ? 'left' : 'right']: '-36px',
+                            display: activeMsgMenu === m.id ? 'flex' : 'none',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: activeMsgMenu === m.id ? 60 : 1
+                          }}
                         >
-                          <MoreHorizontal size={14} />
-                        </button>
-                        
-                        {activeMsgMenu === m.id && (
-                          <div style={{ position: 'absolute', top: '100%', [isMe ? 'left' : 'right']: 0, marginTop: '4px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 100, padding: '4px', minWidth: '140px' }}>
-                            <button onClick={() => { setReplyingTo(m); setActiveMsgMenu(null); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#0f172a', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#f1f5f9'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Reply</button>
-                            {isMe && <button onClick={() => { setEditingMsg(m.id); setMsgText(m.content); setActiveMsgMenu(null); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#0f172a', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#f1f5f9'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Edit</button>}
-                            {(isMe || isAdmin) && <button onClick={() => { setActiveMsgMenu(null); handleDeleteMessage(m.id); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#ef4444', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#fee2e2'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Delete</button>}
-                          </div>
-                        )}
-                      </div>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); setActiveMsgMenu(activeMsgMenu === m.id ? null : m.id); }} 
+                            style={{ background: 'white', border: '1px solid #e2e8f0', color: '#64748b', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }} 
+                            title="More options"
+                          >
+                            <MoreHorizontal size={14} />
+                          </button>
+                          
+                          {activeMsgMenu === m.id && (
+                            <div style={{ position: 'absolute', top: '100%', [isMe ? 'left' : 'right']: 0, marginTop: '4px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 100, padding: '4px', minWidth: '140px' }}>
+                              <button onClick={() => { setReplyingTo(m); setActiveMsgMenu(null); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#0f172a', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#f1f5f9'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Reply</button>
+                              {isMe && <button onClick={() => { setEditingMsg(m.id); setMsgText(m.content); setActiveMsgMenu(null); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#0f172a', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#f1f5f9'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Edit</button>}
+                              {(isMe || isAdmin) && <button onClick={() => { setActiveMsgMenu(null); handleDeleteMessage(m); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#ef4444', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#fee2e2'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Delete</button>}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
