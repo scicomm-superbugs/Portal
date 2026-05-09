@@ -288,23 +288,27 @@ export default function SciCommFeed() {
         pinned: false
       });
 
-      // Notify connected users about the new post
-      // Notify all scientists about the new post
-      scientists.forEach(s => {
-        if (String(s.id) !== String(user.id)) {
-          db.scicomm_notifications.add({
-            userId: s.id,
-            type: 'new_post',
-            senderId: user.id,
-            title: `New post from ${user.name}`,
-            message: newPost.trim() 
-              ? (newPost.substring(0, 50) + (newPost.length > 50 ? '...' : ''))
-              : (postImage ? "Shared a photo" : (postVideo ? "Shared a video" : (postFile ? "Shared a file" : "New post"))),
-            link: `/feed`, 
-            createdAt: new Date().toISOString(),
-            read: false
-          }).catch(e => console.error("Failed to add notification", e));
-        }
+      // Notify connected users (followers/friends) about the new post
+      const acceptedConns = connectionsRaw.filter(c => 
+        c.status === 'accepted' && 
+        (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id))
+      );
+      const postMsg = newPost.trim() 
+        ? (newPost.substring(0, 50) + (newPost.length > 50 ? '...' : ''))
+        : (postImage ? "Shared a photo" : (postVideo ? "Shared a video" : (postFile ? "Shared a file" : "New post")));
+      
+      acceptedConns.forEach(c => {
+        const otherId = String(c.fromId) === String(user.id) ? c.toId : c.fromId;
+        db.scicomm_notifications.add({
+          userId: otherId,
+          type: 'new_post',
+          senderId: user.id,
+          title: `New post from ${user.name}`,
+          message: postMsg,
+          link: `/feed`, 
+          createdAt: new Date().toISOString(),
+          read: false
+        }).catch(e => console.error("Failed to add post notification", e));
       });
 
       setNewPost('');
@@ -364,12 +368,13 @@ export default function SciCommFeed() {
         db.scicomm_notifications.add({
           userId: post.authorId,
           type: 'reaction',
+          senderId: user.id,
           title: `${user.name} reacted ${rd?.emoji || ''} to your post`,
           message: post.content?.substring(0, 50) + '...',
           link: '/feed',
           createdAt: new Date().toISOString(),
           read: false
-        }).catch(() => {});
+        }).catch(e => console.error("Reaction notification failed", e));
       }
     } catch (err) { console.error(err); }
   };
@@ -415,30 +420,46 @@ export default function SciCommFeed() {
       setCommentText(prev => ({ ...prev, [key]: '' }));
       setCommentImage(prev => ({ ...prev, [key]: null }));
       
-      // Notification for comment/reply
-      if (targetAuthorId !== user.id) {
+      const notifiedIds = new Set();
+      
+      // 1. Notify the post owner about any new comment or reply on their post
+      if (String(post.authorId) !== String(user.id)) {
+        notifiedIds.add(String(post.authorId));
         db.scicomm_notifications.add({
-          userId: targetAuthorId, type: isReply ? 'reply' : 'comment',
+          userId: post.authorId, type: isReply ? 'reply' : 'comment',
           senderId: user.id,
-          title: `${user.name} ${isReply ? 'replied to your comment' : 'commented on your post'}`,
+          title: `${user.name} ${isReply ? 'replied to a comment on your post' : 'commented on your post'}`,
           message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
           link: `/feed`, createdAt: new Date().toISOString(), read: false
-        }).catch(() => {});
+        }).catch(e => console.error("Post owner notification failed", e));
       }
       
-      // Mentions Notification
+      // 2. If replying, also notify the comment author being replied to (if different from post owner)
+      if (isReply && String(targetAuthorId) !== String(user.id) && !notifiedIds.has(String(targetAuthorId))) {
+        notifiedIds.add(String(targetAuthorId));
+        db.scicomm_notifications.add({
+          userId: targetAuthorId, type: 'reply',
+          senderId: user.id,
+          title: `${user.name} replied to your comment`,
+          message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
+          link: `/feed`, createdAt: new Date().toISOString(), read: false
+        }).catch(e => console.error("Reply notification failed", e));
+      }
+      
+      // 3. Mentions Notification
       const mentions = text?.match(/@\w+/g) || [];
       mentions.forEach(mention => {
         const username = mention.slice(1).toLowerCase();
         const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
-        if (userMatch && String(userMatch.id) !== String(user.id)) {
+        if (userMatch && String(userMatch.id) !== String(user.id) && !notifiedIds.has(String(userMatch.id))) {
+          notifiedIds.add(String(userMatch.id));
           db.scicomm_notifications.add({
             userId: userMatch.id, type: 'mention',
             senderId: user.id,
             title: `${user.name} mentioned you in a comment`,
             message: text?.substring(0, 60) + (text?.length > 60 ? '...' : ''),
             link: `/feed`, createdAt: new Date().toISOString(), read: false
-          }).catch(() => {});
+          }).catch(e => console.error("Mention notification failed", e));
         }
       });
     } catch (err) { console.error(err); }
@@ -478,12 +499,13 @@ export default function SciCommFeed() {
         db.scicomm_notifications.add({
           userId: target.authorId,
           type: 'reaction',
+          senderId: user.id,
           title: `${user.name} reacted ${rd?.emoji || ''} to your comment`,
           message: target.text?.substring(0, 50) + '...',
           link: '/feed',
           createdAt: new Date().toISOString(),
           read: false
-        }).catch(() => {});
+        }).catch(e => console.error("Comment reaction notification failed", e));
       }
     } catch (err) { console.error(err); }
   };

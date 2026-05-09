@@ -392,5 +392,16 @@ export const db = {
     delete: async (id) => {
       await deleteDoc(doc(firestore, getCollectionName('scicomm_applications'), String(id)));
     }
+  },
+  scicomm_notifications: {
+    add: async (notification) => {
+      await addDoc(collection(firestore, getCollectionName('scicomm_notifications')), notification);
+    },
+    update: async (id, data) => {
+      await updateDoc(doc(firestore, getCollectionName('scicomm_notifications'), String(id)), data);
+    },
+    delete: async (id) => {
+      await deleteDoc(doc(firestore, getCollectionName('scicomm_notifications'), String(id)));
+    }
   }
 };
