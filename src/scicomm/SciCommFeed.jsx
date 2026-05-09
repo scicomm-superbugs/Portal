@@ -134,6 +134,7 @@ export default function SciCommFeed() {
   const [isEditingLinks, setIsEditingLinks] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [editingComment, setEditingComment] = useState(null); // { id, path, text }
+  const [editingPost, setEditingPost] = useState(null); // { id, content, imageUrl, removeImage?, newImage? }
   const [activeCommentMenu, setActiveCommentMenu] = useState(null); // string id_path
   
   const handleDeleteComment = async (post, path) => {
