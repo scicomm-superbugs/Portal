@@ -291,12 +291,23 @@ export default function SciCommChat() {
       msgData.replyToContent = replyingTo.content;
     }
     await db.scicomm_chat_messages.add(msgData);
-    await db.scicomm_chat_rooms.update(selectedRoom, { 
+
+    const roomUpdates = { 
       lastMessageAt: new Date().toISOString(), 
       lastMessage: msgText, 
       lastSender: user.name,
       hiddenFor: []
-    });
+    };
+
+    if (activeRoom.type === 'private') {
+      const otherUserId = activeRoom.members.find(id => id !== user.id);
+      if (activeRoom.hiddenFor?.includes(otherUserId) && !myConnectedIds.has(otherUserId)) {
+        roomUpdates.status = 'request';
+        roomUpdates.initiator = user.id;
+      }
+    }
+
+    await db.scicomm_chat_rooms.update(selectedRoom, roomUpdates);
     
     // Mentions Notification
     const mentions = msgText.match(/@\w+/g) || [];
