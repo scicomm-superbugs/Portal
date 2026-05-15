@@ -615,14 +615,18 @@ export default function SciCommFeed() {
 
   const renderPostText = (text) => {
     if (!text) return null;
-    const parts = text.split(/(#\w+|@\w+)/g);
+    const parts = text.split(/(#\w+|@\w+|[\p{Emoji_Presentation}\p{Extended_Pictographic}])/gu);
     return parts.map((part, i) => {
+      if (!part) return null;
       if (part.startsWith('#')) return <Link key={i} to={`/network?q=${encodeURIComponent(part.slice(1))}`} style={{ color: '#0a66c2', fontWeight: 600, textDecoration: 'none' }}>{part}</Link>;
       if (part.startsWith('@')) {
         const username = part.slice(1).toLowerCase();
         const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
         if (userMatch) return <Link key={i} to={`/member/${userMatch.id}`} style={{ background: '#eef3f8', color: '#0a66c2', padding: '2px 4px', borderRadius: '4px', fontWeight: 600, textDecoration: 'none' }}>{part}</Link>;
         return <span key={i} style={{ color: '#0a66c2', fontWeight: 600 }}>{part}</span>;
+      }
+      if (/^[\p{Emoji_Presentation}\p{Extended_Pictographic}]$/u.test(part)) {
+        return <span key={i} className="emoji">{part}</span>;
       }
       return <span key={i}>{part}</span>;
     });

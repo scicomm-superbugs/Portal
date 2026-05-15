@@ -570,15 +570,18 @@
 .scicomm-dark-mode .avatar-emoji,
 .scicomm-dark-mode iframe,
 .scicomm-dark-mode .emoji,
-.scicomm-dark-mode .tag,
-.scicomm-dark-mode .icon,
-.scicomm-dark-mode .lucide,
+.scicomm-dark-mode .colored-icon,
 .scicomm-dark-mode .scicomm-btn-primary,
 .scicomm-dark-mode .scicomm-btn-secondary,
 .scicomm-dark-mode [style*="url("],
 .scicomm-dark-mode [style*="background: url"] {
   /* Reverse the parent filter. hue-rotate(180deg) is lossy, so we add a slight saturate/brightness boost */
   filter: contrast(0.95) brightness(0.95) hue-rotate(180deg) invert(1) saturate(1.2) brightness(1.1);
+}
+
+.scicomm-dark-mode .tag {
+  /* Tags need a massive saturation/brightness boost to prevent them from looking dimmed/muddy after double hue-rotation */
+  filter: contrast(0.95) brightness(0.95) hue-rotate(180deg) invert(1) saturate(2.5) brightness(1.3) !important;
 }
 
 .scicomm-dark-mode .scicomm-card,
