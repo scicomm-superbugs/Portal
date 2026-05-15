@@ -45,7 +45,7 @@ export default function SciCommNotifications() {
   const renderAvatar = (member, size = 48) => {
     const av = getAvatar(member);
     if (av.type === 'img') return <img src={av.src} alt="" style={{ width: size, height: size, borderRadius: '14px', objectFit: 'cover', flexShrink: 0 }} />;
-    if (av.type === 'emoji') return <div style={{ width: size, height: size, borderRadius: '14px', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.5, flexShrink: 0 }}>{av.emoji}</div>;
+    if (av.type === 'emoji') return <div className="avatar-emoji" style={{ width: size, height: size, borderRadius: '14px', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.5, flexShrink: 0 }}>{av.emoji}</div>;
     return <div style={{ width: size, height: size, borderRadius: '14px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><UserCircle size={size * 0.6} color="#94a3b8" /></div>;
   };
 
