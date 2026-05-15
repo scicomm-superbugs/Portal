@@ -562,12 +562,19 @@
 
 /* ===== DARK MODE ===== */
 .scicomm-dark-mode {
-  filter: invert(0.92) hue-rotate(180deg);
+  filter: invert(1) hue-rotate(180deg) brightness(1.05) contrast(1.05);
+  background-color: #050505; /* Deepen the background behind everything */
 }
 .scicomm-dark-mode img,
 .scicomm-dark-mode video,
 .scicomm-dark-mode .avatar-emoji,
+.scicomm-dark-mode iframe,
 .scicomm-dark-mode [style*="url("],
 .scicomm-dark-mode [style*="background: url"] {
-  filter: invert(1) hue-rotate(180deg);
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.95);
+}
+
+.scicomm-dark-mode .scicomm-card,
+.scicomm-dark-mode .scicomm-header {
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.03); /* Subtle futuristic glow on cards */
 }
