@@ -4,6 +4,7 @@ import { db, useLiveCollection, uploadFile } from '../db';
 import { Search, Plus, MessageSquare, Image, Video, FileText, Send, MoreHorizontal, UserCircle, Settings, Trash2, X, ChevronLeft, ArrowLeft, Users, Lock, AtSign, Smile } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AVATARS, timeAgo } from './scicommConstants';
+import ImageCropperModal from './ImageCropperModal';
 
 export default function SciCommChat() {
   const { user } = useAuth();
@@ -100,6 +101,7 @@ export default function SciCommChat() {
   const [groupDescEdit, setGroupDescEdit] = useState('');
   const [groupAvatarEdit, setGroupAvatarEdit] = useState('');
   const [groupMembersEdit, setGroupMembersEdit] = useState([]);
+  const [cropGroupImageSrc, setCropGroupImageSrc] = useState(null);
   
   // New Room states
   const [newChatSearch, setNewChatSearch] = useState('');
@@ -238,6 +240,17 @@ export default function SciCommChat() {
     });
 
     setShowGroupSettings(false);
+  };
+
+  const handleGroupCropComplete = async (croppedFile) => {
+    setCropGroupImageSrc(null);
+    try {
+      const url = await uploadFile(croppedFile, `groups/${user.id}_${Date.now()}`);
+      setGroupAvatarEdit(url);
+    } catch (e) {
+      console.error(e);
+      alert('Failed to upload image.');
+    }
   };
 
   const sendMessage = async () => {
@@ -789,12 +802,13 @@ export default function SciCommChat() {
                   )}
                   <label style={{ position: 'absolute', bottom: '-8px', right: '-8px', width: '36px', height: '36px', borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', border: '1px solid #f1f5f9' }}>
                     <Image size={18} color="#1d4ed8" />
-                    <input type="file" accept="image/*" onChange={async (e) => {
+                    <input type="file" accept="image/*" onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        const url = await uploadFile(file);
-                        setGroupAvatarEdit(url);
-                      }
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = () => setCropGroupImageSrc(reader.result);
+                      reader.readAsDataURL(file);
+                      e.target.value = '';
                     }} style={{ display: 'none' }} />
                   </label>
                 </div>
@@ -908,6 +922,15 @@ export default function SciCommChat() {
           </div>
         )}
       </div>
+
+      {cropGroupImageSrc && (
+        <ImageCropperModal
+          imageSrc={cropGroupImageSrc}
+          onCropComplete={handleGroupCropComplete}
+          onCancel={() => setCropGroupImageSrc(null)}
+        />
+      )}
+
       {deleteConfirm && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s' }}>
           <div style={{ background: 'white', padding: '32px', borderRadius: '24px', width: '90%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
@@ -925,7 +948,7 @@ export default function SciCommChat() {
       )}
       <style>{`
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         
         .scicomm-chat-sidebar {

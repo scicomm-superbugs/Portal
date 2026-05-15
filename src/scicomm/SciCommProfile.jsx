@@ -6,6 +6,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import bcrypt from 'bcryptjs';
 import { Camera, Edit2, Award, Pin, AlertTriangle, UserCircle, X, Settings, Briefcase, FileText, CheckCircle, GraduationCap, Upload, Lock } from 'lucide-react';
 import { AVATARS, AUTO_TAGS, calculateScore, getUnlockedTags, timeAgo, getUserLevel } from './scicommConstants';
+import ImageCropperModal from './ImageCropperModal';
 
 const base64ToBlob = (base64, contentType) => {
   const byteCharacters = atob(base64);
@@ -116,6 +117,7 @@ export default function SciCommProfile() {
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const [isUploadingCV, setIsUploadingCV] = useState(false);
+  const [cropImageSrc, setCropImageSrc] = useState(null);
 
   // Portfolio Form
   const [portfolioData, setPortfolioData] = useState({ 
@@ -205,12 +207,20 @@ export default function SciCommProfile() {
     setShowAvatarPicker(false);
   };
 
-  const handlePhotoUpload = async (e) => {
+  const handlePhotoSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setCropImageSrc(reader.result);
+    reader.readAsDataURL(file);
+    e.target.value = ''; // reset input
+  };
+
+  const handleCropComplete = async (croppedFile) => {
+    setCropImageSrc(null);
     setIsUploadingPhoto(true);
     try {
-      const url = await uploadFile(file, `avatars/${user.id}_${Date.now()}`);
+      const url = await uploadFile(croppedFile, `avatars/${user.id}_${Date.now()}`);
       await db.scientists.update(user.id, { avatar: url, avatarId: null });
     } catch (err) { alert('Upload failed: ' + err.message); }
     setIsUploadingPhoto(false);
@@ -650,7 +660,7 @@ export default function SciCommProfile() {
               <Camera size={28} color="#1d4ed8" style={{ marginBottom: '8px' }} />
               <div style={{ fontWeight: 600, color: '#1e3a8a' }}>{isUploadingPhoto ? 'Uploading...' : 'Upload Custom Photo'}</div>
               <div style={{ fontSize: '12px', color: '#1e3a8a' }}>JPG, PNG (from your device)</div>
-              <input id="profile-photo-upload" type="file" accept="image/*" onChange={handlePhotoUpload} style={{ display: 'none' }} />
+              <input id="profile-photo-upload" type="file" accept="image/*" onChange={handlePhotoSelect} style={{ display: 'none' }} />
             </div>
 
             {/* Preset Avatars */}
@@ -747,6 +757,15 @@ export default function SciCommProfile() {
             )}
           </div>
         </div>
+      )}
+
+      {/* Image Cropper Modal */}
+      {cropImageSrc && (
+        <ImageCropperModal
+          imageSrc={cropImageSrc}
+          onCropComplete={handleCropComplete}
+          onCancel={() => setCropImageSrc(null)}
+        />
       )}
     </div>
   );
