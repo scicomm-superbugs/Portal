@@ -1,4 +1,4 @@
-﻿/* ======================================================
+/* ======================================================
    AIU SciComm LinkedIn-Style Theme
    Completely independent from CompChem/Alamein index.css
    ====================================================== */
@@ -562,7 +562,7 @@
 
 /* ===== DARK MODE ===== */
 .scicomm-dark-mode {
-  filter: invert(1) brightness(1.05) contrast(1.05);
+  filter: invert(1) hue-rotate(180deg) brightness(1.05) contrast(1.05);
   background-color: #050505; /* Deepen the background behind everything */
 }
 .scicomm-dark-mode img,
@@ -577,8 +577,8 @@
 .scicomm-dark-mode .scicomm-btn-secondary,
 .scicomm-dark-mode [style*="url("],
 .scicomm-dark-mode [style*="background: url"] {
-  /* Flawless mathematical reverse of the parent filter without lossy hue-rotation */
-  filter: contrast(0.952) brightness(0.952) invert(1);
+  /* Reverse the parent filter. hue-rotate(180deg) is lossy, so we add a slight saturate/brightness boost */
+  filter: contrast(0.95) brightness(0.95) hue-rotate(180deg) invert(1) saturate(1.2) brightness(1.1);
 }
 
 .scicomm-dark-mode .scicomm-card,
