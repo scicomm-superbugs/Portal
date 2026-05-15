@@ -251,6 +251,14 @@ export default function SciCommStories({ scientists }) {
       await db.scicomm_stories.update(story.id, { likes: likes.filter(id => id !== user.id) });
     } else {
       await db.scicomm_stories.update(story.id, { likes: [...likes, user.id] });
+      if (String(story.authorId) !== String(user.id)) {
+        await db.scicomm_notifications.add({
+          userId: story.authorId, type: 'reaction', senderId: user.id,
+          title: `${user.name.split(' ')[0]} reacted to your story`,
+          message: story.content?.substring(0, 50) || 'Media story',
+          link: `/`, createdAt: new Date().toISOString(), read: false
+        });
+      }
     }
   };
 

@@ -211,7 +211,11 @@ export default function SciCommNotifications() {
             else if (latest.type === 'reply') action = 'replied to a comment on';
             else if (latest.type === 'mention') action = 'mentioned you in';
             
-            const newTitle = `${mainName} and ${numOthers} other${numOthers > 1 ? 's' : ''} ${action} your post`;
+            let target = 'post';
+            if (latest.title && latest.title.includes('story')) target = 'story';
+            else if (latest.title && latest.title.includes('comment')) target = 'comment';
+            
+            const newTitle = `${mainName} and ${numOthers} other${numOthers > 1 ? 's' : ''} ${action} your ${target}`;
             
             groupedGenNotifs.push({
               ...latest,
