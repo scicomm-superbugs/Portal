@@ -270,8 +270,6 @@ export default function SciCommSinglePost() {
                       </button>
                     );
                   })}
-                  <button onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: 600, color: isReplying ? '#1d4ed8' : 'rgba(0,0,0,0.5)' }}>Reply</button>
-                  
                   <div style={{ position: 'relative' }}>
                     <button onClick={() => setActiveCommentMenu(activeCommentMenu === `${currentPath.join('_')}` ? null : `${currentPath.join('_')}`)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)' }}><MoreHorizontal size={14} /></button>
                     {activeCommentMenu === `${currentPath.join('_')}` && (
@@ -285,21 +283,6 @@ export default function SciCommSinglePost() {
               )}
               
               {c.replies?.length > 0 && <div style={{ marginTop: '4px' }}><CommentNode post={post} comments={c.replies} path={currentPath} /></div>}
-              
-              {isReplying && (
-                <div style={{ marginTop: '8px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <textarea placeholder={`Reply to ${c.authorName}...`} value={commentText[replyKey] || ''} 
-                    onChange={e => {
-                      setCommentText({...commentText, [replyKey]: e.target.value});
-                      e.target.style.height = 'auto';
-                      e.target.style.height = e.target.scrollHeight + 'px';
-                    }} 
-                    rows={1}
-                    style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none', overflow: 'hidden' }} autoFocus />
-                  <button className="scicomm-btn-primary" style={{ padding: '4px 12px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
-                  <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={16} /></button>
-                </div>
-              )}
             </div>
           </div>
         </div>

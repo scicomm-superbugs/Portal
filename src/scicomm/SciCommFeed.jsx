@@ -766,8 +766,7 @@ export default function SciCommFeed() {
                       </button>
                     );
                   })}
-                  <button onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '11px', fontWeight: 600, color: isReplying ? '#1d4ed8' : 'rgba(0,0,0,0.5)', padding: '2px 0' }}>Reply</button>
-                  
+
                   {/* Edit/Delete Options */}
                   <div style={{ position: 'relative' }}>
                     <button onClick={(e) => { e.stopPropagation(); setActiveCommentMenu(activeCommentMenu === `${post.id}_${currentPath.join('_')}` ? null : `${post.id}_${currentPath.join('_')}`); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)', padding: '2px' }}><MoreHorizontal size={14} /></button>
@@ -794,30 +793,6 @@ export default function SciCommFeed() {
                 </div>
               )}
               
-              {/* Reply input */}
-              {isReplying && (
-                <div style={{ marginTop: '6px' }}>
-                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center', position: 'relative' }}>
-                    <MentionDropdown inputKey={replyKey} />
-                    <textarea placeholder={`Reply to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} 
-                      onChange={e => {
-                        handleCommentInput(replyKey, e.target.value);
-                        e.target.style.height = 'auto';
-                        e.target.style.height = e.target.scrollHeight + 'px';
-                      }} 
-                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* newline */ } }} 
-                      onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)} 
-                      rows={1}
-                      style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none', fontFamily: 'inherit', overflow: 'hidden', minHeight: '32px' }} autoFocus />
-                    <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>😀</button>
-                    <label style={{ cursor: 'pointer', fontSize: '14px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
-                    <button className="scicomm-btn-primary" style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
-                    <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '16px' }}>&times;</button>
-                  </div>
-                  {showEmojiPicker === replyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px', background: '#f9fafb', padding: '6px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '16px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
-                  {commentImage[replyKey] && <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>📎 {commentImage[replyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '10px' }}>✕</button></div>}
-                </div>
-              )}
             </div>
           </div>
         </div>
