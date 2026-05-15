@@ -796,7 +796,10 @@ export default function SciCommChat() {
                 <input type="text" placeholder="Search people..." value={newChatSearch} onChange={e => setNewChatSearch(e.target.value)} style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '14px' }} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                {scientists.filter(s => !activeRoom?.members?.includes(s.id) && (s.name.toLowerCase().includes(newChatSearch.toLowerCase()) || (s.username||'').toLowerCase().includes(newChatSearch.toLowerCase()))).map(u => (
+                {(() => {
+                  const freshRoom = chatRooms.find(r => r.id === selectedRoom);
+                  const currentMemberIds = (freshRoom?.members || []).map(String);
+                  return scientists.filter(s => !currentMemberIds.includes(String(s.id)) && (s.name.toLowerCase().includes(newChatSearch.toLowerCase()) || (s.username||'').toLowerCase().includes(newChatSearch.toLowerCase()))).map(u => (
                   <div key={u.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '16px', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background='#f8fafc'} onMouseLeave={e => e.currentTarget.style.background='transparent'}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       {renderAvatar(u, 40)}
@@ -806,13 +809,19 @@ export default function SciCommChat() {
                       </div>
                     </div>
                     <button onClick={async () => {
-                      const newMembers = [...(activeRoom.members || []), u.id];
-                      const newNames = { ...activeRoom.memberNames, [u.id]: u.name };
+                      // Read freshest room data directly from the live collection to avoid stale state
+                      const freshRoom = chatRooms.find(r => r.id === selectedRoom);
+                      if (!freshRoom) return;
+                      const currentMembers = freshRoom.members || [];
+                      // Prevent duplicate adds
+                      if (currentMembers.map(String).includes(String(u.id))) return;
+                      const newMembers = [...currentMembers, u.id];
+                      const newNames = { ...(freshRoom.memberNames || {}), [u.id]: u.name };
                       await db.scicomm_chat_rooms.update(selectedRoom, { members: newMembers, memberNames: newNames });
                       await db.scicomm_notifications.add({
                         userId: u.id, type: 'group_added', senderId: user.id,
                         title: `${user.name.split(' ')[0]} added you to a group chat`,
-                        message: activeRoom.name || 'Group Chat',
+                        message: freshRoom.name || 'Group Chat',
                         link: '/chat', createdAt: new Date().toISOString(), read: false
                       });
                       await db.scicomm_chat_messages.add({
@@ -822,7 +831,8 @@ export default function SciCommChat() {
                       });
                     }} style={{ padding: '8px 16px', borderRadius: '10px', border: 'none', background: '#eff6ff', color: '#1d4ed8', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>Add</button>
                   </div>
-                ))}
+                ));
+                })()}
               </div>
             </div>
             <div style={{ padding: '20px', borderTop: '1px solid #f1f5f9' }}>
