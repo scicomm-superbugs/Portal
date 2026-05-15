@@ -216,33 +216,21 @@ export default function SciCommChat() {
   };
 
   const saveGroupSettings = async () => {
-    const memberNames = { [user.id]: user.name };
-    groupMembersEdit.forEach(id => {
+    // Read the freshest room data to preserve any members added/removed via the Add Members overlay
+    const freshRoom = chatRooms.find(r => r.id === selectedRoom);
+    const currentMembers = freshRoom?.members || [user.id, ...groupMembersEdit];
+    const memberNames = {};
+    currentMembers.forEach(id => {
       const m = scientists.find(s => String(s.id) === String(id));
       if (m) memberNames[id] = m.name;
+      else if (String(id) === String(user.id)) memberNames[id] = user.name;
     });
     await db.scicomm_chat_rooms.update(selectedRoom, {
       name: groupNameEdit,
       description: groupDescEdit,
       avatar: groupAvatarEdit,
-      members: [user.id, ...groupMembersEdit],
+      members: currentMembers,
       memberNames
-    });
-
-    // Notify newly added members (basic approach: just notify all current non-sender members about update)
-    groupMembersEdit.forEach(memberId => {
-      if (!activeRoom.members.includes(memberId)) {
-        db.scicomm_notifications.add({
-          userId: memberId,
-          type: 'group_added',
-          senderId: user.id,
-          title: `${user.name.split(' ')[0]} added you to a group chat`,
-          message: groupNameEdit || 'Group Chat',
-          link: '/chat',
-          createdAt: new Date().toISOString(),
-          read: false
-        }).catch(console.error);
-      }
     });
 
     setShowGroupSettings(false);
