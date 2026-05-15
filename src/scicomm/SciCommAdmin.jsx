@@ -3,7 +3,7 @@ import { UserPlus, Download, Upload } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckCircle, Clock, Award, BarChart3, Image, Link2, Database } from 'lucide-react';
+import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckCircle, Clock, Award, BarChart3, Image, Link2, Database, History } from 'lucide-react';
 import { AVATARS, calculateScore, getUnlockedTags, REACTIONS } from './scicommConstants';
 import SciCommMeetings from './SciCommMeetings';
 import * as XLSX from 'xlsx';
@@ -19,6 +19,7 @@ export default function SciCommAdmin() {
   const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
   const applicationsData = useLiveCollection('scicomm_applications') || [];
   const pendingApps = applicationsData.filter(a => a.status === 'pending');
+  const completedApps = applicationsData.filter(a => a.status === 'approved' || a.status === 'rejected').sort((a, b) => new Date(b.reviewedAt || b.createdAt) - new Date(a.reviewedAt || a.createdAt));
   const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
   const storiesData = useLiveCollection('scicomm_stories') || [];
   const activeStories = storiesData.filter(s => new Date(s.expiresAt) > new Date());
@@ -113,6 +114,7 @@ export default function SciCommAdmin() {
     { id: 'posts', label: 'Posts', icon: <Trash2 size={14} /> },
     { id: 'stories', label: 'Stories', icon: <Image size={14} /> },
     { id: 'analytics', label: 'Analytics', icon: <BarChart3 size={14} /> },
+    { id: 'activity', label: 'Activity', icon: <History size={14} /> },
     { id: 'data', label: 'Data', icon: <Database size={14} /> },
   ];
 
@@ -673,6 +675,38 @@ export default function SciCommAdmin() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* ACTIVITY */}
+      {activeTab === 'activity' && (
+        <div className="scicomm-card scicomm-card-padding">
+          <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>🕒 Application Activity</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {completedApps.map(app => {
+              const u = scientists.find(s => String(s.id) === String(app.userId));
+              if (!u) return null;
+              return (
+                <div key={app.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: '#f8fafc', padding: '16px', borderRadius: '12px', borderLeft: `4px solid ${app.status === 'approved' ? '#22c55e' : '#ef4444'}` }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: '15px' }}>{u.name}</div>
+                    <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px', margin: '4px 0' }}>
+                      <strong>Status:</strong> {app.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
+                    </div>
+                    {app.comment && (
+                      <div style={{ fontSize: '13px', background: 'rgba(255,255,255,0.6)', padding: '6px 10px', borderRadius: '8px', fontStyle: 'italic', marginTop: '6px', color: '#475569', display: 'inline-block' }}>
+                        "{app.comment}"
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ color: 'rgba(0,0,0,0.4)', fontSize: '12px', whiteSpace: 'nowrap' }}>
+                    {app.reviewedAt ? new Date(app.reviewedAt).toLocaleDateString() : ''}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {completedApps.length === 0 && <p style={{ color: 'rgba(0,0,0,0.5)', fontStyle: 'italic', margin: 0 }}>No recent application activity.</p>}
         </div>
       )}
 

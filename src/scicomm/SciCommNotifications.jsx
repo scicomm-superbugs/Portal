@@ -20,7 +20,7 @@ export default function SciCommNotifications() {
 
   const [activeTab, setActiveTab] = useState('all');
   const [showCongratsPopup, setShowCongratsPopup] = useState(false);
-  const [showRejectionPopup, setShowRejectionPopup] = useState(false);
+  const [showRejectionPopup, setShowRejectionPopup] = useState(null);
 
   const myTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
   const myWarnings = warningsData.filter(w => String(w.userId) === String(user.id));
@@ -55,7 +55,7 @@ export default function SciCommNotifications() {
       setShowCongratsPopup(true);
     } else if (n.type === 'application' && n.title.includes('Rejected')) {
       e.preventDefault();
-      setShowRejectionPopup(true);
+      setShowRejectionPopup({ comment: n.comment });
     }
     
     if (n.type === 'application' && !n.read && n.rawId) {
@@ -171,7 +171,8 @@ export default function SciCommNotifications() {
       id: 'app_' + a.id,
       link: '/leaderboard',
       read: a.read || false,
-      rawId: a.id
+      rawId: a.id,
+      comment: a.comment
     })),
     ...pendingApps.map(a => ({
       type: 'application_pending',
@@ -524,7 +525,13 @@ export default function SciCommNotifications() {
             <p style={{ margin: '0 0 24px', color: '#475569', fontSize: '15px', lineHeight: '1.6' }}>
               Thank you for applying! Unfortunately, your application wasn't approved this time around. Don't be discouraged—we appreciate your effort and would love to see you try again in the future.
             </p>
-            <button onClick={() => setShowRejectionPopup(false)} style={{ width: '100%', padding: '14px', borderRadius: '16px', background: '#f1f5f9', border: 'none', fontWeight: 800, color: '#64748b', fontSize: '16px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(0, 0, 0, 0.05)' }} onMouseEnter={e=>e.currentTarget.style.background='#e2e8f0'} onMouseLeave={e=>e.currentTarget.style.background='#f1f5f9'}>Got it</button>
+            {showRejectionPopup.comment && (
+              <div style={{ background: '#fef2f2', padding: '16px', borderRadius: '16px', marginBottom: '24px', borderLeft: '4px solid #ef4444', textAlign: 'left' }}>
+                <strong style={{ display: 'block', fontSize: '13px', color: '#b91c1c', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Admin Feedback</strong>
+                <span style={{ fontSize: '14px', color: '#991b1b', fontStyle: 'italic' }}>"{showRejectionPopup.comment}"</span>
+              </div>
+            )}
+            <button onClick={() => setShowRejectionPopup(null)} style={{ width: '100%', padding: '14px', borderRadius: '16px', background: '#f1f5f9', border: 'none', fontWeight: 800, color: '#64748b', fontSize: '16px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(0, 0, 0, 0.05)' }} onMouseEnter={e=>e.currentTarget.style.background='#e2e8f0'} onMouseLeave={e=>e.currentTarget.style.background='#f1f5f9'}>Got it</button>
           </div>
         </div>
       )}

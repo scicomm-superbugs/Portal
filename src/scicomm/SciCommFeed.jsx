@@ -951,6 +951,11 @@ export default function SciCommFeed() {
               <div>
                 <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 800, color: '#991b1b' }}>Application Update</h3>
                 <p style={{ margin: 0, fontSize: '14px', color: '#7f1d1d', lineHeight: '1.4' }}>Thank you for applying! Unfortunately, your application wasn't approved this time around. Don't be discouraged—we appreciate your effort and would love to see you try again in the future.</p>
+                {latestApp && latestApp.comment && (
+                  <div style={{ marginTop: '8px', padding: '8px 12px', background: 'rgba(255,255,255,0.4)', borderRadius: '8px', fontSize: '13px', color: '#7f1d1d', fontStyle: 'italic', borderLeft: '3px solid #dc2626' }}>
+                    <strong>Feedback:</strong> {latestApp.comment}
+                  </div>
+                )}
               </div>
             </div>
             <button onClick={() => {
