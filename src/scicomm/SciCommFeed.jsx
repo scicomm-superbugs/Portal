@@ -747,7 +747,7 @@ export default function SciCommFeed() {
                     </div>
                   ) : (
                     <>
-                      <p dir="auto" style={{ margin: '2px 0 0', fontSize: path.length === 0 ? '13px' : '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{renderPostText(c.text)}</p>
+                      <p dir="auto" style={{ margin: '2px 0 0', fontSize: path.length === 0 ? '13px' : '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', letterSpacing: 'normal' }}>{renderPostText(c.text)}</p>
                       {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
                     </>
                   )
@@ -799,7 +799,7 @@ export default function SciCommFeed() {
                 <div style={{ marginTop: '6px' }}>
                   <div style={{ display: 'flex', gap: '6px', alignItems: 'center', position: 'relative' }}>
                     <MentionDropdown inputKey={replyKey} />
-                    <textarea dir="auto" placeholder={`Reply to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} onChange={e => handleCommentInput(replyKey, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* newline */ } }} onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none', fontFamily: 'inherit' }} rows={1} autoFocus />
+                    <textarea dir="auto" placeholder={`Reply to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} onChange={e => handleCommentInput(replyKey, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* newline */ } }} onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none', fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', letterSpacing: 'normal' }} rows={1} autoFocus />
                     <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>😀</button>
                     <label style={{ cursor: 'pointer', fontSize: '14px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                     <button className="scicomm-btn-primary" style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
@@ -936,7 +936,7 @@ export default function SciCommFeed() {
             >
               <textarea dir="auto" placeholder="What's on your mind?" value={newPost} onChange={e => setNewPost(e.target.value)}
                 rows={Math.max(2, newPost.split('\n').length)}
-                style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '15px', outline: 'none', color: '#1e293b', width: '100%', fontFamily: 'inherit', resize: 'none', paddingTop: '8px' }} />
+                style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '15px', outline: 'none', color: '#1e293b', width: '100%', fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', resize: 'none', paddingTop: '8px', letterSpacing: 'normal' }} />
             </div>
           </div>
           
@@ -1096,7 +1096,9 @@ export default function SciCommFeed() {
                           margin: '0 0 8px', 
                           fontSize: '14px', 
                           lineHeight: '1.5', 
-                          whiteSpace: 'pre-wrap'
+                          whiteSpace: 'pre-wrap',
+                          fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                          letterSpacing: 'normal'
                         }}>{renderPostText(post.content)}</p>
                         {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
                         {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}
@@ -1187,7 +1189,7 @@ export default function SciCommFeed() {
                     <MentionDropdown inputKey={post.id} />
                     <textarea dir="auto" placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} onChange={e => handleCommentInput(post.id, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* let it add newline */ } }}
                       onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)}
-                      style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit' }} rows={1} />
+                      style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', letterSpacing: 'normal' }} rows={1} />
                     <button onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px' }}>😀</button>
                     <label style={{ cursor: 'pointer', padding: '4px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                     <button className="scicomm-btn-primary" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '24px', height: '40px' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>

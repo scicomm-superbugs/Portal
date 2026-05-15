@@ -251,7 +251,7 @@ export default function SciCommSinglePost() {
                     </div>
                   ) : (
                     <>
-                      <p dir="auto" style={{ margin: '2px 0 0', fontSize: '13px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{renderPostText(c.text)}</p>
+                      <p dir="auto" style={{ margin: '2px 0 0', fontSize: '13px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', letterSpacing: 'normal' }}>{renderPostText(c.text)}</p>
                       {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
                     </>
                   )
@@ -371,7 +371,7 @@ export default function SciCommSinglePost() {
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center' }}>
             {renderAvatar(getAuthor(user.id), 32)}
             <div style={{ flex: 1, position: 'relative' }}>
-              <textarea dir="auto" placeholder="Write a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText({...commentText, [post.id]: e.target.value})} style={{ width: '100%', padding: '10px 16px', borderRadius: '24px', border: '1px solid #e0dfdc', outline: 'none', fontSize: '13px', resize: 'none', minHeight: '40px' }} rows={1} />
+              <textarea dir="auto" placeholder="Write a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText({...commentText, [post.id]: e.target.value})} style={{ width: '100%', padding: '10px 16px', borderRadius: '24px', border: '1px solid #e0dfdc', outline: 'none', fontSize: '13px', resize: 'none', minHeight: '40px', fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', letterSpacing: 'normal' }} rows={1} />
               <button onClick={() => handleAddComment(post)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer' }}><Send size={18} /></button>
             </div>
           </div>
