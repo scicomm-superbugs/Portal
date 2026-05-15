@@ -735,7 +735,7 @@ export default function SciCommFeed() {
                 ) : (
                   editingComment?.id === post.id && JSON.stringify(editingComment?.path) === JSON.stringify(currentPath) ? (
                     <div style={{ marginTop: '4px' }}>
-                       <textarea dir="auto"
+                       <textarea
                         value={editingComment.text} 
                         onChange={e => setEditingComment(prev => ({...prev, text: e.target.value}))}
                         style={{ width: '100%', minHeight: '40px', padding: '6px', border: '1px solid #1d4ed8', borderRadius: '4px', fontSize: '13px' }}
@@ -747,7 +747,7 @@ export default function SciCommFeed() {
                     </div>
                   ) : (
                     <>
-                       <p dir="auto" style={{ margin: '2px 0 0', fontSize: path.length === 0 ? '13px' : '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{renderPostText(c.text)}</p>
+                       <p style={{ margin: '2px 0 0', fontSize: path.length === 0 ? '13px' : '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{renderPostText(c.text)}</p>
                       {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
                     </>
                   )
@@ -811,7 +811,7 @@ export default function SciCommFeed() {
                 <div style={{ marginTop: '8px' }}>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center', position: 'relative' }}>
                     <MentionDropdown inputKey={replyKey} />
-                    <textarea dir="auto" placeholder={`Replying to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} 
+                    <textarea placeholder={`Replying to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} 
                       onChange={e => {
                         handleCommentInput(replyKey, e.target.value);
                         e.target.style.height = 'auto';
@@ -958,7 +958,7 @@ export default function SciCommFeed() {
             onMouseOver={e => e.currentTarget.style.border = '1px solid rgba(59,130,246,0.3)'}
             onMouseOut={e => e.currentTarget.style.border = '1px solid transparent'}
             >
-              <textarea dir="auto" placeholder="What's on your mind?" value={newPost} 
+              <textarea placeholder="What's on your mind?" value={newPost} 
                 onChange={e => {
                   setNewPost(e.target.value);
                   e.target.style.height = 'auto';
@@ -1087,7 +1087,7 @@ export default function SciCommFeed() {
                 {/* Post content - edit mode or display */}
                 {editingPost?.id === post.id ? (
                   <div style={{ marginBottom: '8px' }}>
-                    <textarea dir="auto" value={editingPost.content} onChange={e => setEditingPost(p => ({...p, content: e.target.value}))} style={{ width: '100%', minHeight: '80px', border: '1px solid #1d4ed8', borderRadius: '8px', padding: '10px', fontSize: '14px', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
+                    <textarea value={editingPost.content} onChange={e => setEditingPost(p => ({...p, content: e.target.value}))} style={{ width: '100%', minHeight: '80px', border: '1px solid #1d4ed8', borderRadius: '8px', padding: '10px', fontSize: '14px', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
                     {editingPost.imageUrl && !editingPost.removeImage && (
                       <div style={{ position: 'relative', marginTop: '8px' }}>
                         <img src={editingPost.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', maxHeight: '200px', objectFit: 'cover' }} />
@@ -1214,7 +1214,7 @@ export default function SciCommFeed() {
                   {/* Main comment input */}
                   <div style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center', position: 'relative' }}>
                     <MentionDropdown inputKey={post.id} />
-                    <textarea dir="auto" placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} 
+                    <textarea placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} 
                       onChange={e => {
                         handleCommentInput(post.id, e.target.value);
                         e.target.style.height = 'auto';
