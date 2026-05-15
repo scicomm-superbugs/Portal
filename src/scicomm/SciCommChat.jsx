@@ -216,15 +216,20 @@ export default function SciCommChat() {
   };
 
   const declineRequest = async (roomId) => {
-    if (window.confirm('Decline this message request?')) {
-      try {
-        await db.scicomm_chat_rooms.delete(roomId);
-        if (selectedRoom === roomId) setSelectedRoom(null);
-      } catch (e) {
-        console.error(e);
-        alert('Error declining request: ' + e.message);
+    setDeleteConfirm({
+      title: 'Decline Request',
+      message: 'Are you sure you want to decline this message request?',
+      onConfirm: async () => {
+        try {
+          await db.scicomm_chat_rooms.delete(roomId);
+          if (selectedRoom === roomId) setSelectedRoom(null);
+        } catch (e) {
+          console.error(e);
+          alert('Error declining request: ' + e.message);
+        }
+        setDeleteConfirm(null);
       }
-    }
+    });
   };
 
   const openGroupSettings = () => {
@@ -369,35 +374,45 @@ export default function SciCommChat() {
 
   const handleLeaveGroup = async () => {
     if (!activeRoom || activeRoom.type !== 'group') return;
-    if (window.confirm('Are you sure you want to leave this group?')) {
-      const newMembers = activeRoom.members.filter(id => id !== user.id);
-      const newNames = { ...activeRoom.memberNames };
-      delete newNames[user.id];
-      await db.scicomm_chat_rooms.update(activeRoom.id, { members: newMembers, memberNames: newNames });
-      
-      await db.scicomm_chat_messages.add({
-        roomId: activeRoom.id, senderId: 'system', senderName: 'System',
-        content: `${user.name} left the group.`,
-        type: 'system', readBy: [], createdAt: new Date().toISOString()
-      });
-      setSelectedRoom(null);
-      setShowChatMenu(false);
-    }
+    setDeleteConfirm({
+      title: 'Leave Group',
+      message: 'Are you sure you want to leave this group?',
+      onConfirm: async () => {
+        const newMembers = activeRoom.members.filter(id => id !== user.id);
+        const newNames = { ...activeRoom.memberNames };
+        delete newNames[user.id];
+        await db.scicomm_chat_rooms.update(activeRoom.id, { members: newMembers, memberNames: newNames });
+        
+        await db.scicomm_chat_messages.add({
+          roomId: activeRoom.id, senderId: 'system', senderName: 'System',
+          content: `${user.name} left the group.`,
+          type: 'system', readBy: [], createdAt: new Date().toISOString()
+        });
+        setSelectedRoom(null);
+        setShowChatMenu(false);
+        setDeleteConfirm(null);
+      }
+    });
   };
 
   const handleDeleteChat = async () => {
     if (!activeRoom) return;
-    if (window.confirm('Are you sure you want to delete this chat from your view? Admins can still restore it.')) {
-      const hiddenFor = activeRoom.hiddenFor || [];
-      const clearedAt = activeRoom.clearedAt || {};
-      const updateData = { clearedAt: { ...clearedAt, [user.id]: new Date().toISOString() } };
-      if (!hiddenFor.includes(user.id)) {
-        updateData.hiddenFor = [...hiddenFor, user.id];
+    setDeleteConfirm({
+      title: 'Delete Chat',
+      message: 'Are you sure you want to delete this chat from your view? Admins can still restore it.',
+      onConfirm: async () => {
+        const hiddenFor = activeRoom.hiddenFor || [];
+        const clearedAt = activeRoom.clearedAt || {};
+        const updateData = { clearedAt: { ...clearedAt, [user.id]: new Date().toISOString() } };
+        if (!hiddenFor.includes(user.id)) {
+          updateData.hiddenFor = [...hiddenFor, user.id];
+        }
+        await db.scicomm_chat_rooms.update(activeRoom.id, updateData);
+        setSelectedRoom(null);
+        setShowChatMenu(false);
+        setDeleteConfirm(null);
       }
-      await db.scicomm_chat_rooms.update(activeRoom.id, updateData);
-      setSelectedRoom(null);
-      setShowChatMenu(false);
-    }
+    });
   };
 
   const handlePromoteToAdmin = async (memberId) => {

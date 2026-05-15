@@ -35,6 +35,8 @@ export default function SciCommAdmin() {
   const [taskForm, setTaskForm] = useState({ title: '', description: '', assignedTo: '', dueDate: '', priority: 'Medium' });
   const [warningForm, setWarningForm] = useState({ userId: '', message: '', note: '' });
   const [msg, setMsg] = useState('');
+  const [rejectPrompt, setRejectPrompt] = useState(null);
+  const [rejectReason, setRejectReason] = useState('');
 
   const pendingAccounts = scientists.filter(s => s.accountStatus === 'pending');
   const activeAccounts = scientists.filter(s => s.accountStatus !== 'pending');
@@ -89,11 +91,16 @@ export default function SciCommAdmin() {
     flash(`Approved! User promoted to SciComm Team.`);
   };
 
-  const handleRejectApplication = async (app) => {
-    const comment = window.prompt("Reason for rejection (optional):");
-    if (comment === null) return; // Cancelled
-    await db.scicomm_applications.update(app.id, { status: 'rejected', comment: comment, reviewedAt: new Date().toISOString() });
+  const handleRejectApplication = (app) => {
+    setRejectPrompt(app);
+    setRejectReason('');
+  };
+
+  const confirmRejectApplication = async () => {
+    if (!rejectPrompt) return;
+    await db.scicomm_applications.update(rejectPrompt.id, { status: 'rejected', comment: rejectReason, reviewedAt: new Date().toISOString() });
     flash('Application rejected.');
+    setRejectPrompt(null);
   };
 
   const tabs = [
@@ -717,6 +724,31 @@ export default function SciCommAdmin() {
           </div>
         </div>
       )}
+
+      {rejectPrompt && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s' }}>
+          <div style={{ background: 'white', padding: '32px', borderRadius: '24px', width: '90%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+            <h3 style={{ margin: '0 0 12px', fontSize: '22px', fontWeight: 900, color: '#0f172a' }}>Reject Application</h3>
+            <p style={{ margin: '0 0 16px', color: '#64748b', fontSize: '14px', lineHeight: '1.5' }}>
+              Please provide a reason for rejecting this application (optional). This will be shown to the applicant.
+            </p>
+            <textarea 
+              value={rejectReason}
+              onChange={e => setRejectReason(e.target.value)}
+              placeholder="E.g., Please update your bio to include your scientific background..."
+              style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '14px', minHeight: '80px', resize: 'vertical', outline: 'none', marginBottom: '24px' }}
+            />
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button onClick={() => setRejectPrompt(null)} style={{ flex: 1, padding: '12px', borderRadius: '16px', background: '#f1f5f9', border: 'none', fontWeight: 800, color: '#64748b', fontSize: '15px', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={confirmRejectApplication} style={{ flex: 1, padding: '12px', borderRadius: '16px', background: '#ef4444', border: 'none', fontWeight: 800, color: 'white', fontSize: '15px', cursor: 'pointer' }}>Reject</button>
+            </div>
+          </div>
+        </div>
+      )}
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+      `}</style>
     </div>
   );
 }
