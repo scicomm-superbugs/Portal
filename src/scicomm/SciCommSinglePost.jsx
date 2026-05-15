@@ -298,6 +298,7 @@ export default function SciCommSinglePost() {
               {isReplying && (
                 <div style={{ marginTop: '8px' }}>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    {renderAvatar(getAuthor(user.id), 24)}
                     <textarea dir="auto" placeholder={`Replying to ${c.authorName}...`} value={commentText[replyKey] || ''} 
                       onChange={e => {
                         setCommentText({...commentText, [replyKey]: e.target.value});

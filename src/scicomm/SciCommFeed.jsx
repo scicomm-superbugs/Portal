@@ -810,17 +810,20 @@ export default function SciCommFeed() {
               {isReplying && (
                 <div style={{ marginTop: '8px' }}>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center', position: 'relative' }}>
-                    <MentionDropdown inputKey={replyKey} />
-                    <textarea dir="auto" placeholder={`Replying to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} 
-                      onChange={e => {
-                        handleCommentInput(replyKey, e.target.value);
-                        e.target.style.height = 'auto';
-                        e.target.style.height = e.target.scrollHeight + 'px';
-                      }} 
-                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* let it add newline */ } }}
-                      onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)}
-                      rows={1}
-                      style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit', overflow: 'hidden' }} autoFocus />
+                    {renderAvatar(getAuthor(user.id), 24)}
+                    <div style={{ flex: 1, position: 'relative' }}>
+                      <MentionDropdown inputKey={replyKey} />
+                      <textarea dir="auto" placeholder={`Replying to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} 
+                        onChange={e => {
+                          handleCommentInput(replyKey, e.target.value);
+                          e.target.style.height = 'auto';
+                          e.target.style.height = e.target.scrollHeight + 'px';
+                        }} 
+                        onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* let it add newline */ } }}
+                        onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)}
+                        rows={1}
+                        style={{ width: '100%', border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit', overflow: 'hidden' }} autoFocus />
+                    </div>
                     <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px' }}>😀</button>
                     <label style={{ cursor: 'pointer', padding: '4px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                     <button className="scicomm-btn-primary" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '24px', height: '40px' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
@@ -1121,7 +1124,7 @@ export default function SciCommFeed() {
                       </div>
                     ) : (
                       <>
-                        <p style={{ 
+                        <p dir="auto" style={{ 
                           margin: '0 0 8px', 
                           fontSize: '14px', 
                           lineHeight: '1.5', 
