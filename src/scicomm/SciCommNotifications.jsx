@@ -1,6 +1,6 @@
 import { useLiveCollection, db } from '../db';
 import { useAuth } from '../context/AuthContext';
-import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, UserPlus, Heart, MessageSquare, AtSign, Trash2, CheckCircle, AlertCircle, UserCircle } from 'lucide-react';
+import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, UserPlus, Heart, MessageSquare, AtSign, Trash2, CheckCircle, AlertCircle, UserCircle, X, Video, Trophy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { timeAgo, AVATARS } from './scicommConstants';
 import { Link } from 'react-router-dom';
@@ -503,10 +503,10 @@ export default function SciCommNotifications() {
                   <Briefcase size={24} /> <span style={{ fontSize: '12px', fontWeight: 600 }}>Tasks</span>
                </div>
                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', color: '#8b5cf6' }}>
-                  <Calendar size={24} /> <span style={{ fontSize: '12px', fontWeight: 600 }}>Meetings</span>
+                  <Video size={24} /> <span style={{ fontSize: '12px', fontWeight: 600 }}>Meetings</span>
                </div>
                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', color: '#f59e0b' }}>
-                  <Heart size={24} /> <span style={{ fontSize: '12px', fontWeight: 600 }}>Leaderboard</span>
+                  <Trophy size={24} /> <span style={{ fontSize: '12px', fontWeight: 600 }}>Leaderboard</span>
                </div>
             </div>
             <button onClick={() => setShowCongratsPopup(false)} style={{ width: '100%', padding: '14px', borderRadius: '16px', background: '#1d4ed8', border: 'none', fontWeight: 800, color: 'white', fontSize: '16px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(29, 78, 216, 0.3)' }} onMouseEnter={e=>e.currentTarget.style.background='#1e40af'} onMouseLeave={e=>e.currentTarget.style.background='#1d4ed8'}>Awesome! Let's Go</button>
