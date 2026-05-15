@@ -367,11 +367,11 @@ export default function SciCommProfile() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <h1 style={{ margin: '0', fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
                   {me?.name || user.name}
-                  {user.role === 'master' && <span title="SciComm Master" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(245,158,11,0.4)' }}>👑 Master</span>}
-                  {user.role === 'admin' && <span title="Platform Admin" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(59,130,246,0.4)' }}>🛡️ Admin</span>}
-                  {user.role === 'scicomm' && <span title="SciComm Team" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(239,68,68,0.4)' }}>🔬 SciComm</span>}
+                  {user.role === 'master' && <span title="SciComm Master" className="tag" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(245,158,11,0.4)' }}><span className="emoji">👑</span> Master</span>}
+                  {user.role === 'admin' && <span title="Platform Admin" className="tag" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(59,130,246,0.4)' }}><span className="emoji">🛡️</span> Admin</span>}
+                  {user.role === 'scicomm' && <span title="SciComm Team" className="tag" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(239,68,68,0.4)' }}><span className="emoji">🔬</span> SciComm</span>}
                 </h1>
-                <span style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 800, border: `1px solid ${myLevel.color}40`, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                <span className="tag" style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 800, border: `1px solid ${myLevel.color}40`, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   Lv. {myLevel.level}{myLevel.title ? ' ' + myLevel.title : ''}
                 </span>
               </div>
@@ -404,7 +404,7 @@ export default function SciCommProfile() {
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {pinnedTags.map((t, i) => {
                   const isMasterTag = t === '👑 SciComm MasterMind';
-                  return <span key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: isMasterTag ? '#b45309' : '#1e3a8a', padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 700, border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{t}</span>;
+                  return <span key={i} className="tag" style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: isMasterTag ? '#b45309' : '#1e3a8a', padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 700, border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{t}</span>;
                 })}
               </div>
             ) : (
@@ -423,7 +423,7 @@ export default function SciCommProfile() {
               { label: 'Tags', value: unlockedTags.length, color: '#ec4899', icon: '🏷️' },
             ].map((s, i) => (
               <div key={i} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px' }}>
-                <div style={{ fontSize: '20px', marginBottom: '4px' }}>{s.icon}</div>
+                <div className="emoji" style={{ fontSize: '20px', marginBottom: '4px' }}>{s.icon}</div>
                 <div style={{ fontSize: '22px', fontWeight: 800, color: s.color }}>{s.value}</div>
                 <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{s.label}</div>
               </div>
@@ -474,15 +474,15 @@ export default function SciCommProfile() {
             {(() => {
               const nextTag = AUTO_TAGS.find(t => t.threshold > myScore);
               if (!nextTag) return (
-                <div style={{ padding: '12px', background: '#fef3c7', borderRadius: '8px', border: '1px solid #fde68a', color: '#b45309', fontWeight: 600, fontSize: '13px' }}>
-                  🎉 You have unlocked all available Mystery Tags!
+                <div className="tag" style={{ padding: '12px', background: '#fef3c7', borderRadius: '8px', border: '1px solid #fde68a', color: '#b45309', fontWeight: 600, fontSize: '13px' }}>
+                  <span className="emoji">🎉</span> You have unlocked all available Mystery Tags!
                 </div>
               );
               const prevThreshold = AUTO_TAGS.filter(t => t.threshold <= myScore).pop()?.threshold || 0;
               const progress = Math.min(100, ((myScore - prevThreshold) / (nextTag.threshold - prevThreshold)) * 100);
               return (
                 <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}>🔒 Next Mystery Tag: {nextTag.threshold} pts needed</div>
+                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#334155', marginBottom: '8px' }}><span className="emoji">🔒</span> Next Mystery Tag: {nextTag.threshold} pts needed</div>
                   <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden' }}>
                     <div style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #1d4ed8, #1e3a8a)', borderRadius: '4px', transition: 'width 0.5s' }}></div>
                   </div>
@@ -504,8 +504,8 @@ export default function SciCommProfile() {
                       {p.videoUrl && <FuturisticVideoPreview videoUrl={p.videoUrl} />}
                       <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>👍 {Object.values(p.reactions || {}).reduce((s, a) => s + a.length, 0)} • 💬 {(p.comments || []).length} • {timeAgo(p.createdAt)}</div>
                     </div>
-                    <button onClick={() => handlePinPost(p.id)} style={{ background: isPinned ? '#1d4ed8' : '#f3f2ef', color: isPinned ? 'white' : '#666', border: 'none', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
-                      {isPinned ? '📌 Pinned' : 'Pin'}
+                    <button onClick={() => handlePinPost(p.id)} className="tag" style={{ background: isPinned ? '#1d4ed8' : '#f3f2ef', color: isPinned ? 'white' : '#666', border: 'none', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
+                      {isPinned ? <span className="emoji">📌</span> + ' Pinned' : 'Pin'}
                     </button>
                   </div>
                 );

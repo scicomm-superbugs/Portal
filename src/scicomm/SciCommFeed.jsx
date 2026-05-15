@@ -885,7 +885,7 @@ export default function SciCommFeed() {
           <div style={{ padding: '8px 12px 12px' }}>
             <h3 style={{ margin: '4px 0 2px', fontSize: '15px' }}>{user.name}</h3>
             <p style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px', margin: '0 0 8px' }}>{currentUserData?.department || 'Science Communicator'}</p>
-            <div style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, display: 'inline-block', marginBottom: '8px', border: `1px solid ${myLevel.color}40` }}>
+            <div className="tag" style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, display: 'inline-block', marginBottom: '8px', border: `1px solid ${myLevel.color}40` }}>
               Lv. {myLevel.level}{myLevel.title ? ' ' + myLevel.title : ''}
             </div>
             {myLevel.next && (
@@ -915,7 +915,7 @@ export default function SciCommFeed() {
             <span style={{ color: '#1d4ed8' }}>{postImpressions}</span>
           </div>
         </div>
-        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}>🚀 What's New in v3.7.2</button>
+        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v3.7.2</button>
       </div>
 
       {/* Main Feed */}
@@ -1128,16 +1128,16 @@ export default function SciCommFeed() {
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                       <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>{post.authorName}</h4></Link>
-                      {author?.role === 'master' && <span style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>👑 Master</span>}
-                      {author?.role === 'admin' && <span style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>🛡️ Admin</span>}
-                      {author?.role === 'scicomm' && <span style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>🔬 SciComm</span>}
-                      {(!author?.role || author?.role === 'visitor' || author?.role === 'scientist') && <span style={{ background: 'linear-gradient(135deg, #94a3b8, #64748b)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}>👤 Visitor</span>}
+                      {author?.role === 'master' && <span className="tag" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}><span className="emoji">👑</span> Master</span>}
+                      {author?.role === 'admin' && <span className="tag" style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}><span className="emoji">🛡️</span> Admin</span>}
+                      {author?.role === 'scicomm' && <span className="tag" style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}><span className="emoji">🔬</span> SciComm</span>}
+                      {(!author?.role || author?.role === 'visitor' || author?.role === 'scientist') && <span className="tag" style={{ background: 'linear-gradient(135deg, #94a3b8, #64748b)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}><span className="emoji">👤</span> Visitor</span>}
                     </div>
                     <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px' }}>{author?.department || 'Member'}</div>
                     <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>
                       <Link to={`/view-post/${post.id}`} style={{ color: 'inherit', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.textDecoration='underline'} onMouseLeave={e => e.currentTarget.style.textDecoration='none'}>
                         {timeAgo(post.createdAt)}
-                      </Link> • 🌐{post.recognized && ' ⭐ Master Recognized'}{post.editedAt && ' • ✏️ edited'}
+                      </Link> • <span className="emoji">🌐</span>{post.recognized && <span> <span className="emoji">⭐</span> Master Recognized</span>}{post.editedAt && <span> • <span className="emoji">✏️</span> edited</span>}
                     </div>
                   </div>
                   {(isAdmin || String(post.authorId) === String(user.id)) && (
@@ -1296,12 +1296,12 @@ export default function SciCommFeed() {
                       onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)}
                       rows={1}
                       style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit', overflow: 'hidden' }} />
-                    <button onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px' }}>😀</button>
-                    <label style={{ cursor: 'pointer', padding: '4px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
-                    <button className="scicomm-btn-primary" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '24px', height: '40px' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
+                    <button onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px' }}><span className="emoji">😀</span></button>
+                    <label style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                    <button className="scicomm-btn-primary" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '24px', height: '40px' }} onClick={() => handleAddComment(post)}><Send className="icon" size={16} /></button>
                   </div>
                   {showEmojiPicker === post.id && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px', background: '#f9fafb', padding: '8px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [post.id]: (prev[post.id]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', padding: '2px' }}><span className="emoji">{e}</span></button>)}</div>}
-                  {commentImage[post.id] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>📎 {commentImage[post.id].name} <button onClick={() => setCommentImage(prev => ({...prev, [post.id]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
+                  {commentImage[post.id] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}><span className="emoji">📎</span> {commentImage[post.id].name} <button onClick={() => setCommentImage(prev => ({...prev, [post.id]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
                 </div>
               )}
             </div>

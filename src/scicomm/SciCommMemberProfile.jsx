@@ -164,7 +164,7 @@ export default function SciCommMemberProfile() {
   const renderAvatar = (size = 120) => {
     if (member.avatar) return <img src={member.avatar} alt="" style={{ width: size, height: size, borderRadius: '50%', border: '4px solid white', objectFit: 'cover' }} />;
     const av = AVATARS.find(a => a.id === member.avatarId);
-    if (av) return <div style={{ width: size, height: size, borderRadius: '50%', border: '4px solid white', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.45 }}>{av.svg}</div>;
+    if (av) return <div className="avatar-emoji" style={{ width: size, height: size, borderRadius: '50%', border: '4px solid white', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.45 }}><span className="emoji">{av.svg}</span></div>;
     return <div style={{ width: size, height: size, borderRadius: '50%', border: '4px solid white', background: '#eef3f8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><UserCircle size={size * 0.5} color="#666" /></div>;
   };
 
@@ -179,11 +179,11 @@ export default function SciCommMemberProfile() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <h1 style={{ margin: '0', fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
                   {member.name}
-                  {member.role === 'master' && <span title="SciComm Master" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(245,158,11,0.4)' }}>👑 Master</span>}
-                  {member.role === 'admin' && <span title="Platform Admin" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(59,130,246,0.4)' }}>🛡️ Admin</span>}
-                  {member.role === 'scicomm' && <span title="SciComm Team" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(239,68,68,0.4)' }}>🔬 SciComm</span>}
+                  {member.role === 'master' && <span title="SciComm Master" className="tag" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(245,158,11,0.4)' }}><span className="emoji">👑</span> Master</span>}
+                  {member.role === 'admin' && <span title="Platform Admin" className="tag" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(59,130,246,0.4)' }}><span className="emoji">🛡️</span> Admin</span>}
+                  {member.role === 'scicomm' && <span title="SciComm Team" className="tag" style={{ marginLeft: '8px', background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', fontSize: '11px', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, verticalAlign: 'middle', boxShadow: '0 2px 6px rgba(239,68,68,0.4)' }}><span className="emoji">🔬</span> SciComm</span>}
                 </h1>
-                <span style={{ background: memberLevel.bg, color: memberLevel.color, padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 800, border: `1px solid ${memberLevel.color}40`, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                <span className="tag" style={{ background: memberLevel.bg, color: memberLevel.color, padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 800, border: `1px solid ${memberLevel.color}40`, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   Lv. {memberLevel.level}{memberLevel.title ? ' ' + memberLevel.title : ''}
                 </span>
               </div>
@@ -222,7 +222,7 @@ export default function SciCommMemberProfile() {
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {pinnedTags.map((t, i) => {
                   const isMasterTag = t === '👑 SciComm MasterMind';
-                  return <span key={i} style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: isMasterTag ? '#b45309' : '#1e3a8a', padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 700, border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{t}</span>;
+                  return <span key={i} className="tag" style={{ background: isMasterTag ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #eff6ff, #dbeafe)', color: isMasterTag ? '#b45309' : '#1e3a8a', padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 700, border: isMasterTag ? '1px solid #fde047' : '1px solid #bfdbfe', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{t}</span>;
                 })}
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function SciCommMemberProfile() {
               { label: 'Tags', value: unlockedTags.length, color: '#ec4899', icon: '🏷️' },
             ].map((s, i) => (
               <div key={i} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px' }}>
-                <div style={{ fontSize: '20px', marginBottom: '4px' }}>{s.icon}</div>
+                <div className="emoji" style={{ fontSize: '20px', marginBottom: '4px' }}>{s.icon}</div>
                 <div style={{ fontSize: '22px', fontWeight: 800, color: s.color }}>{s.value}</div>
                 <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{s.label}</div>
               </div>
@@ -266,8 +266,8 @@ export default function SciCommMemberProfile() {
             {p.imageUrl && <img src={p.imageUrl} alt="" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', marginBottom: '4px', objectFit: 'cover' }} />}
             {p.videoUrl && <FuturisticVideoPreview videoUrl={p.videoUrl} />}
             <div style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>
-              👍 {Object.values(p.reactions || {}).reduce((s, a) => s + a.length, 0)} • 💬 {(p.comments || []).length} • {timeAgo(p.createdAt)}
-              {p.recognized && ' • ⭐ Recognized'}
+              <span className="emoji">👍</span> {Object.values(p.reactions || {}).reduce((s, a) => s + a.length, 0)} • <span className="emoji">💬</span> {(p.comments || []).length} • {timeAgo(p.createdAt)}
+              {p.recognized && <span> • <span className="emoji">⭐</span> Recognized</span>}
             </div>
           </div>
         ))}

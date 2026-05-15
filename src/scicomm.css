@@ -562,16 +562,23 @@
 
 /* ===== DARK MODE ===== */
 .scicomm-dark-mode {
-  filter: invert(1) hue-rotate(180deg) brightness(1.05) contrast(1.05);
+  filter: invert(1) brightness(1.05) contrast(1.05);
   background-color: #050505; /* Deepen the background behind everything */
 }
 .scicomm-dark-mode img,
 .scicomm-dark-mode video,
 .scicomm-dark-mode .avatar-emoji,
 .scicomm-dark-mode iframe,
+.scicomm-dark-mode .emoji,
+.scicomm-dark-mode .tag,
+.scicomm-dark-mode .icon,
+.scicomm-dark-mode .lucide,
+.scicomm-dark-mode .scicomm-btn-primary,
+.scicomm-dark-mode .scicomm-btn-secondary,
 .scicomm-dark-mode [style*="url("],
 .scicomm-dark-mode [style*="background: url"] {
-  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.95);
+  /* Flawless mathematical reverse of the parent filter without lossy hue-rotation */
+  filter: contrast(0.952) brightness(0.952) invert(1);
 }
 
 .scicomm-dark-mode .scicomm-card,
@@ -586,3 +593,5 @@
 .scicomm-dark-mode .scicomm-app {
   background-color: #e2e8f0 !important; /* Inverts to a slightly lighter dark gray than before */
 }
+/ *   T r i g g e r i n g   V i t e   H M R   * /  
+ 

@@ -31,7 +31,7 @@ export default function SciCommNetwork() {
   const renderAvatar = (member, size = 64) => {
     const av = getAvatar(member);
     if (av.type === 'img') return <img src={av.src} alt="" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }} />;
-    if (av.type === 'emoji') return <div style={{ width: size, height: size, borderRadius: '50%', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.45 }}>{av.emoji}</div>;
+    if (av.type === 'emoji') return <div className="avatar-emoji" style={{ width: size, height: size, borderRadius: '50%', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.45 }}><span className="emoji">{av.emoji}</span></div>;
     return <div style={{ width: size, height: size, borderRadius: '50%', background: '#eef3f8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><UserCircle size={size * 0.55} color="#666" /></div>;
   };
 
@@ -142,7 +142,7 @@ export default function SciCommNetwork() {
               color: tab === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, cursor: 'pointer', fontSize: '14px', transition: 'all 0.2s'
             }}>
               {t.label}
-              {t.count > 0 && <span style={{ position: 'absolute', top: '4px', right: '10%', background: '#ef4444', color: 'white', fontSize: '10px', padding: '2px 5px', borderRadius: '10px', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(239,68,68,0.3)' }}>New</span>}
+              {t.count > 0 && <span className="tag" style={{ position: 'absolute', top: '4px', right: '10%', background: '#ef4444', color: 'white', fontSize: '10px', padding: '2px 5px', borderRadius: '10px', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(239,68,68,0.3)' }}><span className="emoji">✨</span> New</span>}
             </button>
           ))}
         </div>
@@ -165,9 +165,9 @@ export default function SciCommNetwork() {
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>{renderAvatar(s, 72)}</div>
                     <h4 style={{ margin: '0 0 4px', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', flexWrap: 'wrap' }}>
                       {s.name}
-                      {s.role === 'master' && <span style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}>👑</span>}
-                      {s.role === 'admin' && <span style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}>🛡️</span>}
-                      {s.role === 'scicomm' && <span style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}>🔬</span>}
+                      {s.role === 'master' && <span className="tag" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}><span className="emoji">👑</span></span>}
+                      {s.role === 'admin' && <span className="tag" style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}><span className="emoji">🛡️</span></span>}
+                      {s.role === 'scicomm' && <span className="tag" style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}><span className="emoji">🔬</span></span>}
                     </h4>
                     <p style={{ color: 'rgba(0,0,0,0.6)', margin: '0 0 12px', fontSize: '12px', height: '32px', overflow: 'hidden' }}>{s.department || 'Science Communicator'}</p>
                   </Link>
