@@ -205,15 +205,25 @@ export default function SciCommChat() {
   };
 
   const acceptRequest = async (roomId) => {
-    await db.scicomm_chat_rooms.update(roomId, { status: 'active' });
-    setSelectedRoom(roomId);
-    setActiveTab('chats');
+    try {
+      await db.scicomm_chat_rooms.update(roomId, { status: 'active' });
+      setSelectedRoom(roomId);
+      setActiveTab('chats');
+    } catch (e) {
+      console.error(e);
+      alert('Error accepting request: ' + e.message);
+    }
   };
 
   const declineRequest = async (roomId) => {
     if (window.confirm('Decline this message request?')) {
-      await db.scicomm_chat_rooms.delete(roomId);
-      if (selectedRoom === roomId) setSelectedRoom(null);
+      try {
+        await db.scicomm_chat_rooms.delete(roomId);
+        if (selectedRoom === roomId) setSelectedRoom(null);
+      } catch (e) {
+        console.error(e);
+        alert('Error declining request: ' + e.message);
+      }
     }
   };
 
@@ -490,7 +500,7 @@ export default function SciCommChat() {
             }) : <div style={{ textAlign: 'center', padding: '40px 20px', color: '#94a3b8' }}>No conversations found.</div>
           ) : (
             myRequests.map(r => (
-              <div key={r.id} onClick={() => setSelectedRoom(r.id)} style={{ display: 'flex', gap: '12px', padding: '12px', borderRadius: '16px', cursor: 'pointer', background: selectedRoom === r.id ? '#fef2f2' : 'transparent' }}>
+              <div key={r.id} onClick={() => { setSelectedRoom(r.id); setMobileSidebarOpen(false); }} style={{ display: 'flex', gap: '12px', padding: '12px', borderRadius: '16px', cursor: 'pointer', background: selectedRoom === r.id ? '#fef2f2' : 'transparent' }}>
                 {renderAvatar(getRoomOther(r), 48)}
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: '15px' }}>{getRoomTitle(r)}</div>
