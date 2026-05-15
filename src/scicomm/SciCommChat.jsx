@@ -46,8 +46,13 @@ export default function SciCommChat() {
   const myActiveRooms = myRooms.filter(r => r.status !== 'request' || r.initiator === user.id);
 
   const activeRoom = myRooms.find(r => r.id === selectedRoom);
-  const roomMessages = allMessages.filter(m => m.roomId === selectedRoom)
-    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const roomMessages = allMessages.filter(m => {
+    if (m.roomId !== selectedRoom) return false;
+    if (activeRoom?.clearedAt?.[user.id]) {
+      if (new Date(m.createdAt) < new Date(activeRoom.clearedAt[user.id])) return false;
+    }
+    return true;
+  }).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
   const myConnectedIds = new Set(connections
     .filter(c => c.status === 'accepted' && (String(c.fromId) === String(user.id) || String(c.toId) === String(user.id)))
@@ -276,7 +281,12 @@ export default function SciCommChat() {
       msgData.replyToContent = replyingTo.content;
     }
     await db.scicomm_chat_messages.add(msgData);
-    await db.scicomm_chat_rooms.update(selectedRoom, { lastMessageAt: new Date().toISOString(), lastMessage: msgText, lastSender: user.name });
+    await db.scicomm_chat_rooms.update(selectedRoom, { 
+      lastMessageAt: new Date().toISOString(), 
+      lastMessage: msgText, 
+      lastSender: user.name,
+      hiddenFor: []
+    });
     
     // Mentions Notification
     const mentions = msgText.match(/@\w+/g) || [];
@@ -358,9 +368,12 @@ export default function SciCommChat() {
     if (!activeRoom) return;
     if (window.confirm('Are you sure you want to delete this chat from your view? Admins can still restore it.')) {
       const hiddenFor = activeRoom.hiddenFor || [];
+      const clearedAt = activeRoom.clearedAt || {};
+      const updateData = { clearedAt: { ...clearedAt, [user.id]: new Date().toISOString() } };
       if (!hiddenFor.includes(user.id)) {
-        await db.scicomm_chat_rooms.update(activeRoom.id, { hiddenFor: [...hiddenFor, user.id] });
+        updateData.hiddenFor = [...hiddenFor, user.id];
       }
+      await db.scicomm_chat_rooms.update(activeRoom.id, updateData);
       setSelectedRoom(null);
       setShowChatMenu(false);
     }
