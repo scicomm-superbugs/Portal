@@ -288,9 +288,14 @@ export default function SciCommSinglePost() {
               
               {isReplying && (
                 <div style={{ marginTop: '8px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <textarea placeholder={`Reply to ${c.authorName}...`} value={commentText[replyKey] || ''} onChange={e => setCommentText({...commentText, [replyKey]: e.target.value})} 
-                    rows={Math.max(1, (commentText[replyKey] || '').split('\n').length)}
-                    style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none' }} autoFocus />
+                  <textarea placeholder={`Reply to ${c.authorName}...`} value={commentText[replyKey] || ''} 
+                    onChange={e => {
+                      setCommentText({...commentText, [replyKey]: e.target.value});
+                      e.target.style.height = 'auto';
+                      e.target.style.height = e.target.scrollHeight + 'px';
+                    }} 
+                    rows={1}
+                    style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none', overflow: 'hidden' }} autoFocus />
                   <button className="scicomm-btn-primary" style={{ padding: '4px 12px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
                   <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={16} /></button>
                 </div>
@@ -373,9 +378,14 @@ export default function SciCommSinglePost() {
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center' }}>
             {renderAvatar(getAuthor(user.id), 32)}
             <div style={{ flex: 1, position: 'relative' }}>
-              <textarea placeholder="Write a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText({...commentText, [post.id]: e.target.value})} 
-                rows={Math.max(1, (commentText[post.id] || '').split('\n').length)}
-                style={{ width: '100%', padding: '10px 16px', borderRadius: '24px', border: '1px solid #e0dfdc', outline: 'none', fontSize: '13px', resize: 'none', minHeight: '40px', fontFamily: 'inherit' }} />
+              <textarea placeholder="Write a comment..." value={commentText[post.id] || ''} 
+                onChange={e => {
+                  setCommentText({...commentText, [post.id]: e.target.value});
+                  e.target.style.height = 'auto';
+                  e.target.style.height = e.target.scrollHeight + 'px';
+                }} 
+                rows={1}
+                style={{ width: '100%', padding: '10px 16px', borderRadius: '24px', border: '1px solid #e0dfdc', outline: 'none', fontSize: '13px', resize: 'none', minHeight: '40px', fontFamily: 'inherit', overflow: 'hidden' }} />
               <button onClick={() => handleAddComment(post)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer' }}><Send size={18} /></button>
             </div>
           </div>
