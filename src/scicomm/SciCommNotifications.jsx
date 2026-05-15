@@ -522,8 +522,7 @@ export default function SciCommNotifications() {
             </div>
             <h3 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#0f172a' }}>Application Update</h3>
             <p style={{ margin: '0 0 24px', color: '#475569', fontSize: '15px', lineHeight: '1.6' }}>
-              Your application to join the Science Communication Team was not approved at this time.
-              Keep improving your profile, stay active, and feel free to try again later!
+              Thank you for applying! Unfortunately, your application wasn't approved this time around. Don't be discouraged—we appreciate your effort and would love to see you try again in the future.
             </p>
             <button onClick={() => setShowRejectionPopup(false)} style={{ width: '100%', padding: '14px', borderRadius: '16px', background: '#f1f5f9', border: 'none', fontWeight: 800, color: '#64748b', fontSize: '16px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(0, 0, 0, 0.05)' }} onMouseEnter={e=>e.currentTarget.style.background='#e2e8f0'} onMouseLeave={e=>e.currentTarget.style.background='#f1f5f9'}>Got it</button>
           </div>

@@ -950,7 +950,7 @@ export default function SciCommFeed() {
               </div>
               <div>
                 <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 800, color: '#991b1b' }}>Application Update</h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#7f1d1d', lineHeight: '1.4' }}>Your recent application was not approved. Keep learning and try again later!</p>
+                <p style={{ margin: 0, fontSize: '14px', color: '#7f1d1d', lineHeight: '1.4' }}>Thank you for applying! Unfortunately, your application wasn't approved this time around. Don't be discouraged—we appreciate your effort and would love to see you try again in the future.</p>
               </div>
             </div>
             <button onClick={() => {
