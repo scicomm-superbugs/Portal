@@ -671,7 +671,7 @@ export default function SciCommChat() {
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px' }}>
                   <div style={{ flex: 1, background: '#f1f5f9', borderRadius: '18px', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <button style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><Plus size={20} /></button>
-                    <textarea
+                    <textarea dir="auto"
                       placeholder="Type a message... (@ to mention)"
                       value={msgText}
                       onChange={e => handleInputChange(e.target.value)}
@@ -729,7 +729,7 @@ export default function SciCommChat() {
               </div>
               <div style={{ marginBottom: '24px' }}>
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#94a3b8', letterSpacing: '1px', marginBottom: '8px' }}>DESCRIPTION</label>
-                <textarea value={groupDescEdit} onChange={e => setGroupDescEdit(e.target.value)} placeholder="What is this group about?" style={{ width: '100%', padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '15px', outline: 'none', resize: 'none' }} rows={3} />
+                <textarea dir="auto" value={groupDescEdit} onChange={e => setGroupDescEdit(e.target.value)} placeholder="What is this group about?" style={{ width: '100%', padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '15px', outline: 'none', resize: 'none' }} rows={3} />
               </div>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
