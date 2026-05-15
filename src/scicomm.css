@@ -575,6 +575,14 @@
 }
 
 .scicomm-dark-mode .scicomm-card,
-.scicomm-dark-mode .scicomm-header {
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.03); /* Subtle futuristic glow on cards */
+.scicomm-dark-mode .scicomm-header,
+.scicomm-dark-mode .scicomm-dropdown,
+.scicomm-dark-mode .scicomm-mobile-bar {
+  border-color: rgba(0, 0, 0, 0.3) !important; /* Inverts to bright outline */
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15) !important; /* Inverts to a white futuristic glow */
+}
+
+/* Brighten the background of the app slightly so the pure black cards pop more */
+.scicomm-dark-mode .scicomm-app {
+  background-color: #e2e8f0 !important; /* Inverts to a slightly lighter dark gray than before */
 }
