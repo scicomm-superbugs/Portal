@@ -1,4 +1,4 @@
-/* ======================================================
+﻿/* ======================================================
    AIU SciComm LinkedIn-Style Theme
    Completely independent from CompChem/Alamein index.css
    ====================================================== */
@@ -593,5 +593,4 @@
 .scicomm-dark-mode .scicomm-app {
   background-color: #e2e8f0 !important; /* Inverts to a slightly lighter dark gray than before */
 }
-/ *   T r i g g e r i n g   V i t e   H M R   * /  
- 
+/* Triggering Vite HMR */
