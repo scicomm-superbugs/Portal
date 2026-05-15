@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { db, useLiveCollection, uploadFile } from '../db';
 import { Search, Plus, MessageSquare, Image, Video, FileText, Send, MoreHorizontal, UserCircle, Settings, Trash2, X, ChevronLeft, ArrowLeft, Users, Lock, AtSign, Smile } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { AVATARS, timeAgo } from './scicommConstants';
+import { AVATARS, timeAgo, EMOJI_LIST } from './scicommConstants';
 
 export default function SciCommChat() {
   const { user } = useAuth();
@@ -31,6 +31,7 @@ export default function SciCommChat() {
   const [showNewGroup, setShowNewGroup] = useState(false);
   const [showGroupSettings, setShowGroupSettings] = useState(false);
   const [showAddMembers, setShowAddMembers] = useState(false);
+  const [showChatMenu, setShowChatMenu] = useState(false);
 
   // Mentions logic
   const [mentionQuery, setMentionQuery] = useState('');
@@ -104,6 +105,7 @@ export default function SciCommChat() {
   const [selectedMembers, setSelectedMembers] = useState([]);
 
   const filteredActiveRooms = myActiveRooms.filter(r => {
+    if (r.hiddenFor?.includes(user.id)) return false;
     const title = r.type === 'group' ? r.name : (r.memberNames?.[r.members.find(id => id !== user.id)] || 'Chat');
     return title.toLowerCase().includes(roomSearch.toLowerCase());
   });
@@ -319,6 +321,50 @@ export default function SciCommChat() {
     });
   };
 
+  const handleLeaveGroup = async () => {
+    if (!activeRoom || activeRoom.type !== 'group') return;
+    if (window.confirm('Are you sure you want to leave this group?')) {
+      const newMembers = activeRoom.members.filter(id => id !== user.id);
+      const newNames = { ...activeRoom.memberNames };
+      delete newNames[user.id];
+      await db.scicomm_chat_rooms.update(activeRoom.id, { members: newMembers, memberNames: newNames });
+      
+      await db.scicomm_chat_messages.add({
+        roomId: activeRoom.id, senderId: 'system', senderName: 'System',
+        content: `${user.name} left the group.`,
+        type: 'system', readBy: [], createdAt: new Date().toISOString()
+      });
+      setSelectedRoom(null);
+      setShowChatMenu(false);
+    }
+  };
+
+  const handleDeleteChat = async () => {
+    if (!activeRoom) return;
+    if (window.confirm('Are you sure you want to delete this chat from your view? Admins can still restore it.')) {
+      const hiddenFor = activeRoom.hiddenFor || [];
+      if (!hiddenFor.includes(user.id)) {
+        await db.scicomm_chat_rooms.update(activeRoom.id, { hiddenFor: [...hiddenFor, user.id] });
+      }
+      setSelectedRoom(null);
+      setShowChatMenu(false);
+    }
+  };
+
+  const handlePromoteToAdmin = async (memberId) => {
+    if (!activeRoom || activeRoom.type !== 'group') return;
+    const admins = activeRoom.admins || [];
+    if (!admins.includes(memberId)) {
+      await db.scicomm_chat_rooms.update(activeRoom.id, { admins: [...admins, memberId] });
+      await db.scicomm_chat_messages.add({
+        roomId: activeRoom.id, senderId: 'system', senderName: 'System',
+        content: `${scientists.find(s=>s.id===memberId)?.name} was promoted to group admin.`,
+        type: 'system', readBy: [], createdAt: new Date().toISOString()
+      });
+    }
+  };
+
+
 
   const unreadPerRoom = (roomId) => allMessages.filter(m =>
     m.roomId === roomId && m.senderId !== user.id && !(m.readBy || []).includes(user.id)
@@ -512,9 +558,19 @@ export default function SciCommChat() {
                   <div style={{ fontSize: '12px', color: '#64748b' }}>{activeRoom.type === 'group' ? `${activeRoom.members?.length} members` : (getRoomOther(activeRoom)?.department || 'Member')}</div>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: '8px', position: 'relative' }}>
                 {activeRoom.type === 'group' && <button onClick={openGroupSettings} style={{ background: '#f8fafc', border: 'none', color: '#64748b', width: 40, height: 40, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Settings size={20} /></button>}
-                <button style={{ background: '#f8fafc', border: 'none', color: '#64748b', width: 40, height: 40, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><MoreHorizontal size={20} /></button>
+                <div style={{ position: 'relative' }}>
+                  <button onClick={() => setShowChatMenu(!showChatMenu)} style={{ background: '#f8fafc', border: 'none', color: '#64748b', width: 40, height: 40, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><MoreHorizontal size={20} /></button>
+                  {showChatMenu && (
+                    <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: '8px', background: 'white', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0', minWidth: '160px', overflow: 'hidden', zIndex: 100 }}>
+                      <button onClick={handleDeleteChat} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid #f1f5f9', textAlign: 'left', fontWeight: 600, color: '#ef4444', cursor: 'pointer' }} onMouseEnter={e=>e.currentTarget.style.background='#fee2e2'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Delete Chat</button>
+                      {activeRoom.type === 'group' && (
+                        <button onClick={handleLeaveGroup} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', textAlign: 'left', fontWeight: 600, color: '#ef4444', cursor: 'pointer' }} onMouseEnter={e=>e.currentTarget.style.background='#fee2e2'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Leave Group</button>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -668,19 +724,28 @@ export default function SciCommChat() {
                   </div>
                 </div>
               ) : (
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px' }}>
-                  <div style={{ flex: 1, background: '#f1f5f9', borderRadius: '18px', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <button style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><Plus size={20} /></button>
-                    <textarea dir="auto"
-                      placeholder="Type a message... (@ to mention)"
-                      value={msgText}
-                      onChange={e => handleInputChange(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
-                      style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: '15px', color: '#0f172a', padding: '8px 0', minHeight: '24px', maxHeight: '120px', resize: 'none', fontFamily: 'inherit' }}
-                    />
-                    <button style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><Smile size={20} /></button>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px' }}>
+                    <div style={{ flex: 1, background: '#f1f5f9', borderRadius: '18px', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <button style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><Plus size={20} /></button>
+                      <textarea dir="auto"
+                        placeholder="Type a message... (@ to mention)"
+                        value={msgText}
+                        onChange={e => handleInputChange(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); setShowEmoji(false); } }}
+                        style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: '15px', color: '#0f172a', padding: '8px 0', minHeight: '24px', maxHeight: '120px', resize: 'none', fontFamily: 'inherit' }}
+                      />
+                      <button onClick={() => setShowEmoji(!showEmoji)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><Smile size={20} /></button>
+                    </div>
+                    <button onClick={() => { sendMessage(); setShowEmoji(false); }} disabled={!msgText.trim()} style={{ width: '44px', height: '44px', borderRadius: '16px', background: msgText.trim() ? '#1d4ed8' : '#e2e8f0', color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', boxShadow: msgText.trim() ? '0 4px 12px rgba(29,78,216,0.3)' : 'none' }}><Send size={20} /></button>
                   </div>
-                  <button onClick={sendMessage} disabled={!msgText.trim()} style={{ width: '44px', height: '44px', borderRadius: '16px', background: msgText.trim() ? '#1d4ed8' : '#e2e8f0', color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', boxShadow: msgText.trim() ? '0 4px 12px rgba(29,78,216,0.3)' : 'none' }}><Send size={20} /></button>
+                  {showEmoji && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', background: '#f9fafb', padding: '10px', borderRadius: '12px', border: '1px solid #e0dfdc' }}>
+                      {EMOJI_LIST.map(e => (
+                        <button key={e} onClick={() => setMsgText(prev => prev + e)} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '4px' }}>{e}</button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -740,21 +805,26 @@ export default function SciCommChat() {
                   {activeRoom.members?.map(id => {
                     const m = scientists.find(s => String(s.id) === String(id));
                     const isMe = String(id) === String(user.id);
+                    const isMemberAdmin = activeRoom.admins?.includes(id);
+                    const canPromote = (isAdmin || activeRoom.admins?.includes(user.id)) && !isMemberAdmin && !isMe;
                     return (
                       <div key={id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#f8fafc', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           {renderAvatar(m, 36)}
                           <div>
-                            <div style={{ fontSize: '14px', fontWeight: 700 }}>{m?.name} {isMe && '(You)'}</div>
+                            <div style={{ fontSize: '14px', fontWeight: 700 }}>{m?.name} {isMe && '(You)'} {isMemberAdmin && <span style={{fontSize: '10px', background: '#1d4ed8', color: 'white', padding: '2px 6px', borderRadius: '8px', marginLeft: '4px'}}>Admin</span>}</div>
                             <div style={{ fontSize: '11px', color: '#64748b' }}>{m?.department || 'Member'}</div>
                           </div>
                         </div>
-                        {!isMe && <button onClick={() => {
-                          const newMembers = activeRoom.members.filter(mid => mid !== id);
-                          const newNames = { ...activeRoom.memberNames };
-                          delete newNames[id];
-                          db.scicomm_chat_rooms.update(selectedRoom, { members: newMembers, memberNames: newNames });
-                        }} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}><Trash2 size={18} /></button>}
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          {canPromote && <button onClick={() => handlePromoteToAdmin(id)} style={{ background: '#eff6ff', border: 'none', color: '#1d4ed8', fontSize: '12px', fontWeight: 700, padding: '4px 8px', borderRadius: '8px', cursor: 'pointer' }}>Make Admin</button>}
+                          {!isMe && <button onClick={() => {
+                            const newMembers = activeRoom.members.filter(mid => mid !== id);
+                            const newNames = { ...activeRoom.memberNames };
+                            delete newNames[id];
+                            db.scicomm_chat_rooms.update(selectedRoom, { members: newMembers, memberNames: newNames });
+                          }} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}><Trash2 size={18} /></button>}
+                        </div>
                       </div>
                     );
                   })}
