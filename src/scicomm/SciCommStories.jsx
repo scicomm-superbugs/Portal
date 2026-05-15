@@ -258,6 +258,32 @@ export default function SciCommStories({ scientists }) {
           message: story.content?.substring(0, 50) || 'Media story',
           link: `/`, createdAt: new Date().toISOString(), read: false
         });
+
+        let roomId = null;
+        const existing = chatRooms.find(r => r.type === 'private' && r.members?.includes(user.id) && r.members?.includes(viewingUserId));
+        if (existing) roomId = existing.id;
+        else {
+          const otherUser = scientists.find(s => String(s.id) === String(viewingUserId));
+          roomId = await db.scicomm_chat_rooms.add({
+            type: 'private',
+            members: [user.id, viewingUserId],
+            memberNames: { [user.id]: user.name, [viewingUserId]: otherUser?.name || story.authorName },
+            createdAt: new Date().toISOString(),
+            lastMessageAt: new Date().toISOString()
+          });
+        }
+
+        await db.scicomm_chat_messages.add({
+          roomId, senderId: user.id, senderName: user.name, content: '❤️ Reacted to your story', type: 'story_reply',
+          storyUrl: story.mediaUrl || null, storyType: story.mediaType || 'text', storyContent: story.content || null,
+          readBy: [user.id], createdAt: new Date().toISOString()
+        });
+
+        await db.scicomm_chat_rooms.update(roomId, {
+          lastMessageAt: new Date().toISOString(),
+          lastMessage: 'Reacted to your story',
+          lastSender: user.name
+        });
       }
     }
   };
