@@ -209,7 +209,7 @@ export default function SciCommSinglePost() {
     setEditingComment(null);
   };
 
-  const CommentNode = ({ post, comments, path = [] }) => {
+  const renderCommentTree = (post, comments, path = []) => {
     return comments.map((c, i) => {
       const currentPath = [...path, i];
       const isReplying = replyTo?.postId === post.id && JSON.stringify(replyTo?.path) === JSON.stringify(currentPath);
@@ -293,7 +293,7 @@ export default function SciCommSinglePost() {
                 </div>
               )}
               
-              {c.replies?.length > 0 && <div style={{ marginTop: '4px' }}><CommentNode post={post} comments={c.replies} path={currentPath} /></div>}
+              {c.replies?.length > 0 && <div style={{ marginTop: '4px' }}>{renderCommentTree(post, c.replies, currentPath)}</div>}
               {/* Reply Input - uses same flat structure as main comment input */}
               {isReplying && (
                 <div style={{ marginTop: '8px' }}>
@@ -405,7 +405,7 @@ export default function SciCommSinglePost() {
             </div>
           </div>
 
-          <CommentNode post={post} comments={post.comments || []} path={[]} />
+          {renderCommentTree(post, post.comments || [], [])}
         </div>
       </div>
 

@@ -698,7 +698,7 @@ export default function SciCommFeed() {
     return acc + Object.values(rx).reduce((sum, arr) => sum + (arr?.length || 0), 0);
   }, 0);
 
-  const CommentNode = ({ post, comments, path = [] }) => {
+  const renderCommentTree = (post, comments, path = []) => {
     return comments.map((c, i) => {
       const currentPath = [...path, i];
       const isReplying = replyTo?.postId === post.id && JSON.stringify(replyTo?.path) === JSON.stringify(currentPath);
@@ -802,7 +802,7 @@ export default function SciCommFeed() {
               {/* Existing Replies */}
               {(c.replies || []).length > 0 && (
                 <div style={{ marginTop: '4px' }}>
-                  <CommentNode post={post} comments={c.replies} path={currentPath} />
+                  {renderCommentTree(post, c.replies, currentPath)}
                 </div>
               )}
               
@@ -1210,7 +1210,7 @@ export default function SciCommFeed() {
               {/* Comments section */}
               {isCommentsOpen && (
                 <div style={{ padding: '8px 16px 16px', borderTop: '1px solid #e0dfdc' }}>
-                  <CommentNode post={post} comments={post.comments || []} path={[]} />
+                  {renderCommentTree(post, post.comments || [], [])}
                   {/* Main comment input */}
                   <div style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center', position: 'relative' }}>
                     <MentionDropdown inputKey={post.id} />
