@@ -603,7 +603,7 @@ export default function SciCommProfile() {
 
             <div>
               <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Bio / About</label>
-              <textarea value={settingsForm.bio} onChange={e => setSettingsForm({ ...settingsForm, bio: e.target.value })} rows={3} style={{ width: '100%', padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', resize: 'vertical', boxSizing: 'border-box' }} />
+              <textarea dir="auto" value={settingsForm.bio} onChange={e => setSettingsForm({ ...settingsForm, bio: e.target.value })} rows={3} style={{ width: '100%', padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', resize: 'vertical', boxSizing: 'border-box' }} />
             </div>
 
             <div style={{ borderTop: '1px solid #eef3f8', paddingTop: '16px', marginTop: '8px' }}>
@@ -732,7 +732,7 @@ export default function SciCommProfile() {
                   ) : (
                     appealTarget === w.id ? (
                       <div>
-                        <textarea value={appealText} onChange={e => setAppealText(e.target.value)} placeholder="Write your explanation/excuse..." rows={2} style={{ width: '100%', padding: '8px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '13px', resize: 'vertical', boxSizing: 'border-box' }} />
+                        <textarea dir="auto" value={appealText} onChange={e => setAppealText(e.target.value)} placeholder="Write your explanation/excuse..." rows={2} style={{ width: '100%', padding: '8px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '13px', resize: 'vertical', boxSizing: 'border-box' }} />
                         <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
                           <button className="scicomm-btn-primary" style={{ fontSize: '12px', padding: '4px 12px' }} onClick={() => handleAppeal(w.id)}>Submit Appeal</button>
                           <button className="scicomm-btn-secondary" style={{ fontSize: '12px', padding: '4px 12px' }} onClick={() => setAppealTarget(null)}>Cancel</button>
