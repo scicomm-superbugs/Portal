@@ -19,6 +19,7 @@ export default function SciCommNotifications() {
   const generalNotifications = useLiveCollection('scicomm_notifications') || [];
 
   const [activeTab, setActiveTab] = useState('all');
+  const [showCongratsPopup, setShowCongratsPopup] = useState(false);
 
   const myTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
   const myWarnings = warningsData.filter(w => String(w.userId) === String(user.id));
@@ -47,12 +48,17 @@ export default function SciCommNotifications() {
     return <div style={{ width: size, height: size, borderRadius: '14px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><UserCircle size={size * 0.6} color="#94a3b8" /></div>;
   };
 
-  const handleNotificationClick = async (n) => {
+  const handleNotificationClick = async (e, n) => {
+    if (n.type === 'application' && n.title.includes('Approved')) {
+      e.preventDefault();
+      setShowCongratsPopup(true);
+    }
+    
     if (n.type === 'application' && !n.read && n.rawId) {
-      try { await db.scicomm_applications.update(n.rawId, { read: true }); } catch (e) {}
+      try { await db.scicomm_applications.update(n.rawId, { read: true }); } catch (err) {}
     }
     if (n.isGeneral && !n.read) {
-      try { await db.scicomm_notifications.update(n.rawId, { read: true }); } catch (e) {}
+      try { await db.scicomm_notifications.update(n.rawId, { read: true }); } catch (err) {}
     }
   };
 
@@ -341,7 +347,7 @@ export default function SciCommNotifications() {
       <Link 
         key={n.id} 
         to={n.link || '#'} 
-        onClick={() => handleNotificationClick(n)}
+        onClick={(e) => handleNotificationClick(e, n)}
         style={{ 
           display: 'flex', 
           gap: '16px', 
@@ -476,6 +482,38 @@ export default function SciCommNotifications() {
           </div>
         )}
       </div>
+
+      {showCongratsPopup && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s', padding: '20px' }}>
+          <div style={{ background: 'white', padding: '32px', borderRadius: '24px', width: '100%', maxWidth: '450px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)', textAlign: 'center' }}>
+            <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#dcfce7', color: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+              <CheckCircle size={40} />
+            </div>
+            <h3 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#0f172a' }}>Congratulations! 🎉</h3>
+            <p style={{ margin: '0 0 24px', color: '#475569', fontSize: '15px', lineHeight: '1.6' }}>
+              Your application to join the Science Communication Team has been approved! 
+              You now have access to all workspace options like tasks, meetings, and you are part of the leaderboard.
+            </p>
+            <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '16px', marginBottom: '24px', display: 'flex', gap: '16px', justifyContent: 'center' }}>
+               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', color: '#3b82f6' }}>
+                  <Briefcase size={24} /> <span style={{ fontSize: '12px', fontWeight: 600 }}>Tasks</span>
+               </div>
+               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', color: '#8b5cf6' }}>
+                  <Calendar size={24} /> <span style={{ fontSize: '12px', fontWeight: 600 }}>Meetings</span>
+               </div>
+               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', color: '#f59e0b' }}>
+                  <Heart size={24} /> <span style={{ fontSize: '12px', fontWeight: 600 }}>Leaderboard</span>
+               </div>
+            </div>
+            <button onClick={() => setShowCongratsPopup(false)} style={{ width: '100%', padding: '14px', borderRadius: '16px', background: '#1d4ed8', border: 'none', fontWeight: 800, color: 'white', fontSize: '16px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(29, 78, 216, 0.3)' }} onMouseEnter={e=>e.currentTarget.style.background='#1e40af'} onMouseLeave={e=>e.currentTarget.style.background='#1d4ed8'}>Awesome! Let's Go</button>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+      `}</style>
     </div>
   );
 }

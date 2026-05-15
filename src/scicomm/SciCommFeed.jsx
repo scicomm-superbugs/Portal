@@ -114,6 +114,16 @@ export default function SciCommFeed() {
   const tasksData = useLiveCollection('tasks') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
   const recognitions = useLiveCollection('scicomm_recognitions') || [];
+  const applicationsRaw = useLiveCollection('scicomm_applications') || [];
+
+  const myApprovedApp = applicationsRaw.find(a => String(a.userId) === String(user.id) && a.status === 'approved');
+  const [showApprovalBanner, setShowApprovalBanner] = useState(false);
+
+  useEffect(() => {
+    if (myApprovedApp && !localStorage.getItem('hide_approval_banner_' + user.id)) {
+      setShowApprovalBanner(true);
+    }
+  }, [myApprovedApp, user.id]);
 
   const [newPost, setNewPost] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -901,6 +911,27 @@ export default function SciCommFeed() {
 
       {/* Main Feed */}
       <div className="scicomm-feed-main">
+        {/* Approved Application Banner */}
+        {showApprovalBanner && (
+          <div style={{ background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)', border: '1px solid #86efac', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#16a34a', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Trophy size={24} />
+              </div>
+              <div>
+                <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 800, color: '#166534' }}>Welcome to the SciComm Team! 🎉</h3>
+                <p style={{ margin: 0, fontSize: '14px', color: '#14532d', lineHeight: '1.4' }}>Your application was approved! You now have full access to workspace options and the leaderboard.</p>
+              </div>
+            </div>
+            <button onClick={() => {
+              localStorage.setItem('hide_approval_banner_' + user.id, 'true');
+              setShowApprovalBanner(false);
+            }} style={{ background: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#166534', transition: 'background 0.2s', flexShrink: 0 }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.8)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.5)'}>
+              <X size={18} />
+            </button>
+          </div>
+        )}
+
         {/* Stories Horizontal Reel */}
         <SciCommStories scientists={scientists} />
 
