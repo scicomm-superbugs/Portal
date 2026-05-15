@@ -251,7 +251,7 @@ export default function SciCommSinglePost() {
                     </div>
                   ) : (
                     <>
-                      <p style={{ margin: '2px 0 0', fontSize: '13px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', unicodeBidi: 'plaintext', direction: /[\u0600-\u06FF]/.test(c.text || '') ? 'rtl' : 'ltr', textAlign: /[\u0600-\u06FF]/.test(c.text || '') ? 'right' : 'left' }}>{renderPostText(c.text)}</p>
+                      <p dir="auto" style={{ margin: '2px 0 0', fontSize: '13px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{renderPostText(c.text)}</p>
                       {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
                     </>
                   )
@@ -335,7 +335,7 @@ export default function SciCommSinglePost() {
             )}
           </div>
 
-          <p style={{ fontSize: '16px', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: '0 0 16px', unicodeBidi: 'plaintext', direction: /[\u0600-\u06FF]/.test(post.content || '') ? 'rtl' : 'ltr', textAlign: /[\u0600-\u06FF]/.test(post.content || '') ? 'right' : 'left' }}>{renderPostText(post.content)}</p>
+          <p dir="auto" style={{ fontSize: '16px', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: '0 0 16px' }}>{renderPostText(post.content)}</p>
 
           {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '12px', marginBottom: '16px', maxHeight: '600px', objectFit: 'cover' }} />}
         </div>

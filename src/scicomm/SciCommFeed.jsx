@@ -747,7 +747,7 @@ export default function SciCommFeed() {
                     </div>
                   ) : (
                     <>
-                      <p style={{ margin: '2px 0 0', fontSize: path.length === 0 ? '13px' : '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', unicodeBidi: 'plaintext', direction: /[\u0600-\u06FF]/.test(c.text || '') ? 'rtl' : 'ltr', textAlign: /[\u0600-\u06FF]/.test(c.text || '') ? 'right' : 'left' }}>{renderPostText(c.text)}</p>
+                      <p dir="auto" style={{ margin: '2px 0 0', fontSize: path.length === 0 ? '13px' : '12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{renderPostText(c.text)}</p>
                       {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
                     </>
                   )
@@ -1092,14 +1092,11 @@ export default function SciCommFeed() {
                       </div>
                     ) : (
                       <>
-                        <p style={{ 
+                        <p dir="auto" style={{ 
                           margin: '0 0 8px', 
                           fontSize: '14px', 
                           lineHeight: '1.5', 
-                          whiteSpace: 'pre-wrap', 
-                          unicodeBidi: 'plaintext', 
-                          direction: /[\u0600-\u06FF]/.test(post.content || '') ? 'rtl' : 'ltr',
-                          textAlign: /[\u0600-\u06FF]/.test(post.content || '') ? 'right' : 'left'
+                          whiteSpace: 'pre-wrap'
                         }}>{renderPostText(post.content)}</p>
                         {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
                         {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}

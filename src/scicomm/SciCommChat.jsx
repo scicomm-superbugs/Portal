@@ -573,10 +573,7 @@ export default function SciCommChat() {
                       position: 'relative',
                       fontStyle: isDeleted ? 'italic' : 'normal'
                     }}>
-                      <div style={{ 
-                        unicodeBidi: 'plaintext', 
-                        direction: /[\u0600-\u06FF]/.test(m.content || '') ? 'rtl' : 'ltr',
-                        textAlign: /[\u0600-\u06FF]/.test(m.content || '') ? 'right' : 'left',
+                      <div dir="auto" style={{ 
                         whiteSpace: 'pre-wrap'
                       }}>
                         {m.replyToContent && (
