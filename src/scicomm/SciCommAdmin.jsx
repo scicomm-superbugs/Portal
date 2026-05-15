@@ -90,7 +90,9 @@ export default function SciCommAdmin() {
   };
 
   const handleRejectApplication = async (app) => {
-    await db.scicomm_applications.update(app.id, { status: 'rejected', reviewedAt: new Date().toISOString() });
+    const comment = window.prompt("Reason for rejection (optional):");
+    if (comment === null) return; // Cancelled
+    await db.scicomm_applications.update(app.id, { status: 'rejected', comment: comment, reviewedAt: new Date().toISOString() });
     flash('Application rejected.');
   };
 

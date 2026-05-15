@@ -112,6 +112,12 @@ export default function SciCommApply() {
             <XCircle size={40} style={{ marginBottom: '12px' }} />
             <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>Application Not Approved</h3>
             <p style={{ fontSize: '14px' }}>Thank you for your interest. Unfortunately, you do not meet the criteria at this time. You can update your profile and try again later.</p>
+            {myApplication.comment && (
+              <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(255,255,255,0.7)', borderRadius: '8px', color: '#7f1d1d', fontStyle: 'italic', fontSize: '13px' }}>
+                <strong style={{ fontWeight: 700, display: 'block', marginBottom: '4px', fontStyle: 'normal' }}>Admin Feedback:</strong>
+                {myApplication.comment}
+              </div>
+            )}
           </div>
           <button 
             onClick={handleReapply} 
