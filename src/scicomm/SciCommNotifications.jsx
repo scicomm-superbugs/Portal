@@ -521,9 +521,9 @@ export default function SciCommNotifications() {
             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#fee2e2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
               <X size={40} />
             </div>
-            <h3 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#0f172a' }}>Application Update</h3>
+            <h3 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#0f172a' }}>Application Update 📢</h3>
             <p style={{ margin: '0 0 24px', color: '#475569', fontSize: '15px', lineHeight: '1.6' }}>
-              Thank you for applying! Unfortunately, your application wasn't approved this time around. Don't be discouraged—we appreciate your effort and would love to see you try again in the future.
+              Thank you so much for applying! 🌻 Your application wasn't approved today, but every step is progress. Keep up the amazing effort, and feel free to apply again later! ✨
             </p>
             {showRejectionPopup.comment && (
               <div style={{ background: '#fef2f2', padding: '16px', borderRadius: '16px', marginBottom: '24px', borderLeft: '4px solid #ef4444', textAlign: 'left' }}>
