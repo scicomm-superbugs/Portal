@@ -182,6 +182,7 @@ export default function SciCommPost() {
 
         {/* Textarea */}
         <textarea
+          dir="auto"
           placeholder="What's on your mind? (type @ to mention someone)"
           value={newPost}
           onChange={e => handleInputChange(e.target.value)}

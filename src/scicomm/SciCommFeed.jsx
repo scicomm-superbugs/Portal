@@ -735,7 +735,7 @@ export default function SciCommFeed() {
                 ) : (
                   editingComment?.id === post.id && JSON.stringify(editingComment?.path) === JSON.stringify(currentPath) ? (
                     <div style={{ marginTop: '4px' }}>
-                      <textarea 
+                      <textarea dir="auto"
                         value={editingComment.text} 
                         onChange={e => setEditingComment(prev => ({...prev, text: e.target.value}))}
                         style={{ width: '100%', minHeight: '40px', padding: '6px', border: '1px solid #1d4ed8', borderRadius: '4px', fontSize: '13px' }}
@@ -799,7 +799,7 @@ export default function SciCommFeed() {
                 <div style={{ marginTop: '6px' }}>
                   <div style={{ display: 'flex', gap: '6px', alignItems: 'center', position: 'relative' }}>
                     <MentionDropdown inputKey={replyKey} />
-                    <textarea placeholder={`Reply to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} onChange={e => handleCommentInput(replyKey, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* newline */ } }} onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none', fontFamily: 'inherit' }} rows={1} autoFocus />
+                    <textarea dir="auto" placeholder={`Reply to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} onChange={e => handleCommentInput(replyKey, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* newline */ } }} onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none', fontFamily: 'inherit' }} rows={1} autoFocus />
                     <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' }}>😀</button>
                     <label style={{ cursor: 'pointer', fontSize: '14px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                     <button className="scicomm-btn-primary" style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
@@ -934,7 +934,7 @@ export default function SciCommFeed() {
             onMouseOver={e => e.currentTarget.style.border = '1px solid rgba(59,130,246,0.3)'}
             onMouseOut={e => e.currentTarget.style.border = '1px solid transparent'}
             >
-              <textarea placeholder="What's on your mind?" value={newPost} onChange={e => setNewPost(e.target.value)}
+              <textarea dir="auto" placeholder="What's on your mind?" value={newPost} onChange={e => setNewPost(e.target.value)}
                 rows={Math.max(2, newPost.split('\n').length)}
                 style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '15px', outline: 'none', color: '#1e293b', width: '100%', fontFamily: 'inherit', resize: 'none', paddingTop: '8px' }} />
             </div>
@@ -1058,7 +1058,7 @@ export default function SciCommFeed() {
                 {/* Post content - edit mode or display */}
                 {editingPost?.id === post.id ? (
                   <div style={{ marginBottom: '8px' }}>
-                    <textarea value={editingPost.content} onChange={e => setEditingPost(p => ({...p, content: e.target.value}))} style={{ width: '100%', minHeight: '80px', border: '1px solid #1d4ed8', borderRadius: '8px', padding: '10px', fontSize: '14px', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
+                    <textarea dir="auto" value={editingPost.content} onChange={e => setEditingPost(p => ({...p, content: e.target.value}))} style={{ width: '100%', minHeight: '80px', border: '1px solid #1d4ed8', borderRadius: '8px', padding: '10px', fontSize: '14px', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }} />
                     {editingPost.imageUrl && !editingPost.removeImage && (
                       <div style={{ position: 'relative', marginTop: '8px' }}>
                         <img src={editingPost.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', maxHeight: '200px', objectFit: 'cover' }} />
@@ -1188,7 +1188,7 @@ export default function SciCommFeed() {
                   {/* Main comment input */}
                   <div style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center', position: 'relative' }}>
                     <MentionDropdown inputKey={post.id} />
-                    <textarea placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} onChange={e => handleCommentInput(post.id, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* let it add newline */ } }}
+                    <textarea dir="auto" placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} onChange={e => handleCommentInput(post.id, e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { /* let it add newline */ } }}
                       onBlur={() => setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200)}
                       style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit' }} rows={1} />
                     <button onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px' }}>😀</button>
