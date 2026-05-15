@@ -767,6 +767,19 @@ export default function SciCommFeed() {
                     );
                   })}
 
+                  {/* Reply toggle */}
+                  <button 
+                    onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} 
+                    style={{ 
+                      background: 'none', border: 'none', cursor: 'pointer', 
+                      fontSize: '11px', fontWeight: 600, 
+                      color: isReplying ? '#1d4ed8' : 'rgba(0,0,0,0.5)', 
+                      padding: '2px 0' 
+                    }}
+                  >
+                    Reply
+                  </button>
+
                   {/* Edit/Delete Options */}
                   <div style={{ position: 'relative' }}>
                     <button onClick={(e) => { e.stopPropagation(); setActiveCommentMenu(activeCommentMenu === `${post.id}_${currentPath.join('_')}` ? null : `${post.id}_${currentPath.join('_')}`); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.3)', padding: '2px' }}><MoreHorizontal size={14} /></button>
@@ -786,13 +799,119 @@ export default function SciCommFeed() {
                 </div>
               )}
               
-              {/* Replies */}
+              {/* Existing Replies */}
               {(c.replies || []).length > 0 && (
                 <div style={{ marginTop: '4px' }}>
                   <CommentNode post={post} comments={c.replies} path={currentPath} />
                 </div>
               )}
               
+              {/* New Reply Input */}
+              {isReplying && (
+                <div style={{ marginTop: '8px', paddingLeft: path.length > 0 ? '4px' : '0' }}>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                    {renderAvatar(getAuthor(user.id), 24)}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ 
+                        border: '1px solid #d0d5dd', borderRadius: '14px', 
+                        overflow: 'hidden', background: '#fafafa',
+                        transition: 'border-color 0.2s',
+                      }}>
+                        <textarea 
+                          placeholder={`Replying to ${c.authorName}...`}
+                          value={commentText[replyKey] || ''} 
+                          onChange={e => {
+                            handleCommentInput(replyKey, e.target.value);
+                            e.target.style.height = 'auto';
+                            e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                          }}
+                          onFocus={e => e.target.parentElement.style.borderColor = '#1d4ed8'}
+                          onBlur={e => { 
+                            e.target.parentElement.style.borderColor = '#d0d5dd'; 
+                            setTimeout(() => { setMentionKey(null); setMentionQuery(''); }, 200); 
+                          }}
+                          rows={1}
+                          style={{ 
+                            width: '100%', border: 'none', outline: 'none', 
+                            padding: '8px 12px', fontSize: '13px', fontFamily: 'inherit',
+                            resize: 'none', overflow: 'hidden', background: 'transparent',
+                            boxSizing: 'border-box', minHeight: '36px'
+                          }} 
+                          autoFocus 
+                        />
+                        {/* Attached image preview */}
+                        {commentImage[replyKey] && (
+                          <div style={{ padding: '4px 12px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontSize: '11px', color: '#64748b' }}>📎 {commentImage[replyKey].name}</span>
+                            <button 
+                              onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} 
+                              style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px', padding: 0 }}
+                            >✕</button>
+                          </div>
+                        )}
+                        {/* Emoji picker */}
+                        {showEmojiPicker === replyKey && (
+                          <div style={{ 
+                            display: 'flex', flexWrap: 'wrap', gap: '2px', 
+                            padding: '6px 10px 8px', borderTop: '1px solid #e8e8e8' 
+                          }}>
+                            {EMOJI_LIST.map(em => (
+                              <button 
+                                key={em} 
+                                onClick={() => setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey] || '') + em}))} 
+                                style={{ background: 'none', border: 'none', fontSize: '17px', cursor: 'pointer', padding: '3px', borderRadius: '4px' }}
+                                onMouseEnter={e => e.target.style.background = '#e8e8e8'}
+                                onMouseLeave={e => e.target.style.background = 'none'}
+                              >{em}</button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      {/* Action buttons row */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
+                        <button 
+                          onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} 
+                          title="Emojis"
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', padding: '4px', borderRadius: '6px' }}
+                          onMouseEnter={e => e.target.style.background = '#f1f5f9'}
+                          onMouseLeave={e => e.target.style.background = 'none'}
+                        >😀</button>
+                        <label 
+                          title="Attach image" 
+                          style={{ cursor: 'pointer', fontSize: '15px', padding: '4px', borderRadius: '6px', display: 'flex', alignItems: 'center' }}
+                          onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                        >
+                          📷
+                          <input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} />
+                        </label>
+                        <div style={{ flex: 1 }} />
+                        <button 
+                          onClick={() => { setReplyTo(null); setCommentText(prev => ({...prev, [replyKey]: ''})); setCommentImage(prev => ({...prev, [replyKey]: null})); }}
+                          style={{ 
+                            background: 'none', border: '1px solid #e0dfdc', borderRadius: '8px',
+                            padding: '4px 12px', fontSize: '12px', cursor: 'pointer', color: '#64748b' 
+                          }}
+                        >Cancel</button>
+                        <button 
+                          onClick={() => handleAddComment(post)}
+                          disabled={!(commentText[replyKey]?.trim() || commentImage[replyKey])}
+                          style={{ 
+                            background: (commentText[replyKey]?.trim() || commentImage[replyKey]) ? '#1d4ed8' : '#94a3b8',
+                            color: 'white', border: 'none', borderRadius: '8px',
+                            padding: '4px 14px', fontSize: '12px', fontWeight: 600, 
+                            cursor: (commentText[replyKey]?.trim() || commentImage[replyKey]) ? 'pointer' : 'default',
+                            display: 'flex', alignItems: 'center', gap: '4px'
+                          }}
+                        ><Send size={12} /> Reply</button>
+                      </div>
+                    </div>
+                  </div>
+                  <MentionDropdown inputKey={replyKey} />
+                </div>
+              )}
+              
+
             </div>
           </div>
         </div>
