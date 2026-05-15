@@ -99,6 +99,21 @@ export default function SciCommStories({ scientists }) {
   const { user } = useAuth();
   const allStories = useLiveCollection('scicomm_stories') || [];
   
+  // Filter out expired stories from display
+  const now = new Date();
+  const activeStories = allStories.filter(s => {
+    if (!s.expiresAt) return true; // legacy stories without expiresAt
+    return new Date(s.expiresAt) > now;
+  });
+
+  // Auto-cleanup: delete expired stories from the database
+  useEffect(() => {
+    const expired = allStories.filter(s => s.expiresAt && new Date(s.expiresAt) <= new Date());
+    expired.forEach(s => {
+      db.scicomm_stories.delete(s.id).catch(console.error);
+    });
+  }, [allStories.length]);
+
   const renderAvatar = (member, size = 48) => {
     if (!member) return <UserCircle size={size} color="#94a3b8" />;
     if (member.avatar) return <img src={member.avatar} alt={member.name} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }} />;
@@ -118,8 +133,8 @@ export default function SciCommStories({ scientists }) {
   const [replyText, setReplyText] = useState('');
   const [showViewers, setShowViewers] = useState(false);
 
-  // Group stories by user
-  const storiesByUser = allStories.reduce((acc, s) => {
+  // Group stories by user (using only active/non-expired stories)
+  const storiesByUser = activeStories.reduce((acc, s) => {
     if (!acc[s.authorId]) acc[s.authorId] = [];
     acc[s.authorId].push(s);
     return acc;
