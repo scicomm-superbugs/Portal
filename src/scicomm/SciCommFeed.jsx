@@ -116,14 +116,23 @@ export default function SciCommFeed() {
   const recognitions = useLiveCollection('scicomm_recognitions') || [];
   const applicationsRaw = useLiveCollection('scicomm_applications') || [];
 
-  const myApprovedApp = applicationsRaw.find(a => String(a.userId) === String(user.id) && a.status === 'approved');
+  const myApps = applicationsRaw.filter(a => String(a.userId) === String(user.id)).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const latestApp = myApps[0];
+  const isApproved = latestApp && latestApp.status === 'approved';
+  const isRejected = latestApp && latestApp.status === 'rejected';
+
   const [showApprovalBanner, setShowApprovalBanner] = useState(false);
+  const [showRejectionBanner, setShowRejectionBanner] = useState(false);
 
   useEffect(() => {
-    if (myApprovedApp && !localStorage.getItem('hide_approval_banner_' + user.id)) {
+    if (isApproved && !localStorage.getItem('hide_approval_banner_' + user.id + '_' + latestApp.id)) {
       setShowApprovalBanner(true);
+      setShowRejectionBanner(false);
+    } else if (isRejected && !localStorage.getItem('hide_rejection_banner_' + user.id + '_' + latestApp.id)) {
+      setShowRejectionBanner(true);
+      setShowApprovalBanner(false);
     }
-  }, [myApprovedApp, user.id]);
+  }, [isApproved, isRejected, user.id, latestApp]);
 
   const [newPost, setNewPost] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -924,9 +933,30 @@ export default function SciCommFeed() {
               </div>
             </div>
             <button onClick={() => {
-              localStorage.setItem('hide_approval_banner_' + user.id, 'true');
+              if (latestApp) localStorage.setItem('hide_approval_banner_' + user.id + '_' + latestApp.id, 'true');
               setShowApprovalBanner(false);
             }} style={{ background: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#166534', transition: 'background 0.2s', flexShrink: 0 }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.8)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.5)'}>
+              <X size={18} />
+            </button>
+          </div>
+        )}
+
+        {/* Rejected Application Banner */}
+        {showRejectionBanner && (
+          <div style={{ background: 'linear-gradient(135deg, #fee2e2, #fecaca)', border: '1px solid #fca5a5', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#dc2626', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <X size={24} />
+              </div>
+              <div>
+                <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 800, color: '#991b1b' }}>Application Update</h3>
+                <p style={{ margin: 0, fontSize: '14px', color: '#7f1d1d', lineHeight: '1.4' }}>Your recent application was not approved. Keep learning and try again later!</p>
+              </div>
+            </div>
+            <button onClick={() => {
+              if (latestApp) localStorage.setItem('hide_rejection_banner_' + user.id + '_' + latestApp.id, 'true');
+              setShowRejectionBanner(false);
+            }} style={{ background: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#991b1b', transition: 'background 0.2s', flexShrink: 0 }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.8)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.5)'}>
               <X size={18} />
             </button>
           </div>

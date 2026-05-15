@@ -20,6 +20,7 @@ export default function SciCommNotifications() {
 
   const [activeTab, setActiveTab] = useState('all');
   const [showCongratsPopup, setShowCongratsPopup] = useState(false);
+  const [showRejectionPopup, setShowRejectionPopup] = useState(false);
 
   const myTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
   const myWarnings = warningsData.filter(w => String(w.userId) === String(user.id));
@@ -52,6 +53,9 @@ export default function SciCommNotifications() {
     if (n.type === 'application' && n.title.includes('Approved')) {
       e.preventDefault();
       setShowCongratsPopup(true);
+    } else if (n.type === 'application' && n.title.includes('Rejected')) {
+      e.preventDefault();
+      setShowRejectionPopup(true);
     }
     
     if (n.type === 'application' && !n.read && n.rawId) {
@@ -506,6 +510,22 @@ export default function SciCommNotifications() {
                </div>
             </div>
             <button onClick={() => setShowCongratsPopup(false)} style={{ width: '100%', padding: '14px', borderRadius: '16px', background: '#1d4ed8', border: 'none', fontWeight: 800, color: 'white', fontSize: '16px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(29, 78, 216, 0.3)' }} onMouseEnter={e=>e.currentTarget.style.background='#1e40af'} onMouseLeave={e=>e.currentTarget.style.background='#1d4ed8'}>Awesome! Let's Go</button>
+          </div>
+        </div>
+      )}
+
+      {showRejectionPopup && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s', padding: '20px' }}>
+          <div style={{ background: 'white', padding: '32px', borderRadius: '24px', width: '100%', maxWidth: '450px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)', textAlign: 'center' }}>
+            <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#fee2e2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+              <X size={40} />
+            </div>
+            <h3 style={{ margin: '0 0 16px', fontSize: '24px', fontWeight: 900, color: '#0f172a' }}>Application Update</h3>
+            <p style={{ margin: '0 0 24px', color: '#475569', fontSize: '15px', lineHeight: '1.6' }}>
+              Your application to join the Science Communication Team was not approved at this time.
+              Keep improving your profile, stay active, and feel free to try again later!
+            </p>
+            <button onClick={() => setShowRejectionPopup(false)} style={{ width: '100%', padding: '14px', borderRadius: '16px', background: '#f1f5f9', border: 'none', fontWeight: 800, color: '#64748b', fontSize: '16px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(0, 0, 0, 0.05)' }} onMouseEnter={e=>e.currentTarget.style.background='#e2e8f0'} onMouseLeave={e=>e.currentTarget.style.background='#f1f5f9'}>Got it</button>
           </div>
         </div>
       )}
