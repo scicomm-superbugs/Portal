@@ -24,6 +24,7 @@ export default function SciCommChat() {
   const [swipeState, setSwipeState] = useState({ id: null, startX: 0, currentX: 0 });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [highlightedMsgId, setHighlightedMsgId] = useState(null);
   const isAdmin = user.role === 'admin' || user.role === 'master';
   const EMOJI_LIST = ['😀','😂','😍','🥳','👏','🔥','❤️','💡','🧪','🧬','🔬','⚗️','🎉','👍','🙌','💪','🤔','😎','🤩','✨'];
 
@@ -365,7 +366,15 @@ export default function SciCommChat() {
     }
   };
 
-
+  const handleReplyClick = (replyToId) => {
+    if (!replyToId) return;
+    const msgEl = document.getElementById(`msg-${replyToId}`);
+    if (msgEl) {
+      msgEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setHighlightedMsgId(replyToId);
+      setTimeout(() => setHighlightedMsgId(null), 2000);
+    }
+  };
 
   const unreadPerRoom = (roomId) => allMessages.filter(m =>
     m.roomId === roomId && m.senderId !== user.id && !(m.readBy || []).includes(user.id)
@@ -589,6 +598,7 @@ export default function SciCommChat() {
                 return (
                   <div 
                     key={m.id} 
+                    id={`msg-${m.id}`}
                     style={{ 
                       display: 'flex', 
                       flexDirection: 'column', 
@@ -621,20 +631,21 @@ export default function SciCommChat() {
                       maxWidth: '75%', 
                       padding: '10px 16px', 
                       borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                      background: isDeleted ? (isMe ? 'rgba(29, 78, 216, 0.1)' : '#f8fafc') : (isMe ? '#1d4ed8' : 'white'),
+                      background: isDeleted ? (isMe ? 'rgba(29, 78, 216, 0.1)' : '#f8fafc') : (highlightedMsgId === m.id ? (isMe ? '#2563eb' : '#fef3c7') : (isMe ? '#1d4ed8' : 'white')),
                       color: isDeleted ? '#94a3b8' : (isMe ? 'white' : '#1e293b'),
                       fontSize: '14px',
                       lineHeight: '1.5',
-                      boxShadow: isDeleted ? 'none' : '0 2px 8px rgba(0,0,0,0.03)',
-                      border: isDeleted ? '1px dashed #cbd5e1' : (isMe ? 'none' : '1px solid #e2e8f0'),
+                      boxShadow: highlightedMsgId === m.id ? (isMe ? '0 0 0 4px rgba(219, 234, 254, 0.5)' : '0 0 0 4px rgba(253, 230, 138, 0.5)') : (isDeleted ? 'none' : '0 2px 8px rgba(0,0,0,0.03)'),
+                      border: isDeleted ? '1px dashed #cbd5e1' : (highlightedMsgId === m.id && !isMe ? '1px solid #fcd34d' : (isMe ? 'none' : '1px solid #e2e8f0')),
                       position: 'relative',
-                      fontStyle: isDeleted ? 'italic' : 'normal'
+                      fontStyle: isDeleted ? 'italic' : 'normal',
+                      transition: 'all 0.6s ease'
                     }}>
                       <div style={{ 
                         whiteSpace: 'pre-wrap'
                       }}>
                         {m.replyToContent && (
-                          <div style={{ background: isMe ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)', padding: '6px 10px', borderRadius: '8px', marginBottom: '6px', borderLeft: `3px solid ${isMe ? 'white' : '#1d4ed8'}`, fontSize: '12px' }}>
+                          <div onClick={() => handleReplyClick(m.replyToId)} style={{ background: isMe ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)', padding: '6px 10px', borderRadius: '8px', marginBottom: '6px', borderLeft: `3px solid ${isMe ? 'white' : '#1d4ed8'}`, fontSize: '12px', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = 0.8} onMouseLeave={e => e.currentTarget.style.opacity = 1}>
                             <div style={{ fontWeight: 700, marginBottom: '2px', opacity: 0.9 }}>{m.replyToSender}</div>
                             <div style={{ opacity: 0.8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.replyToContent}</div>
                           </div>
