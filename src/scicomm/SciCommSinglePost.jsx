@@ -243,7 +243,7 @@ export default function SciCommSinglePost() {
                 ) : (
                   editingComment?.path && JSON.stringify(editingComment.path) === JSON.stringify(currentPath) ? (
                     <div style={{ marginTop: '4px' }}>
-                      <textarea dir="auto" value={editingComment.text} onChange={e => setEditingComment({...editingComment, text: e.target.value})} style={{ width: '100%', minHeight: '40px', padding: '6px', border: '1px solid #1d4ed8', borderRadius: '4px', fontSize: '13px' }} />
+                      <textarea value={editingComment.text} onChange={e => setEditingComment({...editingComment, text: e.target.value})} style={{ width: '100%', minHeight: '40px', padding: '6px', border: '1px solid #1d4ed8', borderRadius: '4px', fontSize: '13px' }} />
                       <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
                         <button onClick={() => handleSaveEditComment(post)} className="scicomm-btn-primary" style={{ padding: '2px 8px', fontSize: '11px' }}>Save</button>
                         <button onClick={() => setEditingComment(null)} className="scicomm-btn-secondary" style={{ padding: '2px 8px', fontSize: '11px' }}>Cancel</button>
@@ -251,7 +251,7 @@ export default function SciCommSinglePost() {
                     </div>
                   ) : (
                     <>
-                      <p dir="auto" style={{ margin: '2px 0 0', fontSize: '13px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', letterSpacing: 'normal' }}>{renderPostText(c.text)}</p>
+                      <p style={{ margin: '2px 0 0', fontSize: '13px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{renderPostText(c.text)}</p>
                       {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
                     </>
                   )
@@ -288,7 +288,7 @@ export default function SciCommSinglePost() {
               
               {isReplying && (
                 <div style={{ marginTop: '8px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <textarea dir="auto" placeholder={`Reply to ${c.authorName}...`} value={commentText[replyKey] || ''} onChange={e => setCommentText({...commentText, [replyKey]: e.target.value})} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none' }} rows={1} autoFocus />
+                  <textarea placeholder={`Reply to ${c.authorName}...`} value={commentText[replyKey] || ''} onChange={e => setCommentText({...commentText, [replyKey]: e.target.value})} style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '16px', padding: '6px 12px', fontSize: '12px', outline: 'none', resize: 'none' }} rows={1} autoFocus />
                   <button className="scicomm-btn-primary" style={{ padding: '4px 12px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
                   <button onClick={() => setReplyTo(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={16} /></button>
                 </div>
@@ -335,7 +335,7 @@ export default function SciCommSinglePost() {
             )}
           </div>
 
-          <p dir="auto" style={{ fontSize: '16px', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: '0 0 16px' }}>{renderPostText(post.content)}</p>
+          <p style={{ fontSize: '16px', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: '0 0 16px' }}>{renderPostText(post.content)}</p>
 
           {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '12px', marginBottom: '16px', maxHeight: '600px', objectFit: 'cover' }} />}
         </div>
@@ -371,7 +371,7 @@ export default function SciCommSinglePost() {
           <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center' }}>
             {renderAvatar(getAuthor(user.id), 32)}
             <div style={{ flex: 1, position: 'relative' }}>
-              <textarea dir="auto" placeholder="Write a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText({...commentText, [post.id]: e.target.value})} style={{ width: '100%', padding: '10px 16px', borderRadius: '24px', border: '1px solid #e0dfdc', outline: 'none', fontSize: '13px', resize: 'none', minHeight: '40px', fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', letterSpacing: 'normal' }} rows={1} />
+              <textarea placeholder="Write a comment..." value={commentText[post.id] || ''} onChange={e => setCommentText({...commentText, [post.id]: e.target.value})} style={{ width: '100%', padding: '10px 16px', borderRadius: '24px', border: '1px solid #e0dfdc', outline: 'none', fontSize: '13px', resize: 'none', minHeight: '40px', fontFamily: 'inherit' }} rows={1} />
               <button onClick={() => handleAddComment(post)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer' }}><Send size={18} /></button>
             </div>
           </div>

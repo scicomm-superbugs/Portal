@@ -428,7 +428,7 @@ export default function SciCommStories({ scientists }) {
               </div>
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>Caption (Optional)</label>
-                <textarea dir="auto" value={caption} onChange={e => setCaption(e.target.value)} placeholder="Add a caption..." style={{ width: '100%', padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '14px', resize: 'none' }} rows={3} />
+                <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="Add a caption..." style={{ width: '100%', padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '14px', resize: 'none' }} rows={3} />
               </div>
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>Duration</label>
