@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { db, useLiveCollection, uploadFile } from '../db';
 import { Search, Plus, MessageSquare, Image, Video, FileText, Send, MoreHorizontal, UserCircle, Settings, Trash2, X, ChevronLeft, ArrowLeft, Users, Lock, AtSign, Smile } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { AVATARS, timeAgo, EMOJI_LIST } from './scicommConstants';
+import { AVATARS, timeAgo } from './scicommConstants';
 
 export default function SciCommChat() {
   const { user } = useAuth();
@@ -25,6 +25,7 @@ export default function SciCommChat() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const isAdmin = user.role === 'admin' || user.role === 'master';
+  const EMOJI_LIST = ['😀','😂','😍','🥳','👏','🔥','❤️','💡','🧪','🧬','🔬','⚗️','🎉','👍','🙌','💪','🤔','😎','🤩','✨'];
 
   // Overlay states
   const [showNewChat, setShowNewChat] = useState(false);
