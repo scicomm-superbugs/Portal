@@ -294,77 +294,25 @@ export default function SciCommSinglePost() {
               )}
               
               {c.replies?.length > 0 && <div style={{ marginTop: '4px' }}><CommentNode post={post} comments={c.replies} path={currentPath} /></div>}
-              
-              {/* New Reply Input */}
+              {/* Reply Input - uses same flat structure as main comment input */}
               {isReplying && (
-                <div style={{ marginTop: '8px', paddingLeft: path.length > 0 ? '4px' : '0' }}>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                    {renderAvatar(getAuthor(user.id), 24)}
-                    <div style={{ flex: 1 }}>
-                      <div style={{ 
-                        border: '1px solid #d0d5dd', borderRadius: '14px', 
-                        overflow: 'hidden', background: '#fafafa',
-                        transition: 'border-color 0.2s',
-                      }}>
-                        <textarea dir="auto" 
-                          placeholder={`Replying to ${c.authorName}...`}
-                          value={commentText[replyKey] || ''} 
-                          onChange={e => {
-                            setCommentText({...commentText, [replyKey]: e.target.value});
-                            e.target.style.height = 'auto';
-                            e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
-                          }}
-                          onFocus={e => e.target.parentElement.style.borderColor = '#1d4ed8'}
-                          onBlur={e => e.target.parentElement.style.borderColor = '#d0d5dd'}
-                          rows={1}
-                          style={{ 
-                            width: '100%', border: 'none', outline: 'none', 
-                            padding: '8px 12px', fontSize: '13px', fontFamily: 'inherit',
-                            resize: 'none', overflow: 'hidden', background: 'transparent',
-                            boxSizing: 'border-box', minHeight: '36px'
-                          }} 
-                          autoFocus 
-                        />
-                        {commentImage[replyKey] && (
-                          <div style={{ padding: '4px 12px 8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <span style={{ fontSize: '11px', color: '#64748b' }}>📎 {commentImage[replyKey].name}</span>
-                            <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px', padding: 0 }}>✕</button>
-                          </div>
-                        )}
-                        {showEmojiPicker === replyKey && (
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px', padding: '6px 10px 8px', borderTop: '1px solid #e8e8e8' }}>
-                            {EMOJI_LIST.map(em => (
-                              <button key={em} onClick={() => setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey] || '') + em}))} 
-                                style={{ background: 'none', border: 'none', fontSize: '17px', cursor: 'pointer', padding: '3px', borderRadius: '4px' }}
-                                onMouseEnter={e => e.target.style.background = '#e8e8e8'}
-                                onMouseLeave={e => e.target.style.background = 'none'}
-                              >{em}</button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
-                        <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} title="Emojis"
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', padding: '4px', borderRadius: '6px' }}
-                          onMouseEnter={e => e.target.style.background = '#f1f5f9'} onMouseLeave={e => e.target.style.background = 'none'}
-                        >😀</button>
-                        <label title="Attach image" style={{ cursor: 'pointer', fontSize: '15px', padding: '4px', borderRadius: '6px', display: 'flex', alignItems: 'center' }}
-                          onMouseEnter={e => e.currentTarget.style.background = '#f1f5f9'} onMouseLeave={e => e.currentTarget.style.background = 'none'}>
-                          📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} />
-                        </label>
-                        <div style={{ flex: 1 }} />
-                        <button onClick={() => { setReplyTo(null); setCommentText(prev => ({...prev, [replyKey]: ''})); setCommentImage(prev => ({...prev, [replyKey]: null})); }}
-                          style={{ background: 'none', border: '1px solid #e0dfdc', borderRadius: '8px', padding: '4px 12px', fontSize: '12px', cursor: 'pointer', color: '#64748b' }}>Cancel</button>
-                        <button onClick={() => handleAddComment(post)} disabled={!(commentText[replyKey]?.trim() || commentImage[replyKey])}
-                          style={{ 
-                            background: (commentText[replyKey]?.trim() || commentImage[replyKey]) ? '#1d4ed8' : '#94a3b8',
-                            color: 'white', border: 'none', borderRadius: '8px', padding: '4px 14px', fontSize: '12px', fontWeight: 600,
-                            cursor: (commentText[replyKey]?.trim() || commentImage[replyKey]) ? 'pointer' : 'default',
-                            display: 'flex', alignItems: 'center', gap: '4px'
-                          }}><Send size={12} /> Reply</button>
-                      </div>
-                    </div>
+                <div style={{ marginTop: '8px' }}>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <textarea dir="auto" placeholder={`Replying to ${c.authorName}...`} value={commentText[replyKey] || ''} 
+                      onChange={e => {
+                        setCommentText({...commentText, [replyKey]: e.target.value});
+                        e.target.style.height = 'auto';
+                        e.target.style.height = e.target.scrollHeight + 'px';
+                      }} 
+                      rows={1}
+                      style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit', overflow: 'hidden' }} autoFocus />
+                    <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px' }}>😀</button>
+                    <label style={{ cursor: 'pointer', padding: '4px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                    <button className="scicomm-btn-primary" style={{ padding: '4px 12px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
+                    <button onClick={() => { setReplyTo(null); setCommentText(prev => ({...prev, [replyKey]: ''})); setCommentImage(prev => ({...prev, [replyKey]: null})); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={16} /></button>
                   </div>
+                  {showEmojiPicker === replyKey && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px', background: '#f9fafb', padding: '8px', borderRadius: '8px', border: '1px solid #e0dfdc' }}>{EMOJI_LIST.map(e => <button key={e} onClick={() => { setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+e})); }} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', padding: '2px' }}>{e}</button>)}</div>}
+                  {commentImage[replyKey] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>📎 {commentImage[replyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
                 </div>
               )}
             </div>
