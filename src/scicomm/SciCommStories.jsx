@@ -174,7 +174,7 @@ export default function SciCommStories({ scientists }) {
       const story = storiesByUser[viewingUserId][storyIndex];
       if (!story) return;
       const isVideo = story.mediaType === 'video';
-      const maxDuration = isVideo ? 90000 : 5000;
+      const maxDuration = isVideo ? 90000 : 7000;
       
       const timer = setTimeout(() => {
         handleNextStory();
@@ -308,7 +308,7 @@ export default function SciCommStories({ scientists }) {
                   {idx === storyIndex && (
                     <div style={{ 
                       height: '100%', background: 'white', width: '0%', 
-                      animation: (isPaused || replyText) ? 'none' : `progress ${s.mediaType === 'video' ? 90 : 5}s linear forwards` 
+                      animation: (isPaused || replyText) ? 'none' : `progress ${s.mediaType === 'video' ? 90 : 7}s linear forwards` 
                     }} />
                   )}
                 </div>

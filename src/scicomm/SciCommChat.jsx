@@ -195,11 +195,14 @@ export default function SciCommChat() {
 
   const acceptRequest = async (roomId) => {
     await db.scicomm_chat_rooms.update(roomId, { status: 'active' });
+    setSelectedRoom(roomId);
+    setActiveTab('chats');
   };
 
   const declineRequest = async (roomId) => {
     if (window.confirm('Decline this message request?')) {
       await db.scicomm_chat_rooms.delete(roomId);
+      if (selectedRoom === roomId) setSelectedRoom(null);
     }
   };
 
@@ -594,7 +597,11 @@ export default function SciCommChat() {
                             <div style={{ opacity: 0.8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.replyToContent}</div>
                           </div>
                         )}
-                        {isDeleted ? `🚫 This message was deleted by ${m.deletedByName || (m.deletedBy === 'admin' ? 'an admin' : 'the user')}${m.deletedBy === 'admin' && m.deletedByName ? ' (Admin)' : ''}.` : m.content}
+                        {(() => {
+                          const text = isDeleted ? `🚫 This message was deleted by ${m.deletedByName || (m.deletedBy === 'admin' ? 'an admin' : 'the user')}${m.deletedBy === 'admin' && m.deletedByName ? ' (Admin)' : ''}.` : m.content;
+                          const isEmojiOnly = !isDeleted && /^[\p{Emoji}\s]+$/u.test(text) && text.trim().length <= 12;
+                          return <span style={{ fontSize: isEmojiOnly ? '32px' : 'inherit', lineHeight: isEmojiOnly ? '1.4' : 'inherit' }}>{text}</span>;
+                        })()}
                       </div>
                       <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', opacity: 0.6 }}>{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                       
@@ -802,6 +809,17 @@ export default function SciCommChat() {
                       const newMembers = [...(activeRoom.members || []), u.id];
                       const newNames = { ...activeRoom.memberNames, [u.id]: u.name };
                       await db.scicomm_chat_rooms.update(selectedRoom, { members: newMembers, memberNames: newNames });
+                      await db.scicomm_notifications.add({
+                        userId: u.id, type: 'group_added', senderId: user.id,
+                        title: `${user.name.split(' ')[0]} added you to a group chat`,
+                        message: activeRoom.name || 'Group Chat',
+                        link: '/chat', createdAt: new Date().toISOString(), read: false
+                      });
+                      await db.scicomm_chat_messages.add({
+                        roomId: selectedRoom, senderId: 'system', senderName: 'System',
+                        content: `${user.name} added ${u.name} to the group.`,
+                        type: 'system', readBy: [], createdAt: new Date().toISOString()
+                      });
                     }} style={{ padding: '8px 16px', borderRadius: '10px', border: 'none', background: '#eff6ff', color: '#1d4ed8', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>Add</button>
                   </div>
                 ))}

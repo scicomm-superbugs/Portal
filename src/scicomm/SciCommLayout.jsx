@@ -380,7 +380,7 @@ export default function SciCommLayout() {
             </div>
 
             <div style={{ padding: '12px 0', borderTop: '1px solid #e0dfdc' }}>
-              <button style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#4b5563', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}><Settings size={20} /> Settings</button>
+              <button onClick={() => { setMobileSidebarOpen(false); navigate('/profile'); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#4b5563', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}><Settings size={20} /> Settings</button>
               <button onClick={() => { setMobileSidebarOpen(false); handleLogout(); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#4b5563', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>Sign Out</button>
             </div>
           </div>

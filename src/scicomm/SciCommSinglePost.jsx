@@ -251,7 +251,7 @@ export default function SciCommSinglePost() {
                     </div>
                   ) : (
                     <>
-                      <p style={{ margin: '2px 0 0', fontSize: '13px', whiteSpace: 'pre-wrap' }}>{renderPostText(c.text)}</p>
+                      <p style={{ margin: '2px 0 0', fontSize: '13px', whiteSpace: 'pre-wrap', wordBreak: 'break-word', unicodeBidi: 'plaintext', direction: /[\u0600-\u06FF]/.test(c.text || '') ? 'rtl' : 'ltr', textAlign: /[\u0600-\u06FF]/.test(c.text || '') ? 'right' : 'left' }}>{renderPostText(c.text)}</p>
                       {c.imageUrl && <img src={c.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '6px', marginTop: '6px' }} />}
                     </>
                   )
