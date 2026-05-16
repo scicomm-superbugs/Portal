@@ -303,6 +303,9 @@ export default function SciCommLayout() {
                 <button onClick={toggleDarkMode} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
                   {isDarkMode ? <Sun className="icon" size={16} /> : <Moon className="icon" size={16} />} {isDarkMode ? 'Light Mode' : 'Dark Mode'}
                 </button>
+                <Link to="/settings" onClick={() => document.body.click()} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px', textDecoration:'none', color:'inherit'}}>
+                  <Settings className="icon" size={16} /> Settings
+                </Link>
                 <button onClick={() => { localStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
                   <Building2 className="icon" size={16} /> Switch Hub
                 </button>

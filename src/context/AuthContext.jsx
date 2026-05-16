@@ -174,8 +174,35 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const linkGoogleAccount = async () => {
+    if (!user) throw new Error('You must be logged in to link an account.');
+    const provider = new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/drive.file');
+    try {
+      const auth = getFirebaseAuth();
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      const gUser = result.user;
+
+      await db.scientists.update(user.id, { 
+        email: gUser.email,
+        googleDriveToken: token || null,
+        avatar: user.avatar || gUser.photoURL
+      });
+      
+      const updatedData = { ...user, email: gUser.email };
+      if (token) localStorage.setItem('googleDriveToken', token);
+      setUser(updatedData);
+      return updatedData;
+    } catch (error) {
+      console.error("Link Google Error:", error);
+      throw new Error(error.message || 'Failed to link Google account');
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, loginWithGoogle, logout, loading }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, loginWithGoogle, linkGoogleAccount, setUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );
