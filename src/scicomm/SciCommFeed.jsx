@@ -1020,7 +1020,11 @@ export default function SciCommFeed() {
             boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
             transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
           }}
-          onClick={() => navigate('/download')}
+          onClick={() => {
+            localStorage.setItem('scicomm_app_announcement_hidden', 'true');
+            setShowAppAnnouncement(false);
+            navigate('/download');
+          }}
           onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'}
           onMouseOut={e => e.currentTarget.style.transform = 'none'}
         >
@@ -1160,7 +1164,15 @@ export default function SciCommFeed() {
 
         {/* Approved Application Banner */}
         {showApprovalBanner && (
-          <div style={{ background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)', border: '1px solid #86efac', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}>
+          <div 
+            onClick={() => {
+              if (latestApp) {
+                localStorage.setItem('hide_approval_banner_' + user.id + '_' + latestApp.id, 'true');
+                setShowApprovalBanner(false);
+              }
+            }}
+            style={{ cursor: 'pointer', background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)', border: '1px solid #86efac', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#16a34a', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Trophy size={24} />
@@ -1204,7 +1216,15 @@ export default function SciCommFeed() {
 
         {/* Rejected Application Banner */}
         {showRejectionBanner && (
-          <div style={{ background: 'linear-gradient(135deg, #fee2e2, #fecaca)', border: '1px solid #fca5a5', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}>
+          <div 
+            onClick={() => {
+              if (latestApp) {
+                localStorage.setItem('hide_rejection_banner_' + user.id + '_' + latestApp.id, 'true');
+                setShowRejectionBanner(false);
+              }
+            }}
+            style={{ cursor: 'pointer', background: 'linear-gradient(135deg, #fee2e2, #fecaca)', border: '1px solid #fca5a5', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#dc2626', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <X size={24} />
