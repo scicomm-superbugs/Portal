@@ -975,83 +975,122 @@ export default function SciCommFeed() {
 
       {/* Main Feed */}
       <div className="scicomm-feed-main">
-        {/* GLOBAL APP ANNOUNCEMENT BANNER */}
-        {showAppAnnouncement && (
-          <div 
-            onClick={() => navigate('/download')}
-            style={{ 
-              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', 
-              borderRadius: '16px', 
-              padding: '20px 24px', 
-              marginBottom: '24px', 
-              color: 'white', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'space-between', 
-              cursor: 'pointer',
-              boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
-              position: 'relative',
-              overflow: 'hidden',
-              transition: 'all 0.3s ease',
-              border: '1px solid rgba(255,255,255,0.05)'
-            }}
-            onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-            onMouseOut={e => e.currentTarget.style.transform = 'none'}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', position: 'relative', zIndex: 1 }}>
-              <div style={{ 
-                background: 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)', 
-                padding: '12px', 
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(56, 189, 248, 0.3)'
-              }}>
-                <Smartphone size={24} color="white" />
-              </div>
-              <div>
-                <h2 style={{ margin: '0 0 2px', fontSize: '18px', fontWeight: 800 }}>The Portal is Mobile 🚀</h2>
-                <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8' }}>Install our new native app for a seamless scientific experience.</p>
-              </div>
+      {/* PREMIUM DYNAMIC APP ANNOUNCEMENT BANNER */}
+      {showAppAnnouncement && (
+        <div 
+          className="scicomm-card app-announcement-banner"
+          style={{ 
+            padding: '0', 
+            marginBottom: '28px', 
+            borderRadius: '24px',
+            overflow: 'hidden',
+            position: 'relative',
+            cursor: 'pointer',
+            border: '1px solid var(--border-color, #e2e8f0)',
+            background: isDarkMode ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
+            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
+          onClick={() => navigate('/download')}
+          onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'}
+          onMouseOut={e => e.currentTarget.style.transform = 'none'}
+        >
+          {/* Panoramic Moving Icons Background */}
+          <div style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            height: '100%', 
+            opacity: isDarkMode ? 0.07 : 0.04, 
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            overflow: 'hidden',
+            zIndex: 0
+          }}>
+            <div className="scrolling-icons" style={{ display: 'flex', gap: '60px', animation: 'panoramicIcons 20s linear infinite', whiteSpace: 'nowrap' }}>
+              <Monitor size={80} /> <Smartphone size={80} /> <Apple size={80} /> <Terminal size={80} /> <LayoutDashboard size={80} /> <Monitor size={80} /> <Smartphone size={80} /> <Apple size={80} /> <Terminal size={80} /> <LayoutDashboard size={80} />
+              <Monitor size={80} /> <Smartphone size={80} /> <Apple size={80} /> <Terminal size={80} /> <LayoutDashboard size={80} /> <Monitor size={80} /> <Smartphone size={80} /> <Apple size={80} /> <Terminal size={80} /> <LayoutDashboard size={80} />
             </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', zIndex: 1 }}>
-              <button style={{ 
-                background: 'white', 
-                color: '#0f172a', 
-                border: 'none', 
-                padding: '10px 20px', 
-                borderRadius: '10px', 
-                fontWeight: 800, 
-                fontSize: '13px', 
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }} onMouseOver={e => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={e => e.currentTarget.style.background = 'white'}>
-                Get the App
-              </button>
-              <button 
-                onClick={dismissAppAnnouncement}
-                style={{ 
-                  background: 'rgba(255,255,255,0.1)', 
-                  color: 'white', 
-                  border: 'none', 
-                  padding: '8px', 
-                  borderRadius: '8px', 
-                  cursor: 'pointer',
+          </div>
+
+          <div style={{ padding: '32px', position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ 
+                  background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
+                  padding: '14px', 
+                  borderRadius: '18px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  transition: 'background 0.2s'
+                  boxShadow: '0 8px 20px rgba(59, 130, 246, 0.3)'
+                }}>
+                  <Smartphone size={28} color="white" />
+                </div>
+                <div>
+                  <h2 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 900, letterSpacing: '-0.5px', color: isDarkMode ? '#f8fafc' : '#0f172a' }}>
+                    The Portal is Mobile 🚀
+                  </h2>
+                  <p style={{ margin: 0, fontSize: '15px', color: isDarkMode ? '#94a3b8' : '#64748b', fontWeight: 500 }}>
+                    Scientific precision, now in your pocket.
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={dismissAppAnnouncement}
+                style={{ 
+                  background: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)', 
+                  color: isDarkMode ? '#94a3b8' : '#64748b', 
+                  border: 'none', 
+                  padding: '8px', 
+                  borderRadius: '10px', 
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
                 }}
-                onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-                onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                onMouseOver={e => e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}
+                onMouseOut={e => e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}
               >
-                <X size={16} />
+                <X size={20} />
               </button>
             </div>
+
+            <button style={{ 
+              width: '100%', 
+              padding: '18px', 
+              borderRadius: '16px', 
+              border: 'none', 
+              background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)', 
+              color: 'white', 
+              fontWeight: 900, 
+              fontSize: '17px', 
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              boxShadow: '0 10px 25px rgba(37, 99, 235, 0.4)',
+              transition: 'all 0.3s ease',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}
+            onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = '0 15px 35px rgba(37, 99, 235, 0.5)'; }}
+            onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 99, 235, 0.4)'; }}
+            >
+              Download The Portal Application
+            </button>
           </div>
-        )}
+
+          <style>{`
+            @keyframes panoramicIcons {
+              from { transform: translateX(0); }
+              to { transform: translateX(-50%); }
+            }
+            .app-announcement-banner:hover h2 { color: #3b82f6 !important; transition: color 0.3s; }
+          `}</style>
+        </div>
+      )}
 
         {/* Approved Application Banner */}
         {showApprovalBanner && (
