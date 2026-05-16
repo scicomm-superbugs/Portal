@@ -1,5 +1,5 @@
-import { useLiveCollection, db, firestore, getCollectionName } from '../db';
-import { UserPlus, Download, Upload } from 'lucide-react';
+import { useLiveCollection, db, firestore, getCollectionName, uploadFile } from '../db';
+import { UserPlus, Download, Upload, Smartphone, Monitor, Apple, Terminal } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -23,6 +23,7 @@ export default function SciCommAdmin() {
   const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
   const storiesData = useLiveCollection('scicomm_stories') || [];
   const activeStories = storiesData.filter(s => new Date(s.expiresAt) > new Date());
+  const downloadsData = useLiveCollection('scicomm_app_downloads') || [];
   const isMaster = user.role === 'master';
 
   const [searchParams] = useSearchParams();
@@ -115,6 +116,7 @@ export default function SciCommAdmin() {
     { id: 'stories', label: 'Stories', icon: <Image size={14} /> },
     { id: 'analytics', label: 'Analytics', icon: <BarChart3 size={14} /> },
     { id: 'activity', label: 'Activity', icon: <History size={14} /> },
+    { id: 'downloads', label: 'Downloads', icon: <Smartphone size={14} /> },
     { id: 'data', label: 'Data', icon: <Database size={14} /> },
   ];
 
@@ -752,6 +754,104 @@ export default function SciCommAdmin() {
                   <span style={{ fontSize: '12px', color: '#64748b' }}>{memberTaskCount} tasks · {memberMeetingCount} meetings</span>
                   <button onClick={() => handleClearMemberTasks(s.id, s.name)} disabled={memberTaskCount === 0} style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '6px', border: '1px solid #fca5a5', background: memberTaskCount > 0 ? '#fee2e2' : '#f9fafb', color: memberTaskCount > 0 ? '#991b1b' : '#ccc', cursor: memberTaskCount > 0 ? 'pointer' : 'default', fontWeight: 600 }}>Clear Tasks</button>
                   <button onClick={() => handleClearMemberMeetings(s.id, s.name)} disabled={memberMeetingCount === 0} style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '6px', border: '1px solid #bfdbfe', background: memberMeetingCount > 0 ? '#dbeafe' : '#f9fafb', color: memberMeetingCount > 0 ? '#1e3a8a' : '#ccc', cursor: memberMeetingCount > 0 ? 'pointer' : 'default', fontWeight: 600 }}>Clear Meetings</button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* DOWNLOADS */}
+      {activeTab === 'downloads' && (
+        <div className="scicomm-card scicomm-card-padding">
+          <h3 style={{ margin: '0 0 16px', fontSize: '18px' }}>📲 App Download Management</h3>
+          <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
+            Upload the latest versions of "The Portal" application for different platforms. 
+            These files will be linked to the download buttons on the main feed sidebar.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+            {[
+              { id: 'android', name: 'Android (.apk)', icon: <Smartphone color="#3ddc84" /> },
+              { id: 'windows', name: 'Windows (.exe)', icon: <Monitor color="#00a4ef" /> },
+              { id: 'ios', name: 'iOS', icon: <Apple color="#000000" /> },
+              { id: 'mac', name: 'MacOS', icon: <Apple color="#000000" /> },
+              { id: 'linux', name: 'Linux', icon: <Terminal color="#333333" /> }
+            ].map(platform => {
+              const current = downloadsData.find(d => d.platform === platform.id);
+              return (
+                <div key={platform.id} style={{ 
+                  padding: '20px', 
+                  background: '#f8fafc', 
+                  borderRadius: '16px', 
+                  border: '1px solid #e2e8f0',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ padding: '8px', background: 'white', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                      {platform.icon}
+                    </div>
+                    <div style={{ fontWeight: 700, fontSize: '15px' }}>{platform.name}</div>
+                  </div>
+
+                  {current ? (
+                    <div style={{ fontSize: '12px', color: '#475569', background: '#eff6ff', padding: '8px 12px', borderRadius: '8px', border: '1px solid #bfdbfe' }}>
+                      <div style={{ fontWeight: 600, color: '#1d4ed8' }}>Current File:</div>
+                      <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{current.fileName}</div>
+                      <div style={{ color: '#64748b', marginTop: '4px' }}>Uploaded: {new Date(current.updatedAt).toLocaleDateString()}</div>
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: '12px', color: '#94a3b8', fontStyle: 'italic', padding: '8px 12px', background: '#f1f5f9', borderRadius: '8px', textAlign: 'center' }}>
+                      No file uploaded yet.
+                    </div>
+                  )}
+
+                  <div style={{ marginTop: 'auto', paddingTop: '8px' }}>
+                    <label style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      gap: '8px', 
+                      padding: '10px', 
+                      background: 'white', 
+                      border: '1px solid #cbd5e1', 
+                      borderRadius: '10px', 
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      transition: 'all 0.2s'
+                    }} onMouseOver={e => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={e => e.currentTarget.style.background = 'white'}>
+                      <Upload size={14} /> {current ? 'Replace File' : 'Upload File'}
+                      <input type="file" style={{ display: 'none' }} onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        flash(`Uploading ${platform.name}...`);
+                        try {
+                          const url = await uploadFile(file, `downloads/${platform.id}/${file.name}`);
+                          if (current) {
+                            await db.scicomm_app_downloads.update(current.id, {
+                              url,
+                              fileName: file.name,
+                              updatedAt: new Date().toISOString()
+                            });
+                          } else {
+                            await db.scicomm_app_downloads.add({
+                              platform: platform.id,
+                              url,
+                              fileName: file.name,
+                              updatedAt: new Date().toISOString()
+                            });
+                          }
+                          flash(`${platform.name} updated successfully!`);
+                        } catch (err) {
+                          console.error(err);
+                          flash(`Error: ${err.message}`);
+                        }
+                      }} />
+                    </label>
+                  </div>
                 </div>
               );
             })}

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db, uploadFile, firestore, getCollectionName } from '../db';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2, X, Trophy, Smile } from 'lucide-react';
+import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2, X, Trophy, Smile, Monitor, Smartphone, Apple, Terminal } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
 import SciCommStories from './SciCommStories';
@@ -115,6 +115,7 @@ export default function SciCommFeed() {
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
   const recognitions = useLiveCollection('scicomm_recognitions') || [];
   const applicationsRaw = useLiveCollection('scicomm_applications') || [];
+  const downloadsData = useLiveCollection('scicomm_app_downloads') || [];
 
   const myApps = applicationsRaw.filter(a => String(a.userId) === String(user.id)).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   const latestApp = myApps[0];
@@ -158,6 +159,7 @@ export default function SciCommFeed() {
   const [editingPost, setEditingPost] = useState(null); // { id, content, imageUrl, removeImage?, newImage? }
   const [activeCommentMenu, setActiveCommentMenu] = useState(null); // string id_path
   const [deleteConfirm, setDeleteConfirm] = useState(null); // { title, message, onConfirm }
+  const [appComingSoon, setAppComingSoon] = useState(null); // platform name
 
   const [searchParams] = useSearchParams();
   const highlightedPostId = searchParams.get('postId');
@@ -920,6 +922,81 @@ export default function SciCommFeed() {
           </div>
         </div>
         <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v3.7.2</button>
+        
+        {/* DOWNLOAD THE PORTAL APP SECTION */}
+        <div className="scicomm-card" style={{ 
+          marginTop: '8px', 
+          background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%)', 
+          padding: '16px', 
+          borderRadius: '16px', 
+          color: 'white',
+          boxShadow: '0 8px 20px rgba(29, 78, 216, 0.25)',
+          overflow: 'hidden',
+          position: 'relative'
+        }}>
+          {/* Decorative background circle */}
+          <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', pointerEvents: 'none' }} />
+          
+          <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '20px' }}>📱</span> The Portal App
+          </h3>
+          <p style={{ margin: '0 0 16px', fontSize: '11px', opacity: 0.9, lineHeight: '1.4' }}>
+            Experience the SciComm Hub natively on your favorite devices. Fast, fluid, and always connected.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            {[
+              { id: 'android', name: 'Android', icon: <Smartphone size={14} />, ext: '.apk' },
+              { id: 'windows', name: 'Windows', icon: <Monitor size={14} />, ext: '.exe' },
+              { id: 'ios', name: 'iOS', icon: <Apple size={14} /> },
+              { id: 'mac', name: 'macOS', icon: <Apple size={14} /> },
+              { id: 'linux', name: 'Linux', icon: <Terminal size={14} /> }
+            ].map((plat, idx) => {
+              const dl = downloadsData.find(d => d.platform === plat.id);
+              const isAndroid = plat.id === 'android';
+              
+              return (
+                <button 
+                  key={plat.id}
+                  onClick={() => {
+                    if (isAndroid && dl?.url) {
+                      window.open(dl.url, '_blank');
+                    } else if (plat.id === 'windows' && dl?.url) {
+                      window.open(dl.url, '_blank');
+                    } else {
+                      setAppComingSoon(plat.name);
+                    }
+                  }}
+                  style={{ 
+                    gridColumn: idx === 0 ? '1 / -1' : 'auto', // Android full width
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    gap: '6px', 
+                    padding: idx === 0 ? '10px' : '8px', 
+                    background: idx === 0 ? 'white' : 'rgba(255,255,255,0.15)', 
+                    color: idx === 0 ? '#1e3a8a' : 'white', 
+                    border: 'none', 
+                    borderRadius: '10px', 
+                    fontSize: '11px', 
+                    fontWeight: 700, 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    backdropFilter: 'blur(4px)'
+                  }}
+                  onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                  onMouseOut={e => e.currentTarget.style.transform = 'none'}
+                >
+                  {plat.icon} {plat.name} {plat.ext && <span style={{ fontSize: '9px', opacity: 0.7 }}>{plat.ext}</span>}
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ marginTop: '12px', fontSize: '9px', textAlign: 'center', opacity: 0.7, fontStyle: 'italic' }}>
+            * Android version is available now!
+          </div>
+        </div>
       </div>
 
       {/* Main Feed */}
@@ -1520,6 +1597,41 @@ export default function SciCommFeed() {
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
       `}</style>
+
+      {/* App Coming Soon Modal */}
+      {appComingSoon && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(10px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div style={{ 
+            background: 'white', 
+            borderRadius: '24px', 
+            padding: '32px', 
+            maxWidth: '440px', 
+            width: '100%', 
+            textAlign: 'center',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.5)',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)' }} />
+            
+            <div style={{ width: '80px', height: '80px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <Smartphone size={40} color="#3b82f6" />
+            </div>
+            
+            <h2 style={{ margin: '0 0 12px', fontSize: '24px', fontWeight: 800, color: '#0f172a' }}>Coming Soon! 🚀</h2>
+            <p style={{ margin: '0 0 24px', fontSize: '15px', color: '#64748b', lineHeight: '1.6' }}>
+              We're currently polishing "The Portal" for <strong>{appComingSoon}</strong>. It will be available very soon!
+              <br /><br />
+              In the meantime, the <strong>Android</strong> version is available for download right now!
+            </p>
+            
+            <button onClick={() => setAppComingSoon(null)} style={{ width: '100%', padding: '14px', borderRadius: '14px', border: 'none', background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', color: 'white', fontWeight: 700, fontSize: '15px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(139,92,246,0.3)', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'none'}>
+              Awesome, I'll check it out!
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

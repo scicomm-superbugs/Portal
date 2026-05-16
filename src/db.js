@@ -414,5 +414,20 @@ export const db = {
     delete: async (id) => {
       await deleteDoc(doc(firestore, getCollectionName('scicomm_notifications'), String(id)));
     }
+  },
+  scicomm_app_downloads: {
+    add: async (download) => {
+      await addDoc(collection(firestore, getCollectionName('scicomm_app_downloads')), download);
+    },
+    update: async (id, data) => {
+      await updateDoc(doc(firestore, getCollectionName('scicomm_app_downloads'), String(id)), data);
+    },
+    delete: async (id) => {
+      await deleteDoc(doc(firestore, getCollectionName('scicomm_app_downloads'), String(id)));
+    },
+    get: async (id) => {
+      const d = await getDoc(doc(firestore, getCollectionName('scicomm_app_downloads'), String(id)));
+      return d.exists() ? { id: d.id, ...d.data() } : null;
+    }
   }
 };
