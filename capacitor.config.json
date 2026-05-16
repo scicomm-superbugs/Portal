@@ -1,0 +1,9 @@
+{
+  "appId": "com.aiu.sciencehub",
+  "appName": "The Portal",
+  "webDir": "dist",
+  "server": {
+    "url": "https://chompchem.firebaseapp.com",
+    "cleartext": true
+  }
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { background: #f3f2ef; color: #000; font-family: sans-serif; }
+  .card { background: white; padding: 20px; border: 1px solid #ccc; margin: 20px; }
+  .header { position: sticky; top: 0; background: white; z-index: 100; padding: 10px; }
+  
+  .dark-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    backdrop-filter: invert(1) hue-rotate(180deg) brightness(1.05) contrast(1.05);
+    pointer-events: none;
+    z-index: 9999;
+  }
+  
+  .emoji-perfect {
+    position: relative;
+    z-index: 10000;
+  }
+</style>
+</head>
+<body>
+  <div class="dark-overlay"></div>
+  <div class="header">Header <span class="emoji-perfect">🚀</span></div>
+  <div class="card">
+    <p>This is a post! <span class="emoji-perfect">👋</span></p>
+  </div>
+</body>
+</html>

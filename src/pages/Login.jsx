@@ -53,7 +53,11 @@ export default function Login() {
       await loginWithGoogle();
       navigate('/');
     } catch (err) {
-      setError(err.message);
+      if (err.message.includes('auth/api-key-not-valid') || err.message.includes('auth/operation-not-allowed') || err.message.includes('API key not valid')) {
+        setError("Firebase Setup Required: Please enable 'Google Sign-In' in your Firebase Authentication settings, and ensure your API Key is not restricted from accessing the Identity Toolkit API.");
+      } else {
+        setError(err.message);
+      }
       setIsLoggingIn(false);
     }
   };

@@ -18,7 +18,14 @@ import { getAuth } from "firebase/auth";
 const app = initializeApp(firebaseConfig);
 export const firestore = initializeFirestore(app, {});
 export const storage = getStorage(app);
-export const auth = getAuth(app);
+
+let authInstance = null;
+export const getFirebaseAuth = () => {
+  if (!authInstance) {
+    authInstance = getAuth(app);
+  }
+  return authInstance;
+};
 
 // File size limit removed by user request
 // const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB

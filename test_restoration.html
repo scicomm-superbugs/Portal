@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { background: #111; color: white; font-family: sans-serif; display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; }
+  .box { background: white; padding: 20px; border-radius: 8px; color: black; filter: invert(1) hue-rotate(180deg); }
+  .test { font-size: 32px; display: inline-block; }
+  
+  /* Different restoration attempts */
+  .f1 { filter: hue-rotate(180deg) invert(1) saturate(1.2) brightness(1.1); }
+  .f2 { filter: hue-rotate(180deg) invert(1) saturate(2) brightness(1.3); }
+  .f3 { filter: hue-rotate(180deg) invert(1) saturate(3) brightness(1.5); }
+  .f4 { filter: hue-rotate(185deg) invert(1) saturate(2.5) brightness(1.2); }
+  .f5 { filter: hue-rotate(175deg) invert(1) saturate(2.5) brightness(1.2); }
+  .f6 { filter: invert(1) hue-rotate(180deg) saturate(2) brightness(1.2); }
+</style>
+</head>
+<body>
+  <div>
+    <h3>Original Light Mode</h3>
+    <div style="background: white; padding: 20px; border-radius: 8px; color: black;">
+      <span class="test">👍 👏 🚀 🔴 🔵 #3b82f6</span>
+      <div style="background: #3b82f6; color: white; padding: 5px; display: inline-block;">Visitor</div>
+      <div style="background: #ef4444; color: white; padding: 5px; display: inline-block;">SciComm</div>
+    </div>
+  </div>
+
+  <div>
+    <h3>Current Fix (f1)</h3>
+    <div class="box">
+      <span class="test f1">👍 👏 🚀 🔴 🔵 #3b82f6</span>
+      <div class="f1" style="background: #3b82f6; color: white; padding: 5px; display: inline-block;">Visitor</div>
+      <div class="f1" style="background: #ef4444; color: white; padding: 5px; display: inline-block;">SciComm</div>
+    </div>
+  </div>
+
+  <div>
+    <h3>Attempt 2 (saturate 2)</h3>
+    <div class="box">
+      <span class="test f2">👍 👏 🚀 🔴 🔵</span>
+      <div class="f2" style="background: #3b82f6; color: white; padding: 5px; display: inline-block;">Visitor</div>
+      <div class="f2" style="background: #ef4444; color: white; padding: 5px; display: inline-block;">SciComm</div>
+    </div>
+  </div>
+
+  <div>
+    <h3>Attempt 3 (saturate 3)</h3>
+    <div class="box">
+      <span class="test f3">👍 👏 🚀 🔴 🔵</span>
+      <div class="f3" style="background: #3b82f6; color: white; padding: 5px; display: inline-block;">Visitor</div>
+      <div class="f3" style="background: #ef4444; color: white; padding: 5px; display: inline-block;">SciComm</div>
+    </div>
+  </div>
+
+  <div>
+    <h3>Attempt 4 (hue 185)</h3>
+    <div class="box">
+      <span class="test f4">👍 👏 🚀 🔴 🔵</span>
+      <div class="f4" style="background: #3b82f6; color: white; padding: 5px; display: inline-block;">Visitor</div>
+      <div class="f4" style="background: #ef4444; color: white; padding: 5px; display: inline-block;">SciComm</div>
+    </div>
+  </div>
+
+  <div>
+    <h3>Attempt 5 (hue 175)</h3>
+    <div class="box">
+      <span class="test f5">👍 👏 🚀 🔴 🔵</span>
+      <div class="f5" style="background: #3b82f6; color: white; padding: 5px; display: inline-block;">Visitor</div>
+      <div class="f5" style="background: #ef4444; color: white; padding: 5px; display: inline-block;">SciComm</div>
+    </div>
+  </div>
+</body>
+</html>

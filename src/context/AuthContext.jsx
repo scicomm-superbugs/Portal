@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import { db, auth } from '../db';
+import { db, getFirebaseAuth } from '../db';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import bcrypt from 'bcryptjs';
 
@@ -105,6 +105,7 @@ export const AuthProvider = ({ children }) => {
     provider.addScope('https://www.googleapis.com/auth/drive.file');
     
     try {
+      const auth = getFirebaseAuth();
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken;

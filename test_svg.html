@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html><body>
+<svg width="0" height="0">
+  <filter id="dark-mode" color-interpolation-filters="linearRGB">
+    <feComponentTransfer><feFuncR type="table" tableValues="1 0"/><feFuncG type="table" tableValues="1 0"/><feFuncB type="table" tableValues="1 0"/></feComponentTransfer>
+    <feColorMatrix type="hueRotate" values="180" />
+  </filter>
+  <filter id="light-mode" color-interpolation-filters="linearRGB">
+    <feColorMatrix type="hueRotate" values="-180" />
+    <feComponentTransfer><feFuncR type="table" tableValues="1 0"/><feFuncG type="table" tableValues="1 0"/><feFuncB type="table" tableValues="1 0"/></feComponentTransfer>
+  </filter>
+</svg>
+<div style="filter: url(#dark-mode); background: white; padding: 20px;">
+  <p style="color: black;">This should be white text on black background.</p>
+  <span style="filter: url(#light-mode); font-size: 40px;">🚀👋🔴🔵</span>
+</div>
+</body></html>
