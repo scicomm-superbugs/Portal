@@ -20,6 +20,11 @@ export default function Login() {
   }
 
   const workspaceId = localStorage.getItem('workspaceId');
+  
+  useEffect(() => {
+    document.title = workspaceId === 'alamein' ? 'Alamein International University' : 'AIU SciComm Team';
+  }, [workspaceId]);
+
   if (!workspaceId) {
     return <Navigate to="/portal" replace />;
   }
@@ -28,10 +33,6 @@ export default function Login() {
   if (user) {
     return <Navigate to="/" replace />;
   }
-
-  useEffect(() => {
-    document.title = workspaceId === 'alamein' ? 'Alamein International University' : 'AIU SciComm Team';
-  }, [workspaceId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
