@@ -142,12 +142,17 @@ export const AuthProvider = ({ children }) => {
         });
         scientist = await db.scientists.get(newId);
       } else {
-        await db.scientists.update(scientist.id, { 
+        // Only update avatar if user hasn't set a custom one
+        const updateData = { 
           googleDriveToken: token || null,
-          avatar: gUser.photoURL,
           name: scientist.name || gUser.displayName
-        });
-        scientist.avatar = gUser.photoURL;
+        };
+        // Preserve custom avatar — only set Google photo if avatar is empty or still a Google URL
+        if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) {
+          updateData.avatar = gUser.photoURL;
+        }
+        await db.scientists.update(scientist.id, updateData);
+        if (updateData.avatar) scientist.avatar = updateData.avatar;
         if (token) scientist.googleDriveToken = token;
       }
 
