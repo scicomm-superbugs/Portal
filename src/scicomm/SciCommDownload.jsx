@@ -21,7 +21,7 @@ export default function SciCommDownload() {
     { 
       id: 'android', 
       name: 'Android (.apk)', 
-      icon: <img src="./android-icon.png" alt="Android" style={{ height: '32px', width: 'auto', display: 'block' }} />, 
+      icon: <img src="./android-v2.png" alt="Android" style={{ height: '32px', width: 'auto', display: 'block' }} />, 
       color: '#3ddc84', 
       desc: 'Native APK for Android devices.',
       req: 'Android 8.0 (Oreo) or higher'
