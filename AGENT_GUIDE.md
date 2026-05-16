@@ -67,3 +67,16 @@ The platform now supports a multi-tenant environment (Science Communication & Re
   - `Layout.jsx` dynamically loads the specific tenant's logo (`alamein_logo_2.png` or `compchem_logo_2.png`) and updates the footer.
   - The browser tab title `document.title` dynamically updates to match the active workspace.
   - The header layout (`.header-content`) utilizes a balanced flex design (`justify-content: flex-start`, `.nav-links` takes `flex: 1`, and `.user-controls` uses `margin-left: auto`) to ensure perfect alignment of navigation items and user controls regardless of user role.
+
+## 📱 Android App Build
+- **Environment**: Use JDK 17 and Android SDK.
+- **Java Compatibility**: The project is forced to use `JavaVersion.VERSION_17` via `afterEvaluate` in the root `android/build.gradle` to resolve compatibility issues with Capacitor 7+ defaults (which target Java 21).
+- **Build Command**:
+  ```powershell
+  $env:JAVA_HOME = "D:\Ai Projects\compchem\jdk17\jdk-17.0.8.1+1"
+  $env:ANDROID_HOME = "D:\Ai Projects\compchem\Android App Build\tools\android-sdk"
+  ./gradlew assembleDebug
+  ```
+- **Output**: The debug APK is generated at `android/app/build/outputs/apk/debug/app-debug.apk`.
+- **Package Name**: `com.chompchem.app` (SciComm Hub).
+

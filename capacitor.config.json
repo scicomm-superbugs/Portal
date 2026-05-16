@@ -1,6 +1,6 @@
 {
-  "appId": "com.aiu.sciencehub",
-  "appName": "The Portal",
+  "appId": "com.chompchem.app",
+  "appName": "SciComm Hub",
   "webDir": "dist",
   "server": {
     "url": "https://scicomm-superbugs.github.io/Portal/",

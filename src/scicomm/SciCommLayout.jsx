@@ -285,12 +285,7 @@ export default function SciCommLayout() {
               </div>
             </div>
 
-            <Link to="/download" className={`scicomm-nav-item ${isActive('/download') ? 'active' : ''}`} style={{ position: 'relative', color: '#0077b5' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f0f7ff', padding: '6px 12px', borderRadius: '100px', border: '1px solid #cce3ff', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.background='#e0f0ff'; e.currentTarget.style.transform='translateY(-1px)'; }} onMouseOut={e => { e.currentTarget.style.background='#f0f7ff'; e.currentTarget.style.transform='none'; }}>
-                <Smartphone className="icon" size={18} color="#0077b5" />
-                <span className="nav-text" style={{ fontSize: '12px', fontWeight: 700 }}>App</span>
-              </div>
-            </Link>
+
 
             {/* Profile Dropdown */}
             <div className="scicomm-nav-item profile-dropdown-container">
@@ -320,6 +315,13 @@ export default function SciCommLayout() {
                 <button onClick={handleLogout} className="dropdown-item">Sign Out</button>
               </div>
             </div>
+
+            <Link to="/download" className={`scicomm-nav-item ${isActive('/download') ? 'active' : ''}`} style={{ position: 'relative', color: '#0077b5', marginLeft: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'linear-gradient(135deg, #f0f7ff 0%, #e0f0ff 100%)', padding: '8px 16px', borderRadius: '100px', border: '1px solid #cce3ff', boxShadow: '0 2px 4px rgba(0,119,181,0.1)', transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.background='#d0e8ff'; e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.boxShadow='0 4px 8px rgba(0,119,181,0.15)'; }} onMouseOut={e => { e.currentTarget.style.background='linear-gradient(135deg, #f0f7ff 0%, #e0f0ff 100%)'; e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 2px 4px rgba(0,119,181,0.1)'; }}>
+                <Smartphone className="icon" size={16} color="#0077b5" />
+                <span className="nav-text" style={{ fontSize: '13px', fontWeight: 700 }}>Download App</span>
+              </div>
+            </Link>
           </nav>
         </div>
       </header>
