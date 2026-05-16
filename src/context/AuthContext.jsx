@@ -198,6 +198,8 @@ export const AuthProvider = ({ children }) => {
 
       await db.scientists.update(user.id, { 
         email: gUser.email,
+        googleLinked: true,
+        googleLinkedEmail: gUser.email,
         googleDriveToken: token || null,
         avatar: user.avatar || gUser.photoURL
       });
@@ -210,6 +212,16 @@ export const AuthProvider = ({ children }) => {
       console.error("Link Google Error:", error);
       throw new Error(error.message || 'Failed to link Google account');
     }
+  };
+
+  const unlinkGoogleAccount = async () => {
+    if (!user) throw new Error('You must be logged in.');
+    await db.scientists.update(user.id, {
+      googleLinked: false,
+      googleLinkedEmail: null,
+      googleDriveToken: null
+    });
+    localStorage.removeItem('googleDriveToken');
   };
 
   const changePassword = async (oldPassword, newPassword) => {
@@ -231,7 +243,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, loginWithGoogle, linkGoogleAccount, changePassword, setUser }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, loginWithGoogle, linkGoogleAccount, unlinkGoogleAccount, changePassword, setUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );

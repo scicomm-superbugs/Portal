@@ -5,7 +5,7 @@ import { useLiveCollection } from '../db';
 import { db } from '../db';
 
 export default function SciCommSettings() {
-  const { user, linkGoogleAccount } = useAuth();
+  const { user, linkGoogleAccount, unlinkGoogleAccount, changePassword } = useAuth();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -21,7 +21,7 @@ export default function SciCommSettings() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const { changePassword } = useAuth();
+
 
   useEffect(() => {
     if (me) {
@@ -90,6 +90,20 @@ export default function SciCommSettings() {
       setSuccessMsg('Google account successfully linked!');
     } catch (err) {
       setErrorMsg(err.message || 'Failed to link account.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUnlinkGoogle = async () => {
+    setLoading(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+    try {
+      await unlinkGoogleAccount();
+      setSuccessMsg('Google account unlinked successfully.');
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to unlink account.');
     } finally {
       setLoading(false);
     }
@@ -215,9 +229,9 @@ export default function SciCommSettings() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
             <div>
               <h3 style={{ margin: '0 0 4px', fontSize: '15px', color: '#0f172a' }}>Google Account</h3>
-              {me?.email ? (
+              {me?.googleLinked ? (
                 <p style={{ margin: 0, fontSize: '13px', color: '#16a34a', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle size={14} /> Linked as {me.email}
+                  <CheckCircle size={14} /> Linked as {me.googleLinkedEmail}
                 </p>
               ) : (
                 <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
@@ -226,15 +240,29 @@ export default function SciCommSettings() {
               )}
             </div>
             
-            <button 
-              onClick={handleLinkGoogle} 
-              disabled={loading}
-              className="btn btn-secondary" 
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px' }}
-            >
-              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '18px' }} />
-              {loading ? 'Linking...' : (me?.email ? 'Change Google Account' : 'Link Google Account')}
-            </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {me?.googleLinked && (
+                <button 
+                  onClick={handleUnlinkGoogle} 
+                  disabled={loading}
+                  className="btn btn-secondary" 
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', color: '#dc2626', borderColor: '#fca5a5' }}
+                >
+                  {loading ? 'Unlinking...' : 'Unlink'}
+                </button>
+              )}
+              {!me?.googleLinked && (
+                <button 
+                  onClick={handleLinkGoogle} 
+                  disabled={loading}
+                  className="btn btn-secondary" 
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px' }}
+                >
+                  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '18px' }} />
+                  {loading ? 'Linking...' : 'Link Google Account'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
