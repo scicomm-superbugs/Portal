@@ -3,7 +3,14 @@ import { db, getFirebaseAuth } from '../db';
 import { signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from 'firebase/auth';
 import bcrypt from 'bcryptjs';
 
-const isMedian = () => navigator.userAgent.toLowerCase().includes('gonative');
+const isMedian = () => {
+  return typeof window !== 'undefined' && (
+    !!window.gonative || 
+    !!window.median || 
+    navigator.userAgent.toLowerCase().includes('gonative') ||
+    navigator.userAgent.toLowerCase().includes('median')
+  );
+};
 
 const AuthContext = createContext(null);
 
@@ -163,22 +170,41 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('googleDriveToken');
   };
 
+  const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/drive.file');
     
     try {
       const auth = getFirebaseAuth();
+      let gUser, token;
       
       // Special handling for Median.co (GoNative) app wrapper
       if (isMedian()) {
-        await signInWithRedirect(auth, provider);
-        return; // Redirect flow - result handled in initializeAuth
+        if (window.median && window.median.google && window.median.google.login) {
+          // Use Median Native Plugin
+          const medianResult = await new Promise((resolve, reject) => {
+            window.median.google.login({
+              callback: function(data) {
+                if (data.error) reject(new Error(data.error));
+                else resolve(data);
+              }
+            });
+          });
+          const { signInWithCredential } = await import('firebase/auth');
+          const credential = GoogleAuthProvider.credential(medianResult.idToken);
+          const result = await signInWithCredential(auth, credential);
+          gUser = result.user;
+          token = medianResult.serverAuthCode || medianResult.idToken;
+        } else {
+          throw new Error('Google Sign-In is blocked in this app wrapper. Please enable the "Google Sign-In" native plugin in your Median.co build settings, or use Email/Password.');
+        }
+      } else {
+        // Standard Web Popup
+        const result = await signInWithPopup(auth, provider);
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        token = credential?.accessToken;
+        gUser = result.user;
       }
-
-      const result = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
-      const gUser = result.user;
       
       let scientist = await db.scientists.where('email').equals(gUser.email).first();
       
@@ -243,23 +269,41 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const linkGoogleAccount = async () => {
     if (!user) throw new Error('You must be logged in to link an account.');
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/drive.file');
+    
     try {
       const auth = getFirebaseAuth();
+      let gUser, token;
 
       // Special handling for Median.co (GoNative) app wrapper
       if (isMedian()) {
-        localStorage.setItem('pendingGoogleLink', 'true');
-        await signInWithRedirect(auth, provider);
-        return; // Redirect flow - result handled in initializeAuth
+        if (window.median && window.median.google && window.median.google.login) {
+          // Use Median Native Plugin
+          const medianResult = await new Promise((resolve, reject) => {
+            window.median.google.login({
+              callback: function(data) {
+                if (data.error) reject(new Error(data.error));
+                else resolve(data);
+              }
+            });
+          });
+          const { linkWithCredential } = await import('firebase/auth');
+          const credential = GoogleAuthProvider.credential(medianResult.idToken);
+          const result = await linkWithCredential(auth.currentUser, credential);
+          gUser = result.user;
+          token = medianResult.serverAuthCode || medianResult.idToken;
+        } else {
+          throw new Error('Google Link is blocked in this app wrapper. Please enable the "Google Sign-In" native plugin in your Median.co build settings.');
+        }
+      } else {
+        const result = await signInWithPopup(auth, provider);
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        token = credential?.accessToken;
+        gUser = result.user;
       }
-
-      const result = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
-      const gUser = result.user;
 
       // Check if this Google account is already linked to ANOTHER user profile
       let existingEmailUser = await db.scientists.where('email').equals(gUser.email).first();
