@@ -102,7 +102,7 @@ export default function SciCommProfile() {
   const connectionsData = useLiveCollection('scicomm_connections') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
 
-  const [activeTab, setActiveTab] = useState('overview'); // overview | portfolio | settings
+  const [activeTab, setActiveTab] = useState('overview'); // overview | portfolio
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [showWarnings, setShowWarnings] = useState(false);
   const [showTagManager, setShowTagManager] = useState(false);
@@ -451,8 +451,7 @@ export default function SciCommProfile() {
       <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: 'white', padding: '8px', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
         {[
           { id: 'overview', label: 'Overview', icon: <UserCircle size={18} /> },
-          { id: 'portfolio', label: 'CV & Portfolio', icon: <Briefcase size={18} /> },
-          { id: 'settings', label: 'Settings', icon: <Settings size={18} /> }
+          { id: 'portfolio', label: 'CV & Portfolio', icon: <Briefcase size={18} /> }
         ].map(t => (
           <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
             flex: 1, padding: '12px 16px', border: 'none', background: activeTab === t.id ? '#1d4ed8' : 'transparent',
@@ -531,6 +530,18 @@ export default function SciCommProfile() {
             <div style={{ height: '100%', width: `${calculateReadiness()}%`, background: 'linear-gradient(90deg, #fbbf24, #1d4ed8)', transition: 'width 0.5s' }}></div>
           </div>
 
+          {/* Role / Department */}
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Role / Department</label>
+            <input type="text" value={settingsForm.department} onChange={e => setSettingsForm({ ...settingsForm, department: e.target.value })} style={{ width: '100%', padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box' }} />
+          </div>
+
+          {/* Bio / About */}
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Bio / About</label>
+            <textarea dir="auto" value={settingsForm.bio} onChange={e => setSettingsForm({ ...settingsForm, bio: e.target.value })} rows={3} style={{ width: '100%', padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', resize: 'vertical', boxSizing: 'border-box' }} />
+          </div>
+
           <div style={{ marginBottom: '24px' }}>
             <h3 style={{ fontSize: '16px', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '6px' }}><FileText size={16} color="#3b82f6" /> CV / Resume</h3>
             <div style={{ border: '2px dashed #ccc', padding: '20px', borderRadius: '8px', textAlign: 'center', cursor: 'pointer', background: '#f9fafb', marginBottom: '8px' }} onClick={() => document.getElementById('cv-upload-input').click()}>
@@ -586,65 +597,11 @@ export default function SciCommProfile() {
               </div>
             )
           ))}
-          <button className="scicomm-btn-primary" onClick={handleSavePortfolio} style={{ width: '100%', justifyContent: 'center', marginTop: '12px' }}>Save All Portfolio Changes</button>
+          <button className="scicomm-btn-primary" onClick={async (e) => { await handleSaveSettings(e); await handleSavePortfolio(e); }} style={{ width: '100%', justifyContent: 'center', marginTop: '12px' }}>Save All Changes</button>
         </div>
       )}
 
-      {/* SETTINGS TAB */}
-      {activeTab === 'settings' && (
-        <div className="scicomm-card scicomm-card-padding">
-          <h2 style={{ fontSize: '20px', margin: '0 0 20px' }}>⚙️ Account Settings</h2>
-          <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Full Name</label>
-              <input type="text" value={settingsForm.name} onChange={e => setSettingsForm({ ...settingsForm, name: e.target.value })} style={{ width: '100%', padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box' }} />
-            </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Email Address</label>
-              <input type="email" value={settingsForm.email} onChange={e => setSettingsForm({ ...settingsForm, email: e.target.value })} style={{ width: '100%', padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box' }} />
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Role / Department</label>
-              <input type="text" value={settingsForm.department} onChange={e => setSettingsForm({ ...settingsForm, department: e.target.value })} style={{ width: '100%', padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box' }} />
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>Bio / About</label>
-              <textarea dir="auto" value={settingsForm.bio} onChange={e => setSettingsForm({ ...settingsForm, bio: e.target.value })} rows={3} style={{ width: '100%', padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', resize: 'vertical', boxSizing: 'border-box' }} />
-            </div>
-
-            <div style={{ borderTop: '1px solid #eef3f8', paddingTop: '16px', marginTop: '8px' }}>
-              <h3 style={{ fontSize: '16px', margin: '0 0 12px' }}>Privacy & Notifications</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={settingsForm.privacyProfile === 'public'} onChange={e => setSettingsForm({...settingsForm, privacyProfile: e.target.checked ? 'public' : 'private'})} />
-                  Make profile public to university members
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={settingsForm.notificationsEmail} onChange={e => setSettingsForm({...settingsForm, notificationsEmail: e.target.checked})} />
-                  Receive email summaries
-                </label>
-              </div>
-            </div>
-
-            <button type="submit" className="scicomm-btn-primary" style={{ padding: '12px', fontSize: '15px', justifyContent: 'center', marginTop: '12px' }}>Save Changes</button>
-          </form>
-
-          <div style={{ borderTop: '1px solid #eef3f8', paddingTop: '20px', marginTop: '20px' }}>
-            <h3 style={{ fontSize: '16px', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '6px' }}><Lock size={16} /> Change Password</h3>
-            {passwordMsg && <div style={{ padding: '8px 12px', borderRadius: '8px', marginBottom: '12px', fontSize: '13px', fontWeight: 600, background: passwordMsg.startsWith('✅') ? '#fef3c7' : '#fee2e2', color: passwordMsg.startsWith('✅') ? '#92400e' : '#991b1b' }}>{passwordMsg}</div>}
-            <form onSubmit={handlePasswordChange} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <input type="password" placeholder="Current Password" value={passwordForm.current} onChange={e => setPasswordForm({...passwordForm, current: e.target.value})} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
-              <input type="password" placeholder="New Password" value={passwordForm.newPass} onChange={e => setPasswordForm({...passwordForm, newPass: e.target.value})} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
-              <input type="password" placeholder="Confirm New Password" value={passwordForm.confirm} onChange={e => setPasswordForm({...passwordForm, confirm: e.target.value})} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
-              <button type="submit" className="scicomm-btn-primary" style={{ padding: '10px', justifyContent: 'center' }}>Update Password</button>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Avatar Picker Modal */}
       {showAvatarPicker && (
