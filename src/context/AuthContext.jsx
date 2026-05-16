@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useContext } from 'react';
 import { db, getFirebaseAuth } from '../db';
 import { signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from 'firebase/auth';
 import bcrypt from 'bcryptjs';
+import { Capacitor } from '@capacitor/core';
 
 const isMedian = () => {
   return typeof window !== 'undefined' && (
@@ -11,6 +12,8 @@ const isMedian = () => {
     navigator.userAgent.toLowerCase().includes('median')
   );
 };
+
+const isCapacitor = () => Capacitor.isNativePlatform();
 
 const AuthContext = createContext(null);
 
@@ -178,8 +181,22 @@ export const AuthProvider = ({ children }) => {
       const auth = getFirebaseAuth();
       let gUser, token;
       
+      if (isCapacitor()) {
+        const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth');
+        GoogleAuth.initialize({
+          clientId: '379599502348-vj7r5v0v6u0p0p0p0p0p.apps.googleusercontent.com', // Firebase Client ID
+          scopes: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file'],
+          grantOfflineAccess: true,
+        });
+        const nativeUser = await GoogleAuth.signIn();
+        const { signInWithCredential } = await import('firebase/auth');
+        const credential = GoogleAuthProvider.credential(nativeUser.authentication.idToken);
+        const result = await signInWithCredential(auth, credential);
+        gUser = result.user;
+        token = nativeUser.authentication.accessToken;
+      }
       // Special handling for Median.co (GoNative) app wrapper
-      if (isMedian()) {
+      else if (isMedian()) {
         if (window.median && window.median.google && window.median.google.login) {
           // Use Median Native Plugin
           const medianResult = await new Promise((resolve, reject) => {
@@ -278,8 +295,22 @@ export const AuthProvider = ({ children }) => {
       const auth = getFirebaseAuth();
       let gUser, token;
 
+      if (isCapacitor()) {
+        const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth');
+        GoogleAuth.initialize({
+          clientId: '379599502348-vj7r5v0v6u0p0p0p0p0p.apps.googleusercontent.com',
+          scopes: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file'],
+          grantOfflineAccess: true,
+        });
+        const nativeUser = await GoogleAuth.signIn();
+        const { linkWithCredential } = await import('firebase/auth');
+        const credential = GoogleAuthProvider.credential(nativeUser.authentication.idToken);
+        const result = await linkWithCredential(auth.currentUser, credential);
+        gUser = result.user;
+        token = nativeUser.authentication.accessToken;
+      }
       // Special handling for Median.co (GoNative) app wrapper
-      if (isMedian()) {
+      else if (isMedian()) {
         if (window.median && window.median.google && window.median.google.login) {
           // Use Median Native Plugin
           const medianResult = await new Promise((resolve, reject) => {

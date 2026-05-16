@@ -3,7 +3,14 @@
   "appName": "The Portal",
   "webDir": "dist",
   "server": {
-    "url": "https://chompchem.firebaseapp.com",
+    "url": "https://scicomm-superbugs.github.io/Portal/",
     "cleartext": true
+  },
+  "plugins": {
+    "GoogleAuth": {
+      "scopes": ["profile", "email", "https://www.googleapis.com/auth/drive.file"],
+      "serverClientId": "379599502348-vj7r5v0v6u0p0p0p0p0p.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    }
   }
 }
