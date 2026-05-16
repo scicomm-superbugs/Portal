@@ -25,6 +25,15 @@ export default function Login() {
     document.title = workspaceId === 'alamein' ? 'Alamein International University' : 'AIU SciComm Team';
   }, [workspaceId]);
 
+  // Check for pending approval message from mobile Google redirect
+  useEffect(() => {
+    const pendingMsg = sessionStorage.getItem('googlePendingMsg');
+    if (pendingMsg) {
+      setError(pendingMsg);
+      sessionStorage.removeItem('googlePendingMsg');
+    }
+  }, []);
+
   if (!workspaceId) {
     return <Navigate to="/portal" replace />;
   }

@@ -1,7 +1,9 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { db, getFirebaseAuth } from '../db';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from 'firebase/auth';
 import bcrypt from 'bcryptjs';
+
+const isMobile = () => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 const AuthContext = createContext(null);
 
@@ -44,6 +46,82 @@ export const AuthProvider = ({ children }) => {
       clearTimeout(timeoutId);
       setLoading(false);
     }
+  }, []);
+
+  // Handle Google redirect result on app init (for mobile sign-in flow)
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const auth = getFirebaseAuth();
+        const result = await getRedirectResult(auth);
+        if (!result) return;
+
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
+        const gUser = result.user;
+
+        // Check if this is a "link" operation (user was already logged in)
+        const pendingLink = localStorage.getItem('pendingGoogleLink');
+        localStorage.removeItem('pendingGoogleLink');
+        const storedUserId = localStorage.getItem('userId');
+
+        if (pendingLink && storedUserId) {
+          // LINK flow: attach Google to existing account
+          let existingEmailUser = await db.scientists.where('email').equals(gUser.email).first();
+          if (!existingEmailUser) {
+            existingEmailUser = await db.scientists.where('username').equals(gUser.email).first();
+          }
+          if (existingEmailUser && String(existingEmailUser.id) !== String(storedUserId)) {
+            await db.scientists.delete(existingEmailUser.id);
+          }
+          const currentUser = await db.scientists.get(String(storedUserId));
+          await db.scientists.update(storedUserId, {
+            email: gUser.email,
+            googleLinked: true,
+            googleLinkedEmail: gUser.email,
+            googleDriveToken: token || null,
+            avatar: currentUser?.avatar || gUser.photoURL
+          });
+          if (currentUser) {
+            setUser({ id: currentUser.id, username: currentUser.username, name: currentUser.name, role: currentUser.role, avatar: currentUser.avatar, email: gUser.email });
+          }
+        } else {
+          // LOGIN flow: sign in / create account
+          let scientist = await db.scientists.where('email').equals(gUser.email).first();
+          if (!scientist) scientist = await db.scientists.where('username').equals(gUser.email).first();
+
+          if (!scientist) {
+            const baseName = gUser.displayName ? gUser.displayName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : 'user';
+            const randomNum = Math.floor(Math.random() * 10000);
+            const newId = await db.scientists.add({
+              username: `${baseName}${randomNum}`,
+              email: gUser.email, name: gUser.displayName, avatar: gUser.photoURL,
+              department: 'Member', employeeId: 'GOOGLE-' + gUser.uid.substring(0, 8),
+              role: 'user', accountStatus: 'pending', googleDriveToken: token || null,
+              createdAt: new Date().toISOString()
+            });
+            scientist = await db.scientists.get(newId);
+          } else {
+            const updateData = { googleDriveToken: token || null, name: scientist.name || gUser.displayName };
+            if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) updateData.avatar = gUser.photoURL;
+            await db.scientists.update(scientist.id, updateData);
+            if (updateData.avatar) scientist.avatar = updateData.avatar;
+          }
+
+          if (scientist.accountStatus === 'pending') {
+            // Store pending message for Login page to display
+            sessionStorage.setItem('googlePendingMsg', 'Your account is pending approval by an administrator.');
+            return;
+          }
+
+          setUser({ id: scientist.id, username: scientist.username, name: scientist.name, role: scientist.role, avatar: scientist.avatar });
+          localStorage.setItem('userId', scientist.id);
+        }
+      } catch (err) {
+        console.error('Redirect result error:', err);
+      }
+    };
+    handleRedirectResult();
   }, []);
 
   const login = async (username, password) => {
@@ -109,6 +187,14 @@ export const AuthProvider = ({ children }) => {
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/drive.file');
     
+    // On mobile: use redirect for native account picker UX
+    if (isMobile()) {
+      const auth = getFirebaseAuth();
+      await signInWithRedirect(auth, provider);
+      return; // Page will redirect — result handled in useEffect
+    }
+
+    // Desktop: use popup
     try {
       const auth = getFirebaseAuth();
       const result = await signInWithPopup(auth, provider);
@@ -183,6 +269,16 @@ export const AuthProvider = ({ children }) => {
     if (!user) throw new Error('You must be logged in to link an account.');
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/drive.file');
+
+    // On mobile: use redirect for native account picker UX
+    if (isMobile()) {
+      localStorage.setItem('pendingGoogleLink', 'true');
+      const auth = getFirebaseAuth();
+      await signInWithRedirect(auth, provider);
+      return; // Page will redirect — result handled in useEffect
+    }
+
+    // Desktop: use popup
     try {
       const auth = getFirebaseAuth();
       const result = await signInWithPopup(auth, provider);
