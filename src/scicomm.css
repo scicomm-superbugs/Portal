@@ -481,14 +481,26 @@
 /* === MOBILE CHAT TOGGLE === */
 @media (max-width: 768px) {
   .scicomm-chat-sidebar {
-    width: 100% !important;
+    position: fixed !important;
+    top: 0;
+    left: -100%;
+    bottom: 0;
+    width: 280px !important;
+    height: 100vh !important;
+    z-index: 200 !important;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    display: flex !important;
+  }
+  .scicomm-chat-sidebar.open {
+    left: 0 !important;
   }
   .chat-hide-mobile {
     display: none !important;
   }
   .chat-show-mobile {
     display: flex !important;
-    width: 100% !important;
+    width: auto !important;
   }
   .chat-back-btn {
     display: flex !important;

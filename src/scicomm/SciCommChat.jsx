@@ -615,9 +615,9 @@ export default function SciCommChat() {
         {activeRoom ? (
           <>
             {/* Chat Header */}
-            <div style={{ height: '70px', background: 'white', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', zIndex: 50 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                <button onClick={() => setMobileSidebarOpen(true)} className="chat-show-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', marginLeft: '-12px' }}><ArrowLeft size={24} /></button>
+            <div className="chat-header" style={{ height: '70px', background: 'white', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIindex: 50 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                <button onClick={() => setMobileSidebarOpen(true)} className="chat-show-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', marginLeft: '-8px', flexShrink: 0 }}><ArrowLeft size={24} /></button>
                 {activeRoom.type === 'group' ? (
                   activeRoom.avatar ? (
                     <img src={activeRoom.avatar} alt="Group" style={{ width: 44, height: 44, borderRadius: '14px', objectFit: 'cover' }} />
@@ -625,9 +625,9 @@ export default function SciCommChat() {
                     <div style={{ width: 44, height: 44, borderRadius: '14px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={22} color="#1d4ed8" /></div>
                   )
                 ) : renderAvatar(getRoomOther(activeRoom), 44)}
-                <div>
-                  <div style={{ fontWeight: 800, fontSize: '16px', color: '#0f172a' }}>{getRoomTitle(activeRoom)}</div>
-                  <div style={{ fontSize: '12px', color: '#64748b' }}>{activeRoom.type === 'group' ? `${activeRoom.members?.length} members` : (getRoomOther(activeRoom)?.department || 'Member')}</div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{getRoomTitle(activeRoom)}</div>
+                  <div style={{ fontSize: '11px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{activeRoom.type === 'group' ? `${activeRoom.members?.length} members` : (getRoomOther(activeRoom)?.department || 'Member')}</div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '8px', position: 'relative' }}>
@@ -647,7 +647,7 @@ export default function SciCommChat() {
             </div>
 
             {/* Messages */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px', background: '#f8fafc', backgroundImage: 'radial-gradient(#e2e8f0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
+            <div className="chat-messages-container" style={{ flex: 1, overflowY: 'auto', padding: '16px', background: '#f8fafc', backgroundImage: 'radial-gradient(#e2e8f0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
               {roomMessages.map((m, idx) => {
                 const isMe = m.senderId === user.id;
                 const prev = roomMessages[idx - 1];
@@ -688,7 +688,7 @@ export default function SciCommChat() {
                       }
                     }}
                   >
-                    {isFirstInGroup && !isMe && activeRoom.type === 'group' && <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', marginLeft: '12px', marginBottom: '2px' }}>{m.senderName}</div>}
+                    {isFirstInGroup && !isMe && activeRoom.type === 'group' && <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', marginLeft: '16px', marginBottom: '2px' }}>{m.senderName}</div>}
                     <div style={{ 
                       maxWidth: '75%', 
                       padding: '10px 16px', 
