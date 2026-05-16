@@ -771,22 +771,25 @@ export default function SciCommAdmin() {
               <Info size={20} />
             </div>
             <div>
-              <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: 700, color: '#0077b5' }}>GitHub Hosting Mode Active</h4>
+              <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: 700, color: '#0077b5' }}>App Hosting Instructions</h4>
               <p style={{ margin: 0, fontSize: '12px', color: '#475569', lineHeight: '1.5' }}>
-                To update applications faster, place your installer files (APK, EXE, etc.) in the <code>public/downloads/</code> folder of the project. 
-                I will automatically detect them and push them to GitHub. This bypasses slow Firebase uploads and makes downloads faster for users.
+                To host a file on GitHub: Place the file in <code>public/downloads/</code> and tell Antigravity the path. 
+                Alternatively, you can upload to Firebase or register an external link below.
               </p>
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {[
-              { id: 'android', name: 'Android (.apk)', icon: <img src="./android-v2.png" alt="Android" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />, local: './downloads/ThePortal.apk' },
-              { id: 'windows', name: 'Windows (.exe)', icon: <Monitor color="#00a4ef" />, local: './downloads/ThePortal.exe' },
+              { id: 'android', name: 'Android (.apk)', icon: <img src="./android-v2.png" alt="Android" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /> },
+              { id: 'windows', name: 'Windows (.exe)', icon: <Monitor color="#00a4ef" /> },
               { id: 'ios', name: 'iOS', icon: <Apple color="#000000" /> },
               { id: 'mac', name: 'MacOS', icon: <Apple color="#000000" /> },
               { id: 'linux', name: 'Linux', icon: <Terminal color="#333" /> },
             ].map(platform => {
+              const current = downloadsData.find(d => d.platform === platform.id);
+              const isAndroidGitHub = platform.id === 'android' && !current;
+
               return (
                 <div key={platform.id} className="scicomm-card" style={{ padding: '20px', position: 'relative' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
@@ -796,20 +799,106 @@ export default function SciCommAdmin() {
                     <div>
                       <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>{platform.name}</h4>
                       <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>
-                        {platform.local ? 'Hosted on GitHub' : 'Coming Soon'}
+                        {current ? 'Link Registered' : (isAndroidGitHub ? 'Hosted on GitHub' : 'No file linked')}
                       </p>
                     </div>
                   </div>
 
                   <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '12px', marginBottom: '16px', minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {platform.local ? (
+                    {current ? (
                       <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#0f172a', marginBottom: '4px' }}>File Ready</div>
-                        <div style={{ fontSize: '10px', color: '#64748b' }}>{platform.local}</div>
+                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#0f172a', marginBottom: '4px', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{current.fileName || 'External Link'}</div>
+                        <div style={{ fontSize: '10px', color: '#0077b5', cursor: 'pointer' }} onClick={() => window.open(current.url, '_blank')}>Test Link</div>
+                      </div>
+                    ) : (isAndroidGitHub ? (
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#0f172a', marginBottom: '4px' }}>ThePortal.apk</div>
+                        <div style={{ fontSize: '10px', color: '#64748b' }}>./downloads/ThePortal.apk</div>
                       </div>
                     ) : (
-                      <span style={{ fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>No file linked yet</span>
-                    )}
+                      <span style={{ fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>No file available</span>
+                    ))}
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <label style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      gap: '4px', 
+                      padding: '8px', 
+                      background: 'white', 
+                      border: '1px solid #cbd5e1', 
+                      borderRadius: '8px', 
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      transition: 'all 0.2s',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }} onMouseOver={e => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={e => e.currentTarget.style.background = 'white'}>
+                      {uploadProgress[platform.id] !== undefined && uploadProgress[platform.id] < 100 && (
+                        <div style={{ 
+                          position: 'absolute', 
+                          top: 0, 
+                          left: 0, 
+                          bottom: 0, 
+                          width: `${uploadProgress[platform.id]}%`, 
+                          background: 'rgba(59, 130, 246, 0.1)', 
+                          zIndex: 0,
+                          transition: 'width 0.3s ease'
+                        }} />
+                      )}
+                      <Upload size={12} /> Upload
+                      <input type="file" style={{ display: 'none' }} disabled={uploadProgress[platform.id] < 100} onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setUploadProgress(prev => ({ ...prev, [platform.id]: 0 }));
+                        flash(`Uploading ${platform.name}...`);
+                        try {
+                          const url = await uploadFile(file, `downloads/${platform.id}/${file.name}`, (pct) => {
+                            setUploadProgress(prev => ({ ...prev, [platform.id]: pct }));
+                          });
+                          if (current) {
+                            await db.scicomm_app_downloads.update(current.id, { url, fileName: file.name, updatedAt: new Date().toISOString() });
+                          } else {
+                            await db.scicomm_app_downloads.add({ platform: platform.id, url, fileName: file.name, updatedAt: new Date().toISOString() });
+                          }
+                          setUploadProgress(prev => ({ ...prev, [platform.id]: 100 }));
+                          flash(`${platform.name} uploaded successfully!`);
+                        } catch (err) {
+                          flash(`Error: ${err.message}`);
+                        }
+                      }} />
+                    </label>
+                    <button 
+                      onClick={() => {
+                        const url = prompt('Enter External URL:');
+                        if (url) {
+                          if (current) {
+                            db.scicomm_app_downloads.update(current.id, { url, updatedAt: new Date().toISOString() });
+                          } else {
+                            db.scicomm_app_downloads.add({ platform: platform.id, url, updatedAt: new Date().toISOString() });
+                          }
+                          flash('Link saved!');
+                        }
+                      }}
+                      style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        gap: '4px', 
+                        padding: '8px', 
+                        background: '#f8fafc', 
+                        border: '1px solid #cbd5e1', 
+                        borderRadius: '8px', 
+                        cursor: 'pointer',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                      }}
+                    >
+                      <Link2 size={12} /> Link
+                    </button>
                   </div>
                 </div>
               );
