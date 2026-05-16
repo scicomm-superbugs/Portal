@@ -87,7 +87,14 @@ export default function Login() {
         </div>
 
         {error && (
-          <div style={{ backgroundColor: '#FED7D7', color: '#822727', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.875rem' }}>
+          <div style={{ 
+            backgroundColor: error.includes('pending approval') ? '#dcfce7' : '#FED7D7', 
+            color: error.includes('pending approval') ? '#14532d' : '#822727', 
+            padding: '0.75rem', 
+            borderRadius: '8px', 
+            marginBottom: '1rem', 
+            fontSize: '0.875rem' 
+          }}>
             {error}
           </div>
         )}
