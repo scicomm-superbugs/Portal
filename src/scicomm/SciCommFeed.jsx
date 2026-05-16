@@ -137,6 +137,7 @@ export default function SciCommFeed() {
   }, [isApproved, isRejected, user.id, latestApp]);
 
   const [showAppAnnouncement, setShowAppAnnouncement] = useState(() => localStorage.getItem('scicomm_app_announcement_hidden') !== 'true');
+  const isDarkMode = localStorage.getItem('scicommDarkMode') === 'true';
   const dismissAppAnnouncement = (e) => {
     e.stopPropagation();
     localStorage.setItem('scicomm_app_announcement_hidden', 'true');
