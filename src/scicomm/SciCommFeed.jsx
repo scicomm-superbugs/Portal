@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db, uploadFile, firestore, getCollectionName } from '../db';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Image, Video, FileText, Send, MessageSquare, Share2, MoreHorizontal, UserCircle, ChevronLeft, ChevronRight, Settings, Plus, Trash2, X, Trophy, Smile, Monitor, Smartphone, Apple, Terminal } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
 import SciCommStories from './SciCommStories';
 
@@ -97,6 +97,7 @@ const ChunkedVideo = ({ videoUrl }) => {
 
 export default function SciCommFeed() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [audioUnlocked, setAudioUnlocked] = useState(sessionStorage.getItem('audio_unlocked') === 'true');
 
   const handleUnlockAudio = () => {
@@ -934,8 +935,8 @@ export default function SciCommFeed() {
             <p style={{ margin: '0 0 16px', fontSize: '12px', opacity: 0.9, lineHeight: '1.4' }}>
               Native performance. Real-time updates. Scientific precision.
             </p>
-            <button 
-              onClick={() => navigate('/download')}
+            <Link 
+              to="/download"
               style={{ 
                 width: '100%', 
                 padding: '12px', 
@@ -947,13 +948,16 @@ export default function SciCommFeed() {
                 fontSize: '13px', 
                 cursor: 'pointer',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                display: 'block',
+                textDecoration: 'none',
+                textAlign: 'center'
               }}
               onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
               onMouseOut={e => e.currentTarget.style.transform = 'none'}
             >
               Get The App
-            </button>
+            </Link>
           </div>
         </div>
       </div>
