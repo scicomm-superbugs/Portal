@@ -166,7 +166,7 @@ export default function SciCommLayout() {
     return <UserCircle className="icon" size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v3.7.3';
+  const PLATFORM_VERSION = 'v5.0.1';
   
   // One-time notification for the new mobile app
   useEffect(() => {
@@ -433,17 +433,30 @@ export default function SciCommLayout() {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#1e3a8a', fontSize: '14px' }}>💬 Advanced Chat Features</h4>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.8' }}>
-                  <li><strong>In-Chat Polls:</strong> You can now create and vote in polls directly inside group chats!</li>
-                  <li><strong>Member Tags:</strong> Messages now show Admin, Team, or Visitor tags next to names in groups.</li>
+                <h4 style={{ margin: '0 0 8px', color: '#1e3a8a', fontSize: '14px', fontWeight: 800 }}>✨ New Features</h4>
+                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.6' }}>
+                  <li><strong>Profile Enhancement:</strong> Added cropping tool for profile pictures.</li>
+                  <li><strong>Story Engagement:</strong> Added reaction notifications for stories.</li>
+                  <li><strong>Google Integration:</strong> Added Google Account login and linking in settings.</li>
+                </ul>
+              </div>
+              <div style={{ background: '#fef2f2', padding: '14px', borderRadius: '10px' }}>
+                <h4 style={{ margin: '0 0 8px', color: '#991b1b', fontSize: '14px', fontWeight: 800 }}>🛠️ Bug Fixes & Stability</h4>
+                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#991b1b', lineHeight: '1.6' }}>
+                  <li><strong>Linguistic:</strong> Fixed Arabic text display in replies and comments.</li>
+                  <li><strong>Mobile:</strong> Fixed settings button and comment reactions on mobile.</li>
+                  <li><strong>Social:</strong> Fixed story duration/expiration and message request logic.</li>
+                  <li><strong>Chat:</strong> Fixed group member additions and emoji support in messages.</li>
+                  <li><strong>UX:</strong> Added smooth animations when clicking replied messages.</li>
                 </ul>
               </div>
               <div style={{ background: '#dcfce7', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 6px', color: '#166534', fontSize: '14px' }}>📱 Mobile Experience</h4>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.8' }}>
-                  <li><strong>Smooth Chat Scrolling:</strong> The chat window is now locked in place, preventing annoying page shifts while scrolling messages.</li>
-                  <li><strong>Faster Reactions:</strong> Tap and hold time for post reactions reduced to 200ms for a smoother feel.</li>
+                <h4 style={{ margin: '0 0 8px', color: '#166534', fontSize: '14px', fontWeight: 800 }}>🌍 Platform Expansion</h4>
+                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.6' }}>
+                  <li><strong>Android:</strong> Alpha Version now available for installation!</li>
+                  <li><strong>Dark Mode:</strong> Redesigned Alpha features for enhanced nighttime use.</li>
+                  <li><strong>Infrastructure:</strong> Added dedicated Download and Settings pages.</li>
+                  <li><strong>Security:</strong> Critical stability patches and system bug fixes.</li>
                 </ul>
               </div>
             </div>
