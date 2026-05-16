@@ -923,132 +923,91 @@ export default function SciCommFeed() {
         </div>
         <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v3.7.2</button>
         
-        {/* RED-TONED ATTRACTIVE APP DOWNLOAD SECTION */}
-        <div className="scicomm-card" style={{ marginTop: '8px', padding: '0', overflow: 'hidden', borderTop: '4px solid #ef4444' }}>
-          <div style={{ padding: '16px 20px', background: 'linear-gradient(to bottom, #fff5f5, #fff)', borderBottom: '1px solid #fee2e2' }}>
-            <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#991b1b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <Smartphone size={18} color="#ef4444" />
-                <div style={{ position: 'absolute', top: -2, right: -2, width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%', border: '2px solid white', animation: 'pulse-red 2s infinite' }} />
-              </div>
-              The Portal Mobile
-            </h3>
-          </div>
+        {/* ULTRA-MODERN APP DOWNLOAD SECTION - THEME CONSISTENT */}
+        <div className="scicomm-card" style={{ marginTop: '8px', padding: '24px', position: 'relative', overflow: 'hidden' }}>
+          {/* Subtle Background Accent */}
+          <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '120px', height: '120px', background: 'radial-gradient(circle, #eff6ff 0%, transparent 70%)', pointerEvents: 'none' }} />
           
-          <div style={{ padding: '20px' }}>
-            <p style={{ margin: '0 0 20px', fontSize: '13px', color: '#7f1d1d', lineHeight: '1.5', opacity: 0.8 }}>
-              Experience the future of SciComm in the palm of your hand. <strong>Native, fast, and secure.</strong>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ padding: '8px', background: '#f0f7ff', borderRadius: '12px' }}>
+                  <Smartphone size={18} color="#0077b5" />
+                </div>
+                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: '#0f172a' }}>Mobile Application</h3>
+              </div>
+              <span style={{ fontSize: '10px', fontWeight: 700, background: '#dcfce7', color: '#15803d', padding: '3px 8px', borderRadius: '20px', letterSpacing: '0.02em' }}>LIVE</span>
+            </div>
+
+            <p style={{ margin: '0 0 24px', fontSize: '13px', color: '#64748b', lineHeight: '1.6' }}>
+              Access your scientific workspace anywhere. Stay connected with real-time updates and native features.
             </p>
 
-            {/* Android Stylized Button */}
-            {(() => {
-              const androidDl = downloadsData.find(d => d.platform === 'android');
-              return (
-                <button 
-                  onClick={() => androidDl?.url ? window.open(androidDl.url, '_blank') : setAppComingSoon('Android')}
-                  style={{ 
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                    padding: '16px',
-                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                    border: 'none',
-                    borderRadius: '16px',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    marginBottom: '20px',
-                    color: 'white',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    boxShadow: '0 10px 20px -5px rgba(239, 68, 68, 0.3)'
-                  }}
-                  onMouseOver={e => {
-                    e.currentTarget.style.transform = 'translateY(-4px) scale(1.01)';
-                    e.currentTarget.style.boxShadow = '0 15px 30px -5px rgba(239, 68, 68, 0.4)';
-                  }}
-                  onMouseOut={e => {
-                    e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = '0 10px 20px -5px rgba(239, 68, 68, 0.3)';
-                  }}
-                >
-                  <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '80px', height: '80px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%' }} />
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative', zIndex: 1 }}>
-                    <div style={{ width: '40px', height: '40px', background: 'rgba(255,255,255,0.2)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
-                      <Smartphone size={24} color="white" />
-                    </div>
-                    <div style={{ textAlign: 'left' }}>
-                      <div style={{ fontSize: '15px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Download for Android</div>
-                      <div style={{ fontSize: '11px', opacity: 0.9 }}>v3.7.2 • Stabilized Build</div>
-                    </div>
-                  </div>
-                  
-                  <div style={{ position: 'absolute', bottom: '12px', right: '16px', background: 'white', color: '#dc2626', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
-                    FREE DOWNLOAD
-                  </div>
-                </button>
-              );
-            })()}
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-              <div style={{ flex: 1, height: '1px', background: '#fee2e2' }} />
-              <div style={{ fontSize: '10px', fontWeight: 800, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Expand Access</div>
-              <div style={{ flex: 1, height: '1px', background: '#fee2e2' }} />
-            </div>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            {/* Platform Options */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {[
-                { id: 'windows', name: 'Windows', icon: <Monitor size={14} /> },
-                { id: 'ios', name: 'iOS', icon: <Apple size={14} /> },
-                { id: 'mac', name: 'macOS', icon: <Apple size={14} /> },
-                { id: 'linux', name: 'Linux', icon: <Terminal size={14} /> }
+                { id: 'android', name: 'Android', icon: <Smartphone size={16} />, sub: 'v3.7.2 • APK Build', active: true },
+                { id: 'ios', name: 'iOS App Store', icon: <Apple size={16} />, sub: 'Coming Soon' },
+                { id: 'windows', name: 'Windows Desktop', icon: <Monitor size={16} />, sub: 'Coming Soon' },
               ].map((plat) => {
                 const dl = downloadsData.find(d => d.platform === plat.id);
+                const isAvailable = dl?.url || plat.active;
+                
                 return (
                   <button 
                     key={plat.id}
-                    onClick={() => dl?.url ? window.open(dl.url, '_blank') : setAppComingSoon(plat.name)}
+                    onClick={() => (dl?.url) ? window.open(dl.url, '_blank') : setAppComingSoon(plat.name)}
                     style={{ 
                       display: 'flex', 
                       alignItems: 'center', 
-                      justifyContent: 'center',
-                      gap: '8px', 
-                      padding: '10px', 
-                      background: 'white', 
-                      border: '1px solid #fee2e2', 
-                      borderRadius: '12px', 
-                      fontSize: '12px', 
-                      fontWeight: 700, 
-                      color: '#991b1b',
+                      justifyContent: 'space-between',
+                      padding: '12px 16px', 
+                      background: plat.active ? '#0077b5' : '#f8fafc', 
+                      border: plat.active ? 'none' : '1px solid #e2e8f0', 
+                      borderRadius: '16px', 
                       cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                      textAlign: 'left'
                     }}
                     onMouseOver={e => {
-                      e.currentTarget.style.background = '#fef2f2';
-                      e.currentTarget.style.borderColor = '#fca5a5';
                       e.currentTarget.style.transform = 'translateY(-2px)';
+                      if (plat.active) e.currentTarget.style.background = '#006699';
+                      else {
+                        e.currentTarget.style.background = 'white';
+                        e.currentTarget.style.borderColor = '#cbd5e1';
+                      }
                     }}
                     onMouseOut={e => {
-                      e.currentTarget.style.background = 'white';
-                      e.currentTarget.style.borderColor = '#fee2e2';
                       e.currentTarget.style.transform = 'none';
+                      if (plat.active) e.currentTarget.style.background = '#0077b5';
+                      else {
+                        e.currentTarget.style.background = '#f8fafc';
+                        e.currentTarget.style.borderColor = '#e2e8f0';
+                      }
                     }}
                   >
-                    {plat.icon}
-                    <span>{plat.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{ color: plat.active ? 'white' : '#64748b' }}>{plat.icon}</div>
+                      <div>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: plat.active ? 'white' : '#1e293b' }}>{plat.name}</div>
+                        <div style={{ fontSize: '11px', color: plat.active ? 'rgba(255,255,255,0.8)' : '#94a3b8' }}>{plat.sub}</div>
+                      </div>
+                    </div>
+                    {plat.active && <ChevronRight size={14} color="white" />}
                   </button>
                 );
               })}
             </div>
+            
+            <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'center', gap: '16px' }}>
+              <button onClick={() => setAppComingSoon('macOS')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = '#1e293b'} onMouseOut={e => e.currentTarget.style.color = '#94a3b8'} title="macOS">
+                <Apple size={16} />
+              </button>
+              <button onClick={() => setAppComingSoon('Linux')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = '#1e293b'} onMouseOut={e => e.currentTarget.style.color = '#94a3b8'} title="Linux">
+                <Terminal size={16} />
+              </button>
+            </div>
           </div>
-          <style>{`
-            @keyframes pulse-red {
-              0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-              70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-              100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-            }
-          `}</style>
         </div>
       </div>
 
