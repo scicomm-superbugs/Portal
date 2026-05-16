@@ -766,19 +766,6 @@ export default function SciCommAdmin() {
       {activeTab === 'downloads' && (
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 16px', fontSize: '18px' }}>📲 App Download Management</h3>
-          <div style={{ background: '#f0f7ff', border: '1px solid #cce3ff', borderRadius: '12px', padding: '16px', marginBottom: '24px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-            <div style={{ color: '#0077b5', background: 'white', padding: '8px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Info size={20} />
-            </div>
-            <div>
-              <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: 700, color: '#0077b5' }}>App Hosting Instructions</h4>
-              <p style={{ margin: 0, fontSize: '12px', color: '#475569', lineHeight: '1.5' }}>
-                To host a file on GitHub: Place the file in <code>public/downloads/</code> and tell Antigravity the path. 
-                Alternatively, you can upload to Firebase or register an external link below.
-              </p>
-            </div>
-          </div>
-
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {[
               { id: 'android', name: 'Android (.apk)', icon: <img src="./android-v2.png" alt="Android" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /> },
