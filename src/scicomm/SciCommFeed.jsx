@@ -1048,7 +1048,9 @@ export default function SciCommFeed() {
                   padding: '8px', 
                   borderRadius: '10px', 
                   cursor: 'pointer',
-                  transition: 'all 0.2s'
+                  transition: 'all 0.2s',
+                  position: 'relative',
+                  zIndex: 10
                 }}
                 onMouseOver={e => e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}
                 onMouseOut={e => e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}
@@ -1132,10 +1134,11 @@ export default function SciCommFeed() {
                 <p style={{ margin: 0, fontSize: '14px', color: '#14532d', lineHeight: '1.4' }}>Your application was approved! You now have full access to workspace options and the leaderboard.</p>
               </div>
             </div>
-            <button onClick={() => {
+            <button onClick={(e) => {
+              e.stopPropagation();
               if (latestApp) localStorage.setItem('hide_approval_banner_' + user.id + '_' + latestApp.id, 'true');
               setShowApprovalBanner(false);
-            }} style={{ background: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#166534', transition: 'background 0.2s', flexShrink: 0 }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.8)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.5)'}>
+            }} style={{ background: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#166534', transition: 'background 0.2s', flexShrink: 0, position: 'relative', zIndex: 10 }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.8)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.5)'}>
               <X size={18} />
             </button>
           </div>
@@ -1158,10 +1161,11 @@ export default function SciCommFeed() {
                 )}
               </div>
             </div>
-            <button onClick={() => {
+            <button onClick={(e) => {
+              e.stopPropagation();
               if (latestApp) localStorage.setItem('hide_rejection_banner_' + user.id + '_' + latestApp.id, 'true');
               setShowRejectionBanner(false);
-            }} style={{ background: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#991b1b', transition: 'background 0.2s', flexShrink: 0 }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.8)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.5)'}>
+            }} style={{ background: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#991b1b', transition: 'background 0.2s', flexShrink: 0, position: 'relative', zIndex: 10 }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.8)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.5)'}>
               <X size={18} />
             </button>
           </div>
