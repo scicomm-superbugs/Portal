@@ -136,6 +136,13 @@ export default function SciCommFeed() {
     }
   }, [isApproved, isRejected, user.id, latestApp]);
 
+  const [showAppAnnouncement, setShowAppAnnouncement] = useState(() => localStorage.getItem('scicomm_app_announcement_hidden') !== 'true');
+  const dismissAppAnnouncement = (e) => {
+    e.stopPropagation();
+    localStorage.setItem('scicomm_app_announcement_hidden', 'true');
+    setShowAppAnnouncement(false);
+  };
+
   const [newPost, setNewPost] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
   const [commentText, setCommentText] = useState({});
@@ -969,53 +976,82 @@ export default function SciCommFeed() {
       {/* Main Feed */}
       <div className="scicomm-feed-main">
         {/* GLOBAL APP ANNOUNCEMENT BANNER */}
-        <div 
-          onClick={() => navigate('/download')}
-          style={{ 
-            background: 'linear-gradient(135deg, #0077b5 0%, #005a87 100%)', 
-            borderRadius: '16px', 
-            padding: '24px', 
-            marginBottom: '24px', 
-            color: 'white', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between', 
-            cursor: 'pointer',
-            boxShadow: '0 8px 30px rgba(0, 119, 181, 0.2)',
-            position: 'relative',
-            overflow: 'hidden',
-            transition: 'transform 0.2s'
-          }}
-          onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseOut={e => e.currentTarget.style.transform = 'none'}
-        >
-          <div style={{ position: 'absolute', right: '-20px', top: '-20px', opacity: 0.1 }}>
-            <Smartphone size={120} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', position: 'relative', zIndex: 1 }}>
-            <div style={{ background: 'rgba(255,255,255,0.2)', padding: '12px', borderRadius: '12px' }}>
-              <img src="./android-v2.png" alt="Android" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+        {showAppAnnouncement && (
+          <div 
+            onClick={() => navigate('/download')}
+            style={{ 
+              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', 
+              borderRadius: '16px', 
+              padding: '20px 24px', 
+              marginBottom: '24px', 
+              color: 'white', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              cursor: 'pointer',
+              boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+              position: 'relative',
+              overflow: 'hidden',
+              transition: 'all 0.3s ease',
+              border: '1px solid rgba(255,255,255,0.05)'
+            }}
+            onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseOut={e => e.currentTarget.style.transform = 'none'}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', position: 'relative', zIndex: 1 }}>
+              <div style={{ 
+                background: 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)', 
+                padding: '12px', 
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(56, 189, 248, 0.3)'
+              }}>
+                <Smartphone size={24} color="white" />
+              </div>
+              <div>
+                <h2 style={{ margin: '0 0 2px', fontSize: '18px', fontWeight: 800 }}>The Portal is Mobile 🚀</h2>
+                <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8' }}>Install our new native app for a seamless scientific experience.</p>
+              </div>
             </div>
-            <div>
-              <h2 style={{ margin: '0 0 4px', fontSize: '20px', fontWeight: 800 }}>The Portal is now a Mobile Application! 🚀</h2>
-              <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>Download now to experience The Portal anywhere, anytime.</p>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', zIndex: 1 }}>
+              <button style={{ 
+                background: 'white', 
+                color: '#0f172a', 
+                border: 'none', 
+                padding: '10px 20px', 
+                borderRadius: '10px', 
+                fontWeight: 800, 
+                fontSize: '13px', 
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }} onMouseOver={e => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={e => e.currentTarget.style.background = 'white'}>
+                Get the App
+              </button>
+              <button 
+                onClick={dismissAppAnnouncement}
+                style={{ 
+                  background: 'rgba(255,255,255,0.1)', 
+                  color: 'white', 
+                  border: 'none', 
+                  padding: '8px', 
+                  borderRadius: '8px', 
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background 0.2s'
+                }}
+                onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+              >
+                <X size={16} />
+              </button>
             </div>
           </div>
-          <button style={{ 
-            background: 'white', 
-            color: '#0077b5', 
-            border: 'none', 
-            padding: '12px 24px', 
-            borderRadius: '12px', 
-            fontWeight: 800, 
-            fontSize: '14px', 
-            cursor: 'pointer',
-            boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-            zIndex: 1
-          }}>
-            Download App
-          </button>
-        </div>
+        )}
 
         {/* Approved Application Banner */}
         {showApprovalBanner && (
