@@ -21,7 +21,11 @@ export default function SciCommDownload() {
     { 
       id: 'android', 
       name: 'Android', 
-      icon: <Smartphone size={24} />, 
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17.5 8c.5 0 1 .5 1 1v5c0 .5-.5 1-1 1s-1-.5-1-1V9c0-.5.5-1 1-1zM6.5 8c.5 0 1 .5 1 1v5c0 .5-.5 1-1 1s-1-.5-1-1V9c0-.5.5-1 1-1zM15 15.5c0 .8-.7 1.5-1.5 1.5h-3c-.8 0-1.5-.7-1.5-1.5V11h6v4.5zM15 10H9V8c0-1.7 1.3-3 3-3s3 1.3 3 3v2zM10 7c0-.3-.2-.5-.5-.5s-.5.2-.5.5.2.5.5.5.5-.2.5-.5zM14 7c0-.3.2-.5.5-.5s.5.2.5.5-.2.5-.5.5-.5-.2-.5-.5z"/>
+        </svg>
+      ), 
       color: '#3ddc84', 
       desc: 'Native APK for Android devices.',
       req: 'Android 8.0 (Oreo) or higher'
@@ -77,7 +81,7 @@ export default function SciCommDownload() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px', flexWrap: 'wrap', gap: '40px' }}>
           <div style={{ maxWidth: '600px' }}>
             <h1 style={{ fontSize: '56px', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: '1.1', marginBottom: '24px', color: '#0f172a' }}>
-              Download The Portal <span style={{ color: '#0077b5' }}>for {userOS}</span>
+              Download The Portal <span style={{ color: '#0077b5' }}>Across All Devices</span>
             </h1>
             <p style={{ fontSize: '20px', color: '#64748b', lineHeight: '1.6' }}>
               Experience the future of scientific communication with our native application. 

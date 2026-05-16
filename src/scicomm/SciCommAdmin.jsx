@@ -39,6 +39,7 @@ export default function SciCommAdmin() {
   const [msg, setMsg] = useState('');
   const [rejectPrompt, setRejectPrompt] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
+  const [uploadProgress, setUploadProgress] = useState({}); // { platformId: progress }
 
   const pendingAccounts = scientists.filter(s => s.accountStatus === 'pending');
   const activeAccounts = scientists.filter(s => s.accountStatus !== 'pending');
@@ -772,7 +773,11 @@ export default function SciCommAdmin() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {[
-              { id: 'android', name: 'Android (.apk)', icon: <Smartphone color="#3ddc84" /> },
+              { id: 'android', name: 'Android (.apk)', icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3ddc84" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17.5 8c.5 0 1 .5 1 1v5c0 .5-.5 1-1 1s-1-.5-1-1V9c0-.5.5-1 1-1zM6.5 8c.5 0 1 .5 1 1v5c0 .5-.5 1-1 1s-1-.5-1-1V9c0-.5.5-1 1-1zM15 15.5c0 .8-.7 1.5-1.5 1.5h-3c-.8 0-1.5-.7-1.5-1.5V11h6v4.5zM15 10H9V8c0-1.7 1.3-3 3-3s3 1.3 3 3v2zM10 7c0-.3-.2-.5-.5-.5s-.5.2-.5.5.2.5.5.5.5-.2.5-.5zM14 7c0-.3.2-.5.5-.5s.5.2.5.5-.2.5-.5.5-.5-.2-.5-.5z"/>
+                </svg>
+              ) },
               { id: 'windows', name: 'Windows (.exe)', icon: <Monitor color="#00a4ef" /> },
               { id: 'ios', name: 'iOS', icon: <Apple color="#000000" /> },
               { id: 'mac', name: 'MacOS', icon: <Apple color="#000000" /> },
@@ -821,15 +826,38 @@ export default function SciCommAdmin() {
                       cursor: 'pointer',
                       fontSize: '13px',
                       fontWeight: 600,
-                      transition: 'all 0.2s'
+                      transition: 'all 0.2s',
+                      position: 'relative',
+                      overflow: 'hidden'
                     }} onMouseOver={e => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={e => e.currentTarget.style.background = 'white'}>
-                      <Upload size={14} /> {current ? 'Replace File' : 'Upload File'}
-                      <input type="file" style={{ display: 'none' }} onChange={async (e) => {
+                      {uploadProgress[platform.id] !== undefined && uploadProgress[platform.id] < 100 && (
+                        <div style={{ 
+                          position: 'absolute', 
+                          top: 0, 
+                          left: 0, 
+                          bottom: 0, 
+                          width: `${uploadProgress[platform.id]}%`, 
+                          background: 'rgba(59, 130, 246, 0.1)', 
+                          zIndex: 0,
+                          transition: 'width 0.3s ease'
+                        }} />
+                      )}
+                      <span style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Upload size={14} /> 
+                        {uploadProgress[platform.id] !== undefined && uploadProgress[platform.id] < 100 
+                          ? `Uploading ${uploadProgress[platform.id]}%` 
+                          : (current ? 'Replace File' : 'Upload File')}
+                      </span>
+                      <input type="file" style={{ display: 'none' }} disabled={uploadProgress[platform.id] < 100} onChange={async (e) => {
                         const file = e.target.files[0];
                         if (!file) return;
-                        flash(`Uploading ${platform.name}...`);
+                        setUploadProgress(prev => ({ ...prev, [platform.id]: 0 }));
+                        flash(`Starting upload for ${platform.name}...`);
                         try {
-                          const url = await uploadFile(file, `downloads/${platform.id}/${file.name}`);
+                          const url = await uploadFile(file, `downloads/${platform.id}/${file.name}`, (pct) => {
+                            setUploadProgress(prev => ({ ...prev, [platform.id]: pct }));
+                          });
+                          
                           if (current) {
                             await db.scicomm_app_downloads.update(current.id, {
                               url,
@@ -844,9 +872,11 @@ export default function SciCommAdmin() {
                               updatedAt: new Date().toISOString()
                             });
                           }
+                          setUploadProgress(prev => ({ ...prev, [platform.id]: 100 }));
                           flash(`${platform.name} updated successfully!`);
                         } catch (err) {
                           console.error(err);
+                          setUploadProgress(prev => ({ ...prev, [platform.id]: undefined }));
                           flash(`Error: ${err.message}`);
                         }
                       }} />
