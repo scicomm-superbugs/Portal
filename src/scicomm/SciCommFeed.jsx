@@ -924,65 +924,45 @@ export default function SciCommFeed() {
         </div>
         <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v3.7.2</button>
         
-        {/* REDESIGNED APP PROMOTION CARD - MATCHING DOWNLOAD PAGE STYLE */}
-        <div className="scicomm-card" style={{ 
-          marginTop: '8px', 
-          padding: '24px', 
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', 
-          border: '1px solid rgba(255,255,255,0.1)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          {/* Subtle background glow */}
-          <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '150px', height: '150px', background: 'rgba(0, 119, 181, 0.15)', filter: 'blur(40px)', borderRadius: '50%', zIndex: 0 }} />
-          
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
-              <div style={{ 
-                background: 'rgba(255,255,255,0.05)', 
-                padding: '12px', 
-                borderRadius: '14px', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.1)'
-              }}>
-                <img src="./android-v2.png" alt="Android" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
-              </div>
-              <div>
-                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#f8fafc' }}>The Portal App</h3>
-                <p style={{ margin: 0, fontSize: '11px', color: '#38bdf8', fontWeight: 700, letterSpacing: '0.05em' }}>v3.7.2 READY</p>
-              </div>
+        {/* REDESIGNED APP PROMOTION CARD */}
+        <div className="scicomm-card" style={{ marginTop: '8px', padding: '20px', background: 'linear-gradient(180deg, #ffffff 0%, #f8faff 100%)', border: '1px solid #cce3ff' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+            <div style={{ background: '#f0f7ff', padding: '10px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Smartphone size={24} color="#0077b5" />
             </div>
-            
-            <p style={{ margin: '0 0 20px', fontSize: '13px', color: '#94a3b8', lineHeight: '1.6' }}>
-              Experience native performance and scientific precision on your mobile device.
-            </p>
-            
-            <Link 
-              to="/download"
-              style={{ 
-                width: '100%', 
-                padding: '14px', 
-                borderRadius: '14px', 
-                border: 'none', 
-                background: 'linear-gradient(135deg, #0077b5 0%, #005a87 100%)', 
-                color: 'white', 
-                fontWeight: 800, 
-                fontSize: '14px', 
-                cursor: 'pointer',
-                boxShadow: '0 4px 15px rgba(0,0,119,0.3)',
-                transition: 'all 0.2s',
-                display: 'block',
-                textDecoration: 'none',
-                textAlign: 'center'
-              }}
-              onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,119,181,0.4)'; }}
-              onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,119,0.3)'; }}
-            >
-              Download App
-            </Link>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#0f172a' }}>The Portal App</h3>
+              <p style={{ margin: 0, fontSize: '11px', color: '#0077b5', fontWeight: 700 }}>v3.7.2 Ready</p>
+            </div>
           </div>
+          
+          <p style={{ margin: '0 0 16px', fontSize: '12px', color: '#475569', lineHeight: '1.5' }}>
+            Experience native performance, real-time updates, and scientific precision on your mobile device.
+          </p>
+          
+          <Link 
+            to="/download"
+            style={{ 
+              width: '100%', 
+              padding: '12px', 
+              borderRadius: '12px', 
+              border: 'none', 
+              background: 'linear-gradient(135deg, #0077b5 0%, #005a87 100%)', 
+              color: 'white', 
+              fontWeight: 800, 
+              fontSize: '13px', 
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(0,119,181,0.2)',
+              transition: 'all 0.2s',
+              display: 'block',
+              textDecoration: 'none',
+              textAlign: 'center'
+            }}
+            onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,119,181,0.3)'; }}
+            onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,119,181,0.2)'; }}
+          >
+            Download App
+          </Link>
         </div>
       </div>
 
