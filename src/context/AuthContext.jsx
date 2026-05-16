@@ -1,10 +1,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { db, getFirebaseAuth } from '../db';
-import { signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import bcrypt from 'bcryptjs';
-
-const isMobile = () => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-const isCapacitor = () => window.Capacitor && window.Capacitor.isNativePlatform();
 
 const AuthContext = createContext(null);
 
@@ -12,95 +9,16 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize Native Google Auth if on Capacitor
-  useEffect(() => {
-    if (isCapacitor()) {
-      import('@codetrix-studio/capacitor-google-auth').then(({ GoogleAuth }) => {
-        GoogleAuth.initialize({
-          clientId: '379599502348-vj7r5v0v6u0p0p0p0p0p.apps.googleusercontent.com', // Placeholder - will try to use config
-          scopes: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file'],
-          grantOfflineAccess: true,
-        }).catch(err => console.log('GoogleAuth Init Error (Safe to ignore in browser):', err));
-      }).catch(() => {});
-    }
-  }, []);
-
-  // Handle Google redirect result and session restoration
   useEffect(() => {
     const initializeAuth = async () => {
       let isTimeout = false;
       const timeoutId = setTimeout(() => {
         isTimeout = true;
+        console.warn('Firebase auth check timed out. Forcing load.');
         setLoading(false);
-      }, 8000); // Longer timeout for mobile redirects
+      }, 5000);
 
       try {
-        const auth = getFirebaseAuth();
-        
-        // Ensure persistence is set to local so it survives the redirect
-        await setPersistence(auth, browserLocalPersistence);
-
-        // 1. Check if we are returning from a Google Redirect
-        const result = await getRedirectResult(auth);
-        
-        if (result) {
-          const credential = GoogleAuthProvider.credentialFromResult(result);
-          const token = credential?.accessToken;
-          const gUser = result.user;
-
-          const pendingLink = localStorage.getItem('pendingGoogleLink');
-          localStorage.removeItem('pendingGoogleLink');
-          const storedUserId = localStorage.getItem('userId');
-
-          if (pendingLink && storedUserId) {
-            // LINK flow
-            const currentUser = await db.scientists.get(String(storedUserId));
-            await db.scientists.update(storedUserId, {
-              email: gUser.email, googleLinked: true, googleLinkedEmail: gUser.email,
-              googleDriveToken: token || null,
-              avatar: currentUser?.avatar || gUser.photoURL
-            });
-            if (currentUser) {
-              setUser({ id: currentUser.id, username: currentUser.username, name: currentUser.name, role: currentUser.role, avatar: currentUser.avatar });
-            }
-          } else {
-            // LOGIN flow
-            let scientist = await db.scientists.where('email').equals(gUser.email).first();
-            if (!scientist) scientist = await db.scientists.where('username').equals(gUser.email).first();
-
-            if (!scientist) {
-              const baseName = gUser.displayName ? gUser.displayName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : 'user';
-              const randomNum = Math.floor(Math.random() * 10000);
-              const newId = await db.scientists.add({
-                username: `${baseName}${randomNum}`,
-                email: gUser.email, name: gUser.displayName, avatar: gUser.photoURL,
-                department: 'Member', employeeId: 'GOOGLE-' + gUser.uid.substring(0, 8),
-                role: 'user', accountStatus: 'pending', googleDriveToken: token || null,
-                createdAt: new Date().toISOString()
-              });
-              scientist = await db.scientists.get(newId);
-            } else {
-              const updateData = { googleDriveToken: token || null, name: scientist.name || gUser.displayName };
-              if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) updateData.avatar = gUser.photoURL;
-              await db.scientists.update(scientist.id, updateData);
-              if (updateData.avatar) scientist.avatar = updateData.avatar;
-            }
-
-            if (scientist.accountStatus === 'pending') {
-              sessionStorage.setItem('googlePendingMsg', 'Your account is pending approval by an administrator.');
-              setLoading(false);
-              return;
-            }
-
-            setUser({ id: scientist.id, username: scientist.username, name: scientist.name, role: scientist.role, avatar: scientist.avatar });
-            localStorage.setItem('userId', scientist.id);
-          }
-          setLoading(false);
-          clearTimeout(timeoutId);
-          return;
-        }
-
-        // 2. No redirect, check local session
         const storedUserId = localStorage.getItem('userId');
         if (storedUserId) {
           const scientist = await db.scientists.get(String(storedUserId));
@@ -183,36 +101,13 @@ export const AuthProvider = ({ children }) => {
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/drive.file');
-    const auth = getFirebaseAuth();
-
+    
     try {
-      let gUser, token;
-
-      // 1. Try Native Google Play Services if on Capacitor (Android/iOS App)
-      if (isCapacitor()) {
-        const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth');
-        const nativeUser = await GoogleAuth.signIn();
-        const { GoogleAuthProvider: GAuthProvider, signInWithCredential } = await import('firebase/auth');
-        const credential = GAuthProvider.credential(nativeUser.authentication.idToken);
-        const result = await signInWithCredential(auth, credential);
-        gUser = result.user;
-        token = nativeUser.authentication.accessToken;
-      } 
-      // 2. Fallback to same-tab redirect for mobile website (to avoid popup issues)
-      else if (isMobile()) {
-        await setPersistence(auth, browserLocalPersistence);
-        await signInWithRedirect(auth, provider);
-        return; 
-      }
-      // 3. Desktop: standard popup
-      else {
-        const result = await signInWithPopup(auth, provider);
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        token = credential?.accessToken;
-        gUser = result.user;
-      }
-
-      if (!gUser) throw new Error('Google Sign-in failed to return user data.');
+      const auth = getFirebaseAuth();
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      const gUser = result.user;
       
       let scientist = await db.scientists.where('email').equals(gUser.email).first();
       
@@ -281,33 +176,13 @@ export const AuthProvider = ({ children }) => {
     if (!user) throw new Error('You must be logged in to link an account.');
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/drive.file');
-    const auth = getFirebaseAuth();
-
     try {
-      let gUser, token;
+      const auth = getFirebaseAuth();
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      const gUser = result.user;
 
-      if (isCapacitor()) {
-        const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth');
-        const nativeUser = await GoogleAuth.signIn();
-        const { GoogleAuthProvider: GAuthProvider, linkWithCredential } = await import('firebase/auth');
-        const credential = GAuthProvider.credential(nativeUser.authentication.idToken);
-        const result = await linkWithCredential(auth.currentUser, credential);
-        gUser = result.user;
-        token = nativeUser.authentication.accessToken;
-      } else if (isMobile()) {
-        localStorage.setItem('pendingGoogleLink', 'true');
-        await setPersistence(auth, browserLocalPersistence);
-        await signInWithRedirect(auth, provider);
-        return;
-      } else {
-        const result = await signInWithPopup(auth, provider);
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        token = credential?.accessToken;
-        gUser = result.user;
-      }
-
-      if (!gUser) throw new Error('Google Sign-in failed to return user data.');
-      
       // Check if this Google account is already linked to ANOTHER user profile
       let existingEmailUser = await db.scientists.where('email').equals(gUser.email).first();
       if (!existingEmailUser) {
