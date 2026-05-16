@@ -185,6 +185,17 @@ export const AuthProvider = ({ children }) => {
       const token = credential?.accessToken;
       const gUser = result.user;
 
+      // Check if this Google account is already linked to ANOTHER user profile
+      let existingEmailUser = await db.scientists.where('email').equals(gUser.email).first();
+      if (!existingEmailUser) {
+        existingEmailUser = await db.scientists.where('username').equals(gUser.email).first();
+      }
+
+      if (existingEmailUser && String(existingEmailUser.id) !== String(user.id)) {
+        // Delete the duplicate auto-generated account before linking
+        await db.scientists.delete(existingEmailUser.id);
+      }
+
       await db.scientists.update(user.id, { 
         email: gUser.email,
         googleDriveToken: token || null,
@@ -201,8 +212,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const changePassword = async (oldPassword, newPassword) => {
+    if (!user) throw new Error('You must be logged in.');
+    
+    // Validate current password
+    const scientist = await db.scientists.get(user.id);
+    if (!scientist) throw new Error('Account not found.');
+    
+    // If it's a new account without a password (Google login), we can just set the new password.
+    if (scientist.passwordHash) {
+      const isMatch = await bcrypt.compare(oldPassword, scientist.passwordHash);
+      if (!isMatch) throw new Error('Incorrect current password.');
+    }
+    
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(newPassword, salt);
+    await db.scientists.update(user.id, { passwordHash: hash });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, loginWithGoogle, linkGoogleAccount, setUser }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, loginWithGoogle, linkGoogleAccount, changePassword, setUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );
