@@ -1057,31 +1057,60 @@ export default function SciCommFeed() {
               </button>
             </div>
 
+            {/* HIGH VISIBILITY PLATFORM CAROUSEL */}
+            <div style={{ 
+              marginBottom: '28px', 
+              padding: '16px 0', 
+              background: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)', 
+              borderRadius: '16px',
+              overflow: 'hidden',
+              position: 'relative'
+            }}>
+              <div style={{ display: 'flex', gap: '50px', animation: 'panoramicIcons 15s linear infinite', width: 'max-content' }}>
+                {[
+                  'https://www.vectorlogo.zone/logos/android/android-icon.svg',
+                  'https://www.vectorlogo.zone/logos/apple/apple-icon.svg',
+                  'https://www.vectorlogo.zone/logos/microsoft/microsoft-icon.svg',
+                  'https://www.vectorlogo.zone/logos/linux/linux-icon.svg',
+                  'https://www.vectorlogo.zone/logos/google_play/google_play-icon.svg'
+                ].concat([
+                  'https://www.vectorlogo.zone/logos/android/android-icon.svg',
+                  'https://www.vectorlogo.zone/logos/apple/apple-icon.svg',
+                  'https://www.vectorlogo.zone/logos/microsoft/microsoft-icon.svg',
+                  'https://www.vectorlogo.zone/logos/linux/linux-icon.svg',
+                  'https://www.vectorlogo.zone/logos/google_play/google_play-icon.svg'
+                ]).map((src, i) => (
+                  <img key={i} src={src} alt="System" style={{ height: '32px', width: '32px', objectFit: 'contain', filter: isDarkMode ? 'drop-shadow(0 0 8px rgba(255,255,255,0.2))' : 'none' }} />
+                ))}
+              </div>
+            </div>
+
             <button style={{ 
               width: '100%', 
-              padding: '18px', 
-              borderRadius: '16px', 
+              padding: '20px', 
+              borderRadius: '18px', 
               border: 'none', 
               background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)', 
               color: 'white', 
               fontWeight: 900, 
-              fontSize: '17px', 
+              fontSize: '18px', 
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '12px',
-              boxShadow: '0 10px 25px rgba(37, 99, 235, 0.4)',
+              boxShadow: '0 12px 30px rgba(37, 99, 235, 0.4)',
               transition: 'all 0.3s ease',
               textTransform: 'uppercase',
               letterSpacing: '1px'
             }}
-            onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = '0 15px 35px rgba(37, 99, 235, 0.5)'; }}
-            onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 99, 235, 0.4)'; }}
+            onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(37, 99, 235, 0.5)'; }}
+            onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(37, 99, 235, 0.4)'; }}
             >
               Download The Portal Application
             </button>
           </div>
+
 
           <style>{`
             @keyframes panoramicIcons {
