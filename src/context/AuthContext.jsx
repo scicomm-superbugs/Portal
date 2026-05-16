@@ -121,7 +121,7 @@ export const AuthProvider = ({ children }) => {
           department: 'Member',
           employeeId: 'GOOGLE-' + gUser.uid.substring(0, 8),
           role: 'user',
-          accountStatus: 'active',
+          accountStatus: 'pending',
           googleDriveToken: token || null,
           createdAt: new Date().toISOString()
         });
