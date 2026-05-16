@@ -9,7 +9,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   
-  const { login, user } = useAuth();
+  const { login, loginWithGoogle, user } = useAuth();
   const navigate = useNavigate();
   const { workspace } = useParams();
 
@@ -39,6 +39,18 @@ export default function Login() {
     setIsLoggingIn(true);
     try {
       await login(username, password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError('');
+    setIsLoggingIn(true);
+    try {
+      await loginWithGoogle();
       navigate('/');
     } catch (err) {
       setError(err.message);
@@ -106,6 +118,39 @@ export default function Login() {
             {isLoggingIn ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div style={{ display: 'flex', alignItems: 'center', margin: '1rem 0' }}>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
+          <span style={{ padding: '0 10px', color: '#94a3b8', fontSize: '12px', fontWeight: 600 }}>OR</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
+        </div>
+
+        <button 
+          onClick={handleGoogleLogin} 
+          disabled={isLoggingIn}
+          style={{ 
+            width: '100%', 
+            padding: '10px', 
+            background: 'white', 
+            border: '1px solid #cbd5e1', 
+            borderRadius: '8px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '10px', 
+            cursor: 'pointer', 
+            fontWeight: 600, 
+            color: '#334155',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+            marginBottom: '1.5rem',
+            transition: 'background 0.2s'
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+          onMouseLeave={e => e.currentTarget.style.background = 'white'}
+        >
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: 18, height: 18 }} />
+          Sign in with Google
+        </button>
         
         <div style={{ textAlign: 'center', fontSize: '0.875rem' }}>
           Don't have an account? <Link to="/register" style={{ fontWeight: 600 }}>Register</Link>

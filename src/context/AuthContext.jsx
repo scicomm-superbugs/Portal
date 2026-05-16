@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import { db } from '../db';
+import { db, auth } from '../db';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import bcrypt from 'bcryptjs';
 
 const AuthContext = createContext(null);
@@ -27,7 +28,8 @@ export const AuthProvider = ({ children }) => {
             id: scientist.id,
             username: scientist.username,
             name: scientist.name,
-            role: scientist.role
+            role: scientist.role,
+            avatar: scientist.avatar
           });
         }
         setLoading(false);
@@ -83,7 +85,8 @@ export const AuthProvider = ({ children }) => {
       id: scientist.id,
       username: scientist.username,
       name: scientist.name,
-      role: scientist.role
+      role: scientist.role,
+      avatar: scientist.avatar
     };
 
     setUser(userData);
@@ -94,10 +97,69 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('userId');
+    localStorage.removeItem('googleDriveToken');
+  };
+
+  const loginWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/drive.file');
+    
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential?.accessToken;
+      const gUser = result.user;
+      
+      let scientist = await db.scientists.where('username').equals(gUser.email).first();
+      
+      if (!scientist) {
+        const newId = await db.scientists.add({
+          username: gUser.email,
+          name: gUser.displayName,
+          avatar: gUser.photoURL,
+          department: 'Member',
+          employeeId: 'GOOGLE-' + gUser.uid.substring(0, 8),
+          role: 'user',
+          accountStatus: 'active',
+          googleDriveToken: token || null,
+          createdAt: new Date().toISOString()
+        });
+        scientist = await db.scientists.get(newId);
+      } else {
+        await db.scientists.update(scientist.id, { 
+          googleDriveToken: token || null,
+          avatar: gUser.photoURL,
+          name: scientist.name || gUser.displayName
+        });
+        scientist.avatar = gUser.photoURL;
+        if (token) scientist.googleDriveToken = token;
+      }
+
+      if (scientist.accountStatus === 'pending') {
+        throw new Error('Your account is pending approval by an administrator.');
+      }
+
+      const userData = {
+        id: scientist.id,
+        username: scientist.username,
+        name: scientist.name,
+        role: scientist.role,
+        avatar: scientist.avatar
+      };
+
+      setUser(userData);
+      localStorage.setItem('userId', scientist.id);
+      if (token) localStorage.setItem('googleDriveToken', token);
+      
+      return userData;
+    } catch (error) {
+      console.error("Google Sign-in Error:", error);
+      throw new Error(error.message || 'Google login failed');
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, loginWithGoogle, logout, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

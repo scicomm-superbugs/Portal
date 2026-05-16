@@ -13,9 +13,12 @@ const firebaseConfig = {
   measurementId: "G-NWEXYL1PQ0"
 };
 
+import { getAuth } from "firebase/auth";
+
 const app = initializeApp(firebaseConfig);
 export const firestore = initializeFirestore(app, {});
 export const storage = getStorage(app);
+export const auth = getAuth(app);
 
 // File size limit removed by user request
 // const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
