@@ -773,7 +773,7 @@ export default function SciCommAdmin() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {[
-              { id: 'android', name: 'Android (.apk)', icon: <img src="./android-icon.png" alt="Android" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /> },
+              { id: 'android', name: 'Android (.apk)', icon: <img src="./android-icon.png" alt="Android" style={{ height: '24px', width: 'auto', display: 'block' }} /> },
               { id: 'windows', name: 'Windows (.exe)', icon: <Monitor color="#00a4ef" /> },
               { id: 'ios', name: 'iOS', icon: <Apple color="#000000" /> },
               { id: 'mac', name: 'MacOS', icon: <Apple color="#000000" /> },
