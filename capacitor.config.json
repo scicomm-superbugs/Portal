@@ -1,16 +1,18 @@
 {
-  "appId": "com.chompchem.app",
-  "appName": "SciComm Hub",
+  "appId": "com.aiu.sciencehub",
+  "appName": "The Portal",
   "webDir": "dist",
   "server": {
-    "url": "https://scicomm-superbugs.github.io/Portal/",
-    "cleartext": true
+    "url": "https://scicomm-superbugs.github.io/Portal/?v=final_fix_2",
+    "cleartext": true,
+    "allowNavigation": [
+      "scicomm-superbugs.github.io",
+      "*.github.io"
+    ]
   },
   "plugins": {
-    "GoogleAuth": {
-      "scopes": ["profile", "email", "https://www.googleapis.com/auth/drive.file"],
-      "serverClientId": "379599502348-vj7r5v0v6u0p0p0p0p0p.apps.googleusercontent.com",
-      "forceCodeForRefreshToken": true
+    "FirebaseAuthentication": {
+      "providers": ["google.com"]
     }
   }
 }
