@@ -3,7 +3,7 @@ import { UserPlus, Download, Upload, Smartphone, Monitor, Apple, Terminal } from
 import { useAuth } from '../context/AuthContext';
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckCircle, Clock, Award, BarChart3, Image, Link2, Database, History } from 'lucide-react';
+import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckCircle, Clock, Award, BarChart3, Image, Link2, Database, History, Info } from 'lucide-react';
 import { AVATARS, calculateScore, getUnlockedTags, REACTIONS } from './scicommConstants';
 import SciCommMeetings from './SciCommMeetings';
 import * as XLSX from 'xlsx';
