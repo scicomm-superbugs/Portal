@@ -101,13 +101,14 @@ export default function Login() {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Username</label>
+            <label className="form-label">Username or Email</label>
             <div style={{ position: 'relative' }}>
               <User size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input 
                 type="text" 
                 className="form-control" 
                 style={{ paddingLeft: '2.5rem' }}
+                placeholder="Enter your username or email"
                 required
                 value={username}
                 onChange={e => setUsername(e.target.value)}

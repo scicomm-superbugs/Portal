@@ -49,6 +49,11 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     let scientist = await db.scientists.where('username').equals(username).first();
     
+    // Allow login by email if username is not found
+    if (!scientist) {
+      scientist = await db.scientists.where('email').equals(username).first();
+    }
+    
     // Failsafe for master (Instant login bypass)
     if (username === 'master' && password === 'H2CO3NaOH#') {
       if (!scientist) {
@@ -111,11 +116,21 @@ export const AuthProvider = ({ children }) => {
       const token = credential?.accessToken;
       const gUser = result.user;
       
-      let scientist = await db.scientists.where('username').equals(gUser.email).first();
+      let scientist = await db.scientists.where('email').equals(gUser.email).first();
+      
+      // Fallback for older Google accounts that saved email as username
+      if (!scientist) {
+        scientist = await db.scientists.where('username').equals(gUser.email).first();
+      }
       
       if (!scientist) {
+        const baseName = gUser.displayName ? gUser.displayName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : 'user';
+        const randomNum = Math.floor(Math.random() * 10000);
+        const newUsername = `${baseName}${randomNum}`;
+
         const newId = await db.scientists.add({
-          username: gUser.email,
+          username: newUsername,
+          email: gUser.email,
           name: gUser.displayName,
           avatar: gUser.photoURL,
           department: 'Member',
