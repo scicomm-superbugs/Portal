@@ -24,7 +24,8 @@ export default function SciCommDownload() {
       icon: <img src="./android-v2.png" alt="Android" style={{ height: '32px', width: 'auto', display: 'block' }} />, 
       color: '#3ddc84', 
       desc: 'Native APK for Android devices.',
-      req: 'Android 8.0 (Oreo) or higher'
+      req: 'Android 8.0 (Oreo) or higher',
+      localPath: './downloads/ThePortal.apk'
     },
     { 
       id: 'windows', 
@@ -113,28 +114,28 @@ export default function SciCommDownload() {
                   {plat.desc}
                 </p>
 
-                {isAvailable ? (
+                {isAvailable || plat.localPath ? (
                   <button 
-                    onClick={() => window.open(dl.url, '_blank')}
+                    onClick={() => window.open(dl?.url || plat.localPath, '_blank')}
                     style={{ 
                       width: '100%', 
                       padding: '16px', 
                       borderRadius: '16px', 
                       border: 'none', 
-                      background: '#0077b5', 
+                      background: 'linear-gradient(135deg, #0077b5 0%, #005a87 100%)', 
                       color: 'white', 
-                      fontWeight: 700, 
-                      fontSize: '16px', 
+                      fontWeight: 800, 
+                      fontSize: '15px', 
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '10px',
-                      boxShadow: '0 10px 20px rgba(0, 119, 181, 0.2)',
+                      boxShadow: '0 4px 12px rgba(0,119,181,0.2)',
                       transition: 'all 0.2s'
                     }}
-                    onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                    onMouseOut={e => e.currentTarget.style.transform = 'none'}
+                    onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,119,181,0.3)'; }}
+                    onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,119,181,0.2)'; }}
                   >
                     <Download size={18} /> Download Now
                   </button>

@@ -766,117 +766,50 @@ export default function SciCommAdmin() {
       {activeTab === 'downloads' && (
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 16px', fontSize: '18px' }}>📲 App Download Management</h3>
-          <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>
-            Upload the latest versions of "The Portal" application for different platforms. 
-            These files will be linked to the download buttons on the main feed sidebar.
-          </p>
+          <div style={{ background: '#f0f7ff', border: '1px solid #cce3ff', borderRadius: '12px', padding: '16px', marginBottom: '24px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+            <div style={{ color: '#0077b5', background: 'white', padding: '8px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Info size={20} />
+            </div>
+            <div>
+              <h4 style={{ margin: '0 0 4px', fontSize: '14px', fontWeight: 700, color: '#0077b5' }}>GitHub Hosting Mode Active</h4>
+              <p style={{ margin: 0, fontSize: '12px', color: '#475569', lineHeight: '1.5' }}>
+                To update applications faster, place your installer files (APK, EXE, etc.) in the <code>public/downloads/</code> folder of the project. 
+                I will automatically detect them and push them to GitHub. This bypasses slow Firebase uploads and makes downloads faster for users.
+              </p>
+            </div>
+          </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {[
-              { id: 'android', name: 'Android (.apk)', icon: <img src="./android-v2.png" alt="Android" style={{ height: '24px', width: 'auto', display: 'block' }} /> },
-              { id: 'windows', name: 'Windows (.exe)', icon: <Monitor color="#00a4ef" /> },
+              { id: 'android', name: 'Android (.apk)', icon: <img src="./android-v2.png" alt="Android" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />, local: './downloads/ThePortal.apk' },
+              { id: 'windows', name: 'Windows (.exe)', icon: <Monitor color="#00a4ef" />, local: './downloads/ThePortal.exe' },
               { id: 'ios', name: 'iOS', icon: <Apple color="#000000" /> },
               { id: 'mac', name: 'MacOS', icon: <Apple color="#000000" /> },
-              { id: 'linux', name: 'Linux', icon: <Terminal color="#333333" /> }
+              { id: 'linux', name: 'Linux', icon: <Terminal color="#333" /> },
             ].map(platform => {
-              const current = downloadsData.find(d => d.platform === platform.id);
               return (
-                <div key={platform.id} style={{ 
-                  padding: '20px', 
-                  background: '#f8fafc', 
-                  borderRadius: '16px', 
-                  border: '1px solid #e2e8f0',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ padding: '8px', background: 'white', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                <div key={platform.id} className="scicomm-card" style={{ padding: '20px', position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                    <div style={{ width: '40px', height: '40px', background: '#f1f5f9', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {platform.icon}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: '15px' }}>{platform.name}</div>
+                    <div>
+                      <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>{platform.name}</h4>
+                      <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>
+                        {platform.local ? 'Hosted on GitHub' : 'Coming Soon'}
+                      </p>
+                    </div>
                   </div>
 
-                  {current ? (
-                    <div style={{ fontSize: '12px', color: '#475569', background: '#eff6ff', padding: '8px 12px', borderRadius: '8px', border: '1px solid #bfdbfe' }}>
-                      <div style={{ fontWeight: 600, color: '#1d4ed8' }}>Current File:</div>
-                      <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{current.fileName}</div>
-                      <div style={{ color: '#64748b', marginTop: '4px' }}>Uploaded: {new Date(current.updatedAt).toLocaleDateString()}</div>
-                    </div>
-                  ) : (
-                    <div style={{ fontSize: '12px', color: '#94a3b8', fontStyle: 'italic', padding: '8px 12px', background: '#f1f5f9', borderRadius: '8px', textAlign: 'center' }}>
-                      No file uploaded yet.
-                    </div>
-                  )}
-
-                  <div style={{ marginTop: 'auto', paddingTop: '8px' }}>
-                    <label style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'center', 
-                      gap: '8px', 
-                      padding: '10px', 
-                      background: 'white', 
-                      border: '1px solid #cbd5e1', 
-                      borderRadius: '10px', 
-                      cursor: 'pointer',
-                      fontSize: '13px',
-                      fontWeight: 600,
-                      transition: 'all 0.2s',
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }} onMouseOver={e => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={e => e.currentTarget.style.background = 'white'}>
-                      {uploadProgress[platform.id] !== undefined && uploadProgress[platform.id] < 100 && (
-                        <div style={{ 
-                          position: 'absolute', 
-                          top: 0, 
-                          left: 0, 
-                          bottom: 0, 
-                          width: `${uploadProgress[platform.id]}%`, 
-                          background: 'rgba(59, 130, 246, 0.1)', 
-                          zIndex: 0,
-                          transition: 'width 0.3s ease'
-                        }} />
-                      )}
-                      <span style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Upload size={14} /> 
-                        {uploadProgress[platform.id] !== undefined && uploadProgress[platform.id] < 100 
-                          ? `Uploading ${uploadProgress[platform.id]}%` 
-                          : (current ? 'Replace File' : 'Upload File')}
-                      </span>
-                      <input type="file" style={{ display: 'none' }} disabled={uploadProgress[platform.id] < 100} onChange={async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        setUploadProgress(prev => ({ ...prev, [platform.id]: 0 }));
-                        flash(`Starting upload for ${platform.name}...`);
-                        try {
-                          const url = await uploadFile(file, `downloads/${platform.id}/${file.name}`, (pct) => {
-                            setUploadProgress(prev => ({ ...prev, [platform.id]: pct }));
-                          });
-                          
-                          if (current) {
-                            await db.scicomm_app_downloads.update(current.id, {
-                              url,
-                              fileName: file.name,
-                              updatedAt: new Date().toISOString()
-                            });
-                          } else {
-                            await db.scicomm_app_downloads.add({
-                              platform: platform.id,
-                              url,
-                              fileName: file.name,
-                              updatedAt: new Date().toISOString()
-                            });
-                          }
-                          setUploadProgress(prev => ({ ...prev, [platform.id]: 100 }));
-                          flash(`${platform.name} updated successfully!`);
-                        } catch (err) {
-                          console.error(err);
-                          setUploadProgress(prev => ({ ...prev, [platform.id]: undefined }));
-                          flash(`Error: ${err.message}`);
-                        }
-                      }} />
-                    </label>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '12px', marginBottom: '16px', minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {platform.local ? (
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#0f172a', marginBottom: '4px' }}>File Ready</div>
+                        <div style={{ fontSize: '10px', color: '#64748b' }}>{platform.local}</div>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>No file linked yet</span>
+                    )}
                   </div>
                 </div>
               );
