@@ -71,7 +71,7 @@ export default function SciCommDownload() {
         >
           <ChevronLeft size={18} /> Back to Portal
         </button>
-        <div style={{ fontSize: '14px', color: '#94a3b8', fontWeight: 500 }}>v3.7.2 Stabilized Build</div>
+        <div style={{ fontSize: '14px', color: '#94a3b8', fontWeight: 500 }}>v5.0.1 Stabilized Build</div>
       </nav>
 
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '80px 40px' }}>
