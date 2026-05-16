@@ -451,7 +451,16 @@ export default function SciCommChat() {
   }, [selectedRoom, allMessages.length]);
 
   return (
-    <div className="scicomm-chat-container" style={{ display: 'flex', height: 'calc(100vh - 70px)', background: '#f8fafc', overflow: 'hidden' }}>
+    <div className="scicomm-chat-container" style={{ 
+      display: 'flex', 
+      height: 'calc(100vh - 100px)', 
+      background: '#f8fafc', 
+      overflow: 'hidden',
+      borderRadius: '16px',
+      border: '1px solid #e2e8f0',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+      marginTop: '2px'
+    }}>
       {/* Sidebar */}
       <div className={`scicomm-chat-sidebar ${mobileSidebarOpen ? 'open' : ''}`} style={{ 
         width: '360px', 
@@ -615,7 +624,7 @@ export default function SciCommChat() {
         {activeRoom ? (
           <>
             {/* Chat Header */}
-            <div className="chat-header" style={{ height: '70px', background: 'white', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIindex: 50 }}>
+            <div className="chat-header" style={{ height: '70px', background: 'white', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIndex: 50 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
                 <button onClick={() => setMobileSidebarOpen(true)} className="chat-show-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', marginLeft: '-8px', flexShrink: 0 }}><ArrowLeft size={24} /></button>
                 {activeRoom.type === 'group' ? (
