@@ -923,79 +923,111 @@ export default function SciCommFeed() {
         </div>
         <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v3.7.2</button>
         
-        {/* DOWNLOAD THE PORTAL APP SECTION */}
+        {/* FUTURISTIC DOWNLOAD THE PORTAL APP SECTION */}
         <div className="scicomm-card" style={{ 
           marginTop: '8px', 
-          background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%)', 
-          padding: '16px', 
-          borderRadius: '16px', 
+          background: 'linear-gradient(165deg, #0f172a 0%, #1e3a8a 100%)', 
+          padding: '20px', 
+          borderRadius: '24px', 
           color: 'white',
-          boxShadow: '0 8px 20px rgba(29, 78, 216, 0.25)',
+          boxShadow: '0 15px 30px rgba(15, 23, 42, 0.4), inset 0 0 0 1px rgba(255,255,255,0.1)',
           overflow: 'hidden',
-          position: 'relative'
+          position: 'relative',
+          border: 'none'
         }}>
-          {/* Decorative background circle */}
-          <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', pointerEvents: 'none' }} />
+          {/* Animated Glow Effect */}
+          <div style={{ position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%', background: 'radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), transparent 50%)', animation: 'float-slow 8s ease-in-out infinite', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: '20px', right: '20px', width: '60px', height: '60px', borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', filter: 'blur(30px)', opacity: 0.4, pointerEvents: 'none' }} />
           
-          <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '20px' }}>📱</span> The Portal App
-          </h3>
-          <p style={{ margin: '0 0 16px', fontSize: '11px', opacity: 0.9, lineHeight: '1.4' }}>
-            Experience the SciComm Hub natively on your favorite devices. Fast, fluid, and always connected.
-          </p>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+              <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px', backdropFilter: 'blur(4px)' }}>
+                <Smartphone size={20} color="#60a5fa" />
+              </div>
+              <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 900, letterSpacing: '-0.02em', background: 'linear-gradient(90deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                THE PORTAL APP
+              </h3>
+            </div>
+            
+            <p style={{ margin: '0 0 18px', fontSize: '12px', opacity: 0.8, lineHeight: '1.5', fontWeight: 500 }}>
+              Unlock the full potential. Experience speed, native notifications, and seamless workflow.
+            </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-            {[
-              { id: 'android', name: 'Android', icon: <Smartphone size={14} />, ext: '.apk' },
-              { id: 'windows', name: 'Windows', icon: <Monitor size={14} />, ext: '.exe' },
-              { id: 'ios', name: 'iOS', icon: <Apple size={14} /> },
-              { id: 'mac', name: 'macOS', icon: <Apple size={14} /> },
-              { id: 'linux', name: 'Linux', icon: <Terminal size={14} /> }
-            ].map((plat, idx) => {
-              const dl = downloadsData.find(d => d.platform === plat.id);
-              const isAndroid = plat.id === 'android';
-              
-              return (
-                <button 
-                  key={plat.id}
-                  onClick={() => {
-                    if (isAndroid && dl?.url) {
-                      window.open(dl.url, '_blank');
-                    } else if (plat.id === 'windows' && dl?.url) {
-                      window.open(dl.url, '_blank');
-                    } else {
-                      setAppComingSoon(plat.name);
-                    }
-                  }}
-                  style={{ 
-                    gridColumn: idx === 0 ? '1 / -1' : 'auto', // Android full width
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    gap: '6px', 
-                    padding: idx === 0 ? '10px' : '8px', 
-                    background: idx === 0 ? 'white' : 'rgba(255,255,255,0.15)', 
-                    color: idx === 0 ? '#1e3a8a' : 'white', 
-                    border: 'none', 
-                    borderRadius: '10px', 
-                    fontSize: '11px', 
-                    fontWeight: 700, 
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    backdropFilter: 'blur(4px)'
-                  }}
-                  onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                  onMouseOut={e => e.currentTarget.style.transform = 'none'}
-                >
-                  {plat.icon} {plat.name} {plat.ext && <span style={{ fontSize: '9px', opacity: 0.7 }}>{plat.ext}</span>}
-                </button>
-              );
-            })}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              {[
+                { id: 'android', name: 'Android', icon: <Smartphone size={16} />, ext: '.apk', main: true },
+                { id: 'windows', name: 'Windows', icon: <Monitor size={14} />, ext: '.exe' },
+                { id: 'ios', name: 'iOS', icon: <Apple size={14} /> },
+                { id: 'mac', name: 'macOS', icon: <Apple size={14} /> },
+                { id: 'linux', name: 'Linux', icon: <Terminal size={14} /> }
+              ].map((plat, idx) => {
+                const dl = downloadsData.find(d => d.platform === plat.id);
+                const isAndroid = plat.id === 'android';
+                const isFull = idx === 0;
+                
+                return (
+                  <button 
+                    key={plat.id}
+                    onClick={() => {
+                      if (isAndroid && dl?.url) {
+                        window.open(dl.url, '_blank');
+                      } else if (plat.id === 'windows' && dl?.url) {
+                        window.open(dl.url, '_blank');
+                      } else {
+                        setAppComingSoon(plat.name);
+                      }
+                    }}
+                    style={{ 
+                      gridColumn: isFull ? '1 / -1' : 'auto',
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      gap: '8px', 
+                      padding: isFull ? '12px' : '10px', 
+                      background: isFull ? 'linear-gradient(135deg, #fff 0%, #e2e8f0 100%)' : 'rgba(255,255,255,0.05)', 
+                      color: isFull ? '#0f172a' : 'white', 
+                      border: isFull ? 'none' : '1px solid rgba(255,255,255,0.1)', 
+                      borderRadius: '14px', 
+                      fontSize: '12px', 
+                      fontWeight: 700, 
+                      cursor: 'pointer',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      backdropFilter: 'blur(10px)',
+                      boxShadow: isFull ? '0 10px 15px -3px rgba(0,0,0,0.1)' : 'none'
+                    }}
+                    onMouseOver={e => {
+                      e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
+                      if (!isFull) e.currentTarget.style.background = 'rgba(255,255,255,0.12)';
+                      if (!isFull) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                    }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.transform = 'none';
+                      if (!isFull) e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                      if (!isFull) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                    }}
+                  >
+                    {plat.icon}
+                    <span>{plat.name}</span>
+                    {plat.ext && <span style={{ fontSize: '9px', opacity: 0.6, marginLeft: '4px' }}>{plat.ext}</span>}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+              <div style={{ width: '6px', height: '6px', background: '#22c55e', borderRadius: '50%', boxShadow: '0 0 10px #22c55e' }} />
+              <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                v3.7.2 Available for Android
+              </span>
+            </div>
           </div>
 
-          <div style={{ marginTop: '12px', fontSize: '9px', textAlign: 'center', opacity: 0.7, fontStyle: 'italic' }}>
-            * Android version is available now!
-          </div>
+          <style>{`
+            @keyframes float-slow {
+              0%, 100% { transform: translate(0, 0); }
+              50% { transform: translate(10px, 15px); }
+            }
+          `}</style>
         </div>
       </div>
 
@@ -1598,38 +1630,76 @@ export default function SciCommFeed() {
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
       `}</style>
 
-      {/* App Coming Soon Modal */}
+      {/* Futuristic App Coming Soon Modal */}
       {appComingSoon && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(10px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(2, 6, 23, 0.7)', backdropFilter: 'blur(16px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', animation: 'fadeIn 0.3s ease' }}>
           <div style={{ 
-            background: 'white', 
-            borderRadius: '24px', 
-            padding: '32px', 
-            maxWidth: '440px', 
+            background: 'linear-gradient(135deg, #ffffff, #f1f5f9)', 
+            borderRadius: '32px', 
+            padding: '40px', 
+            maxWidth: '460px', 
             width: '100%', 
             textAlign: 'center',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.5)',
-            border: '1px solid rgba(226, 232, 240, 0.8)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.5)',
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            animation: 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
           }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)' }} />
+            {/* Background Tech Patterns */}
+            <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '200px', height: '200px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '50%', pointerEvents: 'none' }} />
             
-            <div style={{ width: '80px', height: '80px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-              <Smartphone size={40} color="#3b82f6" />
+            <div style={{ width: '100px', height: '100px', background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)', borderRadius: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', boxShadow: '0 10px 20px rgba(59, 130, 246, 0.1)' }}>
+              <div style={{ position: 'relative' }}>
+                <Smartphone size={48} color="#3b82f6" />
+                <div style={{ position: 'absolute', top: -5, right: -5, width: '20px', height: '20px', background: '#3b82f6', borderRadius: '50%', border: '4px solid white', animation: 'pulse 2s infinite' }} />
+              </div>
             </div>
             
-            <h2 style={{ margin: '0 0 12px', fontSize: '24px', fontWeight: 800, color: '#0f172a' }}>Coming Soon! 🚀</h2>
-            <p style={{ margin: '0 0 24px', fontSize: '15px', color: '#64748b', lineHeight: '1.6' }}>
-              We're currently polishing "The Portal" for <strong>{appComingSoon}</strong>. It will be available very soon!
-              <br /><br />
-              In the meantime, the <strong>Android</strong> version is available for download right now!
+            <h2 style={{ margin: '0 0 12px', fontSize: '28px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.02em' }}>
+              Mission in Progress <span style={{ display: 'inline-block', animation: 'rocket-bounce 1s ease-in-out infinite' }}>🚀</span>
+            </h2>
+            <p style={{ margin: '0 0 32px', fontSize: '16px', color: '#475569', lineHeight: '1.6' }}>
+              We are currently engineering the native experience for <strong>{appComingSoon}</strong>. 
+              Stay tuned for the grand launch!
             </p>
             
-            <button onClick={() => setAppComingSoon(null)} style={{ width: '100%', padding: '14px', borderRadius: '14px', border: 'none', background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', color: 'white', fontWeight: 700, fontSize: '15px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(139,92,246,0.3)', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'none'}>
-              Awesome, I'll check it out!
+            <div style={{ background: '#f8fafc', borderRadius: '20px', padding: '16px', marginBottom: '32px', border: '1px dashed #e2e8f0', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center' }}>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#3b82f6' }}>PRO TIP:</span>
+              <span style={{ fontSize: '14px', color: '#64748b' }}>Android version is ready for duty!</span>
+            </div>
+            
+            <button 
+              onClick={() => setAppComingSoon(null)} 
+              style={{ 
+                width: '100%', 
+                padding: '16px', 
+                borderRadius: '18px', 
+                border: 'none', 
+                background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)', 
+                color: 'white', 
+                fontWeight: 800, 
+                fontSize: '16px', 
+                cursor: 'pointer', 
+                boxShadow: '0 10px 20px rgba(15, 23, 42, 0.2)', 
+                transition: 'all 0.3s ease' 
+              }}
+              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'none'}
+            >
+              Copy That!
             </button>
           </div>
+          <style>{`
+            @keyframes rocket-bounce {
+              0%, 100% { transform: translateY(0); }
+              50% { transform: translateY(-5px); }
+            }
+            @keyframes pulse {
+              0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+              70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+              100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+            }
+          `}</style>
         </div>
       )}
     </div>
