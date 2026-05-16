@@ -1068,22 +1068,30 @@ export default function SciCommFeed() {
                 </div>
               </div>
               <button 
-                onClick={dismissAppAnnouncement}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  dismissAppAnnouncement(e);
+                }}
                 style={{ 
-                  background: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)', 
-                  color: isDarkMode ? '#94a3b8' : '#64748b', 
+                  background: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', 
+                  color: isDarkMode ? '#f8fafc' : '#64748b', 
                   border: 'none', 
-                  padding: '8px', 
-                  borderRadius: '10px', 
+                  padding: '10px', 
+                  borderRadius: '12px', 
                   cursor: 'pointer',
                   transition: 'all 0.2s',
                   position: 'relative',
-                  zIndex: 10
+                  zIndex: 9999,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
-                onMouseOver={e => e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}
-                onMouseOut={e => e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}
+                onMouseOver={e => e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'}
+                onMouseOut={e => e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'}
               >
-                <X size={20} />
+                <X size={22} />
               </button>
             </div>
 
@@ -1162,12 +1170,34 @@ export default function SciCommFeed() {
                 <p style={{ margin: 0, fontSize: '14px', color: '#14532d', lineHeight: '1.4' }}>Your application was approved! You now have full access to workspace options and the leaderboard.</p>
               </div>
             </div>
-            <button onClick={(e) => {
-              e.stopPropagation();
-              if (latestApp) localStorage.setItem('hide_approval_banner_' + user.id + '_' + latestApp.id, 'true');
-              setShowApprovalBanner(false);
-            }} style={{ background: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#166534', transition: 'background 0.2s', flexShrink: 0, position: 'relative', zIndex: 10 }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.8)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.5)'}>
-              <X size={18} />
+            <button 
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (latestApp) localStorage.setItem('hide_approval_banner_' + user.id + '_' + latestApp.id, 'true');
+                setShowApprovalBanner(false);
+              }} 
+              style={{ 
+                background: 'rgba(255,255,255,0.6)', 
+                border: 'none', 
+                borderRadius: '50%', 
+                width: '36px', 
+                height: '36px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                cursor: 'pointer', 
+                color: '#166534', 
+                transition: 'background 0.2s', 
+                flexShrink: 0, 
+                position: 'relative', 
+                zIndex: 9999 
+              }} 
+              onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.9)'} 
+              onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.6)'}
+            >
+              <X size={20} />
             </button>
           </div>
         )}
@@ -1189,12 +1219,34 @@ export default function SciCommFeed() {
                 )}
               </div>
             </div>
-            <button onClick={(e) => {
-              e.stopPropagation();
-              if (latestApp) localStorage.setItem('hide_rejection_banner_' + user.id + '_' + latestApp.id, 'true');
-              setShowRejectionBanner(false);
-            }} style={{ background: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#991b1b', transition: 'background 0.2s', flexShrink: 0, position: 'relative', zIndex: 10 }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.8)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.5)'}>
-              <X size={18} />
+            <button 
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (latestApp) localStorage.setItem('hide_rejection_banner_' + user.id + '_' + latestApp.id, 'true');
+                setShowRejectionBanner(false);
+              }} 
+              style={{ 
+                background: 'rgba(255,255,255,0.6)', 
+                border: 'none', 
+                borderRadius: '50%', 
+                width: '36px', 
+                height: '36px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                cursor: 'pointer', 
+                color: '#991b1b', 
+                transition: 'background 0.2s', 
+                flexShrink: 0, 
+                position: 'relative', 
+                zIndex: 9999 
+              }} 
+              onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.9)'} 
+              onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.6)'}
+            >
+              <X size={20} />
             </button>
           </div>
         )}
