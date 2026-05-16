@@ -969,7 +969,7 @@ export default function SciCommFeed() {
           </div>
           
           <p style={{ margin: '0 0 20px', fontSize: '12px', color: isDarkMode ? '#94a3b8' : '#64748b', lineHeight: '1.6', fontWeight: 500, position: 'relative', zIndex: 1 }}>
-            Experience native performance and scientific precision on your mobile device.
+            Experience the future of scientific communication with our native application. Designed for speed, security, and seamless workflow integration.
           </p>
           
           <Link 
@@ -1063,7 +1063,7 @@ export default function SciCommFeed() {
                     The Portal is Mobile 🚀
                   </h2>
                   <p style={{ margin: 0, fontSize: '15px', color: isDarkMode ? '#94a3b8' : '#64748b', fontWeight: 500 }}>
-                    Scientific precision, now in your pocket.
+                    Experience the future of scientific communication with our native application. Designed for speed, security, and seamless workflow integration.
                   </p>
                 </div>
               </div>
