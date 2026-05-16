@@ -923,90 +923,37 @@ export default function SciCommFeed() {
         </div>
         <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v3.7.2</button>
         
-        {/* ULTRA-MODERN APP DOWNLOAD SECTION - THEME CONSISTENT */}
-        <div className="scicomm-card" style={{ marginTop: '8px', padding: '24px', position: 'relative', overflow: 'hidden' }}>
-          {/* Subtle Background Accent */}
-          <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '120px', height: '120px', background: 'radial-gradient(circle, #eff6ff 0%, transparent 70%)', pointerEvents: 'none' }} />
+        {/* SINGLE ATTRACTIVE DOWNLOAD LINK */}
+        <div className="scicomm-card" style={{ marginTop: '8px', padding: '20px', background: 'linear-gradient(135deg, #0077b5 0%, #005a87 100%)', color: 'white', borderRadius: '16px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '-10px', right: '-10px', width: '60px', height: '60px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%' }} />
           
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ padding: '8px', background: '#f0f7ff', borderRadius: '12px' }}>
-                  <Smartphone size={18} color="#0077b5" />
-                </div>
-                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: '#0f172a' }}>Mobile Application</h3>
-              </div>
-              <span style={{ fontSize: '10px', fontWeight: 700, background: '#dcfce7', color: '#15803d', padding: '3px 8px', borderRadius: '20px', letterSpacing: '0.02em' }}>LIVE</span>
-            </div>
-
-            <p style={{ margin: '0 0 24px', fontSize: '13px', color: '#64748b', lineHeight: '1.6' }}>
-              Access your scientific workspace anywhere. Stay connected with real-time updates and native features.
+            <h3 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Smartphone size={20} /> The Portal App
+            </h3>
+            <p style={{ margin: '0 0 16px', fontSize: '12px', opacity: 0.9, lineHeight: '1.4' }}>
+              Native performance. Real-time updates. Scientific precision.
             </p>
-
-            {/* Platform Options */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {[
-                { id: 'android', name: 'Android', icon: <Smartphone size={16} />, sub: 'v3.7.2 • APK Build', active: true },
-                { id: 'ios', name: 'iOS App Store', icon: <Apple size={16} />, sub: 'Coming Soon' },
-                { id: 'windows', name: 'Windows Desktop', icon: <Monitor size={16} />, sub: 'Coming Soon' },
-              ].map((plat) => {
-                const dl = downloadsData.find(d => d.platform === plat.id);
-                const isAvailable = dl?.url || plat.active;
-                
-                return (
-                  <button 
-                    key={plat.id}
-                    onClick={() => (dl?.url) ? window.open(dl.url, '_blank') : setAppComingSoon(plat.name)}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'space-between',
-                      padding: '12px 16px', 
-                      background: plat.active ? '#0077b5' : '#f8fafc', 
-                      border: plat.active ? 'none' : '1px solid #e2e8f0', 
-                      borderRadius: '16px', 
-                      cursor: 'pointer',
-                      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                      textAlign: 'left'
-                    }}
-                    onMouseOver={e => {
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      if (plat.active) e.currentTarget.style.background = '#006699';
-                      else {
-                        e.currentTarget.style.background = 'white';
-                        e.currentTarget.style.borderColor = '#cbd5e1';
-                      }
-                    }}
-                    onMouseOut={e => {
-                      e.currentTarget.style.transform = 'none';
-                      if (plat.active) e.currentTarget.style.background = '#0077b5';
-                      else {
-                        e.currentTarget.style.background = '#f8fafc';
-                        e.currentTarget.style.borderColor = '#e2e8f0';
-                      }
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ color: plat.active ? 'white' : '#64748b' }}>{plat.icon}</div>
-                      <div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: plat.active ? 'white' : '#1e293b' }}>{plat.name}</div>
-                        <div style={{ fontSize: '11px', color: plat.active ? 'rgba(255,255,255,0.8)' : '#94a3b8' }}>{plat.sub}</div>
-                      </div>
-                    </div>
-                    {plat.active && <ChevronRight size={14} color="white" />}
-                  </button>
-                );
-              })}
-            </div>
-            
-            <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'center', gap: '16px' }}>
-              <button onClick={() => setAppComingSoon('macOS')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = '#1e293b'} onMouseOut={e => e.currentTarget.style.color = '#94a3b8'} title="macOS">
-                <Apple size={16} />
-              </button>
-              <button onClick={() => setAppComingSoon('Linux')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = '#1e293b'} onMouseOut={e => e.currentTarget.style.color = '#94a3b8'} title="Linux">
-                <Terminal size={16} />
-              </button>
-            </div>
+            <button 
+              onClick={() => navigate('/download')}
+              style={{ 
+                width: '100%', 
+                padding: '12px', 
+                borderRadius: '12px', 
+                border: 'none', 
+                background: 'white', 
+                color: '#0077b5', 
+                fontWeight: 800, 
+                fontSize: '13px', 
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'none'}
+            >
+              Get The App
+            </button>
           </div>
         </div>
       </div>
