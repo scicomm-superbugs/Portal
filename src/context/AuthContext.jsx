@@ -165,7 +165,7 @@ export const AuthProvider = ({ children }) => {
 
       setUser(userData);
       localStorage.setItem('userId', scientist.id);
-      if (token) localStorage.setItem('googleDriveToken', token);
+      // Token is stored in Firestore on the scientist record, no need for localStorage
       
       return userData;
     } catch (error) {
@@ -205,7 +205,7 @@ export const AuthProvider = ({ children }) => {
       });
       
       const updatedData = { ...user, email: gUser.email };
-      if (token) localStorage.setItem('googleDriveToken', token);
+      // Token is stored in Firestore on the scientist record, no need for localStorage
       setUser(updatedData);
       return updatedData;
     } catch (error) {
