@@ -167,6 +167,18 @@ export default function SciCommLayout() {
   };
 
   const PLATFORM_VERSION = 'v3.7.3';
+  
+  // One-time notification for the new mobile app
+  useEffect(() => {
+    const hasSeenAppNotif = localStorage.getItem('scicomm_app_notif_seen');
+    if (!hasSeenAppNotif && user) {
+      setTimeout(() => {
+        sendPushNotif("The Portal is now on Mobile! 🚀", "Download our new native application for the best scientific communication experience.");
+        localStorage.setItem('scicomm_app_notif_seen', 'true');
+      }, 5000);
+    }
+  }, [user]);
+
   const [showChangelog, setShowChangelog] = useState(() => {
     const seen = localStorage.getItem('scicomm_version_seen');
     return seen !== PLATFORM_VERSION;

@@ -90,17 +90,17 @@ export default function SciCommDownload() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 350px), 1fr))', gap: '24px' }}>
           {platforms.map(plat => {
             const dl = downloadsData.find(d => d.platform === plat.id);
             const isAvailable = !!dl?.url;
             
             return (
               <div key={plat.id} style={{ 
-                padding: '40px', 
+                padding: '32px 24px', 
                 background: isAvailable ? '#f0f7ff' : '#ffffff', 
                 border: isAvailable ? '1px solid #0077b5' : '1px solid #e2e8f0',
-                borderRadius: '32px',
+                borderRadius: '24px',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 display: 'flex',
                 flexDirection: 'column'
@@ -154,7 +154,7 @@ export default function SciCommDownload() {
                   </div>
                 )}
 
-                <div style={{ marginTop: '40px', paddingTop: '24px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                <div style={{ marginTop: 'auto', paddingTop: '24px', borderTop: '1px solid rgba(0,0,0,0.05)', marginTop: '32px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
                     <Info size={14} /> Minimum Requirements
                   </div>
@@ -168,9 +168,17 @@ export default function SciCommDownload() {
         </div>
       </main>
 
-      <footer style={{ padding: '80px 40px', textAlign: 'center', color: '#94a3b8', fontSize: '14px', borderTop: '1px solid #f1f5f9' }}>
+      <footer style={{ padding: '60px 20px', textAlign: 'center', color: '#94a3b8', fontSize: '14px', borderTop: '1px solid #f1f5f9' }}>
         © 2026 The Portal Scientific Communication Platform. All rights reserved.
       </footer>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .scicomm-download-hero { padding: 60px 20px !important; text-align: center !important; flex-direction: column !important; }
+          .scicomm-download-hero h1 { font-size: 32px !important; }
+          .scicomm-download-hero p { font-size: 16px !important; }
+        }
+      `}</style>
     </div>
   );
 }

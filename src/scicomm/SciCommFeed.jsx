@@ -968,6 +968,55 @@ export default function SciCommFeed() {
 
       {/* Main Feed */}
       <div className="scicomm-feed-main">
+        {/* GLOBAL APP ANNOUNCEMENT BANNER */}
+        <div 
+          onClick={() => navigate('/download')}
+          style={{ 
+            background: 'linear-gradient(135deg, #0077b5 0%, #005a87 100%)', 
+            borderRadius: '16px', 
+            padding: '24px', 
+            marginBottom: '24px', 
+            color: 'white', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            cursor: 'pointer',
+            boxShadow: '0 8px 30px rgba(0, 119, 181, 0.2)',
+            position: 'relative',
+            overflow: 'hidden',
+            transition: 'transform 0.2s'
+          }}
+          onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseOut={e => e.currentTarget.style.transform = 'none'}
+        >
+          <div style={{ position: 'absolute', right: '-20px', top: '-20px', opacity: 0.1 }}>
+            <Smartphone size={120} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', position: 'relative', zIndex: 1 }}>
+            <div style={{ background: 'rgba(255,255,255,0.2)', padding: '12px', borderRadius: '12px' }}>
+              <img src="./android-v2.png" alt="Android" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+            </div>
+            <div>
+              <h2 style={{ margin: '0 0 4px', fontSize: '20px', fontWeight: 800 }}>The Portal is now a Mobile Application! 🚀</h2>
+              <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>Download now to experience The Portal anywhere, anytime.</p>
+            </div>
+          </div>
+          <button style={{ 
+            background: 'white', 
+            color: '#0077b5', 
+            border: 'none', 
+            padding: '12px 24px', 
+            borderRadius: '12px', 
+            fontWeight: 800, 
+            fontSize: '14px', 
+            cursor: 'pointer',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+            zIndex: 1
+          }}>
+            Download App
+          </button>
+        </div>
+
         {/* Approved Application Banner */}
         {showApprovalBanner && (
           <div style={{ background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)', border: '1px solid #86efac', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}>
