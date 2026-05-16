@@ -20,8 +20,8 @@ export default function SciCommDownload() {
   const platforms = [
     { 
       id: 'android', 
-      name: 'Android', 
-      icon: <img src="/android-icon.png" alt="Android" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />, 
+      name: 'Android (.apk)', 
+      icon: <img src="./android-icon.png" alt="Android" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />, 
       color: '#3ddc84', 
       desc: 'Native APK for Android devices.',
       req: 'Android 8.0 (Oreo) or higher'
