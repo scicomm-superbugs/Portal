@@ -453,8 +453,8 @@ export default function SciCommLayout() {
               <div style={{ background: '#dcfce7', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 8px', color: '#166534', fontSize: '14px', fontWeight: 800 }}>🌍 Platform Expansion</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.6' }}>
-                  <li><strong>Android:</strong> Alpha Version now available for installation!</li>
-                  <li><strong>Dark Mode:</strong> Redesigned Alpha features for enhanced nighttime use.</li>
+                  <li><strong>Android:</strong> Application now available for installation (Under Development).</li>
+                  <li><strong>Dark Mode:</strong> Redesigned features for enhanced nighttime use (Under Development).</li>
                   <li><strong>Infrastructure:</strong> Added dedicated Download and Settings pages.</li>
                   <li><strong>Security:</strong> Critical stability patches and system bug fixes.</li>
                 </ul>
