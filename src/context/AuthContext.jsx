@@ -1,7 +1,9 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { db, getFirebaseAuth } from '../db';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from 'firebase/auth';
 import bcrypt from 'bcryptjs';
+
+const isMedian = () => navigator.userAgent.toLowerCase().includes('gonative');
 
 const AuthContext = createContext(null);
 
@@ -16,9 +18,72 @@ export const AuthProvider = ({ children }) => {
         isTimeout = true;
         console.warn('Firebase auth check timed out. Forcing load.');
         setLoading(false);
-      }, 5000);
+      }, 7000); // Slightly longer timeout for Median redirect processing
 
       try {
+        const auth = getFirebaseAuth();
+        
+        // 1. Check for Google Redirect Result (Required for Median.co app flow)
+        const result = await getRedirectResult(auth);
+        
+        if (result) {
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential?.accessToken;
+          const gUser = result.user;
+
+          const pendingLink = localStorage.getItem('pendingGoogleLink');
+          localStorage.removeItem('pendingGoogleLink');
+          const storedUserId = localStorage.getItem('userId');
+
+          if (pendingLink && storedUserId) {
+            // LINK flow
+            const currentUser = await db.scientists.get(String(storedUserId));
+            await db.scientists.update(storedUserId, {
+              email: gUser.email, googleLinked: true, googleLinkedEmail: gUser.email,
+              googleDriveToken: token || null,
+              avatar: currentUser?.avatar || gUser.photoURL
+            });
+            if (currentUser) {
+              setUser({ id: currentUser.id, username: currentUser.username, name: currentUser.name, role: currentUser.role, avatar: currentUser.avatar });
+            }
+          } else {
+            // LOGIN flow
+            let scientist = await db.scientists.where('email').equals(gUser.email).first();
+            if (!scientist) scientist = await db.scientists.where('username').equals(gUser.email).first();
+
+            if (!scientist) {
+              const baseName = gUser.displayName ? gUser.displayName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : 'user';
+              const randomNum = Math.floor(Math.random() * 10000);
+              const newId = await db.scientists.add({
+                username: `${baseName}${randomNum}`,
+                email: gUser.email, name: gUser.displayName, avatar: gUser.photoURL,
+                department: 'Member', employeeId: 'GOOGLE-' + gUser.uid.substring(0, 8),
+                role: 'user', accountStatus: 'pending', googleDriveToken: token || null,
+                createdAt: new Date().toISOString()
+              });
+              scientist = await db.scientists.get(newId);
+            } else {
+              const updateData = { googleDriveToken: token || null, name: scientist.name || gUser.displayName };
+              if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) updateData.avatar = gUser.photoURL;
+              await db.scientists.update(scientist.id, updateData);
+              if (updateData.avatar) scientist.avatar = updateData.avatar;
+            }
+
+            if (scientist.accountStatus === 'pending') {
+              sessionStorage.setItem('googlePendingMsg', 'Your account is pending approval by an administrator.');
+              setLoading(false);
+              return;
+            }
+
+            setUser({ id: scientist.id, username: scientist.username, name: scientist.name, role: scientist.role, avatar: scientist.avatar });
+            localStorage.setItem('userId', scientist.id);
+          }
+          setLoading(false);
+          clearTimeout(timeoutId);
+          return;
+        }
+
+        // 2. No redirect, check local session
         const storedUserId = localStorage.getItem('userId');
         if (storedUserId) {
           const scientist = await db.scientists.get(String(storedUserId));
@@ -98,12 +163,18 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('googleDriveToken');
   };
 
-  const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/drive.file');
     
     try {
       const auth = getFirebaseAuth();
+      
+      // Special handling for Median.co (GoNative) app wrapper
+      if (isMedian()) {
+        await signInWithRedirect(auth, provider);
+        return; // Redirect flow - result handled in initializeAuth
+      }
+
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken;
@@ -172,12 +243,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const linkGoogleAccount = async () => {
     if (!user) throw new Error('You must be logged in to link an account.');
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/drive.file');
     try {
       const auth = getFirebaseAuth();
+
+      // Special handling for Median.co (GoNative) app wrapper
+      if (isMedian()) {
+        localStorage.setItem('pendingGoogleLink', 'true');
+        await signInWithRedirect(auth, provider);
+        return; // Redirect flow - result handled in initializeAuth
+      }
+
       const result = await signInWithPopup(auth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken;
