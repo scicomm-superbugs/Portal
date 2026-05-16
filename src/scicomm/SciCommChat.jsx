@@ -459,7 +459,9 @@ export default function SciCommChat() {
       borderRadius: '16px',
       border: '1px solid #e2e8f0',
       boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-      marginTop: '2px'
+      marginTop: '2px',
+      position: 'relative',
+      width: '100%'
     }}>
       {/* Sidebar */}
       <div className={`scicomm-chat-sidebar ${mobileSidebarOpen ? 'open' : ''}`} style={{ 
@@ -620,7 +622,15 @@ export default function SciCommChat() {
       </div>
 
       {/* Main Chat Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <div className="scicomm-chat-main" style={{ 
+        flex: 1, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        position: 'relative', 
+        width: '100%',
+        minWidth: 0,
+        overflow: 'hidden'
+      }}>
         {activeRoom ? (
           <>
             {/* Chat Header */}
