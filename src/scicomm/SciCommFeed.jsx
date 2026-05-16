@@ -125,21 +125,37 @@ export default function SciCommFeed() {
 
   const [showApprovalBanner, setShowApprovalBanner] = useState(false);
   const [showRejectionBanner, setShowRejectionBanner] = useState(false);
+  const [dismissedInSession, setDismissedInSession] = useState(new Set());
 
   useEffect(() => {
-    if (isApproved && !localStorage.getItem('hide_approval_banner_' + user.id + '_' + latestApp.id)) {
+    if (!latestApp) {
+      setShowApprovalBanner(false);
+      setShowRejectionBanner(false);
+      return;
+    }
+    const approvalKey = `hide_approval_banner_${user.id}_${latestApp.id}`;
+    const rejectionKey = `hide_rejection_banner_${user.id}_${latestApp.id}`;
+
+    if (isApproved && !localStorage.getItem(approvalKey) && !dismissedInSession.has(approvalKey)) {
       setShowApprovalBanner(true);
       setShowRejectionBanner(false);
-    } else if (isRejected && !localStorage.getItem('hide_rejection_banner_' + user.id + '_' + latestApp.id)) {
+    } else if (isRejected && !localStorage.getItem(rejectionKey) && !dismissedInSession.has(rejectionKey)) {
       setShowRejectionBanner(true);
       setShowApprovalBanner(false);
+    } else {
+      setShowApprovalBanner(false);
+      setShowRejectionBanner(false);
     }
-  }, [isApproved, isRejected, user.id, latestApp]);
+  }, [isApproved, isRejected, user.id, latestApp, dismissedInSession]);
 
   const [showAppAnnouncement, setShowAppAnnouncement] = useState(() => localStorage.getItem('scicomm_app_announcement_hidden') !== 'true');
   const isDarkMode = localStorage.getItem('scicommDarkMode') === 'true';
+
   const dismissAppAnnouncement = (e) => {
-    e.stopPropagation();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     localStorage.setItem('scicomm_app_announcement_hidden', 'true');
     setShowAppAnnouncement(false);
   };
@@ -933,73 +949,80 @@ export default function SciCommFeed() {
         <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v3.7.2</button>
         
         {/* PREMIUM SIDEBAR APP PROMOTION CARD */}
-        <div 
-          className="scicomm-card" 
-          style={{ 
-            marginTop: '8px', 
-            padding: '24px 20px', 
-            background: isDarkMode ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)', 
-            border: `1px solid ${isDarkMode ? '#334155' : '#e2e8f0'}`,
-            borderRadius: '20px',
-            position: 'relative',
-            overflow: 'hidden'
-          }}
-        >
-          {/* Subtle Background Icon */}
-          <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.05, transform: 'rotate(15deg)', pointerEvents: 'none' }}>
-            <Smartphone size={80} color={isDarkMode ? 'white' : 'black'} />
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '18px', position: 'relative', zIndex: 1 }}>
-            <div style={{ 
-              background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
-              padding: '10px', 
-              borderRadius: '12px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-            }}>
-              <Smartphone size={22} color="white" />
-            </div>
-            <div>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: isDarkMode ? '#f8fafc' : '#0f172a', letterSpacing: '-0.3px' }}>The Portal App</h3>
-              <p style={{ margin: 0, fontSize: '11px', color: isDarkMode ? '#3b82f6' : '#2563eb', fontWeight: 800 }}>v3.7.2 READY</p>
-            </div>
-          </div>
-          
-          <p style={{ margin: '0 0 20px', fontSize: '12px', color: isDarkMode ? '#94a3b8' : '#64748b', lineHeight: '1.6', fontWeight: 500, position: 'relative', zIndex: 1 }}>
-            Experience the future of scientific communication with our native application. Designed for speed, security, and seamless workflow integration.
-          </p>
-          
-          <Link 
-            to="/download"
-            style={{ 
-              width: '100%', 
-              padding: '14px', 
-              borderRadius: '14px', 
-              border: 'none', 
-              background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)', 
-              color: 'white', 
-              fontWeight: 900, 
-              fontSize: '13px', 
-              cursor: 'pointer',
-              boxShadow: '0 8px 20px rgba(37, 99, 235, 0.3)',
-              transition: 'all 0.3s ease',
-              display: 'block',
-              textDecoration: 'none',
-              textAlign: 'center',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              position: 'relative',
-              zIndex: 1
+        {showAppAnnouncement && (
+          <div 
+            className="scicomm-card" 
+            onClick={() => {
+              localStorage.setItem('scicomm_app_announcement_hidden', 'true');
+              setShowAppAnnouncement(false);
+              navigate('/download');
             }}
-            onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 99, 235, 0.4)'; }}
-            onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(37, 99, 235, 0.3)'; }}
+            style={{ 
+              marginTop: '8px', 
+              padding: '24px 20px', 
+              background: isDarkMode ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)', 
+              border: `1px solid ${isDarkMode ? '#334155' : '#e2e8f0'}`,
+              borderRadius: '20px',
+              position: 'relative',
+              overflow: 'hidden',
+              cursor: 'pointer'
+            }}
           >
-            Download App
-          </Link>
-        </div>
+            {/* Subtle Background Icon */}
+            <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.05, transform: 'rotate(15deg)', pointerEvents: 'none' }}>
+              <Smartphone size={80} color={isDarkMode ? 'white' : 'black'} />
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '18px', position: 'relative', zIndex: 1 }}>
+              <div style={{ 
+                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
+                padding: '10px', 
+                borderRadius: '12px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+              }}>
+                <Smartphone size={22} color="white" />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: isDarkMode ? '#f8fafc' : '#0f172a', letterSpacing: '-0.3px' }}>The Portal App</h3>
+                <p style={{ margin: 0, fontSize: '11px', color: isDarkMode ? '#3b82f6' : '#2563eb', fontWeight: 800 }}>v3.7.2 READY</p>
+              </div>
+            </div>
+            
+            <p style={{ margin: '0 0 20px', fontSize: '12px', color: isDarkMode ? '#94a3b8' : '#64748b', lineHeight: '1.6', fontWeight: 500, position: 'relative', zIndex: 1 }}>
+              Experience the future of scientific communication with our native application. Designed for speed, security, and seamless workflow integration.
+            </p>
+            
+            <div
+              style={{ 
+                width: '100%', 
+                padding: '14px', 
+                borderRadius: '14px', 
+                border: 'none', 
+                background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)', 
+                color: 'white', 
+                fontWeight: 900, 
+                fontSize: '13px', 
+                cursor: 'pointer',
+                boxShadow: '0 8px 20px rgba(37, 99, 235, 0.3)',
+                transition: 'all 0.3s ease',
+                display: 'block',
+                textDecoration: 'none',
+                textAlign: 'center',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                position: 'relative',
+                zIndex: 1
+              }}
+              onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 99, 235, 0.4)'; }}
+              onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(37, 99, 235, 0.3)'; }}
+            >
+              Download App
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main Feed */}
@@ -1167,7 +1190,9 @@ export default function SciCommFeed() {
           <div 
             onClick={() => {
               if (latestApp) {
-                localStorage.setItem('hide_approval_banner_' + user.id + '_' + latestApp.id, 'true');
+                const key = `hide_approval_banner_${user.id}_${latestApp.id}`;
+                localStorage.setItem(key, 'true');
+                setDismissedInSession(prev => new Set([...prev, key]));
                 setShowApprovalBanner(false);
               }
             }}
@@ -1187,8 +1212,12 @@ export default function SciCommFeed() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                if (latestApp) localStorage.setItem('hide_approval_banner_' + user.id + '_' + latestApp.id, 'true');
-                setShowApprovalBanner(false);
+                if (latestApp) {
+                  const key = `hide_approval_banner_${user.id}_${latestApp.id}`;
+                  localStorage.setItem(key, 'true');
+                  setDismissedInSession(prev => new Set([...prev, key]));
+                  setShowApprovalBanner(false);
+                }
               }} 
               style={{ 
                 background: 'rgba(255,255,255,0.6)', 
@@ -1219,7 +1248,9 @@ export default function SciCommFeed() {
           <div 
             onClick={() => {
               if (latestApp) {
-                localStorage.setItem('hide_rejection_banner_' + user.id + '_' + latestApp.id, 'true');
+                const key = `hide_rejection_banner_${user.id}_${latestApp.id}`;
+                localStorage.setItem(key, 'true');
+                setDismissedInSession(prev => new Set([...prev, key]));
                 setShowRejectionBanner(false);
               }
             }}
@@ -1244,8 +1275,12 @@ export default function SciCommFeed() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                if (latestApp) localStorage.setItem('hide_rejection_banner_' + user.id + '_' + latestApp.id, 'true');
-                setShowRejectionBanner(false);
+                if (latestApp) {
+                  const key = `hide_rejection_banner_${user.id}_${latestApp.id}`;
+                  localStorage.setItem(key, 'true');
+                  setDismissedInSession(prev => new Set([...prev, key]));
+                  setShowRejectionBanner(false);
+                }
               }} 
               style={{ 
                 background: 'rgba(255,255,255,0.6)', 
