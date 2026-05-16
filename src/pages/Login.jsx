@@ -53,8 +53,12 @@ export default function Login() {
       await loginWithGoogle();
       navigate('/');
     } catch (err) {
-      if (err.message.includes('auth/api-key-not-valid') || err.message.includes('auth/operation-not-allowed') || err.message.includes('API key not valid')) {
-        setError("Firebase Setup Required: Please enable 'Google Sign-In' in your Firebase Authentication settings, and ensure your API Key is not restricted from accessing the Identity Toolkit API.");
+      if (err.message.includes('auth/operation-not-allowed')) {
+        setError("Firebase Error: Google Sign-In is currently disabled in your Firebase Authentication settings. You must enable it in the Firebase Console.");
+      } else if (err.message.includes('auth/api-key-not-valid') || err.message.includes('API key not valid')) {
+        setError("Firebase Error: The API Key is restricted or invalid. If you just created it, please wait 5 minutes for Google Cloud to propagate the new key.");
+      } else if (err.message.includes('auth/unauthorized-domain')) {
+        setError(`Firebase Error: The domain '${window.location.hostname}' is not authorized. Please go to Firebase Console -> Authentication -> Settings -> Authorized domains and add it.`);
       } else {
         setError(err.message);
       }
