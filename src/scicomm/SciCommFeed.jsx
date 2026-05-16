@@ -987,7 +987,7 @@ export default function SciCommFeed() {
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: isDarkMode ? '#f8fafc' : '#0f172a', letterSpacing: '-0.3px' }}>The Portal App</h3>
-                <p style={{ margin: 0, fontSize: '11px', color: isDarkMode ? '#3b82f6' : '#2563eb', fontWeight: 800 }}>v5.0.1 (STABLE)</p>
+                <p style={{ margin: 0, fontSize: '11px', color: isDarkMode ? '#3b82f6' : '#2563eb', fontWeight: 800 }}>v5.0.1 (BETA EARLY ACCESS)</p>
               </div>
             </div>
             
