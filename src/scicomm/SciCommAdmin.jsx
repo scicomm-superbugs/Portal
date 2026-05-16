@@ -773,17 +773,7 @@ export default function SciCommAdmin() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {[
-              { id: 'android', name: 'Android (.apk)', icon: (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#3ddc84" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M17.5 8C18.3284 8 19 8.67157 19 9.5V14.5C19 15.3284 18.3284 16 17.5 16C16.6716 16 16 15.3284 16 14.5V9.5C16 8.67157 16.6716 8 17.5 8Z" />
-                  <path d="M6.5 8C7.32843 8 8 8.67157 8 9.5V14.5C8 15.3284 7.32843 16 6.5 16C5.67157 16 5 15.3284 5 14.5V9.5C5 8.67157 5.67157 8 6.5 8Z" />
-                  <path d="M15 15.5C15 16.3284 14.3284 17 13.5 17H10.5C9.67157 17 9 16.3284 9 15.5V11H15V15.5Z" />
-                  <path d="M15 10H9V8C9 6.34315 10.3431 5 12 5C13.6569 5 15 6.34315 15 8V10Z" />
-                  <path d="M10 7.5C10 7.77614 9.77614 8 9.5 8C9.22386 8 9 7.77614 9 7.5C9 7.22386 9.22386 7 9.5 7C9.77614 7 10 7.22386 10 7.5Z" />
-                  <path d="M14 7.5C14 7.77614 13.7761 8 13.5 8C13.2239 8 13 7.77614 13 7.5C13 7.22386 13.2239 7 13.5 7C13.7761 7 14 7.22386 14 7.5Z" />
-                  <path d="M12 5V3M12 3L10 2M12 3L14 2" stroke="#3ddc84" strokeWidth="1" strokeLinecap="round"/>
-                </svg>
-              ) },
+              { id: 'android', name: 'Android (.apk)', icon: <img src="/android-icon.png" alt="Android" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /> },
               { id: 'windows', name: 'Windows (.exe)', icon: <Monitor color="#00a4ef" /> },
               { id: 'ios', name: 'iOS', icon: <Apple color="#000000" /> },
               { id: 'mac', name: 'MacOS', icon: <Apple color="#000000" /> },
