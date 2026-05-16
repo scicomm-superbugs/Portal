@@ -176,6 +176,7 @@ export const uploadFile = async (file, path, onProgress) => {
 };
 
 export const getCollectionName = (baseName) => {
+  if (baseName === 'scicomm_app_downloads') return baseName;
   const ws = localStorage.getItem('workspaceId');
   if (!ws || ws === 'compchem') return baseName;
   return `${ws}_${baseName}`;
