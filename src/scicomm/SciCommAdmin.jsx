@@ -768,7 +768,7 @@ export default function SciCommAdmin() {
           <h3 style={{ margin: '0 0 16px', fontSize: '18px' }}>📲 App Download Management</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {[
-              { id: 'android', name: 'Android (.apk)', icon: <img src="./android-v2.png" alt="Android" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /> },
+              { id: 'android', name: 'Android (.apk)', icon: <img src="https://www.vectorlogo.zone/logos/android/android-icon.svg" alt="Android" style={{ width: '24px', height: '24px', objectFit: 'contain' }} /> },
               { id: 'windows', name: 'Windows (.exe)', icon: <Monitor color="#00a4ef" /> },
               { id: 'ios', name: 'iOS', icon: <Apple color="#000000" /> },
               { id: 'mac', name: 'MacOS', icon: <Apple color="#000000" /> },

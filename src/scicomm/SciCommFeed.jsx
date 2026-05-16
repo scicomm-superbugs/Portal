@@ -1066,23 +1066,21 @@ export default function SciCommFeed() {
               overflow: 'hidden',
               position: 'relative'
             }}>
-              <div style={{ display: 'flex', gap: '50px', animation: 'panoramicIcons 15s linear infinite', width: 'max-content' }}>
-                {[
-                  'https://www.vectorlogo.zone/logos/android/android-icon.svg',
-                  'https://www.vectorlogo.zone/logos/apple/apple-icon.svg',
-                  'https://www.vectorlogo.zone/logos/microsoft/microsoft-icon.svg',
-                  'https://www.vectorlogo.zone/logos/linux/linux-icon.svg',
-                  'https://www.vectorlogo.zone/logos/google_play/google_play-icon.svg'
-                ].concat([
-                  'https://www.vectorlogo.zone/logos/android/android-icon.svg',
-                  'https://www.vectorlogo.zone/logos/apple/apple-icon.svg',
-                  'https://www.vectorlogo.zone/logos/microsoft/microsoft-icon.svg',
-                  'https://www.vectorlogo.zone/logos/linux/linux-icon.svg',
-                  'https://www.vectorlogo.zone/logos/google_play/google_play-icon.svg'
-                ]).map((src, i) => (
-                  <img key={i} src={src} alt="System" style={{ height: '32px', width: '32px', objectFit: 'contain', filter: isDarkMode ? 'drop-shadow(0 0 8px rgba(255,255,255,0.2))' : 'none' }} />
-                ))}
-              </div>
+            <div style={{ display: 'flex', gap: '60px', animation: 'panoramicIcons 15s linear infinite', width: 'max-content' }}>
+              {[
+                'https://www.vectorlogo.zone/logos/android/android-icon.svg',
+                'https://www.vectorlogo.zone/logos/apple/apple-icon.svg',
+                'https://www.vectorlogo.zone/logos/microsoft/microsoft-icon.svg',
+                'https://www.vectorlogo.zone/logos/linux/linux-icon.svg'
+              ].concat([
+                'https://www.vectorlogo.zone/logos/android/android-icon.svg',
+                'https://www.vectorlogo.zone/logos/apple/apple-icon.svg',
+                'https://www.vectorlogo.zone/logos/microsoft/microsoft-icon.svg',
+                'https://www.vectorlogo.zone/logos/linux/linux-icon.svg'
+              ]).map((src, i) => (
+                <img key={i} src={src} alt="System" style={{ height: '36px', width: '36px', objectFit: 'contain', filter: isDarkMode ? 'drop-shadow(0 0 10px rgba(255,255,255,0.3))' : 'none' }} />
+              ))}
+            </div>
             </div>
 
             <button style={{ 
