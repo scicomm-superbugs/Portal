@@ -1,4 +1,4 @@
-package com.chompchem.app;
+package com.aiu.sciencehub;
 
 import android.os.Bundle;
 import android.view.ViewGroup;

@@ -9,10 +9,18 @@
       "client_info": {
         "mobilesdk_app_id": "1:379599502348:android:ffca6bf6545291543f0229",
         "android_client_info": {
-          "package_name": "com.chompchem.app"
+          "package_name": "com.aiu.sciencehub"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "379599502348-impilqkhc8io557q65pqvjrgq40u7fiq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aiu.sciencehub",
+            "certificate_hash": "bd947bc95b7b28da320b639364d14b03e21b2e92"
+          }
+        },
         {
           "client_id": "379599502348-afsf4ntn04amt9b2m1vvfqk9pg5csgfv.apps.googleusercontent.com",
           "client_type": 3
@@ -20,12 +28,17 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAPrfR-hG-5CeZiD0EIz_P1r93ywZbxcjc"
+          "current_key": "AIzaSyCEyuD60kqc6mbb7E4JsvYGYShO1zVxvNI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379599502348-afsf4ntn04amt9b2m1vvfqk9pg5csgfv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
