@@ -5,6 +5,7 @@ import { Search, Plus, MessageSquare, Image, Video, FileText, Send, MoreHorizont
 import { Link } from 'react-router-dom';
 import { AVATARS, timeAgo } from './scicommConstants';
 import ImageCropperModal from './ImageCropperModal';
+import EmojiPicker from '../components/EmojiPicker';
 
 export default function SciCommChat() {
   const { user } = useAuth();
@@ -30,7 +31,7 @@ export default function SciCommChat() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [highlightedMsgId, setHighlightedMsgId] = useState(null);
   const isAdmin = user.role === 'admin' || user.role === 'master';
-  const EMOJI_LIST = ['😀','😂','😍','🥳','👏','🔥','❤️','💡','🧪','🧬','🔬','⚗️','🎉','👍','🙌','💪','🤔','😎','🤩','✨'];
+  const isDarkMode = document.documentElement.classList.contains('scicomm-dark-mode');
 
   // Overlay states
   const [showNewChat, setShowNewChat] = useState(false);
@@ -941,17 +942,19 @@ export default function SciCommChat() {
                           style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: '15px', color: '#0f172a', padding: '8px 0', minHeight: '24px', maxHeight: '120px', resize: 'none', fontFamily: 'inherit' }}
                         />
                       )}
-                      <button onClick={() => setShowEmoji(!showEmoji)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><Smile size={20} /></button>
+                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        <button onClick={() => setShowEmoji(!showEmoji)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Smile size={20} /></button>
+                        {showEmoji && (
+                          <EmojiPicker 
+                            onSelect={(emoji) => setMsgText(prev => prev + emoji)}
+                            onClose={() => setShowEmoji(false)}
+                            isDarkMode={isDarkMode} 
+                          />
+                        )}
+                      </div>
                     </div>
                     <button onClick={() => { sendMessage(); setShowEmoji(false); }} disabled={!msgText.trim()} style={{ width: '44px', height: '44px', borderRadius: '16px', background: msgText.trim() ? '#1d4ed8' : '#e2e8f0', color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', boxShadow: msgText.trim() ? '0 4px 12px rgba(29,78,216,0.3)' : 'none' }}><Send size={20} /></button>
                   </div>
-                  {showEmoji && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', background: '#f9fafb', padding: '10px', borderRadius: '12px', border: '1px solid #e0dfdc' }}>
-                      {EMOJI_LIST.map(e => (
-                        <button key={e} onClick={() => setMsgText(prev => prev + e)} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '4px' }}>{e}</button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               )}
             </div>
