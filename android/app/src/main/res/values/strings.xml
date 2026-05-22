@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">The Portal</string>
-    <string name="title_activity_main">The Portal</string>
+    <string name="app_name">SUPERBUGS HUB</string>
+    <string name="title_activity_main">SUPERBUGS HUB</string>
     <string name="package_name">com.aiu.sciencehub</string>
     <string name="custom_url_scheme">com.aiu.sciencehub</string>
     <string name="server_client_id">379599502348-afsf4ntn04amt9b2m1vvfqk9pg5csgfv.apps.googleusercontent.com</string>

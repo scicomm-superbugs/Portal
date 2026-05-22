@@ -166,7 +166,7 @@ export default function SciCommLayout() {
     return <UserCircle className="icon" size={size} />;
   };
 
-  const PLATFORM_VERSION = 'v5.0.1';
+  const PLATFORM_VERSION = 'v5.0.2';
   
   // One-time notification for the new mobile app
   useEffect(() => {
@@ -435,28 +435,25 @@ export default function SciCommLayout() {
               <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 8px', color: '#1e3a8a', fontSize: '14px', fontWeight: 800 }}>✨ New Features</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.6' }}>
-                  <li><strong>Profile Enhancement:</strong> Added cropping tool for profile pictures.</li>
-                  <li><strong>Story Engagement:</strong> Added reaction notifications for stories.</li>
-                  <li><strong>Google Integration:</strong> Added Google Account login and linking in settings.</li>
+                  <li><strong>Branding Update:</strong> Renamed app to <strong>"SUPERBUGS HUB"</strong>.</li>
+                  <li><strong>Optimized Icons:</strong> Scaled brand logo to fit circular/square templates perfectly.</li>
+                  <li><strong>External Deep-linking:</strong> Web links now load natively inside the system browser.</li>
+                  <li><strong>Gallery Attachment Picker:</strong> Access device photo library and storage fields.</li>
                 </ul>
               </div>
               <div style={{ background: '#fef2f2', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 8px', color: '#991b1b', fontSize: '14px', fontWeight: 800 }}>🛠️ Bug Fixes & Stability</h4>
+                <h4 style={{ margin: '0 0 8px', color: '#991b1b', fontSize: '14px', fontWeight: 800 }}>🛠️ Permissions Expansion</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#991b1b', lineHeight: '1.6' }}>
-                  <li><strong>Linguistic:</strong> Fixed Arabic text display in replies and comments.</li>
-                  <li><strong>Mobile:</strong> Fixed settings button and comment reactions on mobile.</li>
-                  <li><strong>Social:</strong> Fixed story duration/expiration and message request logic.</li>
-                  <li><strong>Chat:</strong> Fixed group member additions and emoji support in messages.</li>
-                  <li><strong>UX:</strong> Added smooth animations when clicking replied messages.</li>
+                  <li><strong>Future-proofing:</strong> Pre-declared Camera, Location, modern Media, and Notifications.</li>
+                  <li><strong>Media Uploads:</strong> Added modern Android API 33+ permissions for media access.</li>
                 </ul>
               </div>
               <div style={{ background: '#dcfce7', padding: '14px', borderRadius: '10px' }}>
                 <h4 style={{ margin: '0 0 8px', color: '#166534', fontSize: '14px', fontWeight: 800 }}>🌍 Platform Expansion</h4>
                 <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.6' }}>
-                  <li><strong>Android:</strong> Application now in <strong>Beta Early Access</strong>. (Stability fixes coming soon)</li>
-                  <li><strong>Dark Mode:</strong> Enhanced features in <strong>Beta Early Access</strong>. (Continuous bug fixing in progress)</li>
-                  <li><strong>Infrastructure:</strong> Added dedicated Download and Settings pages.</li>
-                  <li><strong>Security:</strong> Critical stability patches and system bug fixes.</li>
+                  <li><strong>Mobile:</strong> Restored native Google login account bottom sheet.</li>
+                  <li><strong>Infrastructure:</strong> Placed v5.0.2 APK on the dedicated Download page.</li>
+                  <li><strong>Stability:</strong> Resolved file selection bugs and general web app performance.</li>
                 </ul>
               </div>
             </div>

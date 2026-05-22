@@ -946,7 +946,7 @@ export default function SciCommFeed() {
             <span style={{ color: '#1d4ed8' }}>{postImpressions}</span>
           </div>
         </div>
-        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v5.0.1</button>
+        <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v5.0.2</button>
         
         {/* PREMIUM SIDEBAR APP PROMOTION CARD */}
         {showAppAnnouncement && (
@@ -987,7 +987,7 @@ export default function SciCommFeed() {
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: isDarkMode ? '#f8fafc' : '#0f172a', letterSpacing: '-0.3px' }}>The Portal App</h3>
-                <p style={{ margin: 0, fontSize: '11px', color: isDarkMode ? '#3b82f6' : '#2563eb', fontWeight: 800 }}>v5.0.1 (BETA EARLY ACCESS)</p>
+                <p style={{ margin: 0, fontSize: '11px', color: isDarkMode ? '#3b82f6' : '#2563eb', fontWeight: 800 }}>v5.0.2 (BETA EARLY ACCESS)</p>
               </div>
             </div>
             

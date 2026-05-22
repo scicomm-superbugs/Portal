@@ -8,3 +8,7 @@ dist-ssr
 jdk17/
 android/app/build
 android/build
+Android App Build/
+resources/
+cmdline-tools.zip
+jdk17_fresh.zip
