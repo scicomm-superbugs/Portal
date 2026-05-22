@@ -771,7 +771,9 @@
 .scicomm-dark-mode {
   /* Complete removal of inverted colors and dimming filters! */
   filter: none !important;
-  background-color: #000000 !important; /* Extreme black backdrop */
+  background-color: #000000 !important;
+  background-image: radial-gradient(circle at 50% 50%, #0d1527 0%, #000000 100%) !important;
+  background-attachment: fixed !important;
   color: #f9fafb !important;
 }
 
@@ -797,7 +799,9 @@
 
 /* Global App Container */
 .scicomm-dark-mode .scicomm-app {
-  background-color: #000000 !important;
+  background-color: transparent !important;
+  background-image: radial-gradient(circle at 50% 50%, #0d1527 0%, #000000 100%) !important;
+  background-attachment: fixed !important;
   color: #f9fafb !important;
 }
 
@@ -810,11 +814,12 @@
 .scicomm-dark-mode .gboard-emoji-picker,
 .scicomm-dark-mode .emoji-picker-container,
 .scicomm-dark-mode .emoji-picker {
-  background-color: #0b0f19 !important; /* Premium ultra-dark slate-black */
-  background: #0b0f19 !important;
+  background-color: rgba(11, 15, 25, 0.85) !important; /* Futuristic glassmorphism background */
+  background: rgba(11, 15, 25, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
   color: #f9fafb !important;
-  border-color: #1e293b !important;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(99, 102, 241, 0.05) !important;
 }
 
 /* Catch elements with inline white/light-grey backgrounds and style them extreme dark */
@@ -953,26 +958,38 @@
 
 /* Primary Button Override */
 .scicomm-dark-mode .scicomm-btn-primary {
-  background-color: #2563eb !important;
-  background: #2563eb !important;
+  background-color: #4f46e5 !important;
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%) !important; /* Immersive cyber-gradient */
   color: #ffffff !important;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.35) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 .scicomm-dark-mode .scicomm-btn-primary:hover {
-  background-color: #1d4ed8 !important;
-  background: #1d4ed8 !important;
+  background-color: #6366f1 !important;
+  background: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* Secondary Button Override */
 .scicomm-dark-mode .scicomm-btn-secondary {
   background-color: transparent !important;
   background: transparent !important;
-  color: #60a5fa !important;
-  border-color: #60a5fa !important;
+  color: #22d3ee !important; /* Neon cyber-cyan */
+  border: 1px solid rgba(6, 182, 212, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 .scicomm-dark-mode .scicomm-btn-secondary:hover {
-  background-color: rgba(96, 165, 250, 0.1) !important;
-  box-shadow: inset 0 0 0 1px #60a5fa !important;
+  background-color: rgba(6, 182, 212, 0.1) !important;
+  border-color: #06b6d4 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.35), inset 0 0 8px rgba(6, 182, 212, 0.1) !important;
 }
 
 /* Disabled buttons override (solves disabled Post button whitening) */
@@ -1507,15 +1524,16 @@
 .scicomm-dark-mode div[style*="inset 0 2px 4px rgba(0,0,0,0.02)" i],
 .scicomm-dark-mode div[style*="rgba(255, 255, 255, 0.8)" i],
 .scicomm-dark-mode div[style*="rgba(255,255,255,0.8)" i] {
-  background-color: #0b0f19 !important;
-  background: #0b0f19 !important;
+  background-color: rgba(11, 15, 25, 0.85) !important;
+  background: rgba(11, 15, 25, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(255, 255, 255, 0.16) !important; /* Premium comfortable white outline */
   box-shadow: 
     inset 0 1px 0 rgba(255, 255, 255, 0.15),
     inset 0 0 12px rgba(255, 255, 255, 0.02),
-    0 0 25px rgba(255, 255, 255, 0.07), /* Beautiful soft white transparent halo glow */
-    0 12px 36px rgba(0, 0, 0, 0.7) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    0 0 25px rgba(99, 102, 241, 0.06), /* Immersive soft cosmic violet-blue halo glow */
+    0 12px 36px rgba(0, 0, 0, 0.8) !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .scicomm-dark-mode .scicomm-card:hover,
@@ -1523,13 +1541,13 @@
 .scicomm-dark-mode .app-announcement-banner:hover,
 .scicomm-dark-mode .scicomm-feed-main > div:first-child:hover,
 .scicomm-dark-mode .scicomm-feed-main > div[style*="relative" i]:has(textarea):hover {
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border: 1px solid rgba(6, 182, 212, 0.5) !important; /* Cyber Cyan outline on hover */
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    inset 0 0 16px rgba(255, 255, 255, 0.04),
-    0 0 35px rgba(255, 255, 255, 0.14), /* Gorgeous glow on hover */
-    0 16px 44px rgba(0, 0, 0, 0.85) !important;
-  transform: translateY(-2px) !important;
+    inset 0 1px 0 rgba(6, 182, 212, 0.3),
+    inset 0 0 16px rgba(6, 182, 212, 0.08),
+    0 0 35px rgba(6, 182, 212, 0.15), /* Cyber Cyan halo glow on hover */
+    0 16px 44px rgba(0, 0, 0, 0.9) !important;
+  transform: translateY(-3px) scale(1.005) !important; /* Cybernetic interactive lift */
 }
 
 /* Textarea wrapper inside the post composer card */
@@ -1702,11 +1720,12 @@
 .scicomm-dark-mode span.tag,
 .scicomm-dark-mode div.tag,
 .scicomm-dark-mode .scicomm-notif-badge {
-  background: #1e293b !important;
-  background-color: #1e293b !important;
-  color: #60a5fa !important;
-  border: 1px solid #3b82f6 !important;
-  box-shadow: none !important;
+  background: rgba(6, 182, 212, 0.15) !important; /* Cybernetic glowing chips */
+  background-color: rgba(6, 182, 212, 0.15) !important;
+  color: #22d3ee !important;
+  border: 1px solid rgba(6, 182, 212, 0.4) !important;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.1) !important;
+  font-weight: 600 !important;
 }
 
 /* Level Badges structural targeting */
@@ -1726,10 +1745,11 @@
 .scicomm-dark-mode span[style*="borderRadius: '8px'" i],
 .scicomm-dark-mode div[style*="border-radius: 12px" i],
 .scicomm-dark-mode div[style*="borderRadius: '12px'" i] {
-  background: #1e293b !important;
-  background-color: #1e293b !important;
-  color: #60a5fa !important;
-  border: 1px solid #3b82f6 !important;
+  background: rgba(6, 182, 212, 0.15) !important;
+  background-color: rgba(6, 182, 212, 0.15) !important;
+  color: #22d3ee !important;
+  border: 1px solid rgba(6, 182, 212, 0.4) !important;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.1) !important;
 }
 
 /* Double-override dynamic hex/rgb values in USER_LEVELS (matching spaced and space-free RGB strings) */
@@ -1742,11 +1762,11 @@
 .scicomm-dark-mode *[style*="fae8ff" i], .scicomm-dark-mode *[style*="250,232,255" i], .scicomm-dark-mode *[style*="250, 232, 255" i],
 .scicomm-dark-mode *[style*="fef3c7" i], .scicomm-dark-mode *[style*="254,243,199" i], .scicomm-dark-mode *[style*="254, 243, 199" i],
 .scicomm-dark-mode *[style*="ccfbf1" i], .scicomm-dark-mode *[style*="204,251,241" i], .scicomm-dark-mode *[style*="204, 251, 241" i] {
-  background: #1e293b !important;
-  background-color: #1e293b !important;
-  color: #60a5fa !important;
-  border: 1px solid #3b82f6 !important;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.15) !important;
+  background: rgba(6, 182, 212, 0.15) !important;
+  background-color: rgba(6, 182, 212, 0.15) !important;
+  color: #22d3ee !important;
+  border: 1px solid rgba(6, 182, 212, 0.4) !important;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.25) !important;
 }
 
 /* Specific gold gradient for Master role badge and SciComm MasterMind tag */
@@ -1833,16 +1853,18 @@
 .scicomm-dark-mode div[style*="dashed" i]:has(h4),
 .scicomm-dark-mode div[style*="dashed" i][style*="fecaca" i],
 .scicomm-dark-mode div[style*="dashed" i][style*="rgba(254" i] {
-  background: rgba(69, 10, 10, 0.75) !important;
-  background-color: rgba(69, 10, 10, 0.75) !important;
-  border: 2px dashed #ef4444 !important;
-  backdrop-filter: blur(8px) !important;
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.9) 0%, rgba(69, 10, 10, 0.9) 100%) !important;
+  background-color: rgba(69, 10, 10, 0.9) !important;
+  border: 2px dashed #f87171 !important;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.25), inset 0 0 12px rgba(239, 68, 68, 0.1) !important;
+  backdrop-filter: blur(12px) !important;
 }
 
 .scicomm-dark-mode div[style*="dashed" i]:has(h4) h4,
 .scicomm-dark-mode div[style*="dashed" i][style*="fecaca" i] h4,
 .scicomm-dark-mode div[style*="dashed" i][style*="rgba(254" i] h4 {
   color: #fca5a5 !important;
+  text-shadow: 0 0 8px rgba(248, 113, 113, 0.5) !important;
 }
 
 .scicomm-dark-mode div[style*="dashed" i]:has(h4) p,
@@ -1859,7 +1881,7 @@ html.scicomm-dark-mode {
 html.scicomm-dark-mode *,
 .scicomm-dark-mode * {
   scrollbar-width: thin !important;
-  scrollbar-color: #1e293b #000000 !important;
+  scrollbar-color: #06b6d4 #000000 !important; /* Cyber-cyan on pitch black */
 }
 
 html.scicomm-dark-mode *::-webkit-scrollbar,
@@ -1884,18 +1906,19 @@ html.scicomm-dark-mode *::-webkit-scrollbar-thumb,
 html.scicomm-dark-mode ::-webkit-scrollbar-thumb,
 .scicomm-dark-mode *::-webkit-scrollbar-thumb,
 .scicomm-dark-mode ::-webkit-scrollbar-thumb {
-  background-color: #1e293b !important;
-  background: #1e293b !important;
+  background-color: #06b6d4 !important;
+  background: #06b6d4 !important;
   border-radius: 4px !important;
   border: 2px solid #000000 !important;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.4) !important;
 }
 
 html.scicomm-dark-mode *::-webkit-scrollbar-thumb:hover,
 html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode *::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode ::-webkit-scrollbar-thumb:hover {
-  background-color: #334155 !important;
-  background: #334155 !important;
+  background-color: #22d3ee !important;
+  background: #22d3ee !important;
 }
 
 /* --- DYNAMIC BORDER COLOR OVERRIDES --- */
