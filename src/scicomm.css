@@ -771,10 +771,17 @@
 .scicomm-dark-mode {
   /* Complete removal of inverted colors and dimming filters! */
   filter: none !important;
-  background-color: #000000 !important;
+  background-color: #02040a !important;
   background-image: radial-gradient(circle at 50% 50%, #0d1527 0%, #000000 100%) !important;
   background-attachment: fixed !important;
-  color: #f9fafb !important;
+  color: #f8fafc !important;
+}
+
+.scicomm-dark-mode .scicomm-app {
+  background-color: transparent !important;
+  background-image: radial-gradient(circle at 50% 50%, #0d1527 0%, #000000 100%) !important;
+  background-attachment: fixed !important;
+  color: #f8fafc !important;
 }
 
 /* Clear filter from images, videos, emojis, and pickers so they are completely natural */
@@ -797,15 +804,52 @@
   opacity: 1 !important;
 }
 
-/* Global App Container */
-.scicomm-dark-mode .scicomm-app {
-  background-color: transparent !important;
-  background-image: radial-gradient(circle at 50% 50%, #0d1527 0%, #000000 100%) !important;
-  background-attachment: fixed !important;
-  color: #f9fafb !important;
+/* --- HIGH-CONTRAST TYPOGRAPHY --- */
+.scicomm-dark-mode h1,
+.scicomm-dark-mode h2,
+.scicomm-dark-mode h3,
+.scicomm-dark-mode h4,
+.scicomm-dark-mode h5,
+.scicomm-dark-mode h6,
+.scicomm-dark-mode strong {
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Main Cards, Dropdowns, Headers, and Modals */
+.scicomm-dark-mode p,
+.scicomm-dark-mode span,
+.scicomm-dark-mode label,
+.scicomm-dark-mode li {
+  color: #f8fafc !important; /* Pristine high-contrast light slate text */
+}
+
+.scicomm-dark-mode a {
+  color: #22d3ee !important; /* Cyber cyan active links */
+  text-shadow: 0 0 4px rgba(34, 211, 238, 0.15) !important;
+}
+.scicomm-dark-mode a:hover {
+  color: #67e8f9 !important;
+  text-decoration: underline;
+}
+
+/* Muted grey label text overrides for perfect accessibility */
+.scicomm-dark-mode .scicomm-text-muted,
+.scicomm-dark-mode .nav-text,
+.scicomm-dark-mode *[style*="color: #475569"],
+.scicomm-dark-mode *[style*="color:#475569"],
+.scicomm-dark-mode *[style*="color: #64748b"],
+.scicomm-dark-mode *[style*="color:#64748b"],
+.scicomm-dark-mode *[style*="color: #666"],
+.scicomm-dark-mode *[style*="color:#666"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.6)"],
+.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.6)"],
+.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.6)"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.5)"],
+.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.5)"] {
+  color: #cbd5e1 !important; /* High contrast text gray */
+}
+
+/* --- GLASSMORPHIC COSMIC CARDS --- */
 .scicomm-dark-mode .scicomm-card,
 .scicomm-dark-mode .scicomm-header,
 .scicomm-dark-mode .scicomm-dropdown,
@@ -814,15 +858,77 @@
 .scicomm-dark-mode .gboard-emoji-picker,
 .scicomm-dark-mode .emoji-picker-container,
 .scicomm-dark-mode .emoji-picker {
-  background-color: rgba(11, 15, 25, 0.85) !important; /* Futuristic glassmorphism background */
-  background: rgba(11, 15, 25, 0.85) !important;
-  backdrop-filter: blur(12px) !important;
-  color: #f9fafb !important;
-  border-color: rgba(255, 255, 255, 0.16) !important;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(99, 102, 241, 0.05) !important;
+  background-color: rgba(13, 18, 30, 0.8) !important; /* Semi-transparent cyber-slate */
+  background: rgba(13, 18, 30, 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 10px 40px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(99, 102, 241, 0.05) !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Catch elements with inline white/light-grey backgrounds and style them extreme dark */
+.scicomm-dark-mode .scicomm-card:hover,
+.scicomm-dark-mode div.scicomm-card:hover,
+.scicomm-dark-mode .app-announcement-banner:hover {
+  border: 1px solid rgba(6, 182, 212, 0.45) !important; /* Glowing Cyber-cyan outline */
+  box-shadow: 
+    inset 0 1px 0 rgba(6, 182, 212, 0.2),
+    inset 0 0 16px rgba(6, 182, 212, 0.08),
+    0 0 30px rgba(6, 182, 212, 0.15), /* Neon-cyan aura shadow */
+    0 16px 44px rgba(0, 0, 0, 0.9) !important;
+  transform: translateY(-3px) scale(1.005) !important; /* Smooth elevation lift */
+}
+
+/* --- CYBERNETIC BUTTON OVERRIDES --- */
+.scicomm-dark-mode .scicomm-btn-primary {
+  background-color: #4f46e5 !important;
+  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%) !important; /* Indigo to cyan active gradient */
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.35) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.scicomm-dark-mode .scicomm-btn-primary:hover {
+  background-color: #6366f1 !important;
+  background: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.scicomm-dark-mode .scicomm-btn-secondary {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #22d3ee !important; /* Cyber cyan outline */
+  border: 1px solid rgba(6, 182, 212, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.scicomm-dark-mode .scicomm-btn-secondary:hover {
+  background-color: rgba(6, 182, 212, 0.1) !important;
+  border-color: #06b6d4 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.35), inset 0 0 8px rgba(6, 182, 212, 0.1) !important;
+}
+
+.scicomm-dark-mode button:disabled,
+.scicomm-dark-mode button[disabled],
+.scicomm-dark-mode div[style*="max-height" i] button:disabled,
+.scicomm-dark-mode div[style*="maxHeight" i] button:disabled {
+  background-color: #111827 !important;
+  background: #111827 !important;
+  color: #4b5563 !important;
+  border: 1px solid #1e293b !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+/* --- DOUBLE-MAPPED INLINE Overrides (Comment bubbles, search inputs, textareas) --- */
 .scicomm-dark-mode *[style*="background: white"],
 .scicomm-dark-mode *[style*="background:white"],
 .scicomm-dark-mode *[style*="background-color: white"],
@@ -836,16 +942,13 @@
 .scicomm-dark-mode *[style*="background-color: #ffffff"],
 .scicomm-dark-mode *[style*="background-color:#ffffff"],
 .scicomm-dark-mode *[style*="background: rgb(255, 255, 255)"],
-.scicomm-dark-mode *[style*="background-color: rgb(255, 255, 255)"],
-.scicomm-dark-mode *[style*="background: linear-gradient(135deg, #ffffff, #f1f5f9)"],
-.scicomm-dark-mode *[style*="background:linear-gradient(135deg, #ffffff, #f1f5f9)"] {
+.scicomm-dark-mode *[style*="background-color: rgb(255, 255, 255)"] {
   background-color: #0b0f19 !important;
   background: #0b0f19 !important;
-  color: #f9fafb !important;
-  border-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
-/* Catch comment bubbles and light-grey background containers (e.g., #f3f2ef, #eef3f8) and double-map hex and rgb representations */
 .scicomm-dark-mode *[style*="background: #f2f2f2"],
 .scicomm-dark-mode *[style*="background-color: #f2f2f2"],
 .scicomm-dark-mode *[style*="background: rgb(242, 242, 242)"],
@@ -874,1016 +977,72 @@
 .scicomm-dark-mode *[style*="background-color: #f9fafb"],
 .scicomm-dark-mode *[style*="background: rgb(249, 250, 251)"],
 .scicomm-dark-mode *[style*="background-color: rgb(249, 250, 251)"] {
-  background-color: #111827 !important; /* Extreme dark charcoal comment bubble */
+  background-color: #111827 !important; /* Beautiful charcoal bubble */
   background: #111827 !important;
-  color: #f9fafb !important;
-  border: 1px solid #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Textarea wrapper override ("What's on your mind?") */
 .scicomm-dark-mode div:has(> textarea),
 .scicomm-dark-mode *[style*="rgba(241, 245, 249, 0.6)"],
 .scicomm-dark-mode *[style*="rgba(241,245,249,0.6)"] {
-  background-color: #020617 !important;
-  background: #020617 !important;
-  border: 1px solid #1e293b !important;
+  background-color: #030712 !important;
+  background: #030712 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
-
-/* Chat Search Box and user list inputs */
-.scicomm-dark-mode div[style*="background: #f1f5f9"] input,
-.scicomm-dark-mode div[style*="background-color: #f1f5f9"] input,
-.scicomm-dark-mode div[style*="background: rgb(241, 245, 249)"] input,
-.scicomm-dark-mode div[style*="background-color: rgb(241, 245, 249)"] input {
-  color: #f9fafb !important;
-}
-
-/* Global Text styles */
-.scicomm-dark-mode h1,
-.scicomm-dark-mode h2,
-.scicomm-dark-mode h3,
-.scicomm-dark-mode h4,
-.scicomm-dark-mode h5,
-.scicomm-dark-mode h6,
-.scicomm-dark-mode p,
-.scicomm-dark-mode span,
-.scicomm-dark-mode label,
-.scicomm-dark-mode strong,
-.scicomm-dark-mode li {
-  color: #f9fafb !important;
-}
-
-/* Accentuated titles / bold elements that have inline dark colors */
-.scicomm-dark-mode *[style*="color: #0f172a"],
-.scicomm-dark-mode *[style*="color:#0f172a"],
-.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.9)"],
-.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.9)"],
-.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.9)"],
-.scicomm-dark-mode *[style*="color: rgb(15, 23, 42)"],
-.scicomm-dark-mode *[style*="color: rgb(0, 0, 0)"],
-.scicomm-dark-mode *[style*="color: #1e3a8a"],
-.scicomm-dark-mode *[style*="color: #1e293b"],
-.scicomm-dark-mode *[style*="color:#1e293b"],
-.scicomm-dark-mode *[style*="color: rgb(30, 41, 59)"] {
-  color: #f9fafb !important;
-}
-
-/* Muted / Sub-info text */
-.scicomm-dark-mode .scicomm-text-muted,
-.scicomm-dark-mode .nav-text,
-.scicomm-dark-mode *[style*="color: #475569"],
-.scicomm-dark-mode *[style*="color:#475569"],
-.scicomm-dark-mode *[style*="color: #64748b"],
-.scicomm-dark-mode *[style*="color:#64748b"],
-.scicomm-dark-mode *[style*="color: #666"],
-.scicomm-dark-mode *[style*="color:#666"],
-.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.6)"],
-.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.6)"],
-.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.6)"],
-.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.5)"],
-.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.5)"],
-.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.5)"],
-.scicomm-dark-mode *[style*="color: rgb(71, 85, 105)"],
-.scicomm-dark-mode *[style*="color: rgb(100, 116, 139)"] {
-  color: #9ca3af !important; /* Clean slate gray */
-}
-
-/* Interactive elements and links */
-.scicomm-dark-mode a {
-  color: #60a5fa !important;
-}
-.scicomm-dark-mode a:hover {
-  color: #93c5fd !important;
-  text-decoration: underline;
-}
-
-/* Primary Button Override */
-.scicomm-dark-mode .scicomm-btn-primary {
-  background-color: #4f46e5 !important;
-  background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%) !important; /* Immersive cyber-gradient */
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.5px !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.35) !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-.scicomm-dark-mode .scicomm-btn-primary:hover {
-  background-color: #6366f1 !important;
-  background: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4) !important;
-  transform: translateY(-1px) !important;
-}
-
-/* Secondary Button Override */
-.scicomm-dark-mode .scicomm-btn-secondary {
-  background-color: transparent !important;
+.scicomm-dark-mode textarea {
+  color: #f8fafc !important;
   background: transparent !important;
-  color: #22d3ee !important; /* Neon cyber-cyan */
-  border: 1px solid rgba(6, 182, 212, 0.5) !important;
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.15) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-.scicomm-dark-mode .scicomm-btn-secondary:hover {
-  background-color: rgba(6, 182, 212, 0.1) !important;
-  border-color: #06b6d4 !important;
-  color: #ffffff !important;
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.35), inset 0 0 8px rgba(6, 182, 212, 0.1) !important;
+  border: none !important;
+  outline: none !important;
 }
 
-/* Disabled buttons override (solves disabled Post button whitening) */
-.scicomm-dark-mode button:disabled,
-.scicomm-dark-mode button[disabled] {
-  background-color: #1e293b !important;
-  background: #1e293b !important;
-  color: #4b5563 !important;
-  border: 1px solid #334155 !important;
-  box-shadow: none !important;
-  cursor: not-allowed !important;
-}
-
-/* Specific red delete/danger buttons */
-.scicomm-dark-mode button[style*="color: #ef4444"],
-.scicomm-dark-mode button[style*="color:#ef4444"] {
-  color: #f87171 !important;
-  border-color: #f87171 !important;
-}
-
-/* Search Box specific overrides */
 .scicomm-dark-mode .scicomm-search-box {
-  background-color: #020617 !important;
-  border: 1px solid #1e293b !important;
+  background-color: #030712 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 .scicomm-dark-mode .scicomm-search-box input {
-  color: #f9fafb !important;
-  caret-color: #f9fafb !important;
+  color: #f8fafc !important;
 }
 .scicomm-dark-mode .scicomm-search-box input::placeholder {
   color: #64748b !important;
 }
 
-/* Navigation Items */
+/* --- UNIVERSAL INLINE COLOR CATCH-ALL --- */
+.scicomm-dark-mode *[style*="color: #0f172a"],
+.scicomm-dark-mode *[style*="color: #1e293b"],
+.scicomm-dark-mode *[style*="color: #334155"],
+.scicomm-dark-mode *[style*="color: #333"],
+.scicomm-dark-mode *[style*="color:#333"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.9)"],
+.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.9)"],
+.scicomm-dark-mode *[style*="color: rgb(15, 23, 42)"],
+.scicomm-dark-mode *[style*="color: rgb(30, 41, 59)"],
+.scicomm-dark-mode *[style*="color: rgb(0, 0, 0)"] {
+  color: #f8fafc !important;
+}
+
+/* --- NAVIGATION ITEMS --- */
 .scicomm-dark-mode .scicomm-nav-item {
-  color: #9ca3af !important;
+  color: #94a3b8 !important;
 }
 .scicomm-dark-mode .scicomm-nav-item:hover,
 .scicomm-dark-mode .scicomm-nav-item.active {
   color: #ffffff !important;
 }
 .scicomm-dark-mode .scicomm-nav-item.active::after {
-  background-color: #3b82f6 !important;
+  background-color: #22d3ee !important;
 }
 
-/* "Download App" button wrapper styling overrides */
-.scicomm-dark-mode a[href*="download"] div {
-  background: linear-gradient(135deg, #1e3a8a, #1e40af) !important;
-  border: 1px solid #3b82f6 !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
-}
-.scicomm-dark-mode a[href*="download"] div:hover {
-  background: #1e40af !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5) !important;
-}
-.scicomm-dark-mode a[href*="download"] span {
-  color: #ffffff !important;
-}
-.scicomm-dark-mode a[href*="download"] svg {
-  color: #3b82f6 !important;
-}
-
-/* "View Full Leaderboard" button override */
-.scicomm-dark-mode a[href*="leaderboard"] {
-  background: #451a03 !important;
-  color: #fef3c7 !important;
-  border: 1px solid #78350f !important;
-}
-.scicomm-dark-mode a[href*="leaderboard"]:hover {
-  background: #78350f !important;
-}
-
-/* Hover highlights in menus and feeds */
-.scicomm-dark-mode .dropdown-item:hover,
-.scicomm-dark-mode .scicomm-feed-action:hover,
-.scicomm-dark-mode .scicomm-post-btn:hover {
-  background-color: #1e293b !important;
-  background: #1e293b !important;
-  color: #ffffff !important;
-}
-
-/* Post buttons specifically liked */
-.scicomm-dark-mode .scicomm-post-btn.liked {
-  color: #3b82f6 !important;
-}
-
-/* Forms, inputs, textarea and select boxes */
-.scicomm-dark-mode input[type="text"],
-.scicomm-dark-mode input[type="password"],
-.scicomm-dark-mode input[type="email"],
-.scicomm-dark-mode input[type="url"],
-.scicomm-dark-mode input[type="search"],
-.scicomm-dark-mode textarea,
-.scicomm-dark-mode select {
-  background-color: #0b0f19 !important;
-  color: #f9fafb !important;
-  border: 1px solid #1e293b !important;
-}
-.scicomm-dark-mode input::placeholder,
-.scicomm-dark-mode textarea::placeholder {
-  color: #64748b !important;
-}
-
-/* Borders and dividers */
-.scicomm-dark-mode .dropdown-divider {
-  background-color: #1e293b !important;
-}
-.scicomm-dark-mode hr {
-  border-color: #1e293b !important;
-}
-.scicomm-dark-mode *[style*="border"] {
-  border-color: #1e293b !important;
-}
-
-/* Modal overlays and scrollbars */
-.scicomm-dark-mode .scicomm-modal-overlay {
-  background: rgba(0, 0, 0, 0.8) !important;
-  backdrop-filter: blur(4px) !important;
-}
-
-.scicomm-dark-mode ::-webkit-scrollbar-thumb {
-  background: #1e293b !important;
-}
-.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover {
-  background: #334155 !important;
-}
-
-/* =============================================
-   COMPREHENSIVE DARK MODE PATCH v2
-   Fixes: invisible text, chat page, admin boxes,
-   profile tags, card borders, download button
-   ============================================= */
-
-/* --- UNIVERSAL TEXT COLOR CATCH-ALL ---
-   Force every element that might have an inline dark color to be bright.
-   This catches anything we missed with specific selectors above. */
-.scicomm-dark-mode *[style*="color: #0f172a"],
-.scicomm-dark-mode *[style*="color: #1e293b"],
-.scicomm-dark-mode *[style*="color: #334155"],
-.scicomm-dark-mode *[style*="color: #333"],
-.scicomm-dark-mode *[style*="color:#333"],
-.scicomm-dark-mode *[style*="color: #14532d"],
-.scicomm-dark-mode *[style*="color:#14532d"],
-.scicomm-dark-mode *[style*="color: #166534"],
-.scicomm-dark-mode *[style*="color:#166534"],
-.scicomm-dark-mode *[style*="color: #991b1b"],
-.scicomm-dark-mode *[style*="color:#991b1b"],
-.scicomm-dark-mode *[style*="color: #7f1d1d"],
-.scicomm-dark-mode *[style*="color:#7f1d1d"],
-.scicomm-dark-mode *[style*="color: #92400e"],
-.scicomm-dark-mode *[style*="color:#92400e"],
-.scicomm-dark-mode *[style*="color: #b45309"],
-.scicomm-dark-mode *[style*="color:#b45309"],
-.scicomm-dark-mode *[style*="color: #854d0e"],
-.scicomm-dark-mode *[style*="color:#854d0e"],
-.scicomm-dark-mode *[style*="color: rgba(0,0,0"],
-.scicomm-dark-mode *[style*="color: rgba(0, 0, 0"],
-.scicomm-dark-mode *[style*="color: rgb(0, 0, 0)"],
-.scicomm-dark-mode *[style*="color: rgb(15, 23, 42)"],
-.scicomm-dark-mode *[style*="color: rgb(30, 41, 59)"],
-.scicomm-dark-mode *[style*="color: rgb(51, 65, 85)"],
-.scicomm-dark-mode *[style*="color: inherit"] {
-  color: #f9fafb !important;
-}
-
-/* Muted dark text on specific elements that use subtle grays */
-.scicomm-dark-mode *[style*="color: #999"],
-.scicomm-dark-mode *[style*="color:#999"] {
-  color: #9ca3af !important;
-}
-
-/* --- DROPDOWN MENU ITEMS --- */
-.scicomm-dark-mode .dropdown-item {
-  color: #f9fafb !important;
-}
-.scicomm-dark-mode .dropdown-item:hover {
-  background-color: #1e293b !important;
-  background: #1e293b !important;
-  color: #ffffff !important;
-}
-
-/* --- CHAT PAGE FIXES --- */
-/* Main chat container */
-.scicomm-dark-mode .scicomm-chat-container {
-  background: #000000 !important;
-  border-color: #1e293b !important;
-}
-
-/* Chat sidebar */
-.scicomm-dark-mode .scicomm-chat-sidebar {
-  background: #0b0f19 !important;
-  border-color: #1e293b !important;
-}
-
-/* Chat header */
-.scicomm-dark-mode .chat-header {
-  background: #0b0f19 !important;
-  border-color: #1e293b !important;
-}
-
-/* Chat messages area - the big white area */
-.scicomm-dark-mode .chat-messages-container {
-  background: #000000 !important;
-  background-image: radial-gradient(#0f172a 1px, transparent 1px) !important;
-}
-
-/* Chat conversation items (selected / hover) */
-.scicomm-dark-mode *[style*="background: #f0f7ff"],
-.scicomm-dark-mode *[style*="background-color: #f0f7ff"],
-.scicomm-dark-mode *[style*="background: rgb(240, 247, 255)"],
-.scicomm-dark-mode *[style*="background-color: rgb(240, 247, 255)"] {
-  background: #111827 !important;
-  background-color: #111827 !important;
-}
-
-/* Chat input bar at bottom */
-.scicomm-dark-mode div[style*="background: white"][style*="borderTop"],
-.scicomm-dark-mode div[style*="background: white"][style*="border-top"] {
-  background: #0b0f19 !important;
-  border-color: #1e293b !important;
-}
-
-/* Chat message bubbles — keep sender blue as-is, but fix receiver bubbles */
-.scicomm-dark-mode *[style*="background: #f8fafc"][style*="borderRadius"],
-.scicomm-dark-mode *[style*="background: rgb(248, 250, 252)"][style*="borderRadius"] {
-  background: #111827 !important;
-  background-color: #111827 !important;
-}
-
-/* Chat menu dropdown */
-.scicomm-dark-mode div[style*="background: white"][style*="boxShadow"] {
-  background: #0b0f19 !important;
-  background-color: #0b0f19 !important;
-  border-color: #1e293b !important;
-}
-
-/* --- ADMIN DASHBOARD ALERT BOXES --- */
-/* Green system maintenance box */
-.scicomm-dark-mode *[style*="background: #f0fdf4"],
-.scicomm-dark-mode *[style*="background-color: #f0fdf4"],
-.scicomm-dark-mode *[style*="background: rgb(240, 253, 244)"],
-.scicomm-dark-mode *[style*="background: #dcfce7"],
-.scicomm-dark-mode *[style*="background-color: #dcfce7"],
-.scicomm-dark-mode *[style*="background: #f0fff4"],
-.scicomm-dark-mode *[style*="background-color: #f0fff4"] {
-  background: #052e16 !important;
-  background-color: #052e16 !important;
-  border-color: #166534 !important;
-  color: #bbf7d0 !important;
-}
-.scicomm-dark-mode *[style*="background: #f0fdf4"] *,
-.scicomm-dark-mode *[style*="background: #f0fff4"] *,
-.scicomm-dark-mode *[style*="background: rgb(240, 253, 244)"] * {
-  color: #bbf7d0 !important;
-}
-
-/* Red reset/danger box */
-.scicomm-dark-mode *[style*="background: #fef2f2"],
-.scicomm-dark-mode *[style*="background-color: #fef2f2"],
-.scicomm-dark-mode *[style*="background: rgb(254, 242, 242)"],
-.scicomm-dark-mode *[style*="background: #fff5f5"],
-.scicomm-dark-mode *[style*="background-color: #fff5f5"],
-.scicomm-dark-mode *[style*="background: #fee2e2"],
-.scicomm-dark-mode *[style*="background-color: #fee2e2"] {
-  background: #450a0a !important;
-  background-color: #450a0a !important;
-  border-color: #991b1b !important;
-  color: #fecaca !important;
-}
-.scicomm-dark-mode *[style*="background: #fef2f2"] *,
-.scicomm-dark-mode *[style*="background: #fff5f5"] *,
-.scicomm-dark-mode *[style*="background: #fee2e2"] *,
-.scicomm-dark-mode *[style*="background: rgb(254, 242, 242)"] * {
-  color: #fecaca !important;
-}
-
-/* Yellow/amber warning boxes */
-.scicomm-dark-mode *[style*="background: #fef3c7"],
-.scicomm-dark-mode *[style*="background-color: #fef3c7"],
-.scicomm-dark-mode *[style*="background: #fffbeb"],
-.scicomm-dark-mode *[style*="background-color: #fffbeb"],
-.scicomm-dark-mode *[style*="background: #fef08a"],
-.scicomm-dark-mode *[style*="background-color: #fef08a"] {
-  background: #451a03 !important;
-  background-color: #451a03 !important;
-  border-color: #92400e !important;
-  color: #fef3c7 !important;
-}
-.scicomm-dark-mode *[style*="background: #fef3c7"] *,
-.scicomm-dark-mode *[style*="background: #fffbeb"] *,
-.scicomm-dark-mode *[style*="background: #fef08a"] * {
-  color: #fef3c7 !important;
-}
-
-/* Blue info/highlight boxes */
-.scicomm-dark-mode *[style*="background: #bfdbfe"],
-.scicomm-dark-mode *[style*="background-color: #bfdbfe"],
-.scicomm-dark-mode *[style*="background: #dbeafe"],
-.scicomm-dark-mode *[style*="background-color: #dbeafe"] {
-  background: #1e3a8a !important;
-  background-color: #1e3a8a !important;
-  border-color: #1d4ed8 !important;
-  color: #bfdbfe !important;
-}
-.scicomm-dark-mode *[style*="background: #bfdbfe"] *,
-.scicomm-dark-mode *[style*="background: #dbeafe"] * {
-  color: #bfdbfe !important;
-}
-
-/* Green success/approved badges */
-.scicomm-dark-mode *[style*="background: #bbf7d0"],
-.scicomm-dark-mode *[style*="background-color: #bbf7d0"] {
-  background: #166534 !important;
-  background-color: #166534 !important;
-  color: #bbf7d0 !important;
-}
-
-/* Red overdue task rows */
-.scicomm-dark-mode *[style*="background: #fff5f5"],
-.scicomm-dark-mode *[style*="background-color: #fff5f5"] {
-  background: #450a0a !important;
-  background-color: #450a0a !important;
-}
-
-/* Purple task review boxes */
-.scicomm-dark-mode *[style*="background: #f3f0ff"],
-.scicomm-dark-mode *[style*="background-color: #f3f0ff"] {
-  background: #2e1065 !important;
-  background-color: #2e1065 !important;
-  border-color: #7c3aed !important;
-  color: #c4b5fd !important;
-}
-
-/* --- PROFILE TAGS & BADGES --- */
-/* Tags with light gradient backgrounds - force text to stay readable */
-.scicomm-dark-mode .tag[style*="background: linear-gradient(135deg, #fef3c7"],
-.scicomm-dark-mode .tag[style*="background: linear-gradient(135deg, #eff6ff"] {
-  border-color: #334155 !important;
-}
-
-/* Level badge (uses dynamic bg from JS) - override light backgrounds */
-.scicomm-dark-mode .tag[style*="background: #e"] {
-  background: #1e293b !important;
-  border-color: #334155 !important;
-}
-
-/* --- POST ACTION BUTTONS (Comment, Share, etc.) --- */
-.scicomm-dark-mode .scicomm-post-btn {
-  color: #9ca3af !important;
-}
-.scicomm-dark-mode .scicomm-post-btn:hover {
-  color: #ffffff !important;
-  background: #1e293b !important;
-}
-.scicomm-dark-mode .scicomm-feed-action {
-  color: #9ca3af !important;
-}
-
-/* --- CARD BORDER GLOW --- */
-/* Add a subtle luminous border to all cards and post containers */
-.scicomm-dark-mode .scicomm-card {
-  border: 1px solid #1e293b !important;
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.06), 0 4px 20px rgba(0, 0, 0, 0.6) !important;
-}
-
-/* --- DOWNLOAD APP BUTTON REDESIGN --- */
-/* Glowing neon-blue pill in header */
-.scicomm-dark-mode a[href*="download"] div {
-  background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%) !important;
-  border: 1px solid rgba(139, 92, 246, 0.5) !important;
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-}
-.scicomm-dark-mode a[href*="download"] div:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%) !important;
-  box-shadow: 0 0 25px rgba(139, 92, 246, 0.5), 0 6px 16px rgba(0, 0, 0, 0.5) !important;
-  transform: translateY(-1px);
-}
-.scicomm-dark-mode a[href*="download"] span {
-  color: #ffffff !important;
-}
-.scicomm-dark-mode a[href*="download"] svg {
-  color: #c4b5fd !important;
-}
-
-/* --- SIDEBAR DOWNLOAD APP BOX IN FEED --- */
-.scicomm-dark-mode div[style*="background: linear-gradient(90deg, #3b82f6"] {
-  box-shadow: 0 0 20px rgba(37, 99, 235, 0.3), 0 8px 20px rgba(37, 99, 235, 0.2) !important;
-}
-
-/* --- WORKSPACE DROPDOWN LINKS --- */
-/* Links inside WorkSpace dropdown that have light backgrounds */
-.scicomm-dark-mode a[style*="background: #f8fafc"],
-.scicomm-dark-mode a[style*="background: rgb(248, 250, 252)"] {
-  background: #111827 !important;
-  background-color: #111827 !important;
-  border-color: #1e293b !important;
-  color: #f9fafb !important;
-}
-
-/* --- PROFILE BIO BOX --- */
-.scicomm-dark-mode div[style*="background: #f8fafc"][style*="border: 1px solid #e2e8f0"] {
-  background: #111827 !important;
-  border-color: #1e293b !important;
-}
-.scicomm-dark-mode div[style*="background: #f8fafc"][style*="border: 1px solid #e2e8f0"] p {
-  color: #d1d5db !important;
-}
-
-/* --- PROFILE STATS GRID WHITE BOX --- */
-.scicomm-dark-mode div[style*="background: #ffffff"][style*="border: 1px solid #e2e8f0"] {
-  background: #0b0f19 !important;
-  background-color: #0b0f19 !important;
-  border-color: #1e293b !important;
-}
-
-/* --- PROFILE TAB BAR --- */
-.scicomm-dark-mode div[style*="background: white"][style*="borderRadius: '16px'"],
-.scicomm-dark-mode div[style*="background: white"][style*="border-radius: 16px"] {
-  background: #0b0f19 !important;
-  background-color: #0b0f19 !important;
-}
-
-/* --- NEW CHAT / GROUP CREATION OVERLAY --- */
-.scicomm-dark-mode div[style*="background: white"][style*="z-index"],
-.scicomm-dark-mode div[style*="background: white"][style*="zIndex"] {
-  background: #0b0f19 !important;
-  background-color: #0b0f19 !important;
-  color: #f9fafb !important;
-}
-
-/* --- ADMIN DASHBOARD BUTTON (light bg in dropdown) --- */
-.scicomm-dark-mode a[style*="background: #eff6ff"],
-.scicomm-dark-mode a[style*="background-color: #eff6ff"],
-.scicomm-dark-mode div[style*="background: #eff6ff"],
-.scicomm-dark-mode div[style*="background-color: #eff6ff"] {
-  background: #111827 !important;
-  background-color: #111827 !important;
-  border-color: #1e293b !important;
-}
-
-/* Hover states for light backgrounds inside sidebar/workspace panels */
-.scicomm-dark-mode *[style*="background: transparent"]:hover {
-  background: #111827 !important;
-}
-
-/* --- NOTIFICATION CARDS with light backgrounds --- */
-.scicomm-dark-mode *[style*="background: #e0f2fe"],
-.scicomm-dark-mode *[style*="background-color: #e0f2fe"] {
-  background: #0c4a6e !important;
-  background-color: #0c4a6e !important;
-  color: #bae6fd !important;
-}
-
-/* Portfolio items with white background */
-.scicomm-dark-mode div[style*="background: white"][style*="border: 1px solid #e0dfdc"] {
-  background: #111827 !important;
-  background-color: #111827 !important;
-  border-color: #1e293b !important;
-}
-
-/* CV upload dashed box */
-.scicomm-dark-mode div[style*="border: 2px dashed #ccc"] {
-  border-color: #334155 !important;
-  background: #111827 !important;
-}
-
-/* Make sure all button text in dark mode is readable */
-.scicomm-dark-mode button {
-  color: #f9fafb !important;
-}
-.scicomm-dark-mode button[style*="color: #ef4444"],
-.scicomm-dark-mode button[style*="color:#ef4444"],
-.scicomm-dark-mode button[style*="color: red"] {
-  color: #f87171 !important;
-}
-.scicomm-dark-mode button[style*="color: #1d4ed8"],
-.scicomm-dark-mode button[style*="color:#1d4ed8"],
-.scicomm-dark-mode button[style*="color: #1b74e4"] {
-  color: #60a5fa !important;
-}
-.scicomm-dark-mode button[style*="color: white"],
-.scicomm-dark-mode button[style*="color: #ffffff"] {
-  color: #ffffff !important;
-}
-
-/* Ensure all anchor/link text within cards is bright */
-.scicomm-dark-mode .scicomm-card a {
-  color: #60a5fa !important;
-}
-.scicomm-dark-mode .scicomm-card a[style*="color: inherit"],
-.scicomm-dark-mode .scicomm-card a[style*="color: #0f172a"],
-.scicomm-dark-mode .scicomm-card a[style*="color: #1e293b"] {
-  color: #f9fafb !important;
-}
-
-/* Ensure divs and spans with explicit dark colors are overridden */
-.scicomm-dark-mode div[style*="color: #0f172a"],
-.scicomm-dark-mode div[style*="color: #1e293b"],
-.scicomm-dark-mode div[style*="color: #334155"],
-.scicomm-dark-mode div[style*="color: #333"],
-.scicomm-dark-mode span[style*="color: #0f172a"],
-.scicomm-dark-mode span[style*="color: #1e293b"],
-.scicomm-dark-mode span[style*="color: #334155"],
-.scicomm-dark-mode span[style*="color: #333"] {
-  color: #f9fafb !important;
-}
-
-/* Stories modal overlay fix */
-.scicomm-dark-mode div[style*="background: white"][style*="borderRadius: '16px'"][style*="overflow: hidden"] {
-  background: #0b0f19 !important;
-  background-color: #0b0f19 !important;
-}
-
-/* =============================================
-   COMPREHENSIVE DARK MODE PATCH v14
-   Fixes: premium card transparent white glow behind boxes/posts, scrollbars,
-   admin clear records list, workspace dropdown tiles & links,
-   profile level & mystery tags, content moderated red boxes,
-   broad rgb/rgba webkit/DOM serialization catching.
-   ============================================= */
-
-/* --- PREMIUM CARD TRANSPARENT WHITE GLOW --- */
-.scicomm-dark-mode .scicomm-card,
-.scicomm-dark-mode div.scicomm-card,
-.scicomm-dark-mode .app-announcement-banner,
-.scicomm-dark-mode div[style*="boxShadow" i][style*="255,255,255" i],
-.scicomm-dark-mode div[style*="rgba(255, 255, 255" i],
-.scicomm-dark-mode div[style*="rgba(255,255,255" i],
-.scicomm-dark-mode .scicomm-feed-main > div:first-child,
-.scicomm-dark-mode .scicomm-feed-main > div[style*="relative" i]:has(textarea),
-.scicomm-dark-mode div[style*="inset 0 0 0 1px" i],
-.scicomm-dark-mode div[style*="inset 0 2px 4px rgba(0,0,0,0.02)" i],
-.scicomm-dark-mode div[style*="rgba(255, 255, 255, 0.8)" i],
-.scicomm-dark-mode div[style*="rgba(255,255,255,0.8)" i] {
-  background-color: rgba(11, 15, 25, 0.85) !important;
-  background: rgba(11, 15, 25, 0.85) !important;
-  backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important; /* Premium comfortable white outline */
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    inset 0 0 12px rgba(255, 255, 255, 0.02),
-    0 0 25px rgba(99, 102, 241, 0.06), /* Immersive soft cosmic violet-blue halo glow */
-    0 12px 36px rgba(0, 0, 0, 0.8) !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.scicomm-dark-mode .scicomm-card:hover,
-.scicomm-dark-mode div.scicomm-card:hover,
-.scicomm-dark-mode .app-announcement-banner:hover,
-.scicomm-dark-mode .scicomm-feed-main > div:first-child:hover,
-.scicomm-dark-mode .scicomm-feed-main > div[style*="relative" i]:has(textarea):hover {
-  border: 1px solid rgba(6, 182, 212, 0.5) !important; /* Cyber Cyan outline on hover */
-  box-shadow: 
-    inset 0 1px 0 rgba(6, 182, 212, 0.3),
-    inset 0 0 16px rgba(6, 182, 212, 0.08),
-    0 0 35px rgba(6, 182, 212, 0.15), /* Cyber Cyan halo glow on hover */
-    0 16px 44px rgba(0, 0, 0, 0.9) !important;
-  transform: translateY(-3px) scale(1.005) !important; /* Cybernetic interactive lift */
-}
-
-/* Textarea wrapper inside the post composer card */
-.scicomm-dark-mode .scicomm-feed-main div:has(> textarea),
-.scicomm-dark-mode div:has(> textarea),
-.scicomm-dark-mode div[style*="rgba(241, 245, 249" i],
-.scicomm-dark-mode div[style*="rgba(241,245,249" i],
-.scicomm-dark-mode div[style*="241, 245, 249" i],
-.scicomm-dark-mode div[style*="241,245,249" i] {
-  background-color: #111827 !important;
-  background: #111827 !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-.scicomm-dark-mode .scicomm-feed-main div:has(> textarea):focus-within,
-.scicomm-dark-mode div:has(> textarea):focus-within {
-  border: 1px solid #3b82f6 !important;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2) !important;
-}
-.scicomm-dark-mode textarea {
-  color: #f3f4f6 !important;
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  caret-color: #f3f4f6 !important;
-}
-
-/* --- WORKSPACE DROPDOWN OVERRIDES --- */
-.scicomm-dark-mode .scicomm-dropdown h3 {
-  color: #9ca3af !important;
-}
-
-/* Workspace dropdown grid tiles - normal state */
-.scicomm-dark-mode .scicomm-dropdown h3 + div > a,
-.scicomm-dark-mode .scicomm-dropdown h3 + div > div,
-.scicomm-dark-mode .scicomm-dropdown *[style*="background: #f8fafc" i],
-.scicomm-dark-mode .scicomm-dropdown *[style*="background-color: #f8fafc" i],
-.scicomm-dark-mode .scicomm-dropdown *[style*="rgb(248, 250, 252)" i],
-.scicomm-dark-mode .scicomm-dropdown *[style*="rgb(248,250,252)" i] {
-  background: #111827 !important;
-  background-color: #111827 !important;
-  border: 1px solid #1e293b !important;
-  color: #f9fafb !important;
-}
-
-/* Workspace dropdown grid tiles - hover state */
-.scicomm-dark-mode .scicomm-dropdown h3 + div > a:hover,
-.scicomm-dark-mode .scicomm-dropdown h3 + div > div:hover,
-.scicomm-dark-mode .scicomm-dropdown *[style*="background: #f1f5f9" i]:hover,
-.scicomm-dark-mode .scicomm-dropdown *[style*="background-color: #f1f5f9" i]:hover,
-.scicomm-dark-mode .scicomm-dropdown *[style*="rgb(241, 245, 249)" i]:hover,
-.scicomm-dark-mode .scicomm-dropdown *[style*="rgb(241,245,249)" i]:hover {
-  background: #1e293b !important;
-  background-color: #1e293b !important;
-  border-color: #3b82f6 !important;
-  color: #ffffff !important;
-}
-
-/* Admin Dashboard link inside Workspace dropdown - normal state */
-.scicomm-dark-mode .scicomm-dropdown a[href*="/admin" i],
-.scicomm-dark-mode .scicomm-dropdown h3 + div > a[href*="/admin" i],
-.scicomm-dark-mode *[style*="fffbeb" i],
-.scicomm-dark-mode a[style*="fffbeb" i],
-.scicomm-dark-mode *[style*="255, 251, 235" i],
-.scicomm-dark-mode *[style*="255,251,235" i] {
-  background: #451a03 !important;
-  background-color: #451a03 !important;
-  border: 1px solid #b45309 !important;
-  color: #fef3c7 !important;
-}
-
-/* Admin Dashboard link inside Workspace dropdown - hover state */
-.scicomm-dark-mode .scicomm-dropdown a[href*="/admin" i]:hover,
-.scicomm-dark-mode .scicomm-dropdown h3 + div > a[href*="/admin" i]:hover,
-.scicomm-dark-mode *[style*="fffbeb" i]:hover,
-.scicomm-dark-mode a[style*="fffbeb" i]:hover,
-.scicomm-dark-mode *[style*="255, 251, 235" i]:hover,
-.scicomm-dark-mode *[style*="255,251,235" i]:hover {
-  background: #78350f !important;
-  background-color: #78350f !important;
-  border-color: #d97706 !important;
-  color: #fffbeb !important;
-}
-
-/* --- ADMIN "CLEAR RECORDS PER MEMBER" BUTTONS & LISTS --- */
-/* Scrollable clearance member panel */
-.scicomm-dark-mode .scicomm-card h4 + div,
-.scicomm-dark-mode div[style*="max-height: 400px" i],
-.scicomm-dark-mode div[style*="max-height:400px" i],
-.scicomm-dark-mode div[style*="maxHeight: '400px'" i],
-.scicomm-dark-mode div[style*="maxHeight:'400px'" i] {
-  background: #0b0f19 !important;
-  background-color: #0b0f19 !important;
-  border: 1px solid #1e293b !important;
-  border-radius: 12px !important;
-  padding: 10px !important;
-}
-
-/* Row borders and backgrounds inside admin clearance panel */
-.scicomm-dark-mode div[style*="max-height: 400px" i] > div,
-.scicomm-dark-mode div[style*="max-height:400px" i] > div,
-.scicomm-dark-mode div[style*="maxHeight: '400px'" i] > div {
-  border-bottom: 1px solid #1e293b !important;
-  background: transparent !important;
-}
-
-.scicomm-dark-mode div[style*="max-height: 400px" i] span,
-.scicomm-dark-mode div[style*="max-height:400px" i] span,
-.scicomm-dark-mode div[style*="maxHeight: '400px'" i] span {
-  color: #f3f4f6 !important;
-}
-
-/* Deactivated/Disabled buttons inside Admin member clear list (originally white/light-grey background) */
-.scicomm-dark-mode div[style*="max-height" i] button:disabled,
-.scicomm-dark-mode div[style*="maxHeight" i] button:disabled,
-.scicomm-dark-mode h4 + div button:disabled,
-.scicomm-dark-mode button:disabled,
-.scicomm-dark-mode button[disabled] {
-  background: #111827 !important;
-  background-color: #111827 !important;
-  color: #4b5563 !important;
-  border: 1px solid #1e293b !important;
-  cursor: not-allowed !important;
-  box-shadow: none !important;
-}
-
-/* Active "Clear Tasks" button (originally styled red/pink inline) - first button */
-.scicomm-dark-mode div[style*="max-height" i] button:not(:disabled):first-of-type,
-.scicomm-dark-mode div[style*="maxHeight" i] button:not(:disabled):first-of-type,
-.scicomm-dark-mode h4 + div button:not(:disabled):first-of-type {
-  background: #450a0a !important;
-  background-color: #450a0a !important;
-  color: #fca5a5 !important;
-  border: 1px solid #991b1b !important;
-  cursor: pointer !important;
-}
-
-.scicomm-dark-mode div[style*="max-height" i] button:not(:disabled):first-of-type:hover,
-.scicomm-dark-mode div[style*="maxHeight" i] button:not(:disabled):first-of-type:hover,
-.scicomm-dark-mode h4 + div button:not(:disabled):first-of-type:hover {
-  background: #7f1d1d !important;
-  background-color: #7f1d1d !important;
-  color: #ffffff !important;
-  border-color: #ef4444 !important;
-}
-
-/* Active "Clear Meetings" button (originally styled blue inline) - second button */
-.scicomm-dark-mode div[style*="max-height" i] button:not(:disabled):last-of-type,
-.scicomm-dark-mode div[style*="maxHeight" i] button:not(:disabled):last-of-type,
-.scicomm-dark-mode h4 + div button:not(:disabled):last-of-type {
-  background: #1e3a8a !important;
-  background-color: #1e3a8a !important;
-  color: #bfdbfe !important;
-  border: 1px solid #1d4ed8 !important;
-  cursor: pointer !important;
-}
-
-.scicomm-dark-mode div[style*="max-height" i] button:not(:disabled):last-of-type:hover,
-.scicomm-dark-mode div[style*="maxHeight" i] button:not(:disabled):last-of-type:hover,
-.scicomm-dark-mode h4 + div button:not(:disabled):last-of-type:hover {
-  background: #1d4ed8 !important;
-  background-color: #1d4ed8 !important;
-  color: #ffffff !important;
-  border-color: #3b82f6 !important;
-}
-
-/* --- PROFILE LEVEL BADGES & ACHIEVEMENT GRADIENTS --- */
-.scicomm-dark-mode .tag,
-.scicomm-dark-mode span.tag,
-.scicomm-dark-mode div.tag,
-.scicomm-dark-mode .scicomm-notif-badge {
-  background: rgba(6, 182, 212, 0.15) !important; /* Cybernetic glowing chips */
-  background-color: rgba(6, 182, 212, 0.15) !important;
-  color: #22d3ee !important;
-  border: 1px solid rgba(6, 182, 212, 0.4) !important;
-  box-shadow: 0 0 8px rgba(6, 182, 212, 0.1) !important;
-  font-weight: 600 !important;
-}
-
-/* Level Badges structural targeting */
-.scicomm-dark-mode h1 + span.tag,
-.scicomm-dark-mode h1 + span[style*="border-radius" i],
-.scicomm-dark-mode h1 + span[style*="borderRadius" i],
-.scicomm-dark-mode h2 + div.tag,
-.scicomm-dark-mode h3 + span.tag,
-.scicomm-dark-mode h3 + div.tag,
-.scicomm-dark-mode .scicomm-sidebar-left .tag,
-.scicomm-dark-mode .scicomm-sidebar-left div.tag,
-.scicomm-dark-mode span + span[style*="border-radius" i],
-.scicomm-dark-mode span + div[style*="border-radius" i],
-.scicomm-dark-mode span[style*="border-radius: 12px" i],
-.scicomm-dark-mode span[style*="borderRadius: '12px'" i],
-.scicomm-dark-mode span[style*="border-radius: 8px" i],
-.scicomm-dark-mode span[style*="borderRadius: '8px'" i],
-.scicomm-dark-mode div[style*="border-radius: 12px" i],
-.scicomm-dark-mode div[style*="borderRadius: '12px'" i] {
-  background: rgba(6, 182, 212, 0.15) !important;
-  background-color: rgba(6, 182, 212, 0.15) !important;
-  color: #22d3ee !important;
-  border: 1px solid rgba(6, 182, 212, 0.4) !important;
-  box-shadow: 0 0 8px rgba(6, 182, 212, 0.1) !important;
-}
-
-/* Double-override dynamic hex/rgb values in USER_LEVELS (matching spaced and space-free RGB strings) */
-.scicomm-dark-mode *[style*="f3f4f6" i], .scicomm-dark-mode *[style*="243,244,246" i], .scicomm-dark-mode *[style*="243, 244, 246" i],
-.scicomm-dark-mode *[style*="eff6ff" i], .scicomm-dark-mode *[style*="239,246,255" i], .scicomm-dark-mode *[style*="239, 246, 255" i],
-.scicomm-dark-mode *[style*="e0f2fe" i], .scicomm-dark-mode *[style*="224,242,254" i], .scicomm-dark-mode *[style*="224, 242, 254" i],
-.scicomm-dark-mode *[style*="ede9fe" i], .scicomm-dark-mode *[style*="237,233,254" i], .scicomm-dark-mode *[style*="237, 233, 254" i],
-.scicomm-dark-mode *[style*="fce7f3" i], .scicomm-dark-mode *[style*="252,231,243" i], .scicomm-dark-mode *[style*="252, 231, 243" i],
-.scicomm-dark-mode *[style*="ffe4e6" i], .scicomm-dark-mode *[style*="255,228,230" i], .scicomm-dark-mode *[style*="255, 228, 230" i],
-.scicomm-dark-mode *[style*="fae8ff" i], .scicomm-dark-mode *[style*="250,232,255" i], .scicomm-dark-mode *[style*="250, 232, 255" i],
-.scicomm-dark-mode *[style*="fef3c7" i], .scicomm-dark-mode *[style*="254,243,199" i], .scicomm-dark-mode *[style*="254, 243, 199" i],
-.scicomm-dark-mode *[style*="ccfbf1" i], .scicomm-dark-mode *[style*="204,251,241" i], .scicomm-dark-mode *[style*="204, 251, 241" i] {
-  background: rgba(6, 182, 212, 0.15) !important;
-  background-color: rgba(6, 182, 212, 0.15) !important;
-  color: #22d3ee !important;
-  border: 1px solid rgba(6, 182, 212, 0.4) !important;
-  box-shadow: 0 0 10px rgba(6, 182, 212, 0.25) !important;
-}
-
-/* Specific gold gradient for Master role badge and SciComm MasterMind tag */
-.scicomm-dark-mode .tag[title*="Master" i],
-.scicomm-dark-mode *[title*="MasterMind" i],
-.scicomm-dark-mode span.tag[style*="fef3c7" i],
-.scicomm-dark-mode span[style*="fef3c7" i]:has(span),
-.scicomm-dark-mode *[style*="linear-gradient" i][style*="f59e0b" i] {
-  background: linear-gradient(135deg, #78350f, #92400e) !important;
-  color: #fef3c7 !important;
-  border: 1px solid #b45309 !important;
-  box-shadow: 0 2px 6px rgba(180, 83, 9, 0.4) !important;
-}
-
-/* Specific blue/indigo gradient for Admin role badge and standard pinned tags */
-.scicomm-dark-mode .tag[title*="Admin" i],
-.scicomm-dark-mode *[style*="linear-gradient" i][style*="3b82f6" i],
-.scicomm-dark-mode *[style*="linear-gradient" i][style*="eff6ff" i],
-.scicomm-dark-mode span.tag[style*="eff6ff" i],
-.scicomm-dark-mode span.tag[style*="239,246,255" i] {
-  background: linear-gradient(135deg, #1e3a8a, #1d4ed8) !important;
-  color: #bfdbfe !important;
-  border: 1px solid #3b82f6 !important;
-}
-
-/* --- GRAPHICAL STATS GRID PROFILE CARD --- */
-.scicomm-dark-mode div[style*="grid-template-columns: repeat(4, 1fr)" i],
-.scicomm-dark-mode div[style*="gridTemplateColumns: 'repeat(4, 1fr)'" i],
-.scicomm-dark-mode div[style*="minmax(100px" i],
-.scicomm-dark-mode div[style*="auto-fit, minmax" i],
-.scicomm-dark-mode div[style*="grid-template-columns" i] {
-  background: #0b0f19 !important;
-  background-color: #0b0f19 !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    inset 0 0 12px rgba(255, 255, 255, 0.02),
-    0 0 25px rgba(255, 255, 255, 0.07),
-    0 12px 36px rgba(0, 0, 0, 0.7) !important;
-}
-
-/* Next Level progression block below Stats Grid */
-.scicomm-dark-mode div[style*="grid-template-columns" i] + div,
-.scicomm-dark-mode div[style*="gridTemplateColumns" i] + div,
-.scicomm-dark-mode div[style*="auto-fit, minmax" i] + div,
-.scicomm-dark-mode div[style*="minmax(100px" i] + div {
-  background: #111827 !important;
-  border: 1px solid #1e293b !important;
-}
-
-/* --- ACHIEVEMENT TAG MANAGER MODAL --- */
-.scicomm-dark-mode div[style*="zIndex: 1000" i] > div,
-.scicomm-dark-mode div[style*="zIndex:1000" i] > div,
-.scicomm-dark-mode div[style*="1000" i] > div,
-.scicomm-dark-mode div[style*="z-index: 1000" i] > div {
-  background: #0b0f19 !important;
-  background-color: #0b0f19 !important;
-  border: 1px solid #1e293b !important;
-  color: #f9fafb !important;
-}
-
-.scicomm-dark-mode div[style*="zIndex: 1000" i] h3,
-.scicomm-dark-mode div[style*="zIndex: 1000" i] p,
-.scicomm-dark-mode div[style*="1000" i] h3,
-.scicomm-dark-mode div[style*="1000" i] p {
-  color: #f9fafb !important;
-}
-
-.scicomm-dark-mode div[style*="zIndex: 1000" i] button:not([style*="linear-gradient" i]),
-.scicomm-dark-mode div[style*="1000" i] button:not([style*="linear-gradient" i]) {
-  background: #111827 !important;
-  color: #e5e7eb !important;
-  border: 1px solid #1e293b !important;
-}
-
-.scicomm-dark-mode div[style*="zIndex: 1000" i] button[style*="linear-gradient" i],
-.scicomm-dark-mode div[style*="1000" i] button[style*="linear-gradient" i] {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
-  color: #ffffff !important;
-  border: 1px solid #3b82f6 !important;
-}
-
-/* --- CONTENT REMOVED BY ADMINISTRATOR MODERATION BOX --- */
-.scicomm-dark-mode div[style*="dashed" i]:has(h4),
-.scicomm-dark-mode div[style*="dashed" i][style*="fecaca" i],
-.scicomm-dark-mode div[style*="dashed" i][style*="rgba(254" i] {
-  background: linear-gradient(135deg, rgba(127, 29, 29, 0.9) 0%, rgba(69, 10, 10, 0.9) 100%) !important;
-  background-color: rgba(69, 10, 10, 0.9) !important;
-  border: 2px dashed #f87171 !important;
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.25), inset 0 0 12px rgba(239, 68, 68, 0.1) !important;
-  backdrop-filter: blur(12px) !important;
-}
-
-.scicomm-dark-mode div[style*="dashed" i]:has(h4) h4,
-.scicomm-dark-mode div[style*="dashed" i][style*="fecaca" i] h4,
-.scicomm-dark-mode div[style*="dashed" i][style*="rgba(254" i] h4 {
-  color: #fca5a5 !important;
-  text-shadow: 0 0 8px rgba(248, 113, 113, 0.5) !important;
-}
-
-.scicomm-dark-mode div[style*="dashed" i]:has(h4) p,
-.scicomm-dark-mode div[style*="dashed" i][style*="fecaca" i] p,
-.scicomm-dark-mode div[style*="dashed" i][style*="rgba(254" i] p {
-  color: #fee2e2 !important;
-}
-
-/* --- SCROLLBAR TRACK & SCROLLBAR OVERRIDES --- */
+/* --- SCROLLBAR OVERRIDES --- */
 html.scicomm-dark-mode {
   color-scheme: dark !important;
 }
-
 html.scicomm-dark-mode *,
 .scicomm-dark-mode * {
   scrollbar-width: thin !important;
-  scrollbar-color: #06b6d4 #000000 !important; /* Cyber-cyan on pitch black */
+  scrollbar-color: #06b6d4 #000000 !important;
 }
-
 html.scicomm-dark-mode *::-webkit-scrollbar,
 html.scicomm-dark-mode ::-webkit-scrollbar,
 .scicomm-dark-mode *::-webkit-scrollbar,
@@ -1893,7 +1052,6 @@ html.scicomm-dark-mode ::-webkit-scrollbar,
   background-color: #000000 !important;
   background: #000000 !important;
 }
-
 html.scicomm-dark-mode *::-webkit-scrollbar-track,
 html.scicomm-dark-mode ::-webkit-scrollbar-track,
 .scicomm-dark-mode *::-webkit-scrollbar-track,
@@ -1901,7 +1059,6 @@ html.scicomm-dark-mode ::-webkit-scrollbar-track,
   background-color: #000000 !important;
   background: #000000 !important;
 }
-
 html.scicomm-dark-mode *::-webkit-scrollbar-thumb,
 html.scicomm-dark-mode ::-webkit-scrollbar-thumb,
 .scicomm-dark-mode *::-webkit-scrollbar-thumb,
@@ -1912,7 +1069,6 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb,
   border: 2px solid #000000 !important;
   box-shadow: 0 0 8px rgba(6, 182, 212, 0.4) !important;
 }
-
 html.scicomm-dark-mode *::-webkit-scrollbar-thumb:hover,
 html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode *::-webkit-scrollbar-thumb:hover,
@@ -1921,11 +1077,63 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   background: #22d3ee !important;
 }
 
-/* --- DYNAMIC BORDER COLOR OVERRIDES --- */
-.scicomm-dark-mode *[style*="e0dfdc" i],
-.scicomm-dark-mode *[style*="224, 223, 220" i],
-.scicomm-dark-mode *[style*="224,223,220" i] {
-  border-color: #1e293b !important;
+/* --- SECURITY WARNING BANNER --- */
+.scicomm-dark-mode div[style*="dashed" i]:has(h4),
+.scicomm-dark-mode div[style*="dashed" i][style*="fecaca" i],
+.scicomm-dark-mode div[style*="dashed" i][style*="rgba(254" i] {
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.9) 0%, rgba(69, 10, 10, 0.9) 100%) !important;
+  border: 2px dashed #f87171 !important;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.25) !important;
+}
+.scicomm-dark-mode div[style*="dashed" i] h4 {
+  color: #fca5a5 !important;
+  text-shadow: 0 0 8px rgba(248, 113, 113, 0.5) !important;
+}
+.scicomm-dark-mode div[style*="dashed" i] p {
+  color: #fee2e2 !important;
 }
 
+/* --- GLOWING MICRO-CHIP PROGRESS TAGS --- */
+.scicomm-dark-mode .tag,
+.scicomm-dark-mode span.tag,
+.scicomm-dark-mode div.tag,
+.scicomm-dark-mode .scicomm-notif-badge {
+  background: rgba(6, 182, 212, 0.15) !important;
+  color: #22d3ee !important;
+  border: 1px solid rgba(6, 182, 212, 0.4) !important;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.1) !important;
+  font-weight: 600 !important;
+}
 
+.scicomm-dark-mode *[style*="f3f4f6" i], .scicomm-dark-mode *[style*="243,244,246" i], .scicomm-dark-mode *[style*="243, 244, 246" i],
+.scicomm-dark-mode *[style*="eff6ff" i], .scicomm-dark-mode *[style*="239,246,255" i], .scicomm-dark-mode *[style*="239, 246, 255" i],
+.scicomm-dark-mode *[style*="e0f2fe" i], .scicomm-dark-mode *[style*="224,242,254" i], .scicomm-dark-mode *[style*="224, 242, 254" i],
+.scicomm-dark-mode *[style*="ede9fe" i], .scicomm-dark-mode *[style*="237,233,254" i], .scicomm-dark-mode *[style*="237, 233, 254" i],
+.scicomm-dark-mode *[style*="fce7f3" i], .scicomm-dark-mode *[style*="252,231,243" i], .scicomm-dark-mode *[style*="252, 231, 243" i],
+.scicomm-dark-mode *[style*="ffe4e6" i], .scicomm-dark-mode *[style*="255,228,230" i], .scicomm-dark-mode *[style*="255, 228, 230" i],
+.scicomm-dark-mode *[style*="fae8ff" i], .scicomm-dark-mode *[style*="250,232,255" i], .scicomm-dark-mode *[style*="250, 232, 255" i],
+.scicomm-dark-mode *[style*="fef3c7" i], .scicomm-dark-mode *[style*="254,243,199" i], .scicomm-dark-mode *[style*="254, 243, 199" i],
+.scicomm-dark-mode *[style*="ccfbf1" i], .scicomm-dark-mode *[style*="204,251,241" i], .scicomm-dark-mode *[style*="204, 251, 241" i] {
+  background: rgba(6, 182, 212, 0.15) !important;
+  color: #22d3ee !important;
+  border: 1px solid rgba(6, 182, 212, 0.4) !important;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.25) !important;
+}
+
+.scicomm-dark-mode .tag[title*="Master" i],
+.scicomm-dark-mode *[title*="MasterMind" i],
+.scicomm-dark-mode span.tag[style*="fef3c7" i],
+.scicomm-dark-mode span[style*="fef3c7" i]:has(span) {
+  background: linear-gradient(135deg, #78350f, #92400e) !important;
+  color: #fef3c7 !important;
+  border: 1px solid #b45309 !important;
+  box-shadow: 0 2px 6px rgba(180, 83, 9, 0.4) !important;
+}
+
+.scicomm-dark-mode .tag[title*="Admin" i],
+.scicomm-dark-mode span.tag[style*="eff6ff" i],
+.scicomm-dark-mode span.tag[style*="239,246,255" i] {
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8) !important;
+  color: #bfdbfe !important;
+  border: 1px solid #3b82f6 !important;
+}
