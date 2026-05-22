@@ -574,38 +574,260 @@
 
 /* ===== DARK MODE ===== */
 .scicomm-dark-mode {
-  filter: invert(1) hue-rotate(180deg) brightness(1.05) contrast(1.05);
-  background-color: #050505; /* Deepen the background behind everything */
+  /* Complete removal of inverted colors and dimming filters! */
+  filter: none !important;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
 }
+
+/* Clear filter from images, videos, emojis, and pickers so they are completely natural */
 .scicomm-dark-mode img,
 .scicomm-dark-mode video,
-.scicomm-dark-mode .avatar-emoji,
-.scicomm-dark-mode iframe,
+.scicomm-dark-mode svg,
 .scicomm-dark-mode .emoji,
+.scicomm-dark-mode .avatar-emoji,
+.scicomm-dark-mode .gboard-emoji-picker,
+.scicomm-dark-mode .emoji-picker-container,
+.scicomm-dark-mode .emoji-picker,
 .scicomm-dark-mode .colored-icon,
 .scicomm-dark-mode .scicomm-btn-primary,
 .scicomm-dark-mode .scicomm-btn-secondary,
+.scicomm-dark-mode .scicomm-logo,
 .scicomm-dark-mode [style*="url("],
-.scicomm-dark-mode [style*="background: url"] {
-  /* Reverse the parent filter. hue-rotate(180deg) is lossy, so we add a slight saturate/brightness boost */
-  filter: contrast(0.95) brightness(0.95) hue-rotate(180deg) invert(1) saturate(1.2) brightness(1.1);
+.scicomm-dark-mode [style*="background: url"],
+.scicomm-dark-mode [style*="background-image:"] {
+  filter: none !important;
+  opacity: 1 !important;
 }
 
-.scicomm-dark-mode .tag {
-  /* Tags need a massive saturation/brightness boost to prevent them from looking dimmed/muddy after double hue-rotation */
-  filter: contrast(0.95) brightness(0.95) hue-rotate(180deg) invert(1) saturate(2.5) brightness(1.3) !important;
+/* Global App Container */
+.scicomm-dark-mode .scicomm-app {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
 }
 
+/* Main Cards, Dropdowns, Headers, and Modals */
 .scicomm-dark-mode .scicomm-card,
 .scicomm-dark-mode .scicomm-header,
 .scicomm-dark-mode .scicomm-dropdown,
-.scicomm-dark-mode .scicomm-mobile-bar {
-  border-color: rgba(0, 0, 0, 0.3) !important; /* Inverts to bright outline */
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15) !important; /* Inverts to a white futuristic glow */
+.scicomm-dark-mode .scicomm-mobile-bar,
+.scicomm-dark-mode .scicomm-modal,
+.scicomm-dark-mode .gboard-emoji-picker {
+  background-color: #1e293b !important;
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Brighten the background of the app slightly so the pure black cards pop more */
-.scicomm-dark-mode .scicomm-app {
-  background-color: #e2e8f0 !important; /* Inverts to a slightly lighter dark gray than before */
+/* Catch elements with inline white/light-grey backgrounds and style them Slate-800 */
+.scicomm-dark-mode div[style*="background: white"],
+.scicomm-dark-mode div[style*="background:white"],
+.scicomm-dark-mode div[style*="background-color: white"],
+.scicomm-dark-mode div[style*="background-color:white"],
+.scicomm-dark-mode div[style*="background: #fff"],
+.scicomm-dark-mode div[style*="background:#fff"],
+.scicomm-dark-mode div[style*="background-color: #fff"],
+.scicomm-dark-mode div[style*="background-color:#fff"],
+.scicomm-dark-mode div[style*="background: rgb(255, 255, 255)"],
+.scicomm-dark-mode div[style*="background-color: rgb(255, 255, 255)"],
+.scicomm-dark-mode div[style*="background: linear-gradient(135deg, #ffffff, #f1f5f9)"],
+.scicomm-dark-mode div[style*="background:linear-gradient(135deg, #ffffff, #f1f5f9)"] {
+  background-color: #1e293b !important;
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
 }
-/* Triggering Vite HMR */
+
+/* Catch light-grey background containers (e.g. comment bubbles) and style them Slate-700 */
+.scicomm-dark-mode div[style*="background: #f2f2f2"],
+.scicomm-dark-mode div[style*="background-color: #f2f2f2"],
+.scicomm-dark-mode div[style*="background: #f3f2ef"],
+.scicomm-dark-mode div[style*="background-color: #f3f2ef"],
+.scicomm-dark-mode div[style*="background: #f8fafc"],
+.scicomm-dark-mode div[style*="background-color: #f8fafc"],
+.scicomm-dark-mode div[style*="background: #f1f5f9"],
+.scicomm-dark-mode div[style*="background-color: #f1f5f9"],
+.scicomm-dark-mode div[style*="background: rgb(241, 245, 249)"],
+.scicomm-dark-mode div[style*="background-color: rgb(241, 245, 249)"],
+.scicomm-dark-mode div[style*="background: #eff6ff"],
+.scicomm-dark-mode div[style*="background-color: #eff6ff"],
+.scicomm-dark-mode div[style*="background: #f9fafb"],
+.scicomm-dark-mode div[style*="background-color: #f9fafb"] {
+  background-color: #334155 !important;
+  background: #334155 !important;
+  color: #f8fafc !important;
+  border-color: #475569 !important;
+}
+
+/* Chat Search Box and user lists */
+.scicomm-dark-mode div[style*="background: #f1f5f9"] input,
+.scicomm-dark-mode div[style*="background-color: #f1f5f9"] input {
+  color: #f8fafc !important;
+}
+
+/* Text elements styling */
+.scicomm-dark-mode h1,
+.scicomm-dark-mode h2,
+.scicomm-dark-mode h3,
+.scicomm-dark-mode h4,
+.scicomm-dark-mode h5,
+.scicomm-dark-mode h6,
+.scicomm-dark-mode p,
+.scicomm-dark-mode span,
+.scicomm-dark-mode label,
+.scicomm-dark-mode strong,
+.scicomm-dark-mode li {
+  color: #f8fafc !important;
+}
+
+/* Accentuated titles (like inline color: #0f172a / rgba(0,0,0,0.9)) */
+.scicomm-dark-mode *[style*="color: #0f172a"],
+.scicomm-dark-mode *[style*="color:#0f172a"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.9)"],
+.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.9)"],
+.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.9)"],
+.scicomm-dark-mode *[style*="color: #1e3a8a"] {
+  color: #f8fafc !important;
+}
+
+/* Muted / Sub-info text (Slate-400) */
+.scicomm-dark-mode .scicomm-text-muted,
+.scicomm-dark-mode .nav-text,
+.scicomm-dark-mode *[style*="color: #475569"],
+.scicomm-dark-mode *[style*="color:#475569"],
+.scicomm-dark-mode *[style*="color: #64748b"],
+.scicomm-dark-mode *[style*="color:#64748b"],
+.scicomm-dark-mode *[style*="color: #666"],
+.scicomm-dark-mode *[style*="color:#666"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.6)"],
+.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.6)"],
+.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.6)"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.5)"],
+.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.5)"],
+.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.5)"] {
+  color: #94a3b8 !important;
+}
+
+/* Interactive elements and links */
+.scicomm-dark-mode a {
+  color: #60a5fa !important;
+}
+.scicomm-dark-mode a:hover {
+  color: #93c5fd !important;
+  text-decoration: underline;
+}
+
+/* Primary Button Override */
+.scicomm-dark-mode .scicomm-btn-primary {
+  background-color: #2563eb !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3) !important;
+}
+.scicomm-dark-mode .scicomm-btn-primary:hover {
+  background-color: #1d4ed8 !important;
+  background: #1d4ed8 !important;
+}
+
+/* Secondary Button Override */
+.scicomm-dark-mode .scicomm-btn-secondary {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #60a5fa !important;
+  border-color: #60a5fa !important;
+}
+.scicomm-dark-mode .scicomm-btn-secondary:hover {
+  background-color: rgba(96, 165, 250, 0.1) !important;
+  box-shadow: inset 0 0 0 1px #60a5fa !important;
+}
+
+/* Specific red delete/danger buttons */
+.scicomm-dark-mode button[style*="color: #ef4444"],
+.scicomm-dark-mode button[style*="color:#ef4444"] {
+  color: #f87171 !important;
+  border-color: #f87171 !important;
+}
+
+/* Header Search Box specific overrides */
+.scicomm-dark-mode .scicomm-search-box {
+  background-color: #334155 !important;
+}
+.scicomm-dark-mode .scicomm-search-box input {
+  color: #f8fafc !important;
+  caret-color: #f8fafc !important;
+}
+.scicomm-dark-mode .scicomm-search-box input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Navigation Items (active indicators) */
+.scicomm-dark-mode .scicomm-nav-item {
+  color: #94a3b8 !important;
+}
+.scicomm-dark-mode .scicomm-nav-item:hover,
+.scicomm-dark-mode .scicomm-nav-item.active {
+  color: #ffffff !important;
+}
+.scicomm-dark-mode .scicomm-nav-item.active::after {
+  background-color: #3b82f6 !important;
+}
+
+/* Hover highlights in menus and feeds */
+.scicomm-dark-mode .dropdown-item:hover,
+.scicomm-dark-mode .scicomm-feed-action:hover,
+.scicomm-dark-mode .scicomm-post-btn:hover {
+  background-color: #334155 !important;
+  background: #334155 !important;
+  color: #ffffff !important;
+}
+
+/* Post buttons specifically liked */
+.scicomm-dark-mode .scicomm-post-btn.liked {
+  color: #3b82f6 !important;
+}
+
+/* Forms, inputs, textarea and select boxes */
+.scicomm-dark-mode input[type="text"],
+.scicomm-dark-mode input[type="password"],
+.scicomm-dark-mode input[type="email"],
+.scicomm-dark-mode input[type="url"],
+.scicomm-dark-mode input[type="search"],
+.scicomm-dark-mode textarea,
+.scicomm-dark-mode select {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+}
+.scicomm-dark-mode input::placeholder,
+.scicomm-dark-mode textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Borders and dividers */
+.scicomm-dark-mode .dropdown-divider {
+  background-color: #334155 !important;
+}
+.scicomm-dark-mode hr {
+  border-color: #334155 !important;
+}
+.scicomm-dark-mode *[style*="border-bottom: 1px solid #e0dfdc"],
+.scicomm-dark-mode *[style*="border-bottom: 1px solid #f1f5f9"],
+.scicomm-dark-mode *[style*="border-top: 1px solid #f1f5f9"],
+.scicomm-dark-mode *[style*="border: 1px solid #e0dfdc"],
+.scicomm-dark-mode *[style*="border: 1px solid #ddd"] {
+  border-color: #334155 !important;
+}
+
+/* Modal overlays and scrollbars */
+.scicomm-dark-mode .scicomm-modal-overlay {
+  background: rgba(2, 6, 23, 0.8) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.scicomm-dark-mode ::-webkit-scrollbar-thumb {
+  background: #475569 !important;
+}
+.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #64748b !important;
+}
