@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
 import { useState, useEffect } from 'react';
 
+import { safeLocalStorage } from '../utils/safeStorage';
+
 export default function SciCommHub() {
   const { user } = useAuth();
   const isAdmin = user.role === 'admin' || user.role === 'master';
@@ -13,11 +15,11 @@ export default function SciCommHub() {
   const myPendingTasks = tasksData.filter(t => String(t.assignedTo) === String(user.id) && t.status !== 'Completed' && t.status !== 'Approved');
   const upcomingMeetings = meetingsData.filter(m => ((m.members || []).includes(user.id) || m.allMembers) && new Date(m.date) >= new Date(new Date().toDateString()));
 
-  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('scicommDarkMode') === 'true');
+  const [isDarkMode, setIsDarkMode] = useState(safeLocalStorage.getItem('scicommDarkMode') === 'true');
 
   useEffect(() => {
     const handleStorageChange = () => {
-      setIsDarkMode(localStorage.getItem('scicommDarkMode') === 'true');
+      setIsDarkMode(safeLocalStorage.getItem('scicommDarkMode') === 'true');
     };
     window.addEventListener('storage', handleStorageChange);
     // Also set up an observer to watch for class changes on body

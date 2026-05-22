@@ -36,8 +36,20 @@ import SciCommSettings from './scicomm/SciCommSettings';
 
 import SciCommDownload from './scicomm/SciCommDownload';
 
+import { safeLocalStorage, safeSessionStorage, getCookie } from './utils/safeStorage';
+
 // Read workspace once at module level (stable — only changes on Portal page redirect)
-const isSciComm = localStorage.getItem('workspaceId') === 'aiuscicomm';
+const getModuleWorkspace = () => {
+  let ws = safeLocalStorage.getItem('workspaceId');
+  if (!ws) {
+    ws = safeSessionStorage.getItem('workspaceId');
+  }
+  if (!ws) {
+    ws = getCookie('workspaceId');
+  }
+  return ws;
+};
+const isSciComm = getModuleWorkspace() === 'aiuscicomm';
 
 function App() {
   return (

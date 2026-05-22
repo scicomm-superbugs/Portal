@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, Microscope, Atom, Network, GraduationCap, BookOpen, ChevronRight, MessageCircle } from 'lucide-react';
 
+import { safeLocalStorage, safeSessionStorage, setCookie } from '../utils/safeStorage';
+
 // Advanced 3D iOS-style Glass Card Component
 const GlassCard = ({ title, subtitle, description, logoSrc, tags, accentColor, onClick, delay }) => {
   const cardRef = useRef(null);
@@ -60,8 +62,8 @@ const GlassCard = ({ title, subtitle, description, logoSrc, tags, accentColor, o
       
       {/* Pop-out Huge Logo */}
       <div className="logo-wrapper">
-        <div className="logo-halo" style={{ background: `radial-gradient(circle, ${accentColor} 0%, transparent 70%)` }}></div>
-        <img src={logoSrc} alt={title} className="lab-logo" onError={e => e.target.style.display = 'none'} />
+         <div className="logo-halo" style={{ background: `radial-gradient(circle, ${accentColor} 0%, transparent 70%)` }}></div>
+         <img src={logoSrc} alt={title} className="lab-logo" onError={e => e.target.style.display = 'none'} />
       </div>
       
       <div className="card-content">
@@ -99,8 +101,10 @@ export default function Portal() {
   }, []);
 
   const handleSelectWorkspace = (workspaceId) => {
-    localStorage.setItem('workspaceId', workspaceId);
-    sessionStorage.removeItem('userId'); 
+    safeLocalStorage.setItem('workspaceId', workspaceId);
+    safeSessionStorage.setItem('workspaceId', workspaceId);
+    setCookie('workspaceId', workspaceId, 365);
+    safeSessionStorage.removeItem('userId'); 
     window.location.href = '#/login';
     window.location.reload();
   };

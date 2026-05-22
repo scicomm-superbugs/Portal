@@ -893,24 +893,40 @@ export default function SciCommChat() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px' }}>
                     <div style={{ flex: 1, background: '#f1f5f9', borderRadius: '18px', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <button 
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          fileInputRef.current?.click();
-                        }} 
-                        disabled={fileUploading}
-                        style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', opacity: fileUploading ? 0.5 : 1, display: 'flex', alignItems: 'center' }}
+                      <label 
+                        style={{ 
+                          position: 'relative',
+                          background: 'none', 
+                          border: 'none', 
+                          color: '#64748b', 
+                          cursor: 'pointer', 
+                          opacity: fileUploading ? 0.5 : 1, 
+                          display: 'flex', 
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '24px',
+                          height: '24px',
+                          flexShrink: 0
+                        }}
                       >
                         <Plus size={20} />
-                      </button>
-                      <input 
-                        type="file" 
-                        ref={fileInputRef} 
-                        onChange={handleFileChange} 
-                        style={{ position: 'absolute', opacity: 0, width: '1px', height: '1px', overflow: 'hidden', zIndex: -1, pointerEvents: 'none' }} 
-                      />
+                        <input 
+                          type="file" 
+                          ref={fileInputRef} 
+                          onChange={handleFileChange} 
+                          disabled={fileUploading}
+                          style={{ 
+                            position: 'absolute', 
+                            top: 0, 
+                            left: 0, 
+                            width: '100%', 
+                            height: '100%', 
+                            opacity: 0, 
+                            cursor: 'pointer', 
+                            zIndex: 10 
+                          }} 
+                        />
+                      </label>
                       {fileUploading ? (
                         <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '14px', fontWeight: 600, padding: '8px 0' }}>
                           <div style={{ width: '16px', height: '16px', border: '2px solid #1d4ed8', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>

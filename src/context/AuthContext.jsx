@@ -3,6 +3,10 @@ import { db, getFirebaseAuth } from '../db';
 import { signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from 'firebase/auth';
 import bcrypt from 'bcryptjs';
 import { Capacitor } from '@capacitor/core';
+import { doc, getDoc } from 'firebase/firestore';
+import { firestore } from '../db';
+import { safeLocalStorage, safeSessionStorage, getCookie, setCookie, deleteCookie } from '../utils/safeStorage';
+
 
 const isMedian = () => {
   return typeof window !== 'undefined' && (
@@ -24,6 +28,22 @@ const isCapacitor = () => {
 };
 
 const AuthContext = createContext(null);
+
+const getUserId = () => {
+  let uid = safeLocalStorage.getItem('userId');
+  if (uid) return uid;
+  uid = safeSessionStorage.getItem('userId');
+  if (uid) return uid;
+  return getCookie('userId');
+};
+
+const getWorkspaceId = () => {
+  let ws = safeLocalStorage.getItem('workspaceId');
+  if (ws) return ws;
+  ws = safeSessionStorage.getItem('workspaceId');
+  if (ws) return ws;
+  return getCookie('workspaceId');
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -110,7 +130,21 @@ export const AuthProvider = ({ children }) => {
       };
 
       setUser(userData);
-      localStorage.setItem('userId', scientist.id);
+      safeLocalStorage.setItem('userId', scientist.id);
+      safeSessionStorage.setItem('userId', scientist.id);
+      setCookie('userId', scientist.id, 365);
+      
+      const ws = getWorkspaceId();
+      if (ws) {
+        safeLocalStorage.setItem('workspaceId', ws);
+        safeSessionStorage.setItem('workspaceId', ws);
+        setCookie('workspaceId', ws, 365);
+        try {
+          await db.scientists.update(scientist.id, { lastActiveWorkspace: ws });
+        } catch (e) {
+          console.warn("Failed to update lastActiveWorkspace:", e);
+        }
+      }
       return userData;
     }
   };
@@ -191,10 +225,66 @@ export const AuthProvider = ({ children }) => {
         }
 
         // 2. Check if already signed in locally
-        const storedUserId = localStorage.getItem('userId');
+        let storedUserId = getUserId();
+        let currentWorkspace = getWorkspaceId();
+        
         if (storedUserId) {
-          const scientist = await db.scientists.get(String(storedUserId));
+          let scientist = null;
+          let foundWorkspace = null;
+          
+          if (currentWorkspace) {
+            try {
+              scientist = await db.scientists.get(String(storedUserId));
+              if (scientist) foundWorkspace = currentWorkspace;
+            } catch (err) {
+              console.warn("Failed to fetch scientist from primary workspace:", err);
+            }
+          }
+          
+          if (!scientist) {
+            // Scan workspaces to recover the correct workspace
+            const prefixes = ['aiuscicomm', 'alamein', 'compchem', ''];
+            for (const prefix of prefixes) {
+              try {
+                const colName = prefix ? `${prefix}_scientists` : 'scientists';
+                const docRef = doc(firestore, colName, String(storedUserId));
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                  scientist = { id: docSnap.id, ...docSnap.data() };
+                  foundWorkspace = prefix || 'compchem';
+                  break;
+                }
+              } catch (e) {
+                // Skip if error/permission denied for this prefix
+              }
+            }
+          }
+          
           if (!isTimeout && scientist) {
+            // Restore workspace if found and different
+            if (foundWorkspace && foundWorkspace !== currentWorkspace) {
+              safeLocalStorage.setItem('workspaceId', foundWorkspace);
+              safeSessionStorage.setItem('workspaceId', foundWorkspace);
+              setCookie('workspaceId', foundWorkspace, 365);
+              currentWorkspace = foundWorkspace;
+            }
+            
+            // Sync with cookie/storage
+            safeLocalStorage.setItem('userId', scientist.id);
+            safeSessionStorage.setItem('userId', scientist.id);
+            setCookie('userId', scientist.id, 365);
+            
+            // If the scientist record has a lastActiveWorkspace, restore it too
+            if (scientist.lastActiveWorkspace && scientist.lastActiveWorkspace !== currentWorkspace) {
+              safeLocalStorage.setItem('workspaceId', scientist.lastActiveWorkspace);
+              safeSessionStorage.setItem('workspaceId', scientist.lastActiveWorkspace);
+              setCookie('workspaceId', scientist.lastActiveWorkspace, 365);
+              
+              // Force reload to let changes take effect in routes
+              window.location.reload();
+              return;
+            }
+            
             setUser({ id: scientist.id, username: scientist.username, name: scientist.name, role: scientist.role, avatar: scientist.avatar });
           }
         }
@@ -260,7 +350,21 @@ export const AuthProvider = ({ children }) => {
     };
 
     setUser(userData);
-    localStorage.setItem('userId', scientist.id);
+    safeLocalStorage.setItem('userId', scientist.id);
+    safeSessionStorage.setItem('userId', scientist.id);
+    setCookie('userId', scientist.id, 365);
+    
+    const ws = getWorkspaceId();
+    if (ws) {
+      safeLocalStorage.setItem('workspaceId', ws);
+      safeSessionStorage.setItem('workspaceId', ws);
+      setCookie('workspaceId', ws, 365);
+      try {
+        await db.scientists.update(scientist.id, { lastActiveWorkspace: ws });
+      } catch (e) {
+        console.warn("Failed to update lastActiveWorkspace:", e);
+      }
+    }
     return userData;
   };
 
@@ -272,8 +376,12 @@ export const AuthProvider = ({ children }) => {
       console.warn("Signout error:", e);
     }
     setUser(null);
-    localStorage.removeItem('userId');
-    localStorage.removeItem('googleDriveToken');
+    safeLocalStorage.removeItem('userId');
+    safeLocalStorage.removeItem('googleDriveToken');
+    safeSessionStorage.removeItem('userId');
+    safeSessionStorage.removeItem('googleDriveToken');
+    deleteCookie('userId');
+    deleteCookie('googleDriveToken');
   };
 
   const loginWithGoogle = async () => {
@@ -384,7 +492,21 @@ export const AuthProvider = ({ children }) => {
       };
 
       setUser(userData);
-      localStorage.setItem('userId', scientist.id);
+      safeLocalStorage.setItem('userId', scientist.id);
+      safeSessionStorage.setItem('userId', scientist.id);
+      setCookie('userId', scientist.id, 365);
+      
+      const ws = getWorkspaceId();
+      if (ws) {
+        safeLocalStorage.setItem('workspaceId', ws);
+        safeSessionStorage.setItem('workspaceId', ws);
+        setCookie('workspaceId', ws, 365);
+        try {
+          await db.scientists.update(scientist.id, { lastActiveWorkspace: ws });
+        } catch (e) {
+          console.warn("Failed to update lastActiveWorkspace:", e);
+        }
+      }
       return userData;
     } catch (error) {
       console.error('Google login error:', error);
@@ -503,8 +625,45 @@ export const AuthProvider = ({ children }) => {
     await db.scientists.update(user.id, { passwordHash: hash });
   };
 
+  const dismissBanner = async (bannerKey) => {
+    safeLocalStorage.setItem(bannerKey, 'true');
+    if (user && user.id) {
+      try {
+        const scientist = await db.scientists.get(user.id);
+        const currentDismissed = scientist?.dismissedBanners || [];
+        if (!currentDismissed.includes(bannerKey)) {
+          await db.scientists.update(user.id, { dismissedBanners: [...currentDismissed, bannerKey] });
+        }
+      } catch (e) {
+        console.warn("Failed to sync banner dismissal to cloud:", e);
+      }
+    }
+  };
+
+  const isBannerDismissed = (bannerKey, meDoc) => {
+    if (safeLocalStorage.getItem(bannerKey) === 'true') return true;
+    if (safeSessionStorage.getItem(bannerKey) === 'true') return true;
+    if (meDoc?.dismissedBanners?.includes(bannerKey)) {
+      safeLocalStorage.setItem(bannerKey, 'true');
+      return true;
+    }
+    return false;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, loginWithGoogle, linkGoogleAccount, unlinkGoogleAccount, changePassword, setUser }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      login,
+      logout,
+      loginWithGoogle,
+      linkGoogleAccount,
+      unlinkGoogleAccount,
+      changePassword,
+      setUser,
+      dismissBanner,
+      isBannerDismissed
+    }}>
       {!loading && children}
     </AuthContext.Provider>
   );

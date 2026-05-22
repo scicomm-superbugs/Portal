@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app";
 import { initializeFirestore, doc, setDoc, deleteDoc, getDoc, getDocs, collection, query, where, addDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
+import { safeLocalStorage, safeSessionStorage, getCookie } from "./utils/safeStorage";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyAPrfR-hG-5CeZiD0EIz_P1r93ywZbxcjc",
@@ -177,7 +179,16 @@ export const uploadFile = async (file, path, onProgress) => {
 
 export const getCollectionName = (baseName) => {
   if (baseName === 'scicomm_app_downloads') return baseName;
-  const ws = localStorage.getItem('workspaceId');
+  
+  // Three-layer fallback resolve for workspaceId
+  let ws = safeLocalStorage.getItem('workspaceId');
+  if (!ws) {
+    ws = safeSessionStorage.getItem('workspaceId');
+  }
+  if (!ws) {
+    ws = getCookie('workspaceId');
+  }
+  
   if (!ws || ws === 'compchem') return baseName;
   return `${ws}_${baseName}`;
 };

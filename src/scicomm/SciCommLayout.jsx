@@ -2,22 +2,26 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard, Lock, FolderKanban, Smartphone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
+import { safeLocalStorage } from '../utils/safeStorage';
 import { useState, useEffect, useRef } from 'react';
 import { AVATARS } from './scicommConstants';
 import '../scicomm.css';
 
 export default function SciCommLayout() {
-  const { user, logout } = useAuth();
+  const { user, logout, isBannerDismissed, dismissBanner } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   
   const scientists = useLiveCollection('scientists');
   const me = scientists?.find(s => String(s.id) === String(user.id));
 
-  const tasksData = useLiveCollection('tasks') || [];
-  const warningsData = useLiveCollection('scicomm_warnings') || [];
+  const tasksDataRaw = useLiveCollection('tasks');
+  const tasksData = tasksDataRaw || [];
+  const warningsDataRaw = useLiveCollection('scicomm_warnings');
+  const warningsData = warningsDataRaw || [];
   const pendingAccounts = (scientists || []).filter(s => s.accountStatus === 'pending');
-  const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
+  const chatMessagesRaw = useLiveCollection('scicomm_chat_messages');
+  const chatMessages = chatMessagesRaw || [];
   const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
   const meetingsData = useLiveCollection('scicomm_meetings') || [];
   
@@ -36,7 +40,7 @@ export default function SciCommLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('scicommDarkMode') === 'true');
+  const [isDarkMode, setIsDarkMode] = useState(safeLocalStorage.getItem('scicommDarkMode') === 'true');
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [showComingSoon, setShowComingSoon] = useState(false);
   const postsRaw = useLiveCollection('scicomm_posts') || [];
@@ -95,15 +99,21 @@ export default function SciCommLayout() {
       console.log('Push notification failed:', e);
     }
   };
-  const prevTaskCount = useRef(myPendingTasks.length);
+  const prevTaskCount = useRef(null);
   useEffect(() => {
+    if (tasksDataRaw === null) return;
+    if (prevTaskCount.current === null) {
+      prevTaskCount.current = myPendingTasks.length;
+      return;
+    }
     if (myPendingTasks.length > prevTaskCount.current) {
       sendPushNotif('📋 New Task Assigned!', myPendingTasks[0]?.title || '');
     }
     prevTaskCount.current = myPendingTasks.length;
-  }, [myPendingTasks.length]);
+  }, [myPendingTasks.length, tasksDataRaw]);
 
-  const generalNotifs = useLiveCollection('scicomm_notifications') || [];
+  const generalNotifsRaw = useLiveCollection('scicomm_notifications');
+  const generalNotifs = generalNotifsRaw || [];
   const myGeneralNotifs = generalNotifs.filter(n => String(n.userId) === String(user.id) && !n.read);
   const applicationsData = useLiveCollection('scicomm_applications') || [];
   const myApplications = applicationsData.filter(a => String(a.userId) === String(user.id) && !a.read);
@@ -119,39 +129,53 @@ export default function SciCommLayout() {
     + upcomingMeetings.length
     + myApplications.length;
 
-  const prevWarningCount = useRef(myWarnings.length);
+  const prevWarningCount = useRef(null);
   useEffect(() => {
+    if (warningsDataRaw === null) return;
+    if (prevWarningCount.current === null) {
+      prevWarningCount.current = myWarnings.length;
+      return;
+    }
     if (myWarnings.length > prevWarningCount.current) {
       sendPushNotif('⚠️ Warning Received', myWarnings[0]?.message || '');
     }
     prevWarningCount.current = myWarnings.length;
-  }, [myWarnings.length]);
+  }, [myWarnings.length, warningsDataRaw]);
 
-  const prevGeneralNotifCount = useRef(myGeneralNotifs.length);
+  const prevGeneralNotifCount = useRef(null);
   useEffect(() => {
+    if (generalNotifsRaw === null) return;
+    if (prevGeneralNotifCount.current === null) {
+      prevGeneralNotifCount.current = myGeneralNotifs.length;
+      return;
+    }
     if (myGeneralNotifs.length > prevGeneralNotifCount.current) {
-      // Find the most recent unread notification that wasn't there before
       const latest = myGeneralNotifs.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
       if (latest) {
         sendPushNotif(latest.title, latest.message || 'Check your notifications');
       }
     }
     prevGeneralNotifCount.current = myGeneralNotifs.length;
-  }, [myGeneralNotifs.length]);
+  }, [myGeneralNotifs.length, generalNotifsRaw]);
 
-  const prevUnreadChat = useRef(unreadChatCount);
+  const prevUnreadChat = useRef(null);
   useEffect(() => {
+    if (chatMessagesRaw === null) return;
+    if (prevUnreadChat.current === null) {
+      prevUnreadChat.current = unreadChatCount;
+      return;
+    }
     if (unreadChatCount > prevUnreadChat.current) {
       const latestUnread = chatMessages.find(m => myRoomIds.has(m.roomId) && m.senderId !== user.id && !(m.readBy || []).includes(user.id));
       sendPushNotif('💬 New Message', latestUnread ? `${latestUnread.senderName}: ${latestUnread.content?.substring(0, 60) || '📎 File'}` : 'You have a new message');
     }
     prevUnreadChat.current = unreadChatCount;
-  }, [unreadChatCount]);
+  }, [unreadChatCount, chatMessagesRaw]);
 
   const toggleDarkMode = () => {
     const next = !isDarkMode;
     setIsDarkMode(next);
-    localStorage.setItem('scicommDarkMode', next);
+    safeLocalStorage.setItem('scicommDarkMode', next);
   };
 
   const handleLogout = () => { logout(); navigate('/login'); };
@@ -170,21 +194,26 @@ export default function SciCommLayout() {
   
   // One-time notification for the new mobile app
   useEffect(() => {
-    const hasSeenAppNotif = localStorage.getItem('scicomm_app_notif_seen');
-    if (!hasSeenAppNotif && user) {
-      setTimeout(() => {
+    if (scientists !== null && user && !isBannerDismissed('scicomm_app_notif_seen', me)) {
+      const timer = setTimeout(() => {
         sendPushNotif("The Portal is now on Mobile! 🚀", "Download our new native application for the best scientific communication experience.");
-        localStorage.setItem('scicomm_app_notif_seen', 'true');
+        dismissBanner('scicomm_app_notif_seen');
       }, 5000);
+      return () => clearTimeout(timer);
     }
-  }, [user]);
+  }, [scientists, me, user]);
 
-  const [showChangelog, setShowChangelog] = useState(() => {
-    const seen = localStorage.getItem('scicomm_version_seen');
-    return seen !== PLATFORM_VERSION;
-  });
+  const changelogKey = `scicomm_version_seen_${PLATFORM_VERSION}`;
+  const [showChangelog, setShowChangelog] = useState(false);
+  
+  useEffect(() => {
+    if (scientists !== null) {
+      setShowChangelog(!isBannerDismissed(changelogKey, me));
+    }
+  }, [scientists, me, changelogKey]);
+
   const dismissChangelog = () => {
-    localStorage.setItem('scicomm_version_seen', PLATFORM_VERSION);
+    dismissBanner(changelogKey);
     setShowChangelog(false);
   };
 
@@ -320,7 +349,7 @@ export default function SciCommLayout() {
                 <Link to="/settings" onClick={() => document.body.click()} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px', textDecoration:'none', color:'inherit'}}>
                   <Settings className="icon" size={16} /> Settings
                 </Link>
-                <button onClick={() => { localStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                <button onClick={() => { safeLocalStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
                   <Building2 className="icon" size={16} /> Switch Hub
                 </button>
                 <div className="dropdown-divider"></div>
@@ -395,7 +424,7 @@ export default function SciCommLayout() {
               <button onClick={() => { toggleDarkMode(); setMobileSidebarOpen(false); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 {isDarkMode ? <Sun size={20} color="#4b5563" /> : <Moon size={20} color="#4b5563" />} {isDarkMode ? 'Light Mode' : 'Dark Mode'}
               </button>
-              <button onClick={() => { localStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button onClick={() => { safeLocalStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Building2 size={20} color="#4b5563" /> Switch Hub
               </button>
               <button onClick={() => { setMobileSidebarOpen(false); navigate('/download'); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
