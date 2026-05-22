@@ -1094,7 +1094,7 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.4) !important;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.15) !important;
-  font-weight: 600 !important;
+  font-weight: 800 !important;
 }
 
 .scicomm-dark-mode *[style*="f3f4f6" i], .scicomm-dark-mode *[style*="243,244,246" i], .scicomm-dark-mode *[style*="243, 244, 246" i],
@@ -1116,18 +1116,19 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode *[title*="MasterMind" i],
 .scicomm-dark-mode span.tag[style*="fef3c7" i],
 .scicomm-dark-mode span[style*="fef3c7" i]:has(span) {
-  background: linear-gradient(135deg, #78350f, #92400e) !important;
-  color: #fef3c7 !important;
-  border: 1px solid #b45309 !important;
-  box-shadow: 0 2px 6px rgba(180, 83, 9, 0.4) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15) !important;
 }
 
 .scicomm-dark-mode .tag[title*="Admin" i],
 .scicomm-dark-mode span.tag[style*="eff6ff" i],
 .scicomm-dark-mode span.tag[style*="239,246,255" i] {
-  background: linear-gradient(135deg, #1e3a8a, #1d4ed8) !important;
-  color: #bfdbfe !important;
-  border: 1px solid #3b82f6 !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15) !important;
 }
 
 /* ==========================================
@@ -1170,7 +1171,11 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode *[style*="background-color: #fffbeb"],
 .scicomm-dark-mode *[style*="background-color:#fffbeb"],
 .scicomm-dark-mode *[style*="color: #b45309"],
-.scicomm-dark-mode *[style*="color:#b45309"] {
+.scicomm-dark-mode *[style*="color:#b45309"],
+.scicomm-dark-mode *[style*="rgb(255, 251, 235)"],
+.scicomm-dark-mode *[style*="rgb(255,251,235)"],
+.scicomm-dark-mode a[href*="admin"],
+.scicomm-dark-mode a[href*="/admin"] {
   background-color: #0b0f19 !important;
   background: #0b0f19 !important;
   color: #ffffff !important;
@@ -1178,10 +1183,27 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.15) !important;
 }
 .scicomm-dark-mode *[style*="background: #fffbeb"]:hover,
-.scicomm-dark-mode *[style*="background-color: #fffbeb"]:hover {
+.scicomm-dark-mode *[style*="background-color: #fffbeb"]:hover,
+.scicomm-dark-mode *[style*="rgb(255, 251, 235)"]:hover,
+.scicomm-dark-mode a[href*="admin"]:hover,
+.scicomm-dark-mode a[href*="/admin"]:hover {
   background-color: #111827 !important;
   background: #111827 !important;
   border-color: #ffffff !important;
+}
+
+/* Active Sidebar Chat Item Override & Browser Normalization */
+.scicomm-dark-mode *[style*="background: #f0f7ff"],
+.scicomm-dark-mode *[style*="background:#f0f7ff"],
+.scicomm-dark-mode *[style*="background-color: #f0f7ff"],
+.scicomm-dark-mode *[style*="background-color:#f0f7ff"],
+.scicomm-dark-mode *[style*="rgb(240, 247, 255)"],
+.scicomm-dark-mode *[style*="rgb(240,247,255)"] {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
 }
 
 /* 4. Chat Area High-Contrast Dark Overrides */
@@ -1214,30 +1236,38 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   background-size: 20px 20px !important;
 }
 
-/* 5. Admin Dashboard Panel Overrides (Maintenance and Point Reset) */
+/* 5. Admin Dashboard Panel Overrides (Maintenance and Point Reset) & Browser Normalization */
 /* System Maintenance (Success/Green panel overrides) */
 .scicomm-dark-mode *[style*="background: #f0fdf4"],
-.scicomm-dark-mode *[style*="background-color: #f0fdf4"] {
+.scicomm-dark-mode *[style*="background-color: #f0fdf4"],
+.scicomm-dark-mode *[style*="rgb(240, 253, 244)"],
+.scicomm-dark-mode *[style*="rgb(240,253,244)"] {
   background-color: rgba(16, 185, 129, 0.12) !important;
   background: rgba(16, 185, 129, 0.12) !important;
   border: 1px solid rgba(16, 185, 129, 0.4) !important;
   color: #a7f3d0 !important;
 }
 .scicomm-dark-mode *[style*="background: #f0fdf4"] h4,
-.scicomm-dark-mode *[style*="background: #f0fdf4"] p {
+.scicomm-dark-mode *[style*="background: #f0fdf4"] p,
+.scicomm-dark-mode *[style*="rgb(240, 253, 244)"] h4,
+.scicomm-dark-mode *[style*="rgb(240, 253, 244)"] p {
   color: #a7f3d0 !important;
 }
 
 /* Reset Points (Error/Red panel overrides) */
 .scicomm-dark-mode *[style*="background: #fef2f2"],
-.scicomm-dark-mode *[style*="background-color: #fef2f2"] {
+.scicomm-dark-mode *[style*="background-color: #fef2f2"],
+.scicomm-dark-mode *[style*="rgb(254, 242, 242)"],
+.scicomm-dark-mode *[style*="rgb(254,242,242)"] {
   background-color: rgba(239, 68, 68, 0.15) !important;
   background: rgba(239, 68, 68, 0.15) !important;
   border: 1px solid rgba(239, 68, 68, 0.4) !important;
   color: #fecdd3 !important;
 }
 .scicomm-dark-mode *[style*="background: #fef2f2"] h4,
-.scicomm-dark-mode *[style*="background: #fef2f2"] p {
+.scicomm-dark-mode *[style*="background: #fef2f2"] p,
+.scicomm-dark-mode *[style*="rgb(254, 242, 242)"] h4,
+.scicomm-dark-mode *[style*="rgb(254, 242, 242)"] p {
   color: #fecdd3 !important;
 }
 
