@@ -196,7 +196,7 @@ export default function SciCommLayout() {
   useEffect(() => {
     if (scientists !== null && user && !isBannerDismissed('scicomm_app_notif_seen', me)) {
       const timer = setTimeout(() => {
-        sendPushNotif("The Portal is now on Mobile! 🚀", "Download our new native application for the best scientific communication experience.");
+        sendPushNotif("SUPERBUGS HUB is now on Mobile! 🚀", "Download our new native application for the best scientific communication experience.");
         dismissBanner('scicomm_app_notif_seen');
       }, 5000);
       return () => clearTimeout(timer);

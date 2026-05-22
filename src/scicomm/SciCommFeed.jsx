@@ -942,80 +942,76 @@ export default function SciCommFeed() {
         <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v5.0.2</button>
         
         {/* PREMIUM SIDEBAR APP PROMOTION CARD */}
-        {showAppAnnouncement && (
-          <div 
-            className="scicomm-card" 
-            onClick={() => {
-              dismissBanner('scicomm_app_announcement_hidden');
-              setShowAppAnnouncement(false);
-              navigate('/download');
-            }}
-            style={{ 
-              marginTop: '8px', 
-              padding: '24px 20px', 
-              background: isDarkMode ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)', 
-              border: `1px solid ${isDarkMode ? '#334155' : '#e2e8f0'}`,
-              borderRadius: '20px',
-              position: 'relative',
-              overflow: 'hidden',
-              cursor: 'pointer'
-            }}
-          >
-            {/* Subtle Background Icon */}
-            <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.05, transform: 'rotate(15deg)', pointerEvents: 'none' }}>
-              <Smartphone size={80} color={isDarkMode ? 'white' : 'black'} />
-            </div>
+        <div 
+          className="scicomm-card" 
+          onClick={() => {
+            navigate('/download');
+          }}
+          style={{ 
+            marginTop: '8px', 
+            padding: '24px 20px', 
+            background: isDarkMode ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)', 
+            border: `1px solid ${isDarkMode ? '#334155' : '#e2e8f0'}`,
+            borderRadius: '20px',
+            position: 'relative',
+            overflow: 'hidden',
+            cursor: 'pointer'
+          }}
+        >
+          {/* Subtle Background Icon */}
+          <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.05, transform: 'rotate(15deg)', pointerEvents: 'none' }}>
+            <Smartphone size={80} color={isDarkMode ? 'white' : 'black'} />
+          </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '18px', position: 'relative', zIndex: 1 }}>
-              <div style={{ 
-                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
-                padding: '10px', 
-                borderRadius: '12px', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-              }}>
-                <Smartphone size={22} color="white" />
-              </div>
-              <div>
-                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: isDarkMode ? '#f8fafc' : '#0f172a', letterSpacing: '-0.3px' }}>The Portal App</h3>
-                <p style={{ margin: 0, fontSize: '11px', color: isDarkMode ? '#3b82f6' : '#2563eb', fontWeight: 800 }}>v5.0.2 (BETA EARLY ACCESS)</p>
-              </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '18px', position: 'relative', zIndex: 1 }}>
+            <div style={{ 
+              background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
+              padding: '10px', 
+              borderRadius: '12px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+            }}>
+              <Smartphone size={22} color="white" />
             </div>
-            
-            <p style={{ margin: '0 0 20px', fontSize: '12px', color: isDarkMode ? '#94a3b8' : '#64748b', lineHeight: '1.6', fontWeight: 500, position: 'relative', zIndex: 1 }}>
-              Experience the future of scientific communication with our native application. Designed for speed, security, and seamless workflow integration.
-            </p>
-            
-            <div
-              style={{ 
-                width: '100%', 
-                padding: '14px', 
-                borderRadius: '14px', 
-                border: 'none', 
-                background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)', 
-                color: 'white', 
-                fontWeight: 900, 
-                fontSize: '13px', 
-                cursor: 'pointer',
-                boxShadow: '0 8px 20px rgba(37, 99, 235, 0.3)',
-                transition: 'all 0.3s ease',
-                display: 'block',
-                textDecoration: 'none',
-                textAlign: 'center',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                position: 'relative',
-                zIndex: 1
-              }}
-              onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 99, 235, 0.4)'; }}
-              onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(37, 99, 235, 0.3)'; }}
-            >
-              Download App
+            <div>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: isDarkMode ? '#f8fafc' : '#0f172a', letterSpacing: '-0.3px' }}>SUPERBUGS HUB</h3>
+              <p style={{ margin: 0, fontSize: '11px', color: isDarkMode ? '#3b82f6' : '#2563eb', fontWeight: 800 }}>v5.0.2 (BETA EARLY ACCESS)</p>
             </div>
           </div>
-        )}
+          
+          <p style={{ margin: '0 0 20px', fontSize: '12px', color: isDarkMode ? '#94a3b8' : '#64748b', lineHeight: '1.6', fontWeight: 500, position: 'relative', zIndex: 1 }}>
+            Experience the future of scientific communication with our native application. Designed for speed, security, and seamless workflow integration.
+          </p>
+          
+          <div
+            style={{ 
+              width: '100%', 
+              padding: '14px', 
+              borderRadius: '14px', 
+              border: 'none', 
+              background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)', 
+              color: 'white', 
+              fontWeight: 900, 
+              fontSize: '13px', 
+              cursor: 'pointer',
+              boxShadow: '0 8px 20px rgba(37, 99, 235, 0.3)',
+              transition: 'all 0.3s ease',
+              display: 'block',
+              textDecoration: 'none',
+              textAlign: 'center',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              position: 'relative',
+              zIndex: 1
+            }}
+            onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 99, 235, 0.4)'; }}
+            onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(37, 99, 235, 0.3)'; }}
+          >
+            Download App
+          </div>
+        </div>
       </div>
 
       {/* Main Feed */}
@@ -1071,7 +1067,7 @@ export default function SciCommFeed() {
                 </div>
                 <div>
                   <h2 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 900, letterSpacing: '-0.5px', color: isDarkMode ? '#f8fafc' : '#0f172a' }}>
-                    The Portal is Mobile 🚀
+                    SUPERBUGS HUB is Mobile 🚀
                   </h2>
                   <p style={{ margin: 0, fontSize: '15px', color: isDarkMode ? '#94a3b8' : '#64748b', fontWeight: 500 }}>
                     Experience the future of scientific communication with our native application. Designed for speed, security, and seamless workflow integration.
@@ -1162,7 +1158,7 @@ export default function SciCommFeed() {
               onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(37, 99, 235, 0.5)'; }}
               onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(37, 99, 235, 0.4)'; }}
             >
-              Download The Portal Application
+              Download SUPERBUGS HUB
             </button>
           </div>
 

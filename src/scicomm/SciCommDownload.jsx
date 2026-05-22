@@ -69,7 +69,7 @@ export default function SciCommDownload() {
           onClick={() => navigate(-1)}
           style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', fontWeight: 600, fontSize: '14px' }}
         >
-          <ChevronLeft size={18} /> Back to Portal
+          <ChevronLeft size={18} /> Back to SUPERBUGS HUB
         </button>
         <div style={{ fontSize: '14px', color: '#94a3b8', fontWeight: 500 }}>v5.0.2 (BETA EARLY ACCESS)</div>
       </nav>
@@ -78,7 +78,7 @@ export default function SciCommDownload() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px', flexWrap: 'wrap', gap: '40px' }}>
           <div style={{ maxWidth: '600px' }}>
             <h1 style={{ fontSize: '56px', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: '1.1', marginBottom: '24px', color: '#0f172a' }}>
-              Download The Portal <span style={{ color: '#0077b5' }}>Across All Devices</span>
+              Download SUPERBUGS HUB <span style={{ color: '#0077b5' }}>Across All Devices</span>
             </h1>
             <p style={{ fontSize: '20px', color: '#64748b', lineHeight: '1.6' }}>
               Experience the future of scientific communication with our native application. 
@@ -174,7 +174,7 @@ export default function SciCommDownload() {
       </main>
 
       <footer style={{ padding: '60px 20px', textAlign: 'center', color: '#94a3b8', fontSize: '14px', borderTop: '1px solid #f1f5f9' }}>
-        © 2026 The Portal Scientific Communication Platform. All rights reserved.
+        © 2026 SUPERBUGS HUB Scientific Communication Platform. All rights reserved.
       </footer>
 
       <style>{`
