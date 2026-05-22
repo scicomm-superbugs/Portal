@@ -15,6 +15,9 @@ export default function SciCommChat() {
   
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [msgText, setMsgText] = useState('');
+  const fileInputRef = useRef(null);
+  const [fileUploading, setFileUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [roomSearch, setRoomSearch] = useState('');
   const [activeTab, setActiveTab] = useState('chats'); // chats, requests
   const [showEmoji, setShowEmoji] = useState(false);
@@ -270,6 +273,50 @@ export default function SciCommChat() {
     } catch (e) {
       console.error(e);
       alert('Failed to upload image.');
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedRoom) return;
+    setFileUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const path = `chats/${selectedRoom}/${user.id}_${Date.now()}_${file.name}`;
+      const downloadUrl = await uploadFile(file, path, (progress) => {
+        setUploadProgress(progress);
+      });
+
+      const msgData = {
+        roomId: selectedRoom,
+        senderId: user.id,
+        senderName: user.name,
+        content: `Sent an attachment: ${file.name}`,
+        type: 'file',
+        fileUrl: downloadUrl,
+        fileName: file.name,
+        fileType: file.type,
+        readBy: [user.id],
+        createdAt: new Date().toISOString()
+      };
+      
+      await db.scicomm_chat_messages.add(msgData);
+
+      await db.scicomm_chat_rooms.update(selectedRoom, {
+        lastMessageAt: new Date().toISOString(),
+        lastMessage: `📎 ${file.name}`,
+        lastSender: user.name,
+        hiddenFor: []
+      });
+
+    } catch (err) {
+      console.error('File upload failed:', err);
+      alert('File upload failed: ' + err.message);
+    } finally {
+      setFileUploading(false);
+      setUploadProgress(0);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -736,6 +783,32 @@ export default function SciCommChat() {
                           const isEmojiOnly = !isDeleted && /^[\p{Emoji}\s]+$/u.test(text) && text.trim().length <= 12;
                           return <span style={{ fontSize: isEmojiOnly ? '32px' : 'inherit', lineHeight: isEmojiOnly ? '1.4' : 'inherit' }}>{text}</span>;
                         })()}
+                        {!isDeleted && m.fileUrl && (
+                          <div style={{ marginTop: '8px' }}>
+                            {m.fileType?.startsWith('image/') || m.fileUrl.startsWith('data:image/') ? (
+                              <img src={m.fileUrl} alt="attachment" style={{ width: '100%', maxWidth: '280px', borderRadius: '12px', cursor: 'pointer', display: 'block', border: '1px solid rgba(255,255,255,0.1)' }} onClick={() => window.open(m.fileUrl, '_blank')} />
+                            ) : m.fileType?.startsWith('video/') ? (
+                              <video src={m.fileUrl} controls style={{ width: '100%', maxWidth: '280px', borderRadius: '12px', display: 'block' }} />
+                            ) : (
+                              <a href={m.fileUrl} download={m.fileName || 'file'} target="_blank" rel="noreferrer" style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px', 
+                                padding: '10px 14px', 
+                                background: isMe ? 'rgba(255, 255, 255, 0.15)' : '#f1f5f9', 
+                                color: isMe ? 'white' : '#1d4ed8', 
+                                borderRadius: '12px', 
+                                textDecoration: 'none', 
+                                fontWeight: 600, 
+                                fontSize: '13px',
+                                wordBreak: 'break-all'
+                              }}>
+                                <FileText size={18} />
+                                <span>{m.fileName || 'Download Attachment'}</span>
+                              </a>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', opacity: 0.6 }}>{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                       
@@ -774,7 +847,7 @@ export default function SciCommChat() {
                   </div>
                 );
               })}
-              <style>{`.msg-actions { display: none; } div[style*="position: relative"]:hover .msg-actions { display: flex !important; }`}</style>
+              <style>{`.msg-actions { display: none; } div[style*="position: relative"]:hover .msg-actions { display: flex !important; } @keyframes spin { to { transform: rotate(360deg); } }`}</style>
               <div ref={messagesEndRef} />
             </div>
 
@@ -820,14 +893,38 @@ export default function SciCommChat() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px' }}>
                     <div style={{ flex: 1, background: '#f1f5f9', borderRadius: '18px', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <button style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><Plus size={20} /></button>
-                      <textarea dir="auto"
-                        placeholder="Type a message... (@ to mention)"
-                        value={msgText}
-                        onChange={e => handleInputChange(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); setShowEmoji(false); } }}
-                        style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: '15px', color: '#0f172a', padding: '8px 0', minHeight: '24px', maxHeight: '120px', resize: 'none', fontFamily: 'inherit' }}
+                      <button 
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          fileInputRef.current?.click();
+                        }} 
+                        disabled={fileUploading}
+                        style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', opacity: fileUploading ? 0.5 : 1, display: 'flex', alignItems: 'center' }}
+                      >
+                        <Plus size={20} />
+                      </button>
+                      <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        onChange={handleFileChange} 
+                        style={{ position: 'absolute', opacity: 0, width: '1px', height: '1px', overflow: 'hidden', zIndex: -1, pointerEvents: 'none' }} 
                       />
+                      {fileUploading ? (
+                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '14px', fontWeight: 600, padding: '8px 0' }}>
+                          <div style={{ width: '16px', height: '16px', border: '2px solid #1d4ed8', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+                          <span>Uploading: {uploadProgress}%</span>
+                        </div>
+                      ) : (
+                        <textarea dir="auto"
+                          placeholder="Type a message... (@ to mention)"
+                          value={msgText}
+                          onChange={e => handleInputChange(e.target.value)}
+                          onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); setShowEmoji(false); } }}
+                          style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: '15px', color: '#0f172a', padding: '8px 0', minHeight: '24px', maxHeight: '120px', resize: 'none', fontFamily: 'inherit' }}
+                        />
+                      )}
                       <button onClick={() => setShowEmoji(!showEmoji)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><Smile size={20} /></button>
                     </div>
                     <button onClick={() => { sendMessage(); setShowEmoji(false); }} disabled={!msgText.trim()} style={{ width: '44px', height: '44px', borderRadius: '16px', background: msgText.trim() ? '#1d4ed8' : '#e2e8f0', color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', boxShadow: msgText.trim() ? '0 4px 12px rgba(29,78,216,0.3)' : 'none' }}><Send size={20} /></button>

@@ -7,6 +7,24 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { REACTIONS, AVATARS, timeAgo, isSpamPost, calculateScore, getUnlockedTags, getUserLevel } from './scicommConstants';
 import SciCommStories from './SciCommStories';
 
+const safeLocalStorage = {
+  getItem: (key) => {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      console.warn("localStorage.getItem blocked or unavailable:", e);
+      return null;
+    }
+  },
+  setItem: (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn("localStorage.setItem blocked or unavailable:", e);
+    }
+  }
+};
+
 const base64ToBlob = (base64, contentType) => {
   const byteCharacters = atob(base64);
   const byteArrays = [];
@@ -123,40 +141,23 @@ export default function SciCommFeed() {
   const isApproved = latestApp && latestApp.status === 'approved';
   const isRejected = latestApp && latestApp.status === 'rejected';
 
-  const [showApprovalBanner, setShowApprovalBanner] = useState(false);
-  const [showRejectionBanner, setShowRejectionBanner] = useState(false);
-  const [dismissedInSession, setDismissedInSession] = useState(new Set());
+  const [dismissedBanners, setDismissedBanners] = useState({});
 
-  useEffect(() => {
-    if (!latestApp) {
-      setShowApprovalBanner(false);
-      setShowRejectionBanner(false);
-      return;
-    }
-    const approvalKey = `hide_approval_banner_${user.id}_${latestApp.id}`;
-    const rejectionKey = `hide_rejection_banner_${user.id}_${latestApp.id}`;
+  const approvalKey = latestApp ? `hide_approval_banner_${user.id}_${latestApp.id}` : null;
+  const rejectionKey = latestApp ? `hide_rejection_banner_${user.id}_${latestApp.id}` : null;
 
-    if (isApproved && !localStorage.getItem(approvalKey) && !dismissedInSession.has(approvalKey)) {
-      setShowApprovalBanner(true);
-      setShowRejectionBanner(false);
-    } else if (isRejected && !localStorage.getItem(rejectionKey) && !dismissedInSession.has(rejectionKey)) {
-      setShowRejectionBanner(true);
-      setShowApprovalBanner(false);
-    } else {
-      setShowApprovalBanner(false);
-      setShowRejectionBanner(false);
-    }
-  }, [isApproved, isRejected, user.id, latestApp, dismissedInSession]);
+  const showApprovalBanner = !!(latestApp && isApproved && !safeLocalStorage.getItem(approvalKey) && !dismissedBanners[approvalKey]);
+  const showRejectionBanner = !!(latestApp && isRejected && !safeLocalStorage.getItem(rejectionKey) && !dismissedBanners[rejectionKey]);
 
-  const [showAppAnnouncement, setShowAppAnnouncement] = useState(() => localStorage.getItem('scicomm_app_announcement_hidden') !== 'true');
-  const isDarkMode = localStorage.getItem('scicommDarkMode') === 'true';
+  const [showAppAnnouncement, setShowAppAnnouncement] = useState(() => safeLocalStorage.getItem('scicomm_app_announcement_hidden') !== 'true');
+  const isDarkMode = safeLocalStorage.getItem('scicommDarkMode') === 'true';
 
   const dismissAppAnnouncement = (e) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
-    localStorage.setItem('scicomm_app_announcement_hidden', 'true');
+    safeLocalStorage.setItem('scicomm_app_announcement_hidden', 'true');
     setShowAppAnnouncement(false);
   };
 
@@ -953,7 +954,7 @@ export default function SciCommFeed() {
           <div 
             className="scicomm-card" 
             onClick={() => {
-              localStorage.setItem('scicomm_app_announcement_hidden', 'true');
+              safeLocalStorage.setItem('scicomm_app_announcement_hidden', 'true');
               setShowAppAnnouncement(false);
               navigate('/download');
             }}
@@ -1037,19 +1038,10 @@ export default function SciCommFeed() {
             borderRadius: '24px',
             overflow: 'hidden',
             position: 'relative',
-            cursor: 'pointer',
             border: '1px solid var(--border-color, #e2e8f0)',
             background: isDarkMode ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
-            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+            boxShadow: '0 12px 40px rgba(0,0,0,0.12)'
           }}
-          onClick={() => {
-            localStorage.setItem('scicomm_app_announcement_hidden', 'true');
-            setShowAppAnnouncement(false);
-            navigate('/download');
-          }}
-          onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'}
-          onMouseOut={e => e.currentTarget.style.transform = 'none'}
         >
           {/* Panoramic Moving Icons Background */}
           <div style={{ 
@@ -1148,27 +1140,35 @@ export default function SciCommFeed() {
             </div>
             </div>
 
-            <button style={{ 
-              width: '100%', 
-              padding: '20px', 
-              borderRadius: '18px', 
-              border: 'none', 
-              background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)', 
-              color: 'white', 
-              fontWeight: 900, 
-              fontSize: '18px', 
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '12px',
-              boxShadow: '0 12px 30px rgba(37, 99, 235, 0.4)',
-              transition: 'all 0.3s ease',
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}
-            onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(37, 99, 235, 0.5)'; }}
-            onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(37, 99, 235, 0.4)'; }}
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                safeLocalStorage.setItem('scicomm_app_announcement_hidden', 'true');
+                setShowAppAnnouncement(false);
+                navigate('/download');
+              }}
+              style={{ 
+                width: '100%', 
+                padding: '20px', 
+                borderRadius: '18px', 
+                border: 'none', 
+                background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)', 
+                color: 'white', 
+                fontWeight: 900, 
+                fontSize: '18px', 
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                boxShadow: '0 12px 30px rgba(37, 99, 235, 0.4)',
+                transition: 'all 0.3s ease',
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
+              }}
+              onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = '0 18px 40px rgba(37, 99, 235, 0.5)'; }}
+              onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(37, 99, 235, 0.4)'; }}
             >
               Download The Portal Application
             </button>
@@ -1191,9 +1191,8 @@ export default function SciCommFeed() {
             onClick={() => {
               if (latestApp) {
                 const key = `hide_approval_banner_${user.id}_${latestApp.id}`;
-                localStorage.setItem(key, 'true');
-                setDismissedInSession(prev => new Set([...prev, key]));
-                setShowApprovalBanner(false);
+                safeLocalStorage.setItem(key, 'true');
+                setDismissedBanners(prev => ({ ...prev, [key]: true }));
               }
             }}
             style={{ cursor: 'pointer', background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)', border: '1px solid #86efac', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}
@@ -1214,9 +1213,8 @@ export default function SciCommFeed() {
                 e.stopPropagation();
                 if (latestApp) {
                   const key = `hide_approval_banner_${user.id}_${latestApp.id}`;
-                  localStorage.setItem(key, 'true');
-                  setDismissedInSession(prev => new Set([...prev, key]));
-                  setShowApprovalBanner(false);
+                  safeLocalStorage.setItem(key, 'true');
+                  setDismissedBanners(prev => ({ ...prev, [key]: true }));
                 }
               }} 
               style={{ 
@@ -1249,9 +1247,8 @@ export default function SciCommFeed() {
             onClick={() => {
               if (latestApp) {
                 const key = `hide_rejection_banner_${user.id}_${latestApp.id}`;
-                localStorage.setItem(key, 'true');
-                setDismissedInSession(prev => new Set([...prev, key]));
-                setShowRejectionBanner(false);
+                safeLocalStorage.setItem(key, 'true');
+                setDismissedBanners(prev => ({ ...prev, [key]: true }));
               }
             }}
             style={{ cursor: 'pointer', background: 'linear-gradient(135deg, #fee2e2, #fecaca)', border: '1px solid #fca5a5', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}
@@ -1277,9 +1274,8 @@ export default function SciCommFeed() {
                 e.stopPropagation();
                 if (latestApp) {
                   const key = `hide_rejection_banner_${user.id}_${latestApp.id}`;
-                  localStorage.setItem(key, 'true');
-                  setDismissedInSession(prev => new Set([...prev, key]));
-                  setShowRejectionBanner(false);
+                  safeLocalStorage.setItem(key, 'true');
+                  setDismissedBanners(prev => ({ ...prev, [key]: true }));
                 }
               }} 
               style={{ 
