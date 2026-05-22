@@ -201,19 +201,29 @@ export const AuthProvider = ({ children }) => {
       let gUser, token;
       
       if (isCapacitor()) {
-        const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
-        const result = await FirebaseAuthentication.signInWithGoogle({
-          useCredentialManager: false
-        });
-        
-        if (result.credential && result.credential.idToken) {
-          const { signInWithCredential } = await import('firebase/auth');
-          const credential = GoogleAuthProvider.credential(result.credential.idToken);
-          const webResult = await signInWithCredential(auth, credential);
-          gUser = webResult.user;
-          token = result.credential.accessToken;
-        } else {
-          gUser = result.user;
+        try {
+          console.log("Attempting native Google Sign-In...");
+          const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
+          const result = await FirebaseAuthentication.signInWithGoogle({
+            useCredentialManager: false
+          });
+          
+          if (result.credential && result.credential.idToken) {
+            const { signInWithCredential } = await import('firebase/auth');
+            const credential = GoogleAuthProvider.credential(result.credential.idToken);
+            const webResult = await signInWithCredential(auth, credential);
+            gUser = webResult.user;
+            token = result.credential.accessToken;
+          } else {
+            gUser = result.user;
+          }
+        } catch (nativeError) {
+          console.warn("Native Google Sign-In failed, falling back to Web Redirect flow:", nativeError);
+          const { signInWithRedirect } = await import('firebase/auth');
+          await signInWithRedirect(auth, provider);
+          // Wait for redirection
+          await new Promise(() => {});
+          return;
         }
       } else if (isMedian()) {
         if (window.median && window.median.google && window.median.google.login) {
@@ -314,19 +324,31 @@ export const AuthProvider = ({ children }) => {
       let gUser, token;
 
       if (isCapacitor()) {
-        const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
-        const result = await FirebaseAuthentication.signInWithGoogle({
-          useCredentialManager: false
-        });
-        
-        if (result.credential && result.credential.idToken) {
-          const { signInWithCredential } = await import('firebase/auth');
-          const credential = GoogleAuthProvider.credential(result.credential.idToken);
-          const webResult = await signInWithCredential(auth, credential);
-          gUser = webResult.user;
-          token = result.credential.accessToken;
-        } else {
-          gUser = result.user;
+        try {
+          console.log("Attempting native Google Link...");
+          const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
+          const result = await FirebaseAuthentication.signInWithGoogle({
+            useCredentialManager: false
+          });
+          
+          if (result.credential && result.credential.idToken) {
+            const { signInWithCredential } = await import('firebase/auth');
+            const credential = GoogleAuthProvider.credential(result.credential.idToken);
+            const webResult = await signInWithCredential(auth, credential);
+            gUser = webResult.user;
+            token = result.credential.accessToken;
+          } else {
+            gUser = result.user;
+          }
+        } catch (nativeError) {
+          console.warn("Native Google Link failed, falling back to Web Redirect flow:", nativeError);
+          localStorage.setItem('pendingGoogleLink', 'true');
+          localStorage.setItem('userId', String(user.id));
+          const { signInWithRedirect } = await import('firebase/auth');
+          await signInWithRedirect(auth, provider);
+          // Wait for redirection
+          await new Promise(() => {});
+          return;
         }
       } else if (isMedian()) {
         if (window.median && window.median.google && window.median.google.login) {
