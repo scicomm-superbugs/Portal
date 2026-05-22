@@ -286,17 +286,21 @@ export const AuthProvider = ({ children }) => {
       
       if (isCapacitor()) {
         try {
-          console.log("Opening secure system browser for Google login...");
-          const { Browser } = await import('@capacitor/browser');
-          const workspace = localStorage.getItem('workspaceId') || 'aiuscicomm';
-          await Browser.open({
-            url: `https://scicomm-superbugs.github.io/Portal/google-login.html?workspace=${encodeURIComponent(workspace)}`
-          });
-          // Wait indefinitely since deep linking will handle the actual callback
-          await new Promise(() => {});
-          return;
+          console.log("Using Capacitor-Firebase Native Google Sign-In...");
+          const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
+          const result = await FirebaseAuthentication.signInWithGoogle();
+          
+          if (!result.credential?.idToken) {
+            throw new Error('Native Google sign-in failed: no ID token returned.');
+          }
+          
+          const { signInWithCredential } = await import('firebase/auth');
+          const credential = GoogleAuthProvider.credential(result.credential.idToken);
+          const webResult = await signInWithCredential(auth, credential);
+          gUser = webResult.user;
+          token = result.credential.accessToken || null;
         } catch (nativeError) {
-          console.error("Failed to open system browser:", nativeError);
+          console.error("Capacitor Native Google login failed:", nativeError);
           throw nativeError;
         }
       } else if (isMedian()) {
@@ -399,19 +403,21 @@ export const AuthProvider = ({ children }) => {
 
       if (isCapacitor()) {
         try {
-          console.log("Opening secure system browser for Google account linking...");
-          localStorage.setItem('pendingGoogleLink', 'true');
-          localStorage.setItem('userId', String(user.id));
-          const { Browser } = await import('@capacitor/browser');
-          const workspace = localStorage.getItem('workspaceId') || 'aiuscicomm';
-          await Browser.open({
-            url: `https://scicomm-superbugs.github.io/Portal/google-login.html?workspace=${encodeURIComponent(workspace)}`
-          });
-          // Wait indefinitely since deep linking will handle the actual callback
-          await new Promise(() => {});
-          return;
+          console.log("Using Capacitor-Firebase Native Google account linking...");
+          const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
+          const result = await FirebaseAuthentication.signInWithGoogle();
+          
+          if (!result.credential?.idToken) {
+            throw new Error('Native Google account link failed: no ID token returned.');
+          }
+          
+          const { signInWithCredential } = await import('firebase/auth');
+          const credential = GoogleAuthProvider.credential(result.credential.idToken);
+          const webResult = await signInWithCredential(auth, credential);
+          gUser = webResult.user;
+          token = result.credential.accessToken || null;
         } catch (nativeError) {
-          console.error("Failed to open system browser for linking:", nativeError);
+          console.error("Capacitor Native Google account link failed:", nativeError);
           throw nativeError;
         }
       } else if (isMedian()) {
