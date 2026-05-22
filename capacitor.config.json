@@ -1,9 +1,9 @@
 {
-  "appId": "com.aiu.sciencehub",
+  "appId": "com.chompchem.app",
   "appName": "The Portal",
   "webDir": "dist",
   "server": {
-    "url": "https://scicomm-superbugs.github.io/Portal/?v=final_fix_2",
+    "url": "https://scicomm-superbugs.github.io/Portal/",
     "cleartext": true,
     "allowNavigation": [
       "scicomm-superbugs.github.io",

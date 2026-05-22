@@ -30,23 +30,167 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getFirebaseAuth();
-    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-      } else {
+    const initializeAuth = async () => {
+      let isTimeout = false;
+      const timeoutId = setTimeout(() => {
+        isTimeout = true;
+        console.warn('Firebase auth check timed out. Forcing load.');
+        setLoading(false);
+      }, 7000);
+
+      try {
+        const auth = getFirebaseAuth();
+        
+        // 1. Check for Google Redirect Result (Required for Median.co app flow)
+        let result = null;
+        try {
+          result = await getRedirectResult(auth);
+        } catch (e) {
+          console.warn("getRedirectResult not available or failed:", e);
+        }
+        
+        if (result) {
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential?.accessToken;
+          const gUser = result.user;
+
+          const pendingLink = localStorage.getItem('pendingGoogleLink');
+          localStorage.removeItem('pendingGoogleLink');
+          const storedUserId = localStorage.getItem('userId');
+
+          if (pendingLink && storedUserId) {
+            // LINK flow
+            const currentUser = await db.scientists.get(String(storedUserId));
+            await db.scientists.update(storedUserId, {
+              email: gUser.email, googleLinked: true, googleLinkedEmail: gUser.email,
+              googleDriveToken: token || null,
+              avatar: currentUser?.avatar || gUser.photoURL
+            });
+            if (currentUser) {
+              setUser({ id: currentUser.id, username: currentUser.username, name: currentUser.name, role: currentUser.role, avatar: currentUser.avatar });
+            }
+          } else {
+            // LOGIN flow
+            let scientist = await db.scientists.where('email').equals(gUser.email).first();
+            if (!scientist) scientist = await db.scientists.where('username').equals(gUser.email).first();
+
+            if (!scientist) {
+              const baseName = gUser.displayName ? gUser.displayName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : 'user';
+              const randomNum = Math.floor(Math.random() * 10000);
+              const newId = await db.scientists.add({
+                username: `${baseName}${randomNum}`,
+                email: gUser.email, name: gUser.displayName, avatar: gUser.photoURL,
+                department: 'Member', employeeId: 'GOOGLE-' + gUser.uid.substring(0, 8),
+                role: 'user', accountStatus: 'pending', googleDriveToken: token || null,
+                createdAt: new Date().toISOString()
+              });
+              scientist = await db.scientists.get(newId);
+            } else {
+              const updateData = { googleDriveToken: token || null, name: scientist.name || gUser.displayName };
+              if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) updateData.avatar = gUser.photoURL;
+              await db.scientists.update(scientist.id, updateData);
+              if (updateData.avatar) scientist.avatar = updateData.avatar;
+            }
+
+            if (scientist.accountStatus === 'pending') {
+              sessionStorage.setItem('googlePendingMsg', 'Your account is pending approval by an administrator.');
+              setLoading(false);
+              return;
+            }
+
+            setUser({ id: scientist.id, username: scientist.username, name: scientist.name, role: scientist.role, avatar: scientist.avatar });
+            localStorage.setItem('userId', scientist.id);
+          }
+          setLoading(false);
+          clearTimeout(timeoutId);
+          return;
+        }
+
+        // 2. Check if already signed in locally
         const storedUserId = localStorage.getItem('userId');
         if (storedUserId) {
-          setUser({ uid: storedUserId, email: 'user@local.db' });
-        } else {
-          setUser(null);
+          const scientist = await db.scientists.get(String(storedUserId));
+          if (!isTimeout && scientist) {
+            setUser({ id: scientist.id, username: scientist.username, name: scientist.name, role: scientist.role, avatar: scientist.avatar });
+          }
+        }
+      } catch (err) {
+        console.error('Auth initialization error:', err);
+      } finally {
+        if (!isTimeout) {
+          clearTimeout(timeoutId);
+          setLoading(false);
         }
       }
-      setLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    initializeAuth();
   }, []);
+
+  const login = async (username, password) => {
+    let scientist = await db.scientists.where('username').equals(username).first();
+    
+    // Allow login by email if username is not found
+    if (!scientist) {
+      scientist = await db.scientists.where('email').equals(username).first();
+    }
+    
+    // Failsafe for master (Instant login bypass)
+    if (username === 'master' && password === 'H2CO3NaOH#') {
+      if (!scientist) {
+        const salt = await bcrypt.genSalt(4);
+        const hash = await bcrypt.hash('H2CO3NaOH#', salt);
+        const masterId = await db.scientists.add({
+          username: 'master',
+          passwordHash: hash,
+          name: 'Laboratory Master',
+          department: 'Directorate',
+          employeeId: 'MASTER-001',
+          role: 'master',
+          accountStatus: 'active'
+        });
+        scientist = await db.scientists.get(masterId);
+      }
+      scientist.role = 'master';
+    } else {
+      if (!scientist) {
+        throw new Error('Invalid username or password');
+      }
+      
+      const isMatch = await bcrypt.compare(password, scientist.passwordHash);
+      if (!isMatch) {
+        throw new Error('Invalid username or password');
+      }
+      
+      if (scientist.accountStatus === 'pending') {
+        throw new Error('Your account is pending approval by an administrator.');
+      }
+    }
+
+    const userData = {
+      id: scientist.id,
+      username: scientist.username,
+      name: scientist.name,
+      role: scientist.role,
+      avatar: scientist.avatar
+    };
+
+    setUser(userData);
+    localStorage.setItem('userId', scientist.id);
+    return userData;
+  };
+
+  const logout = async () => {
+    const auth = getFirebaseAuth();
+    try {
+      await auth.signOut();
+    } catch (e) {
+      console.warn("Signout error:", e);
+    }
+    setUser(null);
+    localStorage.removeItem('userId');
+    localStorage.removeItem('googleDriveToken');
+  };
 
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
@@ -79,6 +223,8 @@ export const AuthProvider = ({ children }) => {
           const webResult = await signInWithCredential(auth, credential);
           gUser = webResult.user;
           token = medianResult.accessToken;
+        } else {
+          throw new Error('Google Sign-In is blocked in this app wrapper. Please enable the "Google Sign-In" native plugin in your Median.co build settings, or use Email/Password.');
         }
       } else {
         const result = await signInWithPopup(auth, provider);
@@ -87,12 +233,69 @@ export const AuthProvider = ({ children }) => {
         token = credential.accessToken;
       }
 
-      if (gUser) {
-        setUser(gUser);
-        localStorage.setItem('userId', gUser.uid);
-        if (token) localStorage.setItem('googleDriveToken', token);
-        return gUser;
+      if (!gUser) {
+        throw new Error('No user returned from Google sign-in');
       }
+
+      const userEmail = gUser.email;
+      let scientist = await db.scientists.where('email').equals(userEmail).first();
+      
+      // Fallback for older Google accounts that saved email as username
+      if (!scientist) {
+        scientist = await db.scientists.where('username').equals(userEmail).first();
+      }
+      
+      const photo = gUser.photoURL || gUser.photoUrl;
+      const displayName = gUser.displayName || gUser.name || 'User';
+
+      if (!scientist) {
+        const baseName = displayName ? displayName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : 'user';
+        const randomNum = Math.floor(Math.random() * 10000);
+        const newUsername = `${baseName}${randomNum}`;
+
+        const newId = await db.scientists.add({
+          username: newUsername,
+          email: userEmail,
+          name: displayName,
+          avatar: photo || null,
+          department: 'Member',
+          employeeId: 'GOOGLE-' + gUser.uid.substring(0, 8),
+          role: 'user',
+          accountStatus: 'pending',
+          googleDriveToken: token || null,
+          createdAt: new Date().toISOString()
+        });
+        scientist = await db.scientists.get(newId);
+      } else {
+        // Only update avatar if user hasn't set a custom one
+        const updateData = { 
+          googleDriveToken: token || null,
+          name: scientist.name || displayName
+        };
+        // Preserve custom avatar — only set Google photo if avatar is empty or still a Google URL
+        if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) {
+          updateData.avatar = photo || null;
+        }
+        await db.scientists.update(scientist.id, updateData);
+        if (updateData.avatar) scientist.avatar = updateData.avatar;
+        if (token) scientist.googleDriveToken = token;
+      }
+
+      if (scientist.accountStatus === 'pending') {
+        throw new Error('Your account is pending approval by an administrator.');
+      }
+
+      const userData = {
+        id: scientist.id,
+        username: scientist.username,
+        name: scientist.name,
+        role: scientist.role,
+        avatar: scientist.avatar
+      };
+
+      setUser(userData);
+      localStorage.setItem('userId', scientist.id);
+      return userData;
     } catch (error) {
       console.error('Google login error:', error);
       throw error;
@@ -100,6 +303,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const linkGoogleAccount = async () => {
+    if (!user) throw new Error('You must be logged in to link an account.');
     const provider = new GoogleAuthProvider();
     provider.addScope('https://www.googleapis.com/auth/drive.file');
     
@@ -130,6 +334,8 @@ export const AuthProvider = ({ children }) => {
           const webResult = await signInWithCredential(auth, credential);
           gUser = webResult.user;
           token = medianResult.accessToken;
+        } else {
+          throw new Error('Google Link is blocked in this app wrapper. Please enable the "Google Sign-In" native plugin in your Median.co build settings.');
         }
       } else {
         const result = await signInWithPopup(auth, provider);
@@ -138,29 +344,72 @@ export const AuthProvider = ({ children }) => {
         token = credential.accessToken;
       }
 
-      if (gUser) {
-        setUser(gUser);
-        localStorage.setItem('userId', gUser.uid);
-        if (token) localStorage.setItem('googleDriveToken', token);
-        return gUser;
+      if (!gUser) {
+        throw new Error('No user returned from Google account link');
       }
+
+      const userEmail = gUser.email;
+      const photo = gUser.photoURL || gUser.photoUrl;
+
+      // Check if this Google account is already linked to ANOTHER user profile
+      let existingEmailUser = await db.scientists.where('email').equals(userEmail).first();
+      if (!existingEmailUser) {
+        existingEmailUser = await db.scientists.where('username').equals(userEmail).first();
+      }
+
+      if (existingEmailUser && String(existingEmailUser.id) !== String(user.id)) {
+        // Delete the duplicate auto-generated account before linking
+        await db.scientists.delete(existingEmailUser.id);
+      }
+
+      await db.scientists.update(user.id, { 
+        email: userEmail,
+        googleLinked: true,
+        googleLinkedEmail: userEmail,
+        googleDriveToken: token || null,
+        avatar: user.avatar || photo || null
+      });
+      
+      const updatedData = { ...user, email: userEmail };
+      setUser(updatedData);
+      return updatedData;
     } catch (error) {
       console.error('Account link error:', error);
       throw error;
     }
   };
 
-  const logout = async () => {
-    const auth = getFirebaseAuth();
-    await auth.signOut();
-    setUser(null);
-    localStorage.removeItem('userId');
+  const unlinkGoogleAccount = async () => {
+    if (!user) throw new Error('You must be logged in.');
+    await db.scientists.update(user.id, {
+      googleLinked: false,
+      googleLinkedEmail: null,
+      googleDriveToken: null
+    });
     localStorage.removeItem('googleDriveToken');
   };
 
+  const changePassword = async (oldPassword, newPassword) => {
+    if (!user) throw new Error('You must be logged in.');
+    
+    // Validate current password
+    const scientist = await db.scientists.get(user.id);
+    if (!scientist) throw new Error('Account not found.');
+    
+    // If it's a new account without a password (Google login), we can just set the new password.
+    if (scientist.passwordHash) {
+      const isMatch = await bcrypt.compare(oldPassword, scientist.passwordHash);
+      if (!isMatch) throw new Error('Incorrect current password.');
+    }
+    
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(newPassword, salt);
+    await db.scientists.update(user.id, { passwordHash: hash });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, loginWithGoogle, logout, linkGoogleAccount }}>
-      {children}
+    <AuthContext.Provider value={{ user, loading, login, logout, loginWithGoogle, linkGoogleAccount, unlinkGoogleAccount, changePassword, setUser }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

@@ -1,8 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">SciComm Hub</string>
-    <string name="title_activity_main">SciComm Hub</string>
+    <string name="app_name">The Portal</string>
+    <string name="title_activity_main">The Portal</string>
     <string name="package_name">com.chompchem.app</string>
     <string name="custom_url_scheme">com.chompchem.app</string>
-    <string name="server_client_id">379599502348-vj7r5v0v6u0p0p0p0p0p.apps.googleusercontent.com</string>
 </resources>
