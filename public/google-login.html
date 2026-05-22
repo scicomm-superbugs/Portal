@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Google Sign-In - Science Hub</title>
+  <!-- Load Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Load Firebase SDK Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  
+  <style>
+    :root {
+      --primary: #1d4ed8;
+      --bg-gradient: radial-gradient(circle at top, #1e293b, #0f172a);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .logo-container {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    
+    .logo {
+      height: 70px;
+      object-fit: contain;
+      animation: pulse 3s infinite ease-in-out;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+    
+    p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+    
+    .btn-google {
+      width: 100%;
+      padding: 14px 20px;
+      background: #ffffff;
+      color: #1e293b;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .btn-google:hover {
+      background: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-google:active {
+      transform: translateY(0);
+    }
+    
+    .loader {
+      display: none;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 1.5rem auto;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .status-text {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #38bdf8;
+      display: none;
+      font-weight: 500;
+    }
+    
+    .error-box {
+      display: none;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      color: #fca5a5;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo-container">
+      <img id="logo" src="./aiu_scicomm_light.png" class="logo" alt="Logo">
+    </div>
+    
+    <h1 id="title">Science Hub</h1>
+    <p id="subtitle">Secure Google Account Sign-In</p>
+    
+    <div id="error-box" class="error-box"></div>
+    
+    <div id="loader" class="loader"></div>
+    <div id="status-text" class="status-text">Connecting...</div>
+    
+    <button id="btn-google" class="btn-google">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 20px; height: 20px;">
+      Continue with Google
+    </button>
+  </div>
+
+  <script>
+    // Exact same Firebase config from db.js
+    const firebaseConfig = {
+      apiKey: "AIzaSyAPrfR-hG-5CeZiD0EIz_P1r93ywZbxcjc",
+      authDomain: "chompchem.firebaseapp.com",
+      projectId: "chompchem",
+      storageBucket: "chompchem.firebasestorage.app",
+      messagingSenderId: "379599502348",
+      appId: "1:379599502348:web:d1be32d868ac2a813f0229",
+      measurementId: "G-NWEXYL1PQ0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const btnGoogle = document.getElementById('btn-google');
+    const loader = document.getElementById('loader');
+    const statusText = document.getElementById('status-text');
+    const errorBox = document.getElementById('error-box');
+    const logoImg = document.getElementById('logo');
+    const titleText = document.getElementById('title');
+    const subtitleText = document.getElementById('subtitle');
+
+    // Parse workspace URL parameter to customize branding
+    const urlParams = new URLSearchParams(window.location.search);
+    const workspace = urlParams.get('workspace') || 'aiuscicomm';
+
+    if (workspace === 'alamein' || workspace === 'Alamein International University') {
+      logoImg.src = './alamein_logo_2.png';
+      titleText.innerText = 'Alamein International University';
+      subtitleText.innerText = 'Faculty of Science';
+      document.title = 'Google Sign-In - Alamein';
+    } else {
+      logoImg.src = './aiu_scicomm_light.png';
+      titleText.innerText = 'AIU SciComm Team';
+      subtitleText.innerText = 'Science Communication Team';
+      document.title = 'Google Sign-In - SciComm';
+    }
+
+    function showError(msg) {
+      errorBox.innerText = msg;
+      errorBox.style.display = 'block';
+      loader.style.display = 'none';
+      statusText.style.display = 'none';
+      btnGoogle.style.display = 'flex';
+    }
+
+    function showStatus(msg) {
+      errorBox.style.display = 'none';
+      loader.style.display = 'block';
+      statusText.innerText = msg;
+      statusText.style.display = 'block';
+      btnGoogle.style.display = 'none';
+    }
+
+    // Handle incoming redirect result
+    showStatus("Checking Google Session...");
+    auth.getRedirectResult().then((result) => {
+      if (result && result.user) {
+        handleSuccess(result);
+      } else {
+        // No redirect result, check if we're already logged in
+        if (auth.currentUser) {
+          handleSuccess({ user: auth.currentUser, credential: auth.currentUser.credential });
+        } else {
+          // Normal state, wait for user click
+          loader.style.display = 'none';
+          statusText.style.display = 'none';
+          btnGoogle.style.display = 'flex';
+        }
+      }
+    }).catch((error) => {
+      console.error(error);
+      showError("Google Authentication Error: " + error.message);
+    });
+
+    btnGoogle.addEventListener('click', () => {
+      showStatus("Opening Google Authentication...");
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('https://www.googleapis.com/auth/drive.file');
+      
+      // Perform redirect sign-in which works flawlessly in all mobile browsers
+      auth.signInWithRedirect(provider);
+    });
+
+    function handleSuccess(result) {
+      showStatus("Authentication Successful! Redirecting back to the app...");
+      
+      result.user.getIdToken(true).then((idToken) => {
+        // Get access token if present
+        const credential = result.credential;
+        const accessToken = credential ? credential.accessToken : '';
+        
+        // Deep link back to the app!
+        const deepLinkUrl = `com.aiu.sciencehub://google-oauth-callback?idToken=${encodeURIComponent(idToken)}&accessToken=${encodeURIComponent(accessToken || '')}`;
+        
+        console.log("Redirecting to deep link:", deepLinkUrl);
+        window.location.href = deepLinkUrl;
+        
+        // Fallback if deep link doesn't open immediately
+        setTimeout(() => {
+          showStatus("Click here if the app did not open automatically:");
+          const link = document.createElement('a');
+          link.href = deepLinkUrl;
+          link.innerText = "Open The Portal App";
+          link.style.display = 'inline-block';
+          link.style.marginTop = '15px';
+          link.style.padding = '10px 20px';
+          link.style.background = '#38bdf8';
+          link.style.color = '#0f172a';
+          link.style.borderRadius = '8px';
+          link.style.fontWeight = 'bold';
+          link.style.textDecoration = 'none';
+          
+          statusText.appendChild(document.createElement('br'));
+          statusText.appendChild(link);
+        }, 2000);
+      }).catch((err) => {
+        showError("Failed to retrieve token: " + err.message);
+      });
+    }
+  </script>
+</body>
+</html>

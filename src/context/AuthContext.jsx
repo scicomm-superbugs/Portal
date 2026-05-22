@@ -29,6 +29,92 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const handleFirebaseUserLogin = async (gUser, token) => {
+    if (!gUser) {
+      throw new Error('No user returned from Google sign-in');
+    }
+
+    const userEmail = gUser.email;
+    let scientist = await db.scientists.where('email').equals(userEmail).first();
+    
+    // Fallback for older Google accounts that saved email as username
+    if (!scientist) {
+      scientist = await db.scientists.where('username').equals(userEmail).first();
+    }
+    
+    const photo = gUser.photoURL || gUser.photoUrl;
+    const displayName = gUser.displayName || gUser.name || 'User';
+
+    const pendingLink = localStorage.getItem('pendingGoogleLink');
+    localStorage.removeItem('pendingGoogleLink');
+    const storedUserId = localStorage.getItem('userId');
+
+    if (pendingLink && storedUserId) {
+      // LINK flow
+      const currentUser = await db.scientists.get(String(storedUserId));
+      await db.scientists.update(storedUserId, {
+        email: userEmail,
+        googleLinked: true,
+        googleLinkedEmail: userEmail,
+        googleDriveToken: token || null,
+        avatar: currentUser?.avatar || photo || null
+      });
+      if (currentUser) {
+        const updatedUser = { id: currentUser.id, username: currentUser.username, name: currentUser.name, role: currentUser.role, avatar: currentUser.avatar };
+        setUser(updatedUser);
+        return updatedUser;
+      }
+    } else {
+      // LOGIN flow
+      if (!scientist) {
+        const baseName = displayName ? displayName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : 'user';
+        const randomNum = Math.floor(Math.random() * 10000);
+        const newUsername = `${baseName}${randomNum}`;
+
+        const newId = await db.scientists.add({
+          username: newUsername,
+          email: userEmail,
+          name: displayName,
+          avatar: photo || null,
+          department: 'Member',
+          employeeId: 'GOOGLE-' + gUser.uid.substring(0, 8),
+          role: 'user',
+          accountStatus: 'pending',
+          googleDriveToken: token || null,
+          createdAt: new Date().toISOString()
+        });
+        scientist = await db.scientists.get(newId);
+      } else {
+        const updateData = { 
+          googleDriveToken: token || null,
+          name: scientist.name || displayName
+        };
+        if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) {
+          updateData.avatar = photo || null;
+        }
+        await db.scientists.update(scientist.id, updateData);
+        if (updateData.avatar) scientist.avatar = updateData.avatar;
+        if (token) scientist.googleDriveToken = token;
+      }
+
+      if (scientist.accountStatus === 'pending') {
+        throw new Error('Your account is pending approval by an administrator.');
+      }
+
+      const userData = {
+        id: scientist.id,
+        username: scientist.username,
+        name: scientist.name,
+        role: scientist.role,
+        avatar: scientist.avatar
+      };
+
+      setUser(userData);
+      localStorage.setItem('userId', scientist.id);
+      return userData;
+    }
+  };
+
   useEffect(() => {
     const initializeAuth = async () => {
       let isTimeout = false;
@@ -39,6 +125,51 @@ export const AuthProvider = ({ children }) => {
       }, 7000);
 
       try {
+        if (isCapacitor()) {
+          try {
+            const { App } = await import('@capacitor/app');
+            App.addListener('appUrlOpen', async (data) => {
+              console.log('App opened with URL:', data.url);
+              if (data.url.includes('google-oauth-callback')) {
+                let idToken = '';
+                let accessToken = '';
+                
+                try {
+                  const urlString = data.url;
+                  const searchPart = urlString.split('?')[1];
+                  if (searchPart) {
+                    const params = new URLSearchParams(searchPart);
+                    idToken = params.get('idToken') || '';
+                    accessToken = params.get('accessToken') || '';
+                  }
+                } catch (parseErr) {
+                  console.error('Failed to parse deep link search params:', parseErr);
+                }
+                
+                if (idToken) {
+                  setLoading(true);
+                  try {
+                    const auth = getFirebaseAuth();
+                    const { signInWithCredential } = await import('firebase/auth');
+                    const credential = GoogleAuthProvider.credential(idToken);
+                    const webResult = await signInWithCredential(auth, credential);
+                    const gUser = webResult.user;
+                    
+                    await handleFirebaseUserLogin(gUser, accessToken);
+                  } catch (err) {
+                    console.error('Deep link Google Sign-In failed:', err);
+                    sessionStorage.setItem('googlePendingMsg', 'Login failed: ' + err.message);
+                    window.location.reload();
+                  } finally {
+                    setLoading(false);
+                  }
+                }
+              }
+            });
+          } catch (err) {
+            console.warn('Failed to register deep link listener:', err);
+          }
+        }
         const auth = getFirebaseAuth();
         
         // 1. Check for Google Redirect Result (Required for Median.co app flow)
@@ -53,54 +184,7 @@ export const AuthProvider = ({ children }) => {
           const credential = GoogleAuthProvider.credentialFromResult(result);
           const token = credential?.accessToken;
           const gUser = result.user;
-
-          const pendingLink = localStorage.getItem('pendingGoogleLink');
-          localStorage.removeItem('pendingGoogleLink');
-          const storedUserId = localStorage.getItem('userId');
-
-          if (pendingLink && storedUserId) {
-            // LINK flow
-            const currentUser = await db.scientists.get(String(storedUserId));
-            await db.scientists.update(storedUserId, {
-              email: gUser.email, googleLinked: true, googleLinkedEmail: gUser.email,
-              googleDriveToken: token || null,
-              avatar: currentUser?.avatar || gUser.photoURL
-            });
-            if (currentUser) {
-              setUser({ id: currentUser.id, username: currentUser.username, name: currentUser.name, role: currentUser.role, avatar: currentUser.avatar });
-            }
-          } else {
-            // LOGIN flow
-            let scientist = await db.scientists.where('email').equals(gUser.email).first();
-            if (!scientist) scientist = await db.scientists.where('username').equals(gUser.email).first();
-
-            if (!scientist) {
-              const baseName = gUser.displayName ? gUser.displayName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : 'user';
-              const randomNum = Math.floor(Math.random() * 10000);
-              const newId = await db.scientists.add({
-                username: `${baseName}${randomNum}`,
-                email: gUser.email, name: gUser.displayName, avatar: gUser.photoURL,
-                department: 'Member', employeeId: 'GOOGLE-' + gUser.uid.substring(0, 8),
-                role: 'user', accountStatus: 'pending', googleDriveToken: token || null,
-                createdAt: new Date().toISOString()
-              });
-              scientist = await db.scientists.get(newId);
-            } else {
-              const updateData = { googleDriveToken: token || null, name: scientist.name || gUser.displayName };
-              if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) updateData.avatar = gUser.photoURL;
-              await db.scientists.update(scientist.id, updateData);
-              if (updateData.avatar) scientist.avatar = updateData.avatar;
-            }
-
-            if (scientist.accountStatus === 'pending') {
-              sessionStorage.setItem('googlePendingMsg', 'Your account is pending approval by an administrator.');
-              setLoading(false);
-              return;
-            }
-
-            setUser({ id: scientist.id, username: scientist.username, name: scientist.name, role: scientist.role, avatar: scientist.avatar });
-            localStorage.setItem('userId', scientist.id);
-          }
+          await handleFirebaseUserLogin(gUser, token);
           setLoading(false);
           clearTimeout(timeoutId);
           return;
@@ -202,28 +286,18 @@ export const AuthProvider = ({ children }) => {
       
       if (isCapacitor()) {
         try {
-          console.log("Attempting native Google Sign-In...");
-          const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
-          const result = await FirebaseAuthentication.signInWithGoogle({
-            useCredentialManager: false
+          console.log("Opening secure system browser for Google login...");
+          const { Browser } = await import('@capacitor/browser');
+          const workspace = localStorage.getItem('workspaceId') || 'aiuscicomm';
+          await Browser.open({
+            url: `https://scicomm-superbugs.github.io/Portal/google-login.html?workspace=${encodeURIComponent(workspace)}`
           });
-          
-          if (result.credential && result.credential.idToken) {
-            const { signInWithCredential } = await import('firebase/auth');
-            const credential = GoogleAuthProvider.credential(result.credential.idToken);
-            const webResult = await signInWithCredential(auth, credential);
-            gUser = webResult.user;
-            token = result.credential.accessToken;
-          } else {
-            gUser = result.user;
-          }
-        } catch (nativeError) {
-          console.warn("Native Google Sign-In failed, falling back to Web Redirect flow:", nativeError);
-          const { signInWithRedirect } = await import('firebase/auth');
-          await signInWithRedirect(auth, provider);
-          // Wait for redirection
+          // Wait indefinitely since deep linking will handle the actual callback
           await new Promise(() => {});
           return;
+        } catch (nativeError) {
+          console.error("Failed to open system browser:", nativeError);
+          throw nativeError;
         }
       } else if (isMedian()) {
         if (window.median && window.median.google && window.median.google.login) {
@@ -325,30 +399,20 @@ export const AuthProvider = ({ children }) => {
 
       if (isCapacitor()) {
         try {
-          console.log("Attempting native Google Link...");
-          const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
-          const result = await FirebaseAuthentication.signInWithGoogle({
-            useCredentialManager: false
-          });
-          
-          if (result.credential && result.credential.idToken) {
-            const { signInWithCredential } = await import('firebase/auth');
-            const credential = GoogleAuthProvider.credential(result.credential.idToken);
-            const webResult = await signInWithCredential(auth, credential);
-            gUser = webResult.user;
-            token = result.credential.accessToken;
-          } else {
-            gUser = result.user;
-          }
-        } catch (nativeError) {
-          console.warn("Native Google Link failed, falling back to Web Redirect flow:", nativeError);
+          console.log("Opening secure system browser for Google account linking...");
           localStorage.setItem('pendingGoogleLink', 'true');
           localStorage.setItem('userId', String(user.id));
-          const { signInWithRedirect } = await import('firebase/auth');
-          await signInWithRedirect(auth, provider);
-          // Wait for redirection
+          const { Browser } = await import('@capacitor/browser');
+          const workspace = localStorage.getItem('workspaceId') || 'aiuscicomm';
+          await Browser.open({
+            url: `https://scicomm-superbugs.github.io/Portal/google-login.html?workspace=${encodeURIComponent(workspace)}`
+          });
+          // Wait indefinitely since deep linking will handle the actual callback
           await new Promise(() => {});
           return;
+        } catch (nativeError) {
+          console.error("Failed to open system browser for linking:", nativeError);
+          throw nativeError;
         }
       } else if (isMedian()) {
         if (window.median && window.median.google && window.median.google.login) {

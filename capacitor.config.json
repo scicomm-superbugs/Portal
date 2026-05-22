@@ -13,6 +13,11 @@
   "plugins": {
     "FirebaseAuthentication": {
       "providers": ["google.com"]
+    },
+    "GoogleAuth": {
+      "scopes": ["profile", "email", "https://www.googleapis.com/auth/drive.file"],
+      "serverClientId": "379599502348-afsf4ntn04amt9b2m1vvfqk9pg5csgfv.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
     }
   }
 }

@@ -16,12 +16,15 @@ public class MainActivity extends BridgeActivity {
 
         WebView webView = this.bridge.getWebView();
         if (webView != null) {
+            // Enable third-party cookies for Firebase iframe storage compatibility
+            android.webkit.CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+
             WebSettings settings = webView.getSettings();
             // Disable caching to always load fresh website content
             settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-            // Add "Capacitor" to the User Agent so the website detects native environment
-            String userAgent = settings.getUserAgentString();
-            settings.setUserAgentString(userAgent + " Capacitor");
+            // Use a clean Chrome User Agent to bypass Google accounts embedded WebView blocks
+            String userAgent = "Mozilla/5.0 (Linux; Android 13; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36";
+            settings.setUserAgentString(userAgent);
 
             // Pull-to-refresh support
             SwipeRefreshLayout swipeRefreshLayout = new SwipeRefreshLayout(this);
