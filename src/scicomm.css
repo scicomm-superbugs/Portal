@@ -1221,12 +1221,64 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
-/* Chat bubble styling for the other person's messages */
-.scicomm-dark-mode .chat-messages-container div[style*="white"] {
-  background-color: #111827 !important;
-  background: #111827 !important;
+/* --- PREMIUM CHAT BUBBLE OVERRIDES IN DARK MODE --- */
+/* My messages (Sent by Me - Royal Blue (#1d4ed8) natively) */
+.scicomm-dark-mode .chat-messages-container div[style*="background: #1d4ed8"],
+.scicomm-dark-mode .chat-messages-container div[style*="background:#1d4ed8"],
+.scicomm-dark-mode .chat-messages-container div[style*="background-color: #1d4ed8"],
+.scicomm-dark-mode .chat-messages-container div[style*="background-color:#1d4ed8"],
+.scicomm-dark-mode .chat-messages-container div[style*="rgb(29, 78, 216)"],
+.scicomm-dark-mode .chat-messages-container div[style*="1d4ed8"] {
+  background-color: #2563eb !important;
+  background: #2563eb !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border: none !important;
+  border-radius: 18px 18px 4px 18px !important;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
+}
+
+/* Other person's messages (Left - White natively) */
+.scicomm-dark-mode .chat-messages-container div[style*="background: white"],
+.scicomm-dark-mode .chat-messages-container div[style*="background:white"],
+.scicomm-dark-mode .chat-messages-container div[style*="background-color: white"],
+.scicomm-dark-mode .chat-messages-container div[style*="background-color:#white"],
+.scicomm-dark-mode .chat-messages-container div[style*="background-color:white"],
+.scicomm-dark-mode .chat-messages-container div[style*="background: rgb(255, 255, 255)"],
+.scicomm-dark-mode .chat-messages-container div[style*="background-color: rgb(255, 255, 255)"] {
+  background-color: #1e293b !important;
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border-radius: 18px 18px 18px 4px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Specific other person's bubble override to avoid matching white-space */
+.scicomm-dark-mode .chat-messages-container div[style*="white"]:not([style*="white-space"]):not([style*="whiteSpace"]) {
+  background-color: #1e293b !important;
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Remove accidental borders and backgrounds from text container inside chat bubbles */
+.scicomm-dark-mode .chat-messages-container div[style*="white-space"],
+.scicomm-dark-mode .chat-messages-container div[style*="whiteSpace"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Highlighted chat messages in thread */
+.scicomm-dark-mode .chat-messages-container div[style*="fef3c7"],
+.scicomm-dark-mode .chat-messages-container div[style*="rgb(254, 243, 199)"] {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid #ffffff !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
 }
 
 /* Message background container dots pattern in deep dark */
