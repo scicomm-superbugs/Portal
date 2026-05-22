@@ -772,16 +772,16 @@
   /* Complete removal of inverted colors and dimming filters! */
   filter: none !important;
   background-color: #020203 !important;
-  background-image: radial-gradient(circle at 50% 50%, #0c0803 0%, #000000 100%) !important;
+  background-image: radial-gradient(circle at 50% 50%, #111115 0%, #000000 100%) !important;
   background-attachment: fixed !important;
-  color: #e2e8f0 !important;
+  color: #ffffff !important;
 }
 
 .scicomm-dark-mode .scicomm-app {
   background-color: transparent !important;
-  background-image: radial-gradient(circle at 50% 50%, #0c0803 0%, #000000 100%) !important;
+  background-image: radial-gradient(circle at 50% 50%, #111115 0%, #000000 100%) !important;
   background-attachment: fixed !important;
-  color: #e2e8f0 !important;
+  color: #ffffff !important;
 }
 
 /* Clear filter from images, videos, emojis, and pickers so they are completely natural */
@@ -813,22 +813,22 @@
 .scicomm-dark-mode h6,
 .scicomm-dark-mode strong {
   color: #ffffff !important;
-  text-shadow: 0 0 10px rgba(253, 186, 116, 0.1) !important;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.2) !important;
 }
 
 .scicomm-dark-mode p,
 .scicomm-dark-mode span,
 .scicomm-dark-mode label,
 .scicomm-dark-mode li {
-  color: #e2e8f0 !important;
+  color: #ffffff !important;
 }
 
 .scicomm-dark-mode a {
-  color: #fbbf24 !important;
+  color: #ffffff !important;
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.05) !important;
 }
 .scicomm-dark-mode a:hover {
-  color: #fef08a !important;
+  color: #e2e8f0 !important;
   text-decoration: underline;
 }
 
@@ -846,7 +846,7 @@
 .scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.6)"],
 .scicomm-dark-mode *[style*="color: rgba(0,0,0,0.5)"],
 .scicomm-dark-mode *[style*="color:rgba(0,0,0,0.5)"] {
-  color: #94a3b8 !important;
+  color: #cbd5e1 !important;
 }
 
 /* --- GLASSMORPHIC COSMIC CARDS --- */
@@ -858,52 +858,54 @@
 .scicomm-dark-mode .gboard-emoji-picker,
 .scicomm-dark-mode .emoji-picker-container,
 .scicomm-dark-mode .emoji-picker {
-  background-color: rgba(13, 15, 20, 0.85) !important;
-  background: rgba(13, 15, 20, 0.85) !important;
+  background-color: rgba(13, 16, 23, 0.95) !important;
+  background: rgba(13, 16, 23, 0.95) !important;
   backdrop-filter: blur(16px) !important;
-  color: #e2e8f0 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(249, 115, 22, 0.02) !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 16px rgba(255, 255, 255, 0.15), 0 10px 40px rgba(0, 0, 0, 0.95) !important;
+  transition: none !important;
 }
 
 .scicomm-dark-mode .scicomm-card:hover,
 .scicomm-dark-mode div.scicomm-card:hover,
 .scicomm-dark-mode .app-announcement-banner:hover {
-  border: 1px solid rgba(249, 115, 22, 0.45) !important;
-  box-shadow: inset 0 1px 0 rgba(249, 115, 22, 0.2), inset 0 0 16px rgba(249, 115, 22, 0.08), 0 0 30px rgba(249, 115, 22, 0.15), 0 16px 44px rgba(0, 0, 0, 0.95) !important;
-  transform: translateY(-3px) scale(1.005) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 20px rgba(255, 255, 255, 0.25), 0 16px 44px rgba(0, 0, 0, 0.95) !important;
+  transform: none !important;
+  transition: none !important;
 }
 
 /* --- CYBERNETIC BUTTON OVERRIDES --- */
 .scicomm-dark-mode .scicomm-btn-primary {
-  background: linear-gradient(135deg, #ea580c 0%, #fbbf24 100%) !important;
-  color: #ffffff !important;
+  background: linear-gradient(135deg, #cbd5e1 0%, #ffffff 100%) !important;
+  color: #000000 !important;
   font-weight: 700 !important;
   border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3) !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15) !important;
+  text-shadow: none !important;
+  transition: none !important;
 }
 .scicomm-dark-mode .scicomm-btn-primary:hover {
-  background: linear-gradient(135deg, #f97316 0%, #fef08a 100%) !important;
+  background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 100%) !important;
   border-color: rgba(255, 255, 255, 0.4) !important;
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.55), 0 4px 16px rgba(0, 0, 0, 0.5) !important;
-  transform: translateY(-1px) !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.35), 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  transform: none !important;
 }
 
 .scicomm-dark-mode .scicomm-btn-secondary {
   background: transparent !important;
-  color: #fbbf24 !important;
-  border: 1px solid rgba(249, 115, 22, 0.5) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: none !important;
 }
 .scicomm-dark-mode .scicomm-btn-secondary:hover {
-  background-color: rgba(249, 115, 22, 0.1) !important;
-  border-color: #fbbf24 !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: #ffffff !important;
   color: #ffffff !important;
-  box-shadow: 0 0 15px rgba(249, 115, 22, 0.5), inset 0 0 8px rgba(249, 115, 22, 0.1) !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.1) !important;
+  transform: none !important;
 }
 
 .scicomm-dark-mode button:disabled,
@@ -933,9 +935,9 @@
 .scicomm-dark-mode *[style*="background-color:#ffffff"],
 .scicomm-dark-mode *[style*="background: rgb(255, 255, 255)"],
 .scicomm-dark-mode *[style*="background-color: rgb(255, 255, 255)"] {
-  background-color: #0a0b0d !important;
-  background: #0a0b0d !important;
-  color: #e2e8f0 !important;
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  color: #ffffff !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
@@ -969,7 +971,7 @@
 .scicomm-dark-mode *[style*="background-color: rgb(249, 250, 251)"] {
   background-color: #111827 !important;
   background: #111827 !important;
-  color: #e2e8f0 !important;
+  color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -981,7 +983,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 .scicomm-dark-mode textarea {
-  color: #e2e8f0 !important;
+  color: #ffffff !important;
   background: transparent !important;
   border: none !important;
   outline: none !important;
@@ -992,7 +994,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 .scicomm-dark-mode .scicomm-search-box input {
-  color: #e2e8f0 !important;
+  color: #ffffff !important;
 }
 .scicomm-dark-mode .scicomm-search-box input::placeholder {
   color: #64748b !important;
@@ -1009,19 +1011,19 @@
 .scicomm-dark-mode *[style*="color: rgb(15, 23, 42)"],
 .scicomm-dark-mode *[style*="color: rgb(30, 41, 59)"],
 .scicomm-dark-mode *[style*="color: rgb(0, 0, 0)"] {
-  color: #e2e8f0 !important;
+  color: #ffffff !important;
 }
 
 /* --- NAVIGATION ITEMS --- */
 .scicomm-dark-mode .scicomm-nav-item {
-  color: #94a3b8 !important;
+  color: #cbd5e1 !important;
 }
 .scicomm-dark-mode .scicomm-nav-item:hover,
 .scicomm-dark-mode .scicomm-nav-item.active {
   color: #ffffff !important;
 }
 .scicomm-dark-mode .scicomm-nav-item.active::after {
-  background-color: #fbbf24 !important;
+  background-color: #ffffff !important;
 }
 
 /* --- SCROLLBAR OVERRIDES --- */
@@ -1031,7 +1033,7 @@ html.scicomm-dark-mode {
 html.scicomm-dark-mode *,
 .scicomm-dark-mode * {
   scrollbar-width: thin !important;
-  scrollbar-color: #f97316 #000000 !important;
+  scrollbar-color: #ffffff #000000 !important;
 }
 html.scicomm-dark-mode *::-webkit-scrollbar,
 html.scicomm-dark-mode ::-webkit-scrollbar,
@@ -1053,18 +1055,18 @@ html.scicomm-dark-mode *::-webkit-scrollbar-thumb,
 html.scicomm-dark-mode ::-webkit-scrollbar-thumb,
 .scicomm-dark-mode *::-webkit-scrollbar-thumb,
 .scicomm-dark-mode ::-webkit-scrollbar-thumb {
-  background-color: #f97316 !important;
-  background: #f97316 !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
   border-radius: 4px !important;
   border: 2px solid #000000 !important;
-  box-shadow: 0 0 8px rgba(249, 115, 22, 0.4) !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3) !important;
 }
 html.scicomm-dark-mode *::-webkit-scrollbar-thumb:hover,
 html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode *::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode ::-webkit-scrollbar-thumb:hover {
-  background-color: #fbbf24 !important;
-  background: #fbbf24 !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
 }
 
 /* --- SECURITY WARNING BANNER --- */
@@ -1088,10 +1090,10 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode span.tag,
 .scicomm-dark-mode div.tag,
 .scicomm-dark-mode .scicomm-notif-badge {
-  background: rgba(249, 115, 22, 0.15) !important;
-  color: #fdbb74 !important;
-  border: 1px solid rgba(249, 115, 22, 0.4) !important;
-  box-shadow: 0 0 10px rgba(249, 115, 22, 0.2) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15) !important;
   font-weight: 600 !important;
 }
 
@@ -1104,10 +1106,10 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode *[style*="fae8ff" i], .scicomm-dark-mode *[style*="250,232,255" i], .scicomm-dark-mode *[style*="250, 232, 255" i],
 .scicomm-dark-mode *[style*="fef3c7" i], .scicomm-dark-mode *[style*="254,243,199" i], .scicomm-dark-mode *[style*="254, 243, 199" i],
 .scicomm-dark-mode *[style*="ccfbf1" i], .scicomm-dark-mode *[style*="204,251,241" i], .scicomm-dark-mode *[style*="204, 251, 241" i] {
-  background: rgba(249, 115, 22, 0.15) !important;
-  color: #fdbb74 !important;
-  border: 1px solid rgba(249, 115, 22, 0.4) !important;
-  box-shadow: 0 0 10px rgba(249, 115, 22, 0.4) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4) !important;
 }
 
 .scicomm-dark-mode .tag[title*="Master" i],
@@ -1126,4 +1128,169 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   background: linear-gradient(135deg, #1e3a8a, #1d4ed8) !important;
   color: #bfdbfe !important;
   border: 1px solid #3b82f6 !important;
+}
+
+/* ==========================================
+   🔧 DIRECT MOCKUP CONTRAST BUG OVERRIDES
+   ========================================== */
+
+/* 1. Dropdown Item Readability Protection */
+.scicomm-dark-mode .scicomm-dropdown .dropdown-item,
+.scicomm-dark-mode .dropdown-item {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+.scicomm-dark-mode .scicomm-dropdown .dropdown-item .icon,
+.scicomm-dark-mode .dropdown-item .icon {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+.scicomm-dark-mode .scicomm-dropdown .dropdown-item:hover,
+.scicomm-dark-mode .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* 2. Post Comment & Share Action Buttons Visible */
+.scicomm-dark-mode .scicomm-post-btn,
+.scicomm-dark-mode .scicomm-feed-action {
+  color: #cbd5e1 !important;
+}
+.scicomm-dark-mode .scicomm-post-btn:hover,
+.scicomm-dark-mode .scicomm-feed-action:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* 3. Dropdown Yellow/Gold Link Buttons Override (e.g. Admin Dashboard & View Leaderboard) */
+.scicomm-dark-mode *[style*="background: #fffbeb"],
+.scicomm-dark-mode *[style*="background:#fffbeb"],
+.scicomm-dark-mode *[style*="background-color: #fffbeb"],
+.scicomm-dark-mode *[style*="background-color:#fffbeb"],
+.scicomm-dark-mode *[style*="color: #b45309"],
+.scicomm-dark-mode *[style*="color:#b45309"] {
+  background-color: #0b0f19 !important;
+  background: #0b0f19 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.15) !important;
+}
+.scicomm-dark-mode *[style*="background: #fffbeb"]:hover,
+.scicomm-dark-mode *[style*="background-color: #fffbeb"]:hover {
+  background-color: #111827 !important;
+  background: #111827 !important;
+  border-color: #ffffff !important;
+}
+
+/* 4. Chat Area High-Contrast Dark Overrides */
+.scicomm-dark-mode .scicomm-chat-main,
+.scicomm-dark-mode .chat-header,
+.scicomm-dark-mode .scicomm-chat-main *[style*="background: white"],
+.scicomm-dark-mode .scicomm-chat-main *[style*="background:white"],
+.scicomm-dark-mode .scicomm-chat-main *[style*="background-color: white"],
+.scicomm-dark-mode .scicomm-chat-main *[style*="background-color:white"],
+.scicomm-dark-mode .scicomm-chat-main *[style*="background: #f8fafc"],
+.scicomm-dark-mode .scicomm-chat-main *[style*="background-color: #f8fafc"] {
+  background-color: #050505 !important;
+  background: #050505 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Chat bubble styling for the other person's messages */
+.scicomm-dark-mode .chat-messages-container div[style*="white"] {
+  background-color: #111827 !important;
+  background: #111827 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Message background container dots pattern in deep dark */
+.scicomm-dark-mode .chat-messages-container {
+  background-color: #050505 !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px) !important;
+  background-size: 20px 20px !important;
+}
+
+/* 5. Admin Dashboard Panel Overrides (Maintenance and Point Reset) */
+/* System Maintenance (Success/Green panel overrides) */
+.scicomm-dark-mode *[style*="background: #f0fdf4"],
+.scicomm-dark-mode *[style*="background-color: #f0fdf4"] {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  color: #a7f3d0 !important;
+}
+.scicomm-dark-mode *[style*="background: #f0fdf4"] h4,
+.scicomm-dark-mode *[style*="background: #f0fdf4"] p {
+  color: #a7f3d0 !important;
+}
+
+/* Reset Points (Error/Red panel overrides) */
+.scicomm-dark-mode *[style*="background: #fef2f2"],
+.scicomm-dark-mode *[style*="background-color: #fef2f2"] {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  color: #fecdd3 !important;
+}
+.scicomm-dark-mode *[style*="background: #fef2f2"] h4,
+.scicomm-dark-mode *[style*="background: #fef2f2"] p {
+  color: #fecdd3 !important;
+}
+
+/* Table rows bottom borders in Admin Panel */
+.scicomm-dark-mode div[style*="borderBottom: 1px solid #f1f5f9"] {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Row Action Buttons ("Clear Tasks" & "Clear Meetings") */
+.scicomm-dark-mode button[style*="#fee2e2"],
+.scicomm-dark-mode button[style*="#dbeafe"],
+.scicomm-dark-mode button[style*="#f9fafb"] {
+  background-color: #111827 !important;
+  background: #111827 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #f8fafc !important;
+}
+
+.scicomm-dark-mode button[style*="#fee2e2"]:not(:disabled),
+.scicomm-dark-mode button[style*="#fee2e2"]:hover:not(:disabled) {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+  color: #fca5a5 !important;
+}
+
+.scicomm-dark-mode button[style*="#dbeafe"]:not(:disabled),
+.scicomm-dark-mode button[style*="#dbeafe"]:hover:not(:disabled) {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  color: #bfdbfe !important;
+}
+
+/* 6. Header Download App Button */
+.scicomm-dark-mode a[href*="download"] div[style*="linear-gradient"] {
+  background-color: #0b0f19 !important;
+  background: linear-gradient(135deg, #0b0f19 0%, #111827 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
+}
+.scicomm-dark-mode a[href*="download"] div[style*="linear-gradient"] span,
+.scicomm-dark-mode a[href*="download"] div[style*="linear-gradient"] svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+.scicomm-dark-mode a[href*="download"]:hover div[style*="linear-gradient"] {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3) !important;
+  border-color: #ffffff !important;
+}
+
+/* Inputs and textareas font correction */
+.scicomm-dark-mode textarea,
+.scicomm-dark-mode input {
+  color: #ffffff !important;
 }
