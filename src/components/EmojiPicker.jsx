@@ -33,7 +33,7 @@ const EMOJI_CATEGORIES = [
     icon: '🍔',
     emojis: [
       '🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦',
-      '🥬', '🥒', '🌶️', '🌽', '🥕', '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🥞', ' Bacon ', '🥓', '🥩', '🍗',
+      '🥬', '🥒', '🌶️', '🌽', '🥕', '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🥞', '🥓', '🥩', '🍗',
       '🍖', '🌭', '🍔', '🍟', '🍕', '🥪', '🥙', '🌮', '🌯', '🥗', '🥘', '🥫', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟', '🍤',
       '🍙', '🍚', '🍘', '🍥', '🍢', '🍡', '🍧', '🍨', '🍦', '🍰', '🎂', '🧁', '🥧', '🍫', '🍬', '🍭', '🍮', '🍯', '🍼', '🥛',
       '☕', '🍵', '🍶', '🍾', '🍷', '🍸', '🍹', '🍺', '🍻', '🥤'
@@ -68,7 +68,7 @@ const EMOJI_CATEGORIES = [
     emojis: [
       '⌚', '📱', '📲', '💻', '⌨️', '🖥️', '🖨️', '🖱️', '🖲️', '🗜️', '💽', '💾', '💿', '📀', '📼', '📷', '📸', '📹', '🎥', '📽️',
       '🎞️', '📞', '☎️', '📟', '📠', '📺', '📻', '🎙️', '🎚️', '🎛️', '⏱️', '⏲️', '⏰', '🕰️', '⌛', '⏳', '📡', '🔋', '🔌', '💡',
-      ' flashlight ', '🔦', '🕯️', '🪔', '🗑️', '🛢️', '💸', '💵', '💴', '💶', '💷', '🪙', '💰', '💳', '💎', '⚖️', '🧰', '🔧', '🔨', '⚒️',
+      '🔦', '🕯️', '🪔', '🗑️', '🛢️', '💸', '💵', '💴', '💶', '💷', '🪙', '💰', '💳', '💎', '⚖️', '🧰', '🔧', '🔨', '⚒️',
       '🛠️', '⛏️', '🔩', '⚙️', '🧱', '⛓️', '🧲', '🔫', '💣', '🧨', '🪓', '🔪', '🗡️', '🛡️', '🚬', '⚰️', '⚱️', '🏺', '🔮', '📿',
       '🧿', '💈', '🧪', '🧫', '🧬', '🔭', '🔬', '🕳️', '💊', '💉', '🩹', '🩺', '🌡️', '🧹', '🧺', '🧻', '🧼', '🧽', '🧴', '🔑',
       '🗝️', '🔐', '🔏', '🔒', '🔓'
@@ -261,7 +261,44 @@ export default function EmojiPicker({ onSelect, onClose, isDarkMode = false }) {
           background: ${isDarkMode ? '#475569' : '#cbd5e1'};
           border-radius: 4px;
         }
+        @media (max-width: 480px) {
+          .gboard-emoji-picker {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            height: 380px !important;
+            border-radius: 24px 24px 0 0 !important;
+            border: none !important;
+            border-top: 1px solid ${isDarkMode ? '#334155' : '#e2e8f0'} !important;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.35) !important;
+            animation: slideUpMobile 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            margin: 0 !important;
+          }
+          .emoji-picker-drag-handle {
+            display: block !important;
+          }
+          .emoji-picker-close-btn {
+            display: flex !important;
+          }
+        }
+        @keyframes slideUpMobile {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
       `}</style>
+
+      {/* Swipe/Drag Indicator for Mobile */}
+      <div className="emoji-picker-drag-handle" style={{
+        width: '40px',
+        height: '4px',
+        background: isDarkMode ? '#475569' : '#cbd5e1',
+        borderRadius: '2px',
+        margin: '8px auto 0',
+        display: 'none',
+        flexShrink: 0
+      }} />
 
       {/* Header */}
       <div style={styles.header}>
@@ -269,6 +306,21 @@ export default function EmojiPicker({ onSelect, onClose, isDarkMode = false }) {
         {activeCategory === 'recent' && recentEmojis.length === 0 && (
           <span style={{ fontSize: '11px', fontWeight: 'normal', textTransform: 'none' }}>Empty</span>
         )}
+        <button className="emoji-picker-close-btn" onClick={onClose} style={{
+          background: isDarkMode ? '#334155' : '#e2e8f0',
+          border: 'none',
+          fontSize: '11px',
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          color: isDarkMode ? '#e2e8f0' : '#475569',
+          display: 'none',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '22px',
+          height: '22px',
+          borderRadius: '50%',
+          outline: 'none',
+        }}>✕</button>
       </div>
 
       {/* Scrollable Emojis list */}

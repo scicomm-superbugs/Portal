@@ -55,62 +55,38 @@ export default function SciCommHub() {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', maxWidth: '400px', margin: '0 auto' }}>
         {items.map(item => {
+          const typeClass = `hub-card-${item.label.toLowerCase()}`;
           const content = (
             <>
-              <div style={{
-                width: '60px', height: '60px', borderRadius: '16px',
-                background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: item.color,
-              }}>
+              <div className="hub-icon-wrapper">
                 {item.icon}
               </div>
-              <span style={{ fontWeight: 600, fontSize: '14px', color: item.locked ? '#64748b' : '#1e293b' }}>{item.label}</span>
+              <span style={{ fontWeight: 600, fontSize: '14px' }}>{item.label}</span>
               {item.badge > 0 && (
                 <span style={{
                   position: 'absolute', top: '10px', right: '10px',
                   background: '#ef4444', color: 'white', fontSize: '11px', fontWeight: 700,
                   width: '22px', height: '22px', borderRadius: '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  zIndex: 2,
                 }}>{item.badge}</span>
               )}
               {item.locked && (
-                <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: '10px', right: '10px' }} />
+                <Lock size={14} color="#ef4444" style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 2 }} />
               )}
             </>
           );
 
           return item.locked ? (
-            <div key={item.label} onClick={() => setShowApplyModal(true)} style={{
-              textDecoration: 'none', color: 'inherit',
-              background: 'white', borderRadius: '16px', padding: '24px 16px',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
-              border: '1px solid #e0dfdc', position: 'relative',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-              cursor: 'pointer'
-            }}>
+            <div key={item.label} onClick={() => setShowApplyModal(true)} className={`hub-card ${typeClass} locked`}>
               {content}
             </div>
           ) : item.isProjects ? (
-            <div key={item.label} onClick={() => setShowComingSoon(true)} style={{
-              textDecoration: 'none', color: 'inherit',
-              background: 'white', borderRadius: '16px', padding: '24px 16px',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
-              border: '1px solid #e0dfdc', position: 'relative',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-              cursor: 'pointer',
-              transition: 'transform 0.15s, box-shadow 0.15s',
-            }}>
+            <div key={item.label} onClick={() => setShowComingSoon(true)} className={`hub-card ${typeClass}`}>
               {content}
             </div>
           ) : (
-            <Link key={item.to} to={item.to} style={{
-              textDecoration: 'none', color: 'inherit',
-              background: 'white', borderRadius: '16px', padding: '24px 16px',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
-              border: '1px solid #e0dfdc', position: 'relative',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-              transition: 'transform 0.15s, box-shadow 0.15s',
-            }}>
+            <Link key={item.to} to={item.to} className={`hub-card ${typeClass}`}>
               {content}
             </Link>
           );
