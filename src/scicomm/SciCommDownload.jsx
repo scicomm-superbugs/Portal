@@ -116,7 +116,12 @@ export default function SciCommDownload() {
 
                 {isAvailable || plat.localPath ? (
                   <button 
-                    onClick={() => window.open(dl?.url || plat.localPath, '_blank')}
+                    onClick={() => {
+                      const baseLink = dl?.url || plat.localPath;
+                      const separator = baseLink.includes('?') ? '&' : '?';
+                      const cacheBusterLink = `${baseLink}${separator}t=${Date.now()}`;
+                      window.open(cacheBusterLink, '_blank');
+                    }}
                     style={{ 
                       width: '100%', 
                       padding: '16px', 
