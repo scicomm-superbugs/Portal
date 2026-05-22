@@ -1099,3 +1099,389 @@
 .scicomm-dark-mode ::-webkit-scrollbar-thumb:hover {
   background: #334155 !important;
 }
+
+/* =============================================
+   COMPREHENSIVE DARK MODE PATCH v2
+   Fixes: invisible text, chat page, admin boxes,
+   profile tags, card borders, download button
+   ============================================= */
+
+/* --- UNIVERSAL TEXT COLOR CATCH-ALL ---
+   Force every element that might have an inline dark color to be bright.
+   This catches anything we missed with specific selectors above. */
+.scicomm-dark-mode *[style*="color: #0f172a"],
+.scicomm-dark-mode *[style*="color: #1e293b"],
+.scicomm-dark-mode *[style*="color: #334155"],
+.scicomm-dark-mode *[style*="color: #333"],
+.scicomm-dark-mode *[style*="color:#333"],
+.scicomm-dark-mode *[style*="color: #14532d"],
+.scicomm-dark-mode *[style*="color:#14532d"],
+.scicomm-dark-mode *[style*="color: #166534"],
+.scicomm-dark-mode *[style*="color:#166534"],
+.scicomm-dark-mode *[style*="color: #991b1b"],
+.scicomm-dark-mode *[style*="color:#991b1b"],
+.scicomm-dark-mode *[style*="color: #7f1d1d"],
+.scicomm-dark-mode *[style*="color:#7f1d1d"],
+.scicomm-dark-mode *[style*="color: #92400e"],
+.scicomm-dark-mode *[style*="color:#92400e"],
+.scicomm-dark-mode *[style*="color: #b45309"],
+.scicomm-dark-mode *[style*="color:#b45309"],
+.scicomm-dark-mode *[style*="color: #854d0e"],
+.scicomm-dark-mode *[style*="color:#854d0e"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0"],
+.scicomm-dark-mode *[style*="color: rgba(0, 0, 0"],
+.scicomm-dark-mode *[style*="color: rgb(0, 0, 0)"],
+.scicomm-dark-mode *[style*="color: rgb(15, 23, 42)"],
+.scicomm-dark-mode *[style*="color: rgb(30, 41, 59)"],
+.scicomm-dark-mode *[style*="color: rgb(51, 65, 85)"],
+.scicomm-dark-mode *[style*="color: inherit"] {
+  color: #f9fafb !important;
+}
+
+/* Muted dark text on specific elements that use subtle grays */
+.scicomm-dark-mode *[style*="color: #999"],
+.scicomm-dark-mode *[style*="color:#999"] {
+  color: #9ca3af !important;
+}
+
+/* --- DROPDOWN MENU ITEMS --- */
+.scicomm-dark-mode .dropdown-item {
+  color: #f9fafb !important;
+}
+.scicomm-dark-mode .dropdown-item:hover {
+  background-color: #1e293b !important;
+  background: #1e293b !important;
+  color: #ffffff !important;
+}
+
+/* --- CHAT PAGE FIXES --- */
+/* Main chat container */
+.scicomm-dark-mode .scicomm-chat-container {
+  background: #000000 !important;
+  border-color: #1e293b !important;
+}
+
+/* Chat sidebar */
+.scicomm-dark-mode .scicomm-chat-sidebar {
+  background: #0b0f19 !important;
+  border-color: #1e293b !important;
+}
+
+/* Chat header */
+.scicomm-dark-mode .chat-header {
+  background: #0b0f19 !important;
+  border-color: #1e293b !important;
+}
+
+/* Chat messages area - the big white area */
+.scicomm-dark-mode .chat-messages-container {
+  background: #000000 !important;
+  background-image: radial-gradient(#0f172a 1px, transparent 1px) !important;
+}
+
+/* Chat conversation items (selected / hover) */
+.scicomm-dark-mode *[style*="background: #f0f7ff"],
+.scicomm-dark-mode *[style*="background-color: #f0f7ff"],
+.scicomm-dark-mode *[style*="background: rgb(240, 247, 255)"],
+.scicomm-dark-mode *[style*="background-color: rgb(240, 247, 255)"] {
+  background: #111827 !important;
+  background-color: #111827 !important;
+}
+
+/* Chat input bar at bottom */
+.scicomm-dark-mode div[style*="background: white"][style*="borderTop"],
+.scicomm-dark-mode div[style*="background: white"][style*="border-top"] {
+  background: #0b0f19 !important;
+  border-color: #1e293b !important;
+}
+
+/* Chat message bubbles — keep sender blue as-is, but fix receiver bubbles */
+.scicomm-dark-mode *[style*="background: #f8fafc"][style*="borderRadius"],
+.scicomm-dark-mode *[style*="background: rgb(248, 250, 252)"][style*="borderRadius"] {
+  background: #111827 !important;
+  background-color: #111827 !important;
+}
+
+/* Chat menu dropdown */
+.scicomm-dark-mode div[style*="background: white"][style*="boxShadow"] {
+  background: #0b0f19 !important;
+  background-color: #0b0f19 !important;
+  border-color: #1e293b !important;
+}
+
+/* --- ADMIN DASHBOARD ALERT BOXES --- */
+/* Green system maintenance box */
+.scicomm-dark-mode *[style*="background: #f0fdf4"],
+.scicomm-dark-mode *[style*="background-color: #f0fdf4"],
+.scicomm-dark-mode *[style*="background: rgb(240, 253, 244)"],
+.scicomm-dark-mode *[style*="background: #dcfce7"],
+.scicomm-dark-mode *[style*="background-color: #dcfce7"],
+.scicomm-dark-mode *[style*="background: #f0fff4"],
+.scicomm-dark-mode *[style*="background-color: #f0fff4"] {
+  background: #052e16 !important;
+  background-color: #052e16 !important;
+  border-color: #166534 !important;
+  color: #bbf7d0 !important;
+}
+.scicomm-dark-mode *[style*="background: #f0fdf4"] *,
+.scicomm-dark-mode *[style*="background: #f0fff4"] *,
+.scicomm-dark-mode *[style*="background: rgb(240, 253, 244)"] * {
+  color: #bbf7d0 !important;
+}
+
+/* Red reset/danger box */
+.scicomm-dark-mode *[style*="background: #fef2f2"],
+.scicomm-dark-mode *[style*="background-color: #fef2f2"],
+.scicomm-dark-mode *[style*="background: rgb(254, 242, 242)"],
+.scicomm-dark-mode *[style*="background: #fff5f5"],
+.scicomm-dark-mode *[style*="background-color: #fff5f5"],
+.scicomm-dark-mode *[style*="background: #fee2e2"],
+.scicomm-dark-mode *[style*="background-color: #fee2e2"] {
+  background: #450a0a !important;
+  background-color: #450a0a !important;
+  border-color: #991b1b !important;
+  color: #fecaca !important;
+}
+.scicomm-dark-mode *[style*="background: #fef2f2"] *,
+.scicomm-dark-mode *[style*="background: #fff5f5"] *,
+.scicomm-dark-mode *[style*="background: #fee2e2"] *,
+.scicomm-dark-mode *[style*="background: rgb(254, 242, 242)"] * {
+  color: #fecaca !important;
+}
+
+/* Yellow/amber warning boxes */
+.scicomm-dark-mode *[style*="background: #fef3c7"],
+.scicomm-dark-mode *[style*="background-color: #fef3c7"],
+.scicomm-dark-mode *[style*="background: #fffbeb"],
+.scicomm-dark-mode *[style*="background-color: #fffbeb"],
+.scicomm-dark-mode *[style*="background: #fef08a"],
+.scicomm-dark-mode *[style*="background-color: #fef08a"] {
+  background: #451a03 !important;
+  background-color: #451a03 !important;
+  border-color: #92400e !important;
+  color: #fef3c7 !important;
+}
+.scicomm-dark-mode *[style*="background: #fef3c7"] *,
+.scicomm-dark-mode *[style*="background: #fffbeb"] *,
+.scicomm-dark-mode *[style*="background: #fef08a"] * {
+  color: #fef3c7 !important;
+}
+
+/* Blue info/highlight boxes */
+.scicomm-dark-mode *[style*="background: #bfdbfe"],
+.scicomm-dark-mode *[style*="background-color: #bfdbfe"],
+.scicomm-dark-mode *[style*="background: #dbeafe"],
+.scicomm-dark-mode *[style*="background-color: #dbeafe"] {
+  background: #1e3a8a !important;
+  background-color: #1e3a8a !important;
+  border-color: #1d4ed8 !important;
+  color: #bfdbfe !important;
+}
+.scicomm-dark-mode *[style*="background: #bfdbfe"] *,
+.scicomm-dark-mode *[style*="background: #dbeafe"] * {
+  color: #bfdbfe !important;
+}
+
+/* Green success/approved badges */
+.scicomm-dark-mode *[style*="background: #bbf7d0"],
+.scicomm-dark-mode *[style*="background-color: #bbf7d0"] {
+  background: #166534 !important;
+  background-color: #166534 !important;
+  color: #bbf7d0 !important;
+}
+
+/* Red overdue task rows */
+.scicomm-dark-mode *[style*="background: #fff5f5"],
+.scicomm-dark-mode *[style*="background-color: #fff5f5"] {
+  background: #450a0a !important;
+  background-color: #450a0a !important;
+}
+
+/* Purple task review boxes */
+.scicomm-dark-mode *[style*="background: #f3f0ff"],
+.scicomm-dark-mode *[style*="background-color: #f3f0ff"] {
+  background: #2e1065 !important;
+  background-color: #2e1065 !important;
+  border-color: #7c3aed !important;
+  color: #c4b5fd !important;
+}
+
+/* --- PROFILE TAGS & BADGES --- */
+/* Tags with light gradient backgrounds - force text to stay readable */
+.scicomm-dark-mode .tag[style*="background: linear-gradient(135deg, #fef3c7"],
+.scicomm-dark-mode .tag[style*="background: linear-gradient(135deg, #eff6ff"] {
+  border-color: #334155 !important;
+}
+
+/* Level badge (uses dynamic bg from JS) - override light backgrounds */
+.scicomm-dark-mode .tag[style*="background: #e"] {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+/* --- POST ACTION BUTTONS (Comment, Share, etc.) --- */
+.scicomm-dark-mode .scicomm-post-btn {
+  color: #9ca3af !important;
+}
+.scicomm-dark-mode .scicomm-post-btn:hover {
+  color: #ffffff !important;
+  background: #1e293b !important;
+}
+.scicomm-dark-mode .scicomm-feed-action {
+  color: #9ca3af !important;
+}
+
+/* --- CARD BORDER GLOW --- */
+/* Add a subtle luminous border to all cards and post containers */
+.scicomm-dark-mode .scicomm-card {
+  border: 1px solid #1e293b !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.06), 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* --- DOWNLOAD APP BUTTON REDESIGN --- */
+/* Glowing neon-blue pill in header */
+.scicomm-dark-mode a[href*="download"] div {
+  background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.5) !important;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+.scicomm-dark-mode a[href*="download"] div:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%) !important;
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.5), 0 6px 16px rgba(0, 0, 0, 0.5) !important;
+  transform: translateY(-1px);
+}
+.scicomm-dark-mode a[href*="download"] span {
+  color: #ffffff !important;
+}
+.scicomm-dark-mode a[href*="download"] svg {
+  color: #c4b5fd !important;
+}
+
+/* --- SIDEBAR DOWNLOAD APP BOX IN FEED --- */
+.scicomm-dark-mode div[style*="background: linear-gradient(90deg, #3b82f6"] {
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.3), 0 8px 20px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* --- WORKSPACE DROPDOWN LINKS --- */
+/* Links inside WorkSpace dropdown that have light backgrounds */
+.scicomm-dark-mode a[style*="background: #f8fafc"],
+.scicomm-dark-mode a[style*="background: rgb(248, 250, 252)"] {
+  background: #111827 !important;
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f9fafb !important;
+}
+
+/* --- PROFILE BIO BOX --- */
+.scicomm-dark-mode div[style*="background: #f8fafc"][style*="border: 1px solid #e2e8f0"] {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+.scicomm-dark-mode div[style*="background: #f8fafc"][style*="border: 1px solid #e2e8f0"] p {
+  color: #d1d5db !important;
+}
+
+/* --- PROFILE STATS GRID WHITE BOX --- */
+.scicomm-dark-mode div[style*="background: #ffffff"][style*="border: 1px solid #e2e8f0"] {
+  background: #0b0f19 !important;
+  background-color: #0b0f19 !important;
+  border-color: #1e293b !important;
+}
+
+/* --- PROFILE TAB BAR --- */
+.scicomm-dark-mode div[style*="background: white"][style*="borderRadius: '16px'"],
+.scicomm-dark-mode div[style*="background: white"][style*="border-radius: 16px"] {
+  background: #0b0f19 !important;
+  background-color: #0b0f19 !important;
+}
+
+/* --- NEW CHAT / GROUP CREATION OVERLAY --- */
+.scicomm-dark-mode div[style*="background: white"][style*="z-index"],
+.scicomm-dark-mode div[style*="background: white"][style*="zIndex"] {
+  background: #0b0f19 !important;
+  background-color: #0b0f19 !important;
+  color: #f9fafb !important;
+}
+
+/* --- ADMIN DASHBOARD BUTTON (light bg in dropdown) --- */
+.scicomm-dark-mode a[style*="background: #eff6ff"],
+.scicomm-dark-mode a[style*="background-color: #eff6ff"],
+.scicomm-dark-mode div[style*="background: #eff6ff"],
+.scicomm-dark-mode div[style*="background-color: #eff6ff"] {
+  background: #111827 !important;
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+/* Hover states for light backgrounds inside sidebar/workspace panels */
+.scicomm-dark-mode *[style*="background: transparent"]:hover {
+  background: #111827 !important;
+}
+
+/* --- NOTIFICATION CARDS with light backgrounds --- */
+.scicomm-dark-mode *[style*="background: #e0f2fe"],
+.scicomm-dark-mode *[style*="background-color: #e0f2fe"] {
+  background: #0c4a6e !important;
+  background-color: #0c4a6e !important;
+  color: #bae6fd !important;
+}
+
+/* Portfolio items with white background */
+.scicomm-dark-mode div[style*="background: white"][style*="border: 1px solid #e0dfdc"] {
+  background: #111827 !important;
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+/* CV upload dashed box */
+.scicomm-dark-mode div[style*="border: 2px dashed #ccc"] {
+  border-color: #334155 !important;
+  background: #111827 !important;
+}
+
+/* Make sure all button text in dark mode is readable */
+.scicomm-dark-mode button {
+  color: #f9fafb !important;
+}
+.scicomm-dark-mode button[style*="color: #ef4444"],
+.scicomm-dark-mode button[style*="color:#ef4444"],
+.scicomm-dark-mode button[style*="color: red"] {
+  color: #f87171 !important;
+}
+.scicomm-dark-mode button[style*="color: #1d4ed8"],
+.scicomm-dark-mode button[style*="color:#1d4ed8"],
+.scicomm-dark-mode button[style*="color: #1b74e4"] {
+  color: #60a5fa !important;
+}
+.scicomm-dark-mode button[style*="color: white"],
+.scicomm-dark-mode button[style*="color: #ffffff"] {
+  color: #ffffff !important;
+}
+
+/* Ensure all anchor/link text within cards is bright */
+.scicomm-dark-mode .scicomm-card a {
+  color: #60a5fa !important;
+}
+.scicomm-dark-mode .scicomm-card a[style*="color: inherit"],
+.scicomm-dark-mode .scicomm-card a[style*="color: #0f172a"],
+.scicomm-dark-mode .scicomm-card a[style*="color: #1e293b"] {
+  color: #f9fafb !important;
+}
+
+/* Ensure divs and spans with explicit dark colors are overridden */
+.scicomm-dark-mode div[style*="color: #0f172a"],
+.scicomm-dark-mode div[style*="color: #1e293b"],
+.scicomm-dark-mode div[style*="color: #334155"],
+.scicomm-dark-mode div[style*="color: #333"],
+.scicomm-dark-mode span[style*="color: #0f172a"],
+.scicomm-dark-mode span[style*="color: #1e293b"],
+.scicomm-dark-mode span[style*="color: #334155"],
+.scicomm-dark-mode span[style*="color: #333"] {
+  color: #f9fafb !important;
+}
+
+/* Stories modal overlay fix */
+.scicomm-dark-mode div[style*="background: white"][style*="borderRadius: '16px'"][style*="overflow: hidden"] {
+  background: #0b0f19 !important;
+  background-color: #0b0f19 !important;
+}
