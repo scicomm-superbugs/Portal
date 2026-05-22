@@ -202,7 +202,9 @@ export const AuthProvider = ({ children }) => {
       
       if (isCapacitor()) {
         const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
-        const result = await FirebaseAuthentication.signInWithGoogle();
+        const result = await FirebaseAuthentication.signInWithGoogle({
+          useCredentialManager: false
+        });
         
         if (result.credential && result.credential.idToken) {
           const { signInWithCredential } = await import('firebase/auth');
@@ -313,7 +315,9 @@ export const AuthProvider = ({ children }) => {
 
       if (isCapacitor()) {
         const { FirebaseAuthentication } = await import('@capacitor-firebase/authentication');
-        const result = await FirebaseAuthentication.signInWithGoogle();
+        const result = await FirebaseAuthentication.signInWithGoogle({
+          useCredentialManager: false
+        });
         
         if (result.credential && result.credential.idToken) {
           const { signInWithCredential } = await import('firebase/auth');
