@@ -1485,3 +1485,424 @@
   background: #0b0f19 !important;
   background-color: #0b0f19 !important;
 }
+
+/* =============================================
+   COMPREHENSIVE DARK MODE PATCH v14
+   Fixes: premium card transparent white glow behind boxes/posts, scrollbars,
+   admin clear records list, workspace dropdown tiles & links,
+   profile level & mystery tags, content moderated red boxes,
+   broad rgb/rgba webkit/DOM serialization catching.
+   ============================================= */
+
+/* --- PREMIUM CARD TRANSPARENT WHITE GLOW --- */
+.scicomm-dark-mode .scicomm-card,
+.scicomm-dark-mode div.scicomm-card,
+.scicomm-dark-mode .app-announcement-banner,
+.scicomm-dark-mode div[style*="boxShadow" i][style*="255,255,255" i],
+.scicomm-dark-mode div[style*="rgba(255, 255, 255" i],
+.scicomm-dark-mode div[style*="rgba(255,255,255" i],
+.scicomm-dark-mode .scicomm-feed-main > div:first-child,
+.scicomm-dark-mode .scicomm-feed-main > div[style*="relative" i]:has(textarea),
+.scicomm-dark-mode div[style*="inset 0 0 0 1px" i],
+.scicomm-dark-mode div[style*="inset 0 2px 4px rgba(0,0,0,0.02)" i],
+.scicomm-dark-mode div[style*="rgba(255, 255, 255, 0.8)" i],
+.scicomm-dark-mode div[style*="rgba(255,255,255,0.8)" i] {
+  background-color: #0b0f19 !important;
+  background: #0b0f19 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important; /* Premium comfortable white outline */
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 0 12px rgba(255, 255, 255, 0.02),
+    0 0 25px rgba(255, 255, 255, 0.07), /* Beautiful soft white transparent halo glow */
+    0 12px 36px rgba(0, 0, 0, 0.7) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.scicomm-dark-mode .scicomm-card:hover,
+.scicomm-dark-mode div.scicomm-card:hover,
+.scicomm-dark-mode .app-announcement-banner:hover,
+.scicomm-dark-mode .scicomm-feed-main > div:first-child:hover,
+.scicomm-dark-mode .scicomm-feed-main > div[style*="relative" i]:has(textarea):hover {
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 0 16px rgba(255, 255, 255, 0.04),
+    0 0 35px rgba(255, 255, 255, 0.14), /* Gorgeous glow on hover */
+    0 16px 44px rgba(0, 0, 0, 0.85) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Textarea wrapper inside the post composer card */
+.scicomm-dark-mode .scicomm-feed-main div:has(> textarea),
+.scicomm-dark-mode div:has(> textarea),
+.scicomm-dark-mode div[style*="rgba(241, 245, 249" i],
+.scicomm-dark-mode div[style*="rgba(241,245,249" i],
+.scicomm-dark-mode div[style*="241, 245, 249" i],
+.scicomm-dark-mode div[style*="241,245,249" i] {
+  background-color: #111827 !important;
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.scicomm-dark-mode .scicomm-feed-main div:has(> textarea):focus-within,
+.scicomm-dark-mode div:has(> textarea):focus-within {
+  border: 1px solid #3b82f6 !important;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2) !important;
+}
+.scicomm-dark-mode textarea {
+  color: #f3f4f6 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  caret-color: #f3f4f6 !important;
+}
+
+/* --- WORKSPACE DROPDOWN OVERRIDES --- */
+.scicomm-dark-mode .scicomm-dropdown h3 {
+  color: #9ca3af !important;
+}
+
+/* Workspace dropdown grid tiles - normal state */
+.scicomm-dark-mode .scicomm-dropdown h3 + div > a,
+.scicomm-dark-mode .scicomm-dropdown h3 + div > div,
+.scicomm-dark-mode .scicomm-dropdown *[style*="background: #f8fafc" i],
+.scicomm-dark-mode .scicomm-dropdown *[style*="background-color: #f8fafc" i],
+.scicomm-dark-mode .scicomm-dropdown *[style*="rgb(248, 250, 252)" i],
+.scicomm-dark-mode .scicomm-dropdown *[style*="rgb(248,250,252)" i] {
+  background: #111827 !important;
+  background-color: #111827 !important;
+  border: 1px solid #1e293b !important;
+  color: #f9fafb !important;
+}
+
+/* Workspace dropdown grid tiles - hover state */
+.scicomm-dark-mode .scicomm-dropdown h3 + div > a:hover,
+.scicomm-dark-mode .scicomm-dropdown h3 + div > div:hover,
+.scicomm-dark-mode .scicomm-dropdown *[style*="background: #f1f5f9" i]:hover,
+.scicomm-dark-mode .scicomm-dropdown *[style*="background-color: #f1f5f9" i]:hover,
+.scicomm-dark-mode .scicomm-dropdown *[style*="rgb(241, 245, 249)" i]:hover,
+.scicomm-dark-mode .scicomm-dropdown *[style*="rgb(241,245,249)" i]:hover {
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+/* Admin Dashboard link inside Workspace dropdown - normal state */
+.scicomm-dark-mode .scicomm-dropdown a[href*="/admin" i],
+.scicomm-dark-mode .scicomm-dropdown h3 + div > a[href*="/admin" i],
+.scicomm-dark-mode *[style*="fffbeb" i],
+.scicomm-dark-mode a[style*="fffbeb" i],
+.scicomm-dark-mode *[style*="255, 251, 235" i],
+.scicomm-dark-mode *[style*="255,251,235" i] {
+  background: #451a03 !important;
+  background-color: #451a03 !important;
+  border: 1px solid #b45309 !important;
+  color: #fef3c7 !important;
+}
+
+/* Admin Dashboard link inside Workspace dropdown - hover state */
+.scicomm-dark-mode .scicomm-dropdown a[href*="/admin" i]:hover,
+.scicomm-dark-mode .scicomm-dropdown h3 + div > a[href*="/admin" i]:hover,
+.scicomm-dark-mode *[style*="fffbeb" i]:hover,
+.scicomm-dark-mode a[style*="fffbeb" i]:hover,
+.scicomm-dark-mode *[style*="255, 251, 235" i]:hover,
+.scicomm-dark-mode *[style*="255,251,235" i]:hover {
+  background: #78350f !important;
+  background-color: #78350f !important;
+  border-color: #d97706 !important;
+  color: #fffbeb !important;
+}
+
+/* --- ADMIN "CLEAR RECORDS PER MEMBER" BUTTONS & LISTS --- */
+/* Scrollable clearance member panel */
+.scicomm-dark-mode .scicomm-card h4 + div,
+.scicomm-dark-mode div[style*="max-height: 400px" i],
+.scicomm-dark-mode div[style*="max-height:400px" i],
+.scicomm-dark-mode div[style*="maxHeight: '400px'" i],
+.scicomm-dark-mode div[style*="maxHeight:'400px'" i] {
+  background: #0b0f19 !important;
+  background-color: #0b0f19 !important;
+  border: 1px solid #1e293b !important;
+  border-radius: 12px !important;
+  padding: 10px !important;
+}
+
+/* Row borders and backgrounds inside admin clearance panel */
+.scicomm-dark-mode div[style*="max-height: 400px" i] > div,
+.scicomm-dark-mode div[style*="max-height:400px" i] > div,
+.scicomm-dark-mode div[style*="maxHeight: '400px'" i] > div {
+  border-bottom: 1px solid #1e293b !important;
+  background: transparent !important;
+}
+
+.scicomm-dark-mode div[style*="max-height: 400px" i] span,
+.scicomm-dark-mode div[style*="max-height:400px" i] span,
+.scicomm-dark-mode div[style*="maxHeight: '400px'" i] span {
+  color: #f3f4f6 !important;
+}
+
+/* Deactivated/Disabled buttons inside Admin member clear list (originally white/light-grey background) */
+.scicomm-dark-mode div[style*="max-height" i] button:disabled,
+.scicomm-dark-mode div[style*="maxHeight" i] button:disabled,
+.scicomm-dark-mode h4 + div button:disabled,
+.scicomm-dark-mode button:disabled,
+.scicomm-dark-mode button[disabled] {
+  background: #111827 !important;
+  background-color: #111827 !important;
+  color: #4b5563 !important;
+  border: 1px solid #1e293b !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* Active "Clear Tasks" button (originally styled red/pink inline) - first button */
+.scicomm-dark-mode div[style*="max-height" i] button:not(:disabled):first-of-type,
+.scicomm-dark-mode div[style*="maxHeight" i] button:not(:disabled):first-of-type,
+.scicomm-dark-mode h4 + div button:not(:disabled):first-of-type {
+  background: #450a0a !important;
+  background-color: #450a0a !important;
+  color: #fca5a5 !important;
+  border: 1px solid #991b1b !important;
+  cursor: pointer !important;
+}
+
+.scicomm-dark-mode div[style*="max-height" i] button:not(:disabled):first-of-type:hover,
+.scicomm-dark-mode div[style*="maxHeight" i] button:not(:disabled):first-of-type:hover,
+.scicomm-dark-mode h4 + div button:not(:disabled):first-of-type:hover {
+  background: #7f1d1d !important;
+  background-color: #7f1d1d !important;
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
+}
+
+/* Active "Clear Meetings" button (originally styled blue inline) - second button */
+.scicomm-dark-mode div[style*="max-height" i] button:not(:disabled):last-of-type,
+.scicomm-dark-mode div[style*="maxHeight" i] button:not(:disabled):last-of-type,
+.scicomm-dark-mode h4 + div button:not(:disabled):last-of-type {
+  background: #1e3a8a !important;
+  background-color: #1e3a8a !important;
+  color: #bfdbfe !important;
+  border: 1px solid #1d4ed8 !important;
+  cursor: pointer !important;
+}
+
+.scicomm-dark-mode div[style*="max-height" i] button:not(:disabled):last-of-type:hover,
+.scicomm-dark-mode div[style*="maxHeight" i] button:not(:disabled):last-of-type:hover,
+.scicomm-dark-mode h4 + div button:not(:disabled):last-of-type:hover {
+  background: #1d4ed8 !important;
+  background-color: #1d4ed8 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+/* --- PROFILE LEVEL BADGES & ACHIEVEMENT GRADIENTS --- */
+.scicomm-dark-mode .tag,
+.scicomm-dark-mode span.tag,
+.scicomm-dark-mode div.tag,
+.scicomm-dark-mode .scicomm-notif-badge {
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+  color: #60a5fa !important;
+  border: 1px solid #3b82f6 !important;
+  box-shadow: none !important;
+}
+
+/* Level Badges structural targeting */
+.scicomm-dark-mode h1 + span.tag,
+.scicomm-dark-mode h1 + span[style*="border-radius" i],
+.scicomm-dark-mode h1 + span[style*="borderRadius" i],
+.scicomm-dark-mode h2 + div.tag,
+.scicomm-dark-mode h3 + span.tag,
+.scicomm-dark-mode h3 + div.tag,
+.scicomm-dark-mode .scicomm-sidebar-left .tag,
+.scicomm-dark-mode .scicomm-sidebar-left div.tag,
+.scicomm-dark-mode span + span[style*="border-radius" i],
+.scicomm-dark-mode span + div[style*="border-radius" i],
+.scicomm-dark-mode span[style*="border-radius: 12px" i],
+.scicomm-dark-mode span[style*="borderRadius: '12px'" i],
+.scicomm-dark-mode span[style*="border-radius: 8px" i],
+.scicomm-dark-mode span[style*="borderRadius: '8px'" i],
+.scicomm-dark-mode div[style*="border-radius: 12px" i],
+.scicomm-dark-mode div[style*="borderRadius: '12px'" i] {
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+  color: #60a5fa !important;
+  border: 1px solid #3b82f6 !important;
+}
+
+/* Double-override dynamic hex/rgb values in USER_LEVELS (matching spaced and space-free RGB strings) */
+.scicomm-dark-mode *[style*="f3f4f6" i], .scicomm-dark-mode *[style*="243,244,246" i], .scicomm-dark-mode *[style*="243, 244, 246" i],
+.scicomm-dark-mode *[style*="eff6ff" i], .scicomm-dark-mode *[style*="239,246,255" i], .scicomm-dark-mode *[style*="239, 246, 255" i],
+.scicomm-dark-mode *[style*="e0f2fe" i], .scicomm-dark-mode *[style*="224,242,254" i], .scicomm-dark-mode *[style*="224, 242, 254" i],
+.scicomm-dark-mode *[style*="ede9fe" i], .scicomm-dark-mode *[style*="237,233,254" i], .scicomm-dark-mode *[style*="237, 233, 254" i],
+.scicomm-dark-mode *[style*="fce7f3" i], .scicomm-dark-mode *[style*="252,231,243" i], .scicomm-dark-mode *[style*="252, 231, 243" i],
+.scicomm-dark-mode *[style*="ffe4e6" i], .scicomm-dark-mode *[style*="255,228,230" i], .scicomm-dark-mode *[style*="255, 228, 230" i],
+.scicomm-dark-mode *[style*="fae8ff" i], .scicomm-dark-mode *[style*="250,232,255" i], .scicomm-dark-mode *[style*="250, 232, 255" i],
+.scicomm-dark-mode *[style*="fef3c7" i], .scicomm-dark-mode *[style*="254,243,199" i], .scicomm-dark-mode *[style*="254, 243, 199" i],
+.scicomm-dark-mode *[style*="ccfbf1" i], .scicomm-dark-mode *[style*="204,251,241" i], .scicomm-dark-mode *[style*="204, 251, 241" i] {
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+  color: #60a5fa !important;
+  border: 1px solid #3b82f6 !important;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* Specific gold gradient for Master role badge and SciComm MasterMind tag */
+.scicomm-dark-mode .tag[title*="Master" i],
+.scicomm-dark-mode *[title*="MasterMind" i],
+.scicomm-dark-mode span.tag[style*="fef3c7" i],
+.scicomm-dark-mode span[style*="fef3c7" i]:has(span),
+.scicomm-dark-mode *[style*="linear-gradient" i][style*="f59e0b" i] {
+  background: linear-gradient(135deg, #78350f, #92400e) !important;
+  color: #fef3c7 !important;
+  border: 1px solid #b45309 !important;
+  box-shadow: 0 2px 6px rgba(180, 83, 9, 0.4) !important;
+}
+
+/* Specific blue/indigo gradient for Admin role badge and standard pinned tags */
+.scicomm-dark-mode .tag[title*="Admin" i],
+.scicomm-dark-mode *[style*="linear-gradient" i][style*="3b82f6" i],
+.scicomm-dark-mode *[style*="linear-gradient" i][style*="eff6ff" i],
+.scicomm-dark-mode span.tag[style*="eff6ff" i],
+.scicomm-dark-mode span.tag[style*="239,246,255" i] {
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8) !important;
+  color: #bfdbfe !important;
+  border: 1px solid #3b82f6 !important;
+}
+
+/* --- GRAPHICAL STATS GRID PROFILE CARD --- */
+.scicomm-dark-mode div[style*="grid-template-columns: repeat(4, 1fr)" i],
+.scicomm-dark-mode div[style*="gridTemplateColumns: 'repeat(4, 1fr)'" i],
+.scicomm-dark-mode div[style*="minmax(100px" i],
+.scicomm-dark-mode div[style*="auto-fit, minmax" i],
+.scicomm-dark-mode div[style*="grid-template-columns" i] {
+  background: #0b0f19 !important;
+  background-color: #0b0f19 !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 0 12px rgba(255, 255, 255, 0.02),
+    0 0 25px rgba(255, 255, 255, 0.07),
+    0 12px 36px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Next Level progression block below Stats Grid */
+.scicomm-dark-mode div[style*="grid-template-columns" i] + div,
+.scicomm-dark-mode div[style*="gridTemplateColumns" i] + div,
+.scicomm-dark-mode div[style*="auto-fit, minmax" i] + div,
+.scicomm-dark-mode div[style*="minmax(100px" i] + div {
+  background: #111827 !important;
+  border: 1px solid #1e293b !important;
+}
+
+/* --- ACHIEVEMENT TAG MANAGER MODAL --- */
+.scicomm-dark-mode div[style*="zIndex: 1000" i] > div,
+.scicomm-dark-mode div[style*="zIndex:1000" i] > div,
+.scicomm-dark-mode div[style*="1000" i] > div,
+.scicomm-dark-mode div[style*="z-index: 1000" i] > div {
+  background: #0b0f19 !important;
+  background-color: #0b0f19 !important;
+  border: 1px solid #1e293b !important;
+  color: #f9fafb !important;
+}
+
+.scicomm-dark-mode div[style*="zIndex: 1000" i] h3,
+.scicomm-dark-mode div[style*="zIndex: 1000" i] p,
+.scicomm-dark-mode div[style*="1000" i] h3,
+.scicomm-dark-mode div[style*="1000" i] p {
+  color: #f9fafb !important;
+}
+
+.scicomm-dark-mode div[style*="zIndex: 1000" i] button:not([style*="linear-gradient" i]),
+.scicomm-dark-mode div[style*="1000" i] button:not([style*="linear-gradient" i]) {
+  background: #111827 !important;
+  color: #e5e7eb !important;
+  border: 1px solid #1e293b !important;
+}
+
+.scicomm-dark-mode div[style*="zIndex: 1000" i] button[style*="linear-gradient" i],
+.scicomm-dark-mode div[style*="1000" i] button[style*="linear-gradient" i] {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  color: #ffffff !important;
+  border: 1px solid #3b82f6 !important;
+}
+
+/* --- CONTENT REMOVED BY ADMINISTRATOR MODERATION BOX --- */
+.scicomm-dark-mode div[style*="dashed" i]:has(h4),
+.scicomm-dark-mode div[style*="dashed" i][style*="fecaca" i],
+.scicomm-dark-mode div[style*="dashed" i][style*="rgba(254" i] {
+  background: rgba(69, 10, 10, 0.75) !important;
+  background-color: rgba(69, 10, 10, 0.75) !important;
+  border: 2px dashed #ef4444 !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.scicomm-dark-mode div[style*="dashed" i]:has(h4) h4,
+.scicomm-dark-mode div[style*="dashed" i][style*="fecaca" i] h4,
+.scicomm-dark-mode div[style*="dashed" i][style*="rgba(254" i] h4 {
+  color: #fca5a5 !important;
+}
+
+.scicomm-dark-mode div[style*="dashed" i]:has(h4) p,
+.scicomm-dark-mode div[style*="dashed" i][style*="fecaca" i] p,
+.scicomm-dark-mode div[style*="dashed" i][style*="rgba(254" i] p {
+  color: #fee2e2 !important;
+}
+
+/* --- SCROLLBAR TRACK & SCROLLBAR OVERRIDES --- */
+html.scicomm-dark-mode {
+  color-scheme: dark !important;
+}
+
+html.scicomm-dark-mode *,
+.scicomm-dark-mode * {
+  scrollbar-width: thin !important;
+  scrollbar-color: #1e293b #000000 !important;
+}
+
+html.scicomm-dark-mode *::-webkit-scrollbar,
+html.scicomm-dark-mode ::-webkit-scrollbar,
+.scicomm-dark-mode *::-webkit-scrollbar,
+.scicomm-dark-mode ::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: #000000 !important;
+  background: #000000 !important;
+}
+
+html.scicomm-dark-mode *::-webkit-scrollbar-track,
+html.scicomm-dark-mode ::-webkit-scrollbar-track,
+.scicomm-dark-mode *::-webkit-scrollbar-track,
+.scicomm-dark-mode ::-webkit-scrollbar-track {
+  background-color: #000000 !important;
+  background: #000000 !important;
+}
+
+html.scicomm-dark-mode *::-webkit-scrollbar-thumb,
+html.scicomm-dark-mode ::-webkit-scrollbar-thumb,
+.scicomm-dark-mode *::-webkit-scrollbar-thumb,
+.scicomm-dark-mode ::-webkit-scrollbar-thumb {
+  background-color: #1e293b !important;
+  background: #1e293b !important;
+  border-radius: 4px !important;
+  border: 2px solid #000000 !important;
+}
+
+html.scicomm-dark-mode *::-webkit-scrollbar-thumb:hover,
+html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
+.scicomm-dark-mode *::-webkit-scrollbar-thumb:hover,
+.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover {
+  background-color: #334155 !important;
+  background: #334155 !important;
+}
+
+/* --- DYNAMIC BORDER COLOR OVERRIDES --- */
+.scicomm-dark-mode *[style*="e0dfdc" i],
+.scicomm-dark-mode *[style*="224, 223, 220" i],
+.scicomm-dark-mode *[style*="224,223,220" i] {
+  border-color: #1e293b !important;
+}
+
+
