@@ -130,24 +130,22 @@ export default function SciCommPost() {
       setPostError('Failed to post: ' + err.message);
     }
     setIsPostingMedia(false);
-  };
-
-  return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', background: '#f8fafc', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+  };  return (
+    <div className="scicomm-create-post-container">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(226,232,240,0.8)' }}>
+      <div className="scicomm-create-post-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
-            <ArrowLeft size={24} color="#1e293b" />
+            <ArrowLeft size={24} className="icon" />
           </button>
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: '#1e293b' }}>Create Post</h2>
+          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700 }}>Create Post</h2>
         </div>
         <button
           onClick={handlePostSubmit}
           disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim()))}
           style={{ 
             padding: '8px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer',
-            background: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? '#e2e8f0' : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
+            background: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? 'rgba(0,0,0,0.05)' : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
             color: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? '#94a3b8' : 'white',
             boxShadow: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? 'none' : '0 4px 12px rgba(139,92,246,0.2)'
           }}
@@ -156,7 +154,7 @@ export default function SciCommPost() {
         </button>
       </div>
 
-      <div style={{ padding: '20px', flex: 1, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(10px)', borderRadius: '24px 24px 0 0', marginTop: '12px', boxShadow: '0 -10px 30px rgba(0,0,0,0.02)', position: 'relative' }}>
+      <div className="scicomm-create-post-body">
         {/* User Info & Privacy */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
           {renderAvatar(currentUserData, 44)}
@@ -222,39 +220,27 @@ export default function SciCommPost() {
       </div>
 
         {/* Futuristic Options Panel */}
-        <div style={{ 
-          background: 'rgba(255, 255, 255, 0.9)', 
-          backdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(226, 232, 240, 0.8)',
-          padding: '16px 16px 80px 16px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '12px',
-          boxShadow: '0 -10px 30px rgba(0,0,0,0.03)',
-          borderRadius: '24px 24px 0 0',
-          position: 'sticky',
-          bottom: 0
-        }}>
-          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px 10px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.2s' }}>
+        <div className="scicomm-create-post-options">
+          <label className="scicomm-create-post-card">
             <div style={{ width: '40px', height: '40px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Image size={24} color="#10b981" />
             </div>
-            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 600 }}>Media</span>
+            <span>Media</span>
             <input type="file" accept="image/*,video/*" onChange={e => { const f = e.target.files[0]; if(f && f.type.startsWith('video')) setPostVideo(f); else if (f) setPostImage(f); }} style={{ display: 'none' }} />
           </label>
           
-          <div onClick={() => setShowPoll(!showPoll)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px 10px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.2s' }}>
+          <div onClick={() => setShowPoll(!showPoll)} className="scicomm-create-post-card">
             <div style={{ width: '40px', height: '40px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ fontSize: '20px', lineHeight: 1 }}>📊</span>
             </div>
-            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 600 }}>Poll</span>
+            <span>Poll</span>
           </div>
 
-          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px 10px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.2s' }}>
+          <label className="scicomm-create-post-card">
             <div style={{ width: '40px', height: '40px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ fontSize: '20px', lineHeight: 1 }}>📎</span>
             </div>
-            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 600 }}>File</span>
+            <span>File</span>
             <input type="file" onChange={e => setPostFile(e.target.files[0])} style={{ display: 'none' }} />
           </label>
         </div>
