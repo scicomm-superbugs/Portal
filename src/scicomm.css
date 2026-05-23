@@ -372,6 +372,7 @@
 .scicomm-mobile-profile-link,
 .scicomm-mobile-chat-link {
   display: none;
+  color: rgba(0,0,0,0.6);
 }
 
 /* ===== RESPONSIVE ===== */
@@ -905,11 +906,9 @@
   color: #cbd5e1 !important;
 }
 
-/* --- GLASSMORPHIC COSMIC CARDS --- */
+/* --- DARK MODE SURFACE CARDS (static glow, no hover change) --- */
 .scicomm-dark-mode .scicomm-card,
-.scicomm-dark-mode .scicomm-header,
 .scicomm-dark-mode .scicomm-dropdown,
-.scicomm-dark-mode .scicomm-mobile-bar,
 .scicomm-dark-mode .scicomm-modal,
 .scicomm-dark-mode .gboard-emoji-picker,
 .scicomm-dark-mode .emoji-picker-container,
@@ -918,16 +917,59 @@
   background: rgba(13, 16, 23, 0.95) !important;
   backdrop-filter: blur(16px) !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 16px rgba(255, 255, 255, 0.15), 0 10px 40px rgba(0, 0, 0, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.9) !important;
   transition: none !important;
 }
 
+/* Header bar: flat dark, NO glow/highlight */
+.scicomm-dark-mode .scicomm-header {
+  background-color: #0a0a0f !important;
+  background: #0a0a0f !important;
+  backdrop-filter: none !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+/* Mobile bottom bar: flat dark, NO glow/highlight */
+.scicomm-dark-mode .scicomm-mobile-bar {
+  background-color: #0a0a0f !important;
+  background: #0a0a0f !important;
+  backdrop-filter: none !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+/* Mobile bottom bar items */
+.scicomm-dark-mode .scicomm-mobile-item {
+  color: rgba(255, 255, 255, 0.6) !important;
+  transition: none !important;
+}
+.scicomm-dark-mode .scicomm-mobile-item.active {
+  color: #ffffff !important;
+}
+
+/* SOLID + button (no glass) */
+.scicomm-dark-mode .scicomm-post-plus {
+  background: #2563eb !important;
+  backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4) !important;
+  color: #ffffff !important;
+}
+
+/* Cards: NO hover interaction change */
 .scicomm-dark-mode .scicomm-card:hover,
 .scicomm-dark-mode div.scicomm-card:hover,
 .scicomm-dark-mode .app-announcement-banner:hover {
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 20px rgba(255, 255, 255, 0.25), 0 16px 44px rgba(0, 0, 0, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.9) !important;
   transform: none !important;
   transition: none !important;
 }
@@ -943,9 +985,9 @@
   transition: none !important;
 }
 .scicomm-dark-mode .scicomm-btn-primary:hover {
-  background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 100%) !important;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.35), 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  background: linear-gradient(135deg, #cbd5e1 0%, #ffffff 100%) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15) !important;
   transform: none !important;
 }
 
@@ -957,10 +999,10 @@
   transition: none !important;
 }
 .scicomm-dark-mode .scicomm-btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  border-color: #ffffff !important;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
   color: #ffffff !important;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05) !important;
   transform: none !important;
 }
 
@@ -1070,16 +1112,44 @@
   color: #ffffff !important;
 }
 
-/* --- NAVIGATION ITEMS --- */
+/* --- NAVIGATION ITEMS (no hover change) --- */
 .scicomm-dark-mode .scicomm-nav-item {
   color: #cbd5e1 !important;
+  transition: none !important;
 }
-.scicomm-dark-mode .scicomm-nav-item:hover,
+.scicomm-dark-mode .scicomm-nav-item:hover {
+  color: #cbd5e1 !important;
+}
 .scicomm-dark-mode .scicomm-nav-item.active {
   color: #ffffff !important;
 }
 .scicomm-dark-mode .scicomm-nav-item.active::after {
   background-color: #ffffff !important;
+}
+
+/* --- MOBILE CHAT ICON: visible white --- */
+.scicomm-dark-mode .scicomm-mobile-chat-link,
+.scicomm-dark-mode .scicomm-mobile-chat-link .icon,
+.scicomm-dark-mode .scicomm-mobile-chat-link svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* --- KILL ALL HOVER INTERACTIONS IN DARK MODE --- */
+.scicomm-dark-mode *:hover {
+  transform: none !important;
+  transition: none !important;
+}
+.scicomm-dark-mode .hub-card:hover {
+  transform: none !important;
+}
+.scicomm-dark-mode .hub-card:hover .hub-icon-wrapper {
+  transform: none !important;
+}
+.scicomm-dark-mode .scicomm-post-btn:hover,
+.scicomm-dark-mode .scicomm-feed-action:hover {
+  background: transparent !important;
 }
 
 /* --- SCROLLBAR OVERRIDES --- */
@@ -1204,8 +1274,7 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 }
 .scicomm-dark-mode .scicomm-dropdown .dropdown-item:hover,
 .scicomm-dark-mode .dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
   color: #ffffff !important;
 }
 
@@ -1423,8 +1492,8 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   stroke: #ffffff !important;
 }
 .scicomm-dark-mode a[href*="download"]:hover div[style*="linear-gradient"] {
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3) !important;
-  border-color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }
 
 /* Premium SciComm Hub Cards Dark Mode Overrides */
@@ -1436,17 +1505,27 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   transform: none !important;
 }
 
+/* Hub cards: NO hover change */
 .scicomm-dark-mode .hub-card:hover {
-  background: rgba(20, 26, 38, 0.9) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+  background: rgba(13, 16, 23, 0.8) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+  transform: none !important;
 }
 
-.scicomm-dark-mode .hub-card-tasks:hover { border-color: rgba(59, 130, 246, 0.5) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(59, 130, 246, 0.25), 0 12px 40px rgba(0, 0, 0, 0.6) !important; }
-.scicomm-dark-mode .hub-card-meetings:hover { border-color: rgba(139, 92, 246, 0.5) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(139, 92, 246, 0.25), 0 12px 40px rgba(0, 0, 0, 0.6) !important; }
-.scicomm-dark-mode .hub-card-projects:hover { border-color: rgba(20, 184, 166, 0.5) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(20, 184, 166, 0.25), 0 12px 40px rgba(0, 0, 0, 0.6) !important; }
-.scicomm-dark-mode .hub-card-leaderboard:hover { border-color: rgba(245, 158, 11, 0.5) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(245, 158, 11, 0.25), 0 12px 40px rgba(0, 0, 0, 0.6) !important; }
-.scicomm-dark-mode .hub-card-calendar:hover { border-color: rgba(16, 185, 129, 0.5) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(16, 185, 129, 0.25), 0 12px 40px rgba(0, 0, 0, 0.6) !important; }
-.scicomm-dark-mode .hub-card-admin:hover { border-color: rgba(29, 78, 216, 0.5) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(29, 78, 216, 0.25), 0 12px 40px rgba(0, 0, 0, 0.6) !important; }
+/* Static subtle colored borders (always visible) */
+.scicomm-dark-mode .hub-card-tasks { border-color: rgba(59, 130, 246, 0.3) !important; }
+.scicomm-dark-mode .hub-card-meetings { border-color: rgba(139, 92, 246, 0.3) !important; }
+.scicomm-dark-mode .hub-card-projects { border-color: rgba(20, 184, 166, 0.3) !important; }
+.scicomm-dark-mode .hub-card-leaderboard { border-color: rgba(245, 158, 11, 0.3) !important; }
+.scicomm-dark-mode .hub-card-calendar { border-color: rgba(16, 185, 129, 0.3) !important; }
+.scicomm-dark-mode .hub-card-admin { border-color: rgba(29, 78, 216, 0.3) !important; }
+
+.scicomm-dark-mode .hub-card-tasks:hover { border-color: rgba(59, 130, 246, 0.3) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.45) !important; }
+.scicomm-dark-mode .hub-card-meetings:hover { border-color: rgba(139, 92, 246, 0.3) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.45) !important; }
+.scicomm-dark-mode .hub-card-projects:hover { border-color: rgba(20, 184, 166, 0.3) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.45) !important; }
+.scicomm-dark-mode .hub-card-leaderboard:hover { border-color: rgba(245, 158, 11, 0.3) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.45) !important; }
+.scicomm-dark-mode .hub-card-calendar:hover { border-color: rgba(16, 185, 129, 0.3) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.45) !important; }
+.scicomm-dark-mode .hub-card-admin:hover { border-color: rgba(29, 78, 216, 0.3) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.45) !important; }
 
 .scicomm-dark-mode .hub-card .hub-icon-wrapper {
   background: rgba(255, 255, 255, 0.04) !important;

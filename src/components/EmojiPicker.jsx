@@ -264,17 +264,18 @@ export default function EmojiPicker({ onSelect, onClose, isDarkMode = false }) {
         @media (max-width: 480px) {
           .gboard-emoji-picker {
             position: fixed !important;
-            bottom: 0 !important;
+            bottom: 60px !important;
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
-            height: 380px !important;
-            border-radius: 24px 24px 0 0 !important;
+            height: 300px !important;
+            border-radius: 20px 20px 0 0 !important;
             border: none !important;
             border-top: 1px solid ${isDarkMode ? '#334155' : '#e2e8f0'} !important;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.35) !important;
+            box-shadow: 0 -8px 30px rgba(0,0,0,0.3) !important;
             animation: slideUpMobile 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
             margin: 0 !important;
+            z-index: 99999 !important;
           }
           .emoji-picker-drag-handle {
             display: block !important;
@@ -337,14 +338,6 @@ export default function EmojiPicker({ onSelect, onClose, isDarkMode = false }) {
                 key={`${emoji}_${index}`}
                 onClick={() => handleEmojiClick(emoji)}
                 style={styles.emojiBtn}
-                onMouseEnter={(e) => {
-                  e.target.style.background = isDarkMode ? '#334155' : '#f1f5f9';
-                  e.target.style.transform = 'scale(1.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'transparent';
-                  e.target.style.transform = 'none';
-                }}
               >
                 {emoji}
               </button>
