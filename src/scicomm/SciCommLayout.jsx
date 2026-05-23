@@ -79,8 +79,53 @@ export default function SciCommLayout() {
       document.documentElement.classList.remove('no-pull-to-refresh');
     }
 
+    // Fail-safe gesture interceptor: prevents Chrome/WebView from showing pull-to-refresh spinner
+    let touchStartY = 0;
+
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 1) {
+        touchStartY = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length !== 1) return;
+      
+      const touchY = e.touches[0].clientY;
+      const touchDiff = touchY - touchStartY;
+
+      // If dragging/swiping down (touchDiff > 0), check boundaries
+      if (touchDiff > 0 && disablePull) {
+        let target = e.target;
+        let canScrollUp = false;
+
+        // Traverse parent elements to check if any container is scrolled down and can scroll up
+        while (target && target !== document.body && target !== document.documentElement) {
+          const overflowY = window.getComputedStyle(target).overflowY;
+          const isScrollable = overflowY === 'auto' || overflowY === 'scroll';
+          if (isScrollable && target.scrollTop > 0) {
+            canScrollUp = true;
+            break;
+          }
+          target = target.parentNode;
+        }
+
+        // If we are at the absolute top of the page and cannot scroll any container up, block pull-down
+        if (!canScrollUp && window.scrollY === 0) {
+          if (e.cancelable) {
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+
     return () => {
       document.documentElement.classList.remove('no-pull-to-refresh');
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [location.pathname, mobileSidebarOpen]);
 
