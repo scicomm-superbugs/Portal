@@ -71,18 +71,26 @@
   height: 100%;
 }
 
-.scicomm-nav-item {
+.scicomm-nav-item,
+.scicomm-nav-item:visited,
+.scicomm-nav-item:hover,
+.scicomm-nav-item:focus,
+.scicomm-nav-item:active,
+.scicomm-nav-item.active {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: rgba(0,0,0,0.6);
-  text-decoration: none;
+  text-decoration: none !important;
   min-width: 76px;
   height: 100%;
   cursor: pointer;
   position: relative;
   transition: color 0.2s;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .scicomm-nav-item:hover {
@@ -91,16 +99,12 @@
 
 .scicomm-nav-item.active {
   color: rgba(0,0,0,0.9);
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-radius: 8px !important;
 }
-
 .scicomm-nav-item.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #1d4ed8;
+  display: none !important;
 }
 
 .nav-text {
@@ -1113,18 +1117,30 @@
 }
 
 /* --- NAVIGATION ITEMS (no hover change) --- */
-.scicomm-dark-mode .scicomm-nav-item {
+.scicomm-dark-mode .scicomm-nav-item,
+.scicomm-dark-mode .scicomm-nav-item:visited,
+.scicomm-dark-mode .scicomm-nav-item:hover,
+.scicomm-dark-mode .scicomm-nav-item:focus,
+.scicomm-dark-mode .scicomm-nav-item:active,
+.scicomm-dark-mode .scicomm-nav-item.active {
   color: #cbd5e1 !important;
+  text-decoration: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
   transition: none !important;
 }
 .scicomm-dark-mode .scicomm-nav-item:hover {
-  color: #cbd5e1 !important;
+  color: #ffffff !important;
 }
 .scicomm-dark-mode .scicomm-nav-item.active {
   color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 8px !important;
 }
 .scicomm-dark-mode .scicomm-nav-item.active::after {
-  background-color: #ffffff !important;
+  display: none !important;
 }
 
 /* --- MOBILE CHAT ICON: visible white --- */
@@ -1136,20 +1152,31 @@
   opacity: 1 !important;
 }
 
-/* --- KILL ALL HOVER INTERACTIONS IN DARK MODE --- */
-.scicomm-dark-mode *:hover {
+/* --- KILL ONLY DECORATIVE HOVER TRANSFORMS IN DARK MODE --- */
+.scicomm-dark-mode button:hover,
+.scicomm-dark-mode a:hover,
+.scicomm-dark-mode .hub-card:hover,
+.scicomm-dark-mode .hub-card:hover * {
   transform: none !important;
   transition: none !important;
-}
-.scicomm-dark-mode .hub-card:hover {
-  transform: none !important;
-}
-.scicomm-dark-mode .hub-card:hover .hub-icon-wrapper {
-  transform: none !important;
 }
 .scicomm-dark-mode .scicomm-post-btn:hover,
 .scicomm-dark-mode .scicomm-feed-action:hover {
   background: transparent !important;
+}
+
+/* --- PROTECT CHAT SIDEBAR DRAWER AND SWIPE IN DARK MODE --- */
+.scicomm-dark-mode .scicomm-chat-sidebar {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+}
+@media (max-width: 768px) {
+  .scicomm-dark-mode .scicomm-chat-sidebar {
+    transform: translateX(-100%) !important;
+  }
+  .scicomm-dark-mode .scicomm-chat-sidebar.open {
+    transform: translateX(0) !important;
+  }
 }
 
 /* --- SCROLLBAR OVERRIDES --- */
@@ -1347,43 +1374,26 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 }
 
 /* --- PREMIUM CHAT BUBBLE OVERRIDES IN DARK MODE --- */
-/* My messages (Sent by Me - Royal Blue (#1d4ed8) natively) */
-.scicomm-dark-mode .chat-messages-container div[style*="background: #1d4ed8"],
-.scicomm-dark-mode .chat-messages-container div[style*="background:#1d4ed8"],
-.scicomm-dark-mode .chat-messages-container div[style*="background-color: #1d4ed8"],
-.scicomm-dark-mode .chat-messages-container div[style*="background-color:#1d4ed8"],
-.scicomm-dark-mode .chat-messages-container div[style*="rgb(29, 78, 216)"],
-.scicomm-dark-mode .chat-messages-container div[style*="1d4ed8"] {
-  background-color: #2563eb !important;
-  background: #2563eb !important;
+/* My messages (Sent by Me) */
+.scicomm-dark-mode .chat-messages-container .chat-bubble.chat-bubble-me,
+.scicomm-dark-mode .chat-bubble-me {
+  background-color: #1d4ed8 !important;
+  background: #1d4ed8 !important;
   color: #ffffff !important;
   border: none !important;
   border-radius: 18px 18px 4px 18px !important;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(29, 78, 216, 0.4) !important;
 }
 
-/* Other person's messages (Left - White natively) */
-.scicomm-dark-mode .chat-messages-container div[style*="background: white"],
-.scicomm-dark-mode .chat-messages-container div[style*="background:white"],
-.scicomm-dark-mode .chat-messages-container div[style*="background-color: white"],
-.scicomm-dark-mode .chat-messages-container div[style*="background-color:#white"],
-.scicomm-dark-mode .chat-messages-container div[style*="background-color:white"],
-.scicomm-dark-mode .chat-messages-container div[style*="background: rgb(255, 255, 255)"],
-.scicomm-dark-mode .chat-messages-container div[style*="background-color: rgb(255, 255, 255)"] {
+/* Other person's messages (Received) */
+.scicomm-dark-mode .chat-messages-container .chat-bubble.chat-bubble-other,
+.scicomm-dark-mode .chat-bubble-other {
   background-color: #1e293b !important;
   background: #1e293b !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 18px 18px 18px 4px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* Specific other person's bubble override to avoid matching white-space */
-.scicomm-dark-mode .chat-messages-container div[style*="white"]:not([style*="white-space"]):not([style*="whiteSpace"]) {
-  background-color: #1e293b !important;
-  background: #1e293b !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Remove accidental borders and backgrounds from text container inside chat bubbles */

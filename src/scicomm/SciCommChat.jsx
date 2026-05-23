@@ -487,12 +487,12 @@ export default function SciCommChat() {
   };
 
   const unreadPerRoom = (roomId) => allMessages.filter(m =>
-    m.roomId === roomId && m.senderId !== user.id && !(m.readBy || []).includes(user.id)
+    m.roomId === roomId && String(m.senderId) !== String(user.id) && !(m.readBy || []).includes(user.id)
   ).length;
 
   useEffect(() => {
     if (!selectedRoom) return;
-    const unread = allMessages.filter(m => m.roomId === selectedRoom && m.senderId !== user.id && !(m.readBy || []).includes(user.id));
+    const unread = allMessages.filter(m => m.roomId === selectedRoom && String(m.senderId) !== String(user.id) && !(m.readBy || []).includes(user.id));
     unread.forEach(m => {
       db.scicomm_chat_messages.update(m.id, { readBy: [...(m.readBy || []), user.id] }).catch(() => {});
     });
@@ -716,7 +716,7 @@ export default function SciCommChat() {
             {/* Messages */}
             <div className="chat-messages-container" style={{ flex: 1, overflowY: 'auto', padding: '16px', background: '#f8fafc', backgroundImage: 'radial-gradient(#e2e8f0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
               {roomMessages.map((m, idx) => {
-                const isMe = m.senderId === user.id;
+                const isMe = String(m.senderId) === String(user.id);
                 const prev = roomMessages[idx - 1];
                 const isFirstInGroup = !prev || prev.senderId !== m.senderId;
                 const isDeleted = m.deleted;
@@ -756,11 +756,13 @@ export default function SciCommChat() {
                     }}
                   >
                     {isFirstInGroup && !isMe && activeRoom.type === 'group' && <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', marginLeft: '16px', marginBottom: '2px' }}>{m.senderName}</div>}
-                    <div style={{ 
-                      maxWidth: '75%', 
-                      padding: '10px 16px', 
-                      borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                      background: isDeleted ? (isMe ? 'rgba(29, 78, 216, 0.1)' : '#f8fafc') : (highlightedMsgId === m.id ? (isMe ? '#2563eb' : '#fef3c7') : (isMe ? '#1d4ed8' : 'white')),
+                    <div 
+                      className={`chat-bubble ${isMe ? 'chat-bubble-me' : 'chat-bubble-other'}`}
+                      style={{ 
+                        maxWidth: '75%', 
+                        padding: '10px 16px', 
+                        borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                        background: isDeleted ? (isMe ? 'rgba(29, 78, 216, 0.1)' : '#f8fafc') : (highlightedMsgId === m.id ? (isMe ? '#2563eb' : '#fef3c7') : (isMe ? '#1d4ed8' : 'white')),
                       color: isDeleted ? '#94a3b8' : (isMe ? 'white' : '#1e293b'),
                       fontSize: '14px',
                       lineHeight: '1.5',
