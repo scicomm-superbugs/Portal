@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard, Lock, FolderKanban, Smartphone } from 'lucide-react';
+import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard, Lock, FolderKanban, Smartphone, Plus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
 import { safeLocalStorage } from '../utils/safeStorage';
@@ -380,7 +380,7 @@ export default function SciCommLayout() {
       <nav className="scicomm-mobile-bar">
         <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`}><Home className="icon" size={22} /><span>Home</span></Link>
         <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users className="icon" size={22} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge tag">{pendingConnections.length}</span>}<span>Network</span></Link>
-        <Link to="/post" className={`scicomm-mobile-item scicomm-mobile-post-btn ${isActive('/post') ? 'active' : ''}`}><div className="scicomm-post-plus">+</div><span>Post</span></Link>
+        <Link to="/post" className={`scicomm-mobile-item scicomm-mobile-post-btn ${isActive('/post') ? 'active' : ''}`}><div className="scicomm-post-plus"><Plus size={20} /></div><span>Post</span></Link>
         <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={22} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span>Alerts</span></Link>
         <Link to="/hub" className={`scicomm-mobile-item ${isActive('/hub') ? 'active' : ''}`} style={{position:'relative'}}>
           <LayoutDashboard className="icon" size={22} />

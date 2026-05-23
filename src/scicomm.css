@@ -362,18 +362,34 @@
 
 /* LinkedIn-style Post button */
 .scicomm-post-plus {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-  color: white;
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  font-weight: 300;
-  margin-top: -16px;
-  box-shadow: 0 2px 12px rgba(29, 78, 216, 0.35);
+  margin-top: -18px;
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.45);
+  border: 2px solid #ffffff;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scicomm-post-plus svg {
+  display: block;
+  stroke-width: 3px;
+  transition: transform 0.25s ease;
+}
+
+.scicomm-mobile-post-btn:hover .scicomm-post-plus {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(29, 78, 216, 0.55);
+}
+
+.scicomm-mobile-post-btn:active .scicomm-post-plus {
+  transform: translateY(0) scale(0.95);
+  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.4);
 }
 
 .scicomm-mobile-post-btn {
@@ -978,11 +994,21 @@
 
 /* SOLID + button (no glass) */
 .scicomm-dark-mode .scicomm-post-plus {
-  background: #2563eb !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
   backdrop-filter: none !important;
-  border: none !important;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4) !important;
+  border: 2px solid #0a0a0f !important;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.45) !important;
   color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-post-btn:hover .scicomm-post-plus {
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 6px 22px rgba(139, 92, 246, 0.6) !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-post-btn:active .scicomm-post-plus {
+  transform: translateY(0) scale(0.95) !important;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.4) !important;
 }
 
 /* Cards: NO hover interaction change */
