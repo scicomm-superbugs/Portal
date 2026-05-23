@@ -143,12 +143,7 @@ export default function SciCommPost() {
         <button
           onClick={handlePostSubmit}
           disabled={isPostingMedia || (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim()))}
-          style={{ 
-            padding: '8px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer',
-            background: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? 'rgba(0,0,0,0.05)' : 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
-            color: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? '#94a3b8' : 'white',
-            boxShadow: (!newPost.trim() && !postImage && !postVideo && !postFile && !(showPoll && pollQuestion.trim())) ? 'none' : '0 4px 12px rgba(139,92,246,0.2)'
-          }}
+          className="scicomm-create-post-submit"
         >
           {isPostingMedia ? 'Posting...' : 'Post'}
         </button>
@@ -159,7 +154,7 @@ export default function SciCommPost() {
         <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
           {renderAvatar(currentUserData, 44)}
           <div>
-            <div style={{ fontWeight: 600, fontSize: '15px', color: '#050505' }}>{user.name}</div>
+            <div className="scicomm-username">{user.name}</div>
           </div>
         </div>
 
@@ -186,7 +181,7 @@ export default function SciCommPost() {
           style={{
             width: '100%', minHeight: '120px', border: 'none', outline: 'none',
             fontSize: '18px', lineHeight: '1.3', resize: 'vertical',
-            boxSizing: 'border-box', fontFamily: 'inherit', color: '#050505'
+            boxSizing: 'border-box', fontFamily: 'inherit'
           }}
           autoFocus
         />
