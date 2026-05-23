@@ -68,6 +68,22 @@ export default function SciCommLayout() {
     return () => { document.body.style.overflow = 'unset'; };
   }, [mobileSidebarOpen]);
 
+  // Disable pull-to-refresh on all pages except the Home Feed page ('/'), and block it entirely when the mobile sidebar is open
+  useEffect(() => {
+    const isHomePage = location.pathname === '/';
+    const disablePull = !isHomePage || mobileSidebarOpen;
+
+    if (disablePull) {
+      document.documentElement.classList.add('no-pull-to-refresh');
+    } else {
+      document.documentElement.classList.remove('no-pull-to-refresh');
+    }
+
+    return () => {
+      document.documentElement.classList.remove('no-pull-to-refresh');
+    };
+  }, [location.pathname, mobileSidebarOpen]);
+
   // Register service worker for mobile notifications
   useEffect(() => {
     if ('serviceWorker' in navigator && 'Notification' in window) {
