@@ -1156,6 +1156,18 @@ export default function SciCommChat() {
           .scicomm-chat-sidebar.open {
             transform: translateX(0);
           }
+          
+          /* Hide scrollbars completely on mobile viewports */
+          *::-webkit-scrollbar,
+          ::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+          }
+          * {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+          }
         }
         
         @media (min-width: 769px) {
