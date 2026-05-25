@@ -1147,16 +1147,105 @@
 
 /* --- UNIVERSAL INLINE COLOR CATCH-ALL --- */
 .scicomm-dark-mode *[style*="color: #0f172a"],
+.scicomm-dark-mode *[style*="color:#0f172a"],
 .scicomm-dark-mode *[style*="color: #1e293b"],
+.scicomm-dark-mode *[style*="color:#1e293b"],
 .scicomm-dark-mode *[style*="color: #334155"],
+.scicomm-dark-mode *[style*="color:#334155"],
 .scicomm-dark-mode *[style*="color: #333"],
 .scicomm-dark-mode *[style*="color:#333"],
+.scicomm-dark-mode *[style*="color: #050505"],
+.scicomm-dark-mode *[style*="color:#050505"],
 .scicomm-dark-mode *[style*="color: rgba(0,0,0,0.9)"],
 .scicomm-dark-mode *[style*="color:rgba(0,0,0,0.9)"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.8)"],
+.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.8)"],
 .scicomm-dark-mode *[style*="color: rgb(15, 23, 42)"],
 .scicomm-dark-mode *[style*="color: rgb(30, 41, 59)"],
-.scicomm-dark-mode *[style*="color: rgb(0, 0, 0)"] {
+.scicomm-dark-mode *[style*="color: rgb(0, 0, 0)"],
+.scicomm-dark-mode *[style*="color: black"],
+.scicomm-dark-mode *[style*="color:black"] {
   color: #ffffff !important;
+}
+
+/* Muted/secondary text overrides — #94a3b8, rgba(0,0,0,0.3-0.4), #475569, #666, #555, #444, #6b7280 */
+.scicomm-dark-mode *[style*="color: #94a3b8"],
+.scicomm-dark-mode *[style*="color:#94a3b8"],
+.scicomm-dark-mode *[style*="color: #475569"],
+.scicomm-dark-mode *[style*="color:#475569"],
+.scicomm-dark-mode *[style*="color: #666"],
+.scicomm-dark-mode *[style*="color:#666"],
+.scicomm-dark-mode *[style*="color: #555"],
+.scicomm-dark-mode *[style*="color:#555"],
+.scicomm-dark-mode *[style*="color: #444"],
+.scicomm-dark-mode *[style*="color:#444"],
+.scicomm-dark-mode *[style*="color: #6b7280"],
+.scicomm-dark-mode *[style*="color:#6b7280"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.4)"],
+.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.4)"],
+.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.4)"],
+.scicomm-dark-mode *[style*="color: rgba(0,0,0,0.3)"],
+.scicomm-dark-mode *[style*="color:rgba(0,0,0,0.3)"],
+.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.3)"] {
+  color: #94a3b8 !important;
+}
+
+/* Link-style blue text #0a66c2 — lighten for dark mode */
+.scicomm-dark-mode *[style*="color: #0a66c2"],
+.scicomm-dark-mode *[style*="color:#0a66c2"] {
+  color: #60a5fa !important;
+}
+
+/* Chat sidebar & header hardcoded dark text */
+.scicomm-dark-mode .scicomm-chat-sidebar *[style*="color: #0f172a"],
+.scicomm-dark-mode .scicomm-chat-sidebar *[style*="color:#0f172a"],
+.scicomm-dark-mode .scicomm-chat-sidebar div[style*="fontWeight: 700"],
+.scicomm-dark-mode .scicomm-chat-sidebar div[style*="fontWeight: 800"],
+.scicomm-dark-mode .chat-header *[style*="color: #0f172a"],
+.scicomm-dark-mode .chat-header *[style*="fontWeight: 800"] {
+  color: #f1f5f9 !important;
+}
+
+/* Chat input area */
+.scicomm-dark-mode .scicomm-chat-main input,
+.scicomm-dark-mode .scicomm-chat-main textarea,
+.scicomm-dark-mode .scicomm-chat-sidebar input {
+  color: #ffffff !important;
+  background: #0c0f16 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+.scicomm-dark-mode .scicomm-chat-main input::placeholder,
+.scicomm-dark-mode .scicomm-chat-main textarea::placeholder,
+.scicomm-dark-mode .scicomm-chat-sidebar input::placeholder {
+  color: #64748b !important;
+}
+
+/* Chat message sender name and timestamps */
+.scicomm-dark-mode .chat-messages-container *[style*="color: #64748b"],
+.scicomm-dark-mode .chat-messages-container *[style*="color:#64748b"] {
+  color: #94a3b8 !important;
+}
+
+/* Overlay panels (New Chat, New Group, Group Settings, Add Members) */
+.scicomm-dark-mode .scicomm-chat-sidebar div[style*="background: white"],
+.scicomm-dark-mode .scicomm-chat-sidebar div[style*="background:white"] {
+  background: #0c0f16 !important;
+  color: #ffffff !important;
+}
+
+/* Chat menu dropdowns */
+.scicomm-dark-mode .scicomm-chat-main div[style*="background: white"],
+.scicomm-dark-mode .scicomm-chat-main div[style*="background:white"] {
+  background: #0c0f16 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Generic dark mode for any remaining div text */
+.scicomm-dark-mode div[style*="color: #0f172a"],
+.scicomm-dark-mode div[style*="color:#0f172a"],
+.scicomm-dark-mode div[style*="color: #1e293b"],
+.scicomm-dark-mode div[style*="color:#1e293b"] {
+  color: #f1f5f9 !important;
 }
 
 /* --- NAVIGATION ITEMS (no hover change) --- */

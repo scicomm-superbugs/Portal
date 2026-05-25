@@ -43,6 +43,24 @@
 [data-theme='dark'] .badge-overdue { background-color: rgba(245, 101, 101, 0.2); color: #FEB2B2; }
 [data-theme='dark'] .badge-warning { background-color: rgba(237, 137, 54, 0.2); color: #FBD38D; }
 
+/* --- UNIVERSAL INLINE COLOR CATCH-ALL FOR STANDARD/MOBILE DARK THEME --- */
+[data-theme='dark'] *[style*="color: #4A5568"],
+[data-theme='dark'] *[style*="color:#4A5568"],
+[data-theme='dark'] *[style*="color: #4a5568"],
+[data-theme='dark'] *[style*="color:#4a5568"] {
+  color: #cbd5e1 !important;
+}
+
+[data-theme='dark'] *[style*="color: #121626"],
+[data-theme='dark'] *[style*="color:#121626"],
+[data-theme='dark'] *[style*="color: #1a202c"],
+[data-theme='dark'] *[style*="color:#1a202c"],
+[data-theme='dark'] *[style*="color: #1d4ed8"],
+[data-theme='dark'] *[style*="color:#1d4ed8"] {
+  color: #ffffff !important;
+}
+
+
 * {
   box-sizing: border-box;
   margin: 0;
