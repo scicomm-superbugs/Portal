@@ -44,7 +44,7 @@ export default function SciCommLayout() {
   const [isDarkMode, setIsDarkMode] = useState(safeLocalStorage.getItem('scicommDarkMode') === 'true');
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [showComingSoon, setShowComingSoon] = useState(false);
-  const [showWelcomeToast, setShowWelcomeToast] = useState(false);
+  const [showAudioUnlock, setShowAudioUnlock] = useState(false);
   const postsRaw = useLiveCollection('scicomm_posts') || [];
   
   // Calculate stats for sidebar
@@ -80,15 +80,12 @@ export default function SciCommLayout() {
     }
   }, []);
 
-  // Initialize Welcome Back Toast exactly once per browser tab session
+  // Initialize Audio Unlock/Welcome Back Modal exactly once per browser tab session
   useEffect(() => {
     if (user) {
-      const alreadySeen = safeSessionStorage.getItem('scicomm_welcome_toast_seen');
+      const alreadySeen = safeSessionStorage.getItem('scicomm_audio_unlocked_seen');
       if (!alreadySeen) {
-        setShowWelcomeToast(true);
-        safeSessionStorage.setItem('scicomm_welcome_toast_seen', 'true');
-        const timer = setTimeout(() => setShowWelcomeToast(false), 6000); // comfortable 6 seconds duration
-        return () => clearTimeout(timer);
+        setShowAudioUnlock(true);
       }
     }
   }, [user]);
@@ -194,6 +191,18 @@ export default function SciCommLayout() {
   };
 
   const handleLogout = () => { logout(); navigate('/login'); };
+  
+  const handleUnlockAudio = () => {
+    try {
+      sessionStorage.setItem('audio_unlocked', 'true');
+    } catch (e) {
+      console.log('sessionStorage blocked:', e);
+    }
+    safeSessionStorage.setItem('scicomm_audio_unlocked_seen', 'true');
+    dismissBanner('audio_unlocked');
+    setShowAudioUnlock(false);
+  };
+
   const isActive = (path) => location.pathname === path;
 
   const workspaceNotifs = (isTeam ? myPendingTasks.length : 0) + upcomingMeetings.length + (isAdmin ? pendingAccounts.length : 0);
@@ -532,27 +541,15 @@ export default function SciCommLayout() {
           </div>
         </div>
       )}
-      {showWelcomeToast && (
-        <div className="scicomm-welcome-toast" style={{
-          position: 'fixed',
-          bottom: '72px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
-          color: 'white',
-          padding: '12px 24px',
-          borderRadius: '30px',
-          boxShadow: '0 10px 25px rgba(29, 78, 216, 0.45)',
-          zIndex: 99999,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          fontWeight: 600,
-          fontSize: '14px',
-          animation: 'slideUp 0.3s ease'
-        }}>
-          <span>Welcome back, {user.name}! 👋</span>
-          <button onClick={() => setShowWelcomeToast(false)} style={{ background: 'none', border: 'none', color: 'white', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', padding: 0 }}>&times;</button>
+      {showAudioUnlock && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 100000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'white', padding: '24px', borderRadius: '12px', textAlign: 'center', maxWidth: '400px', width: '90%', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px', color: '#1e293b' }}>Welcome back, {user.name}!</h2>
+            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '20px' }}>Great to see you again. Let's check out what's new today!</p>
+            <button onClick={handleUnlockAudio} style={{ background: '#2563eb', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', width: '100%', transition: 'background-color 0.2s' }} onMouseOver={e => e.currentTarget.style.backgroundColor = '#1d4ed8'} onMouseOut={e => e.currentTarget.style.backgroundColor = '#2563eb'}>
+              Let's Go
+            </button>
+          </div>
         </div>
       )}
     </div>
