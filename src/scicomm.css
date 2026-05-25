@@ -3631,3 +3631,112 @@ html.no-pull-to-refresh body,
   outline: none !important;
 }
 
+
+/* Styling overrides to make composer and search bar exactly like comments design */
+
+/* 1. Post Composer Capsule & Textarea */
+.scicomm-composer-capsule {
+  display: flex !important;
+  flex: 1 !important;
+  align-items: center !important;
+  border-radius: 20px !important;
+  background-color: #f0f2f5 !important;
+  background: #f0f2f5 !important;
+  border: none !important;
+  padding: 6px 20px !important;
+  min-height: 48px !important;
+  box-sizing: border-box !important;
+  transition: background-color 0.15s ease-in-out !important;
+  box-shadow: none !important;
+}
+
+.scicomm-composer-capsule:focus-within {
+  background-color: #e4e6eb !important;
+  background: #e4e6eb !important;
+}
+
+.scicomm-composer-textarea {
+  flex: 1 !important;
+  border: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #050505 !important;
+  outline: none !important;
+  resize: none !important;
+  font-family: inherit !important;
+  font-size: 15px !important;
+  width: 100% !important;
+  padding-top: 8px !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+
+.scicomm-composer-textarea::placeholder {
+  color: #65676b !important;
+}
+
+/* Dark Mode Post Composer */
+.scicomm-dark-mode .scicomm-composer-capsule {
+  background-color: #3a3b3c !important;
+  background: #3a3b3c !important;
+  border: none !important;
+}
+
+.scicomm-dark-mode .scicomm-composer-capsule:focus-within {
+  background-color: #4e4f50 !important;
+  background: #4e4f50 !important;
+}
+
+.scicomm-dark-mode .scicomm-composer-textarea {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-composer-textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+
+/* 2. Search Bar Capsule Overrides */
+.scicomm-search-box {
+  background-color: #f0f2f5 !important;
+  background: #f0f2f5 !important;
+  border-radius: 20px !important;
+  border: none !important;
+  transition: background-color 0.15s ease-in-out !important;
+  box-shadow: none !important;
+}
+
+.scicomm-search-box:focus-within {
+  background-color: #e4e6eb !important;
+  background: #e4e6eb !important;
+}
+
+.scicomm-search-box input {
+  color: #050505 !important;
+  font-size: 13px !important;
+}
+
+.scicomm-search-box input::placeholder {
+  color: #65676b !important;
+}
+
+/* Dark Mode Search Bar */
+.scicomm-dark-mode .scicomm-search-box {
+  background-color: #3a3b3c !important;
+  background: #3a3b3c !important;
+  border: none !important;
+}
+
+.scicomm-dark-mode .scicomm-search-box:focus-within {
+  background-color: #4e4f50 !important;
+  background: #4e4f50 !important;
+}
+
+.scicomm-dark-mode .scicomm-search-box input {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-search-box input::placeholder {
+  color: #94a3b8 !important;
+}
+

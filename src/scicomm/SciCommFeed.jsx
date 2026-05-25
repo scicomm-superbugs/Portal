@@ -1292,22 +1292,7 @@ export default function SciCommFeed() {
           
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', alignItems: 'center' }}>
             {renderAvatar(currentUserData, 44)}
-            <div style={{ 
-              flex: 1, 
-              background: 'rgba(241, 245, 249, 0.6)', 
-              borderRadius: '30px', 
-              padding: '12px 20px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              minHeight: '48px', 
-              boxSizing: 'border-box',
-              border: '1px solid transparent',
-              transition: 'all 0.3s ease',
-              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)'
-            }}
-            onMouseOver={e => e.currentTarget.style.border = '1px solid rgba(59,130,246,0.3)'}
-            onMouseOut={e => e.currentTarget.style.border = '1px solid transparent'}
-            >
+            <div className="scicomm-composer-capsule">
               <textarea dir="auto" placeholder="What's on your mind?" value={newPost} 
                 onChange={e => {
                   setNewPost(e.target.value);
@@ -1315,7 +1300,7 @@ export default function SciCommFeed() {
                   e.target.style.height = e.target.scrollHeight + 'px';
                 }}
                 rows={2}
-                style={{ flex: 1, border: 'none', background: 'transparent', fontSize: '15px', outline: 'none', color: '#1e293b', width: '100%', fontFamily: 'inherit', resize: 'none', paddingTop: '8px', overflow: 'hidden' }} />
+                className="scicomm-composer-textarea" />
             </div>
           </div>
           
