@@ -305,7 +305,7 @@ export default function SciCommLayout() {
           <Link to="/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative' }}>
             <MessageCircle className="icon" size={24} color="currentColor" />
             {unreadChatCount > 0 && (
-              <span className="tag" style={{
+              <span className="scicomm-notif-badge tag" style={{
                 position: 'absolute', top: '-6px', right: '-6px',
                 background: '#ef4444', color: 'white', borderRadius: '50%',
                 width: '18px', height: '18px', fontSize: '10px', fontWeight: 700,

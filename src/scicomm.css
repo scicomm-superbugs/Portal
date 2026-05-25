@@ -1503,13 +1503,256 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 /* --- GLOWING MICRO-CHIP PROGRESS TAGS --- */
 .scicomm-dark-mode .tag,
 .scicomm-dark-mode span.tag,
-.scicomm-dark-mode div.tag,
-.scicomm-dark-mode .scicomm-notif-badge {
+.scicomm-dark-mode div.tag {
   background: rgba(255, 255, 255, 0.12) !important;
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.4) !important;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.15) !important;
   font-weight: 800 !important;
+}
+
+.scicomm-dark-mode .scicomm-notif-badge,
+.scicomm-dark-mode .scicomm-notif-badge.tag,
+.scicomm-dark-mode span.scicomm-notif-badge.tag {
+  background: #ef4444 !important;
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+  border: 1px solid #fca5a5 !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8) !important;
+  font-weight: 800 !important;
+}
+
+/* --- TASKS VIEW DARK MODE PREMIUM COMPATIBILITY --- */
+.scicomm-dark-mode .scicomm-task-card {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-card.overdue {
+  background-color: rgba(127, 29, 29, 0.15) !important;
+  background: rgba(127, 29, 29, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-review-card {
+  background-color: rgba(139, 92, 246, 0.1) !important;
+  background: rgba(139, 92, 246, 0.1) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.08) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-review-card h4 {
+  color: #c084fc !important;
+  text-shadow: 0 0 8px rgba(192, 132, 252, 0.3) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-review-assignee {
+  color: #c084fc !important;
+}
+
+.scicomm-dark-mode .scicomm-task-eval-box {
+  background-color: #111827 !important;
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-task-eval-box label {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-task-eval-select {
+  background-color: #0c0f16 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-eval-input {
+  background-color: #0c0f16 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-submission-box {
+  background-color: #030712 !important;
+  background: #030712 !important;
+  border: 1px dashed rgba(255, 255, 255, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-submission-input {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-submission-input::placeholder {
+  color: #64748b !important;
+}
+
+.scicomm-dark-mode .scicomm-task-submission-content {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-submission-content strong {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-task-submission-content a {
+  color: #60a5fa !important;
+}
+
+.scicomm-dark-mode .scicomm-task-completed-item {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-completed-title {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-task-pts-badge {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-completed-note,
+.scicomm-dark-mode .scicomm-task-completed-assignee {
+  color: #94a3b8 !important;
+}
+
+.scicomm-dark-mode .scicomm-task-card p,
+.scicomm-dark-mode .scicomm-task-card span {
+  color: #cbd5e1 !important;
+}
+
+.scicomm-dark-mode .scicomm-task-title {
+  color: #ffffff !important;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-assignee {
+  color: #60a5fa !important;
+}
+
+.scicomm-dark-mode .scicomm-task-desc {
+  color: #cbd5e1 !important;
+}
+
+.scicomm-dark-mode .scicomm-task-meta {
+  color: #94a3b8 !important;
+}
+
+.scicomm-dark-mode .scicomm-task-delete-btn {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  color: #fca5a5 !important;
+  background: transparent !important;
+}
+
+.scicomm-dark-mode .scicomm-task-delete-btn:hover {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-status-badge.review {
+  background-color: rgba(234, 179, 8, 0.15) !important;
+  background: rgba(234, 179, 8, 0.15) !important;
+  color: #fef08a !important;
+  border: 1px solid rgba(234, 179, 8, 0.4) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-status-badge.in-progress {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-status-badge.approved {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #86efac !important;
+  border: 1px solid rgba(34, 197, 94, 0.4) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-status-badge.pending {
+  background-color: rgba(148, 163, 184, 0.15) !important;
+  background: rgba(148, 163, 184, 0.15) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(148, 163, 184, 0.4) !important;
+}
+
+/* Beautiful Glowing Custom Priority Badges */
+.scicomm-dark-mode .scicomm-task-priority-badge.urgent {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.25) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-priority-badge.high {
+  background-color: rgba(249, 115, 22, 0.15) !important;
+  background: rgba(249, 115, 22, 0.15) !important;
+  color: #fed7aa !important;
+  border: 1px solid rgba(249, 115, 22, 0.4) !important;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.25) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-priority-badge.medium {
+  background-color: rgba(234, 179, 8, 0.15) !important;
+  background: rgba(234, 179, 8, 0.15) !important;
+  color: #fef08a !important;
+  border: 1px solid rgba(234, 179, 8, 0.4) !important;
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.2) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-priority-badge.low {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Beautiful Glowing Custom Icon Wrappers */
+.scicomm-dark-mode .scicomm-task-icon-wrapper.urgent {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.2) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-icon-wrapper.high {
+  background-color: rgba(249, 115, 22, 0.15) !important;
+  background: rgba(249, 115, 22, 0.15) !important;
+  border: 1px solid rgba(249, 115, 22, 0.4) !important;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.2) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-icon-wrapper.medium {
+  background-color: rgba(234, 179, 8, 0.15) !important;
+  background: rgba(234, 179, 8, 0.15) !important;
+  border: 1px solid rgba(234, 179, 8, 0.4) !important;
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-task-icon-wrapper.low {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  background: rgba(59, 130, 246, 0.15) !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.15) !important;
 }
 
 .scicomm-dark-mode *[style*="f3f4f6" i], .scicomm-dark-mode *[style*="243,244,246" i], .scicomm-dark-mode *[style*="243, 244, 246" i],
@@ -2080,6 +2323,20 @@ html.no-pull-to-refresh body,
 .scicomm-btn-secondary:hover {
   text-decoration: none !important;
   outline: none !important;
+}
+
+/* Sidebar and workflow left container dark text visibility fix */
+.scicomm-dark-mode .scicomm-sidebar-left * {
+  color: #cbd5e1 !important;
+}
+.scicomm-dark-mode .scicomm-sidebar-left strong {
+  color: #ffffff !important;
+}
+.scicomm-dark-mode .scicomm-sidebar-stats {
+  color: #cbd5e1 !important;
+}
+.scicomm-dark-mode .scicomm-sidebar-stats strong {
+  color: #ffffff !important;
 }
 
 
