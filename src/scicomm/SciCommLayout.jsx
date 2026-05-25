@@ -69,64 +69,6 @@ export default function SciCommLayout() {
     return () => { document.body.style.overflow = 'unset'; };
   }, [mobileSidebarOpen]);
 
-  // Disable pull-to-refresh globally on all pages and viewports
-  useEffect(() => {
-    const disablePull = true;
-
-    if (disablePull) {
-      document.documentElement.classList.add('no-pull-to-refresh');
-    }
-
-    // Fail-safe gesture interceptor: prevents Chrome/WebView from showing pull-to-refresh spinner
-    let touchStartY = 0;
-
-    const handleTouchStart = (e) => {
-      if (e.touches.length === 1) {
-        touchStartY = e.touches[0].clientY;
-      }
-    };
-
-    const handleTouchMove = (e) => {
-      if (e.touches.length !== 1) return;
-      
-      const touchY = e.touches[0].clientY;
-      const touchDiff = touchY - touchStartY;
-
-      // If dragging/swiping down (touchDiff > 0), check boundaries
-      if (touchDiff > 0 && disablePull) {
-        let target = e.target;
-        let canScrollUp = false;
-
-        // Traverse parent elements to check if any container is scrolled down and can scroll up
-        while (target && target !== document.body && target !== document.documentElement) {
-          const overflowY = window.getComputedStyle(target).overflowY;
-          const isScrollable = overflowY === 'auto' || overflowY === 'scroll';
-          if (isScrollable && target.scrollTop > 0) {
-            canScrollUp = true;
-            break;
-          }
-          target = target.parentNode;
-        }
-
-        // If we are at the absolute top of the page and cannot scroll any container up, block pull-down
-        if (!canScrollUp && window.scrollY === 0) {
-          if (e.cancelable) {
-            e.preventDefault();
-          }
-        }
-      }
-    };
-
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-
-    return () => {
-      document.documentElement.classList.remove('no-pull-to-refresh');
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, [location.pathname, mobileSidebarOpen]);
-
   // Register service worker for mobile notifications
   useEffect(() => {
     if ('serviceWorker' in navigator && 'Notification' in window) {
@@ -322,9 +264,9 @@ export default function SciCommLayout() {
               {workspaceNotifs > 0 && <span className="scicomm-notif-badge tag" style={{ position: 'absolute', top: 4, right: 4 }}>{workspaceNotifs}</span>}
             </Link>
 
+            <Link to="/community" className={`scicomm-nav-item ${isActive('/community') ? 'active' : ''}`}><Globe className="icon" size={20} /><span className="nav-text">Community</span></Link>
             <Link to="/network" className={`scicomm-nav-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users className="icon" size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge tag">{pendingConnections.length}</span>}<span className="nav-text">Network</span></Link>
             <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`} style={{position:'relative'}}><MessageCircle className="icon" size={20} />{unreadChatCount > 0 && <span className="scicomm-notif-badge tag">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}<span className="nav-text">Chat</span></Link>
-            <Link to="/community" className={`scicomm-nav-item ${isActive('/community') ? 'active' : ''}`}><Globe className="icon" size={20} /><span className="nav-text">Community</span></Link>
             <Link to="/notifications" className={`scicomm-nav-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={20} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span className="nav-text">Alerts</span></Link>
 
 

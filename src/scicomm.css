@@ -2705,11 +2705,7 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   box-shadow: none !important;
 }
 
-/* Disable native Chromium/Android WebView pull-to-refresh overscroll action globally */
-html,
-body,
-.scicomm-app,
-.scicomm-dark-mode,
+/* Disable native Chromium/Android WebView pull-to-refresh overscroll action when explicitly restricted */
 html.no-pull-to-refresh,
 html.no-pull-to-refresh body,
 .scicomm-dark-mode.no-pull-to-refresh,
@@ -2900,11 +2896,7 @@ html.no-pull-to-refresh body,
   box-shadow: none !important;
 }
 
-/* Disable native Chromium/Android WebView pull-to-refresh overscroll action globally */
-html,
-body,
-.scicomm-app,
-.scicomm-dark-mode,
+/* Disable native Chromium/Android WebView pull-to-refresh overscroll action when explicitly restricted */
 html.no-pull-to-refresh,
 html.no-pull-to-refresh body,
 .scicomm-dark-mode.no-pull-to-refresh,
