@@ -3614,7 +3614,7 @@ html.no-pull-to-refresh body,
 }
 
 /* Premium input and form elements for SciComm Dark Mode */
-.scicomm-dark-mode input[type="text"],
+.scicomm-dark-mode input[type="text"]:not(.scicomm-search-input),
 .scicomm-dark-mode input[type="password"],
 .scicomm-dark-mode input[type="email"],
 .scicomm-dark-mode input[type="search"],
@@ -3626,7 +3626,7 @@ html.no-pull-to-refresh body,
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
-.scicomm-dark-mode input[type="text"]:focus,
+.scicomm-dark-mode input[type="text"]:not(.scicomm-search-input):focus,
 .scicomm-dark-mode input[type="password"]:focus,
 .scicomm-dark-mode input[type="email"]:focus,
 .scicomm-dark-mode input[type="search"]:focus,
@@ -3745,6 +3745,11 @@ html.no-pull-to-refresh body,
 
 .scicomm-dark-mode .scicomm-search-box input {
   color: #ffffff !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .scicomm-dark-mode .scicomm-search-box input::placeholder {

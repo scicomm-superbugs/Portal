@@ -299,7 +299,7 @@ export default function SciCommLayout() {
             {/* Mobile: Profile avatar triggers sidebar | Desktop: Logo */}
             <button onClick={() => setMobileSidebarOpen(true)} className="scicomm-mobile-profile-link" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', outline: 'none' }}><span className="scicomm-mobile-avatar">{renderAvatar(30)}</span></button>
             <Link to="/"><img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => e.target.style.display='none'} /></Link>
-            <div className="scicomm-search-box"><Search className="icon" size={16} /><input type="text" placeholder="Search..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { navigate('/network?q=' + encodeURIComponent(searchText)); setSearchText(''); } }} /></div>
+            <div className="scicomm-search-box"><Search className="icon" size={16} /><input type="text" className="scicomm-search-input" placeholder="Search..." value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { navigate('/network?q=' + encodeURIComponent(searchText)); setSearchText(''); } }} /></div>
           </div>
           {/* Mobile: Chat icon top-right with unread badge */}
           <Link to="/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative' }}>
