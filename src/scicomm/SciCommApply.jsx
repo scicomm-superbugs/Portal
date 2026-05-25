@@ -46,12 +46,12 @@ export default function SciCommApply() {
   const isTeam = user.role === 'scicomm' || user.role === 'admin' || user.role === 'master';
 
   return (
-    <div style={{ maxWidth: '600px', margin: '40px auto', padding: '24px', background: 'white', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-      <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#0f172a', marginBottom: '16px' }}>Join the Science Communication Team</h1>
+    <div className="scicomm-apply-card">
+      <h1 className="scicomm-apply-title">Join the Science Communication Team</h1>
       
-      <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#1e293b', marginBottom: '8px' }}>Instructions</h2>
-        <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.6' }}>
+      <div className="scicomm-apply-instructions">
+        <h2 className="scicomm-apply-instructions-title">Instructions</h2>
+        <p className="scicomm-apply-instructions-text">
           To join the Science Communication Team, you need to share your experience and scientific background. 
           Make sure your profile is updated with your bio, experience, and any relevant links (like a CV or portfolio).
           Our admins will review your profile to determine eligibility.
@@ -73,27 +73,27 @@ export default function SciCommApply() {
       )}
 
       {myApplication && myApplication.status === 'pending' && (
-        <div style={{ textAlign: 'center', padding: '20px', background: '#fef3c7', borderRadius: '8px', color: '#b45309' }}>
+        <div className="scicomm-status-block scicomm-status-block-pending">
           <Clock size={40} style={{ marginBottom: '12px' }} />
-          <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>Application Under Review</h3>
-          <p style={{ fontSize: '14px' }}>We have received your application. The admins are reviewing your profile and eligibility. You will be notified once a decision is made.</p>
+          <h3>Application Under Review</h3>
+          <p>We have received your application. The admins are reviewing your profile and eligibility. You will be notified once a decision is made.</p>
         </div>
       )}
 
       {myApplication && myApplication.status === 'approved' && isTeam && (
-        <div style={{ textAlign: 'center', padding: '20px', background: '#dcfce7', borderRadius: '8px', color: '#15803d' }}>
+        <div className="scicomm-status-block scicomm-status-block-approved">
           <CheckCircle size={40} style={{ marginBottom: '12px' }} />
-          <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>Application Approved!</h3>
-          <p style={{ fontSize: '14px' }}>Welcome to the team! You now have access to all workspace tools.</p>
+          <h3>Application Approved!</h3>
+          <p>Welcome to the team! You now have access to all workspace tools.</p>
         </div>
       )}
 
       {myApplication && myApplication.status === 'approved' && !isTeam && (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ padding: '20px', background: '#fee2e2', borderRadius: '8px', color: '#b91c1c', marginBottom: '16px' }}>
+          <div className="scicomm-status-block scicomm-status-block-rejected">
             <XCircle size={40} style={{ marginBottom: '12px' }} />
-            <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>Profile Downgraded</h3>
-            <p style={{ fontSize: '14px' }}>Your profile has been downgraded by admins. You no longer have team access. Update your profile and try again.</p>
+            <h3>Profile Downgraded</h3>
+            <p>Your profile has been downgraded by admins. You no longer have team access. Update your profile and try again.</p>
           </div>
           <button 
             onClick={handleReapply} 
@@ -108,13 +108,13 @@ export default function SciCommApply() {
 
       {myApplication && myApplication.status === 'rejected' && (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ padding: '20px', background: '#fee2e2', borderRadius: '8px', color: '#b91c1c', marginBottom: '16px' }}>
+          <div className="scicomm-status-block scicomm-status-block-rejected">
             <XCircle size={40} style={{ marginBottom: '12px' }} />
-            <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>Application Not Approved</h3>
-            <p style={{ fontSize: '14px' }}>Thank you for your interest. Unfortunately, you do not meet the criteria at this time. You can update your profile and try again later.</p>
+            <h3>Application Not Approved</h3>
+            <p>Thank you for your interest. Unfortunately, you do not meet the criteria at this time. You can update your profile and try again later.</p>
             {myApplication.comment && (
-              <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(255,255,255,0.7)', borderRadius: '8px', color: '#7f1d1d', fontStyle: 'italic', fontSize: '13px' }}>
-                <strong style={{ fontWeight: 700, display: 'block', marginBottom: '4px', fontStyle: 'normal' }}>Admin Feedback:</strong>
+              <div className="scicomm-feedback-box">
+                <strong>Admin Feedback:</strong>
                 {myApplication.comment}
               </div>
             )}

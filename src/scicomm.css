@@ -3407,3 +3407,226 @@ html.no-pull-to-refresh body,
   background: #1c1d1e !important;
 }
 
+
+/* ===== SCICOMM APPLY PAGE STYLES ===== */
+.scicomm-apply-card {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #cbd5e1;
+}
+
+.scicomm-apply-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.scicomm-apply-instructions {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 1px solid #cbd5e1;
+}
+
+.scicomm-apply-instructions-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.scicomm-apply-instructions-text {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* Status Alert Blocks Base */
+.scicomm-status-block {
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+}
+
+.scicomm-status-block h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  margin-top: 4px;
+}
+
+.scicomm-status-block p {
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Status Alert Blocks Themes (Light Mode) */
+.scicomm-status-block-pending {
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+}
+.scicomm-status-block-pending h3 {
+  color: #b45309 !important;
+}
+.scicomm-status-block-pending p {
+  color: #d97706 !important;
+}
+
+.scicomm-status-block-approved {
+  background: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
+  color: #15803d !important;
+}
+.scicomm-status-block-approved h3 {
+  color: #15803d !important;
+}
+.scicomm-status-block-approved p {
+  color: #16a34a !important;
+}
+
+.scicomm-status-block-rejected {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #b91c1c !important;
+  align-items: stretch !important;
+}
+.scicomm-status-block-rejected h3 {
+  color: #b91c1c !important;
+}
+.scicomm-status-block-rejected p {
+  color: #dc2626 !important;
+}
+
+.scicomm-feedback-box {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.7) !important;
+  border-radius: 8px;
+  border: 1px solid rgba(185, 28, 28, 0.15);
+  color: #7f1d1d !important;
+  font-style: italic;
+  font-size: 13px;
+  text-align: left;
+}
+.scicomm-feedback-box strong {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+  font-style: normal;
+  color: #7f1d1d !important;
+}
+
+/* Dark Mode Overrides */
+.scicomm-dark-mode .scicomm-apply-card {
+  background: rgba(13, 16, 23, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.9) !important;
+}
+
+.scicomm-dark-mode .scicomm-apply-title {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+.scicomm-dark-mode .scicomm-apply-instructions {
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.scicomm-dark-mode .scicomm-apply-instructions-title {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+.scicomm-dark-mode .scicomm-apply-instructions-text {
+  color: #cbd5e1 !important;
+}
+
+/* Dark Mode Status Blocks */
+.scicomm-dark-mode .scicomm-status-block-pending {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  color: #fbbf24 !important;
+}
+.scicomm-dark-mode .scicomm-status-block-pending h3 {
+  color: #fbbf24 !important;
+  text-shadow: none !important;
+}
+.scicomm-dark-mode .scicomm-status-block-pending p {
+  color: #f59e0b !important;
+}
+
+.scicomm-dark-mode .scicomm-status-block-approved {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  color: #34d399 !important;
+}
+.scicomm-dark-mode .scicomm-status-block-approved h3 {
+  color: #34d399 !important;
+  text-shadow: none !important;
+}
+.scicomm-dark-mode .scicomm-status-block-approved p {
+  color: #10b981 !important;
+}
+
+.scicomm-dark-mode .scicomm-status-block-rejected {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #f87171 !important;
+}
+.scicomm-dark-mode .scicomm-status-block-rejected h3 {
+  color: #f87171 !important;
+  text-shadow: none !important;
+}
+.scicomm-dark-mode .scicomm-status-block-rejected p {
+  color: #f87171 !important;
+}
+
+.scicomm-dark-mode .scicomm-feedback-box {
+  background: rgba(0, 0, 0, 0.45) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  color: #fca5a5 !important;
+}
+.scicomm-dark-mode .scicomm-feedback-box strong {
+  color: #fca5a5 !important;
+  text-shadow: none !important;
+}
+
+/* Premium input and form elements for SciComm Dark Mode */
+.scicomm-dark-mode input[type="text"],
+.scicomm-dark-mode input[type="password"],
+.scicomm-dark-mode input[type="email"],
+.scicomm-dark-mode input[type="search"],
+.scicomm-dark-mode textarea,
+.scicomm-dark-mode select {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.scicomm-dark-mode input[type="text"]:focus,
+.scicomm-dark-mode input[type="password"]:focus,
+.scicomm-dark-mode input[type="email"]:focus,
+.scicomm-dark-mode input[type="search"]:focus,
+.scicomm-dark-mode textarea:focus,
+.scicomm-dark-mode select:focus {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25) !important;
+  outline: none !important;
+}
+
