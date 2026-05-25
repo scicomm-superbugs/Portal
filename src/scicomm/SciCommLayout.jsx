@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard, Lock, FolderKanban, Smartphone, Plus } from 'lucide-react';
+import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard, Lock, FolderKanban, Smartphone, Plus, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
 import { safeLocalStorage } from '../utils/safeStorage';
@@ -315,7 +315,7 @@ export default function SciCommLayout() {
             )}
           </Link>
           <nav className="scicomm-nav">
-            <Link to="/" className={`scicomm-nav-item ${isActive('/') ? 'active' : ''}`}><Home className="icon" size={20} /><span className="nav-text">Home</span></Link>
+            <Link to="/" className={`scicomm-nav-item ${isActive('/') ? 'active' : ''}`}><Globe className="icon" size={20} /><span className="nav-text">Community</span></Link>
             <Link to="/network" className={`scicomm-nav-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users className="icon" size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge tag">{pendingConnections.length}</span>}<span className="nav-text">Network</span></Link>
             <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`} style={{position:'relative'}}><MessageCircle className="icon" size={20} />{unreadChatCount > 0 && <span className="scicomm-notif-badge tag">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}<span className="nav-text">Chat</span></Link>
             <Link to="/notifications" className={`scicomm-nav-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={20} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span className="nav-text">Alerts</span></Link>
@@ -328,6 +328,10 @@ export default function SciCommLayout() {
               <div className="scicomm-dropdown" style={{ minWidth: '320px', padding: '16px' }}>
                 <h3 style={{ margin: '0 0 12px', fontSize: '14px', color: 'rgba(0,0,0,0.6)' }}>Your WorkSpace</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
+                    <Globe className="icon colored-icon" size={24} color="#e11d48" />
+                    <span style={{ fontSize: '13px', fontWeight: 600 }}>Community</span>
+                  </Link>
                   {isTeam ? (
                     <Link to="/tasks" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
                       <Briefcase className="icon colored-icon" size={24} color="#3b82f6" />
@@ -436,7 +440,7 @@ export default function SciCommLayout() {
 
       {/* Mobile Bottom Bar - LinkedIn Style: Home, Network, Post, Notifications, SciComm */}
       <nav className="scicomm-mobile-bar">
-        <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`}><Home className="icon" size={22} /><span>Home</span></Link>
+        <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`}><Globe className="icon" size={22} /><span>Community</span></Link>
         <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users className="icon" size={22} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge tag">{pendingConnections.length}</span>}<span>Network</span></Link>
         <Link to="/post" className={`scicomm-mobile-item scicomm-mobile-post-btn ${isActive('/post') ? 'active' : ''}`}><div className="scicomm-post-plus"><Plus size={20} /></div><span>Post</span></Link>
         <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={22} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span>Alerts</span></Link>
