@@ -42,6 +42,7 @@ export default function SciCommSinglePost() {
   const [editingComment, setEditingComment] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(null);
   const [showReactors, setShowReactors] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const post = postsRaw.find(p => p.id === postId);
   const isAdmin = user.role === 'admin' || user.role === 'master';
@@ -390,9 +391,12 @@ export default function SciCommSinglePost() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
             <Link to={`/member/${post.authorId}`}>{renderAvatar(author, 56)}</Link>
             <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                 <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>{post.authorName}</h4></Link>
-                {author?.role === 'master' && <span style={{ background: '#f59e0b', color: 'white', padding: '1px 6px', borderRadius: '8px', fontSize: '10px', fontWeight: 700 }}>👑 Master</span>}
+                {author?.role === 'master' && <span className="scicomm-role-tag role-master"><span className="emoji">👑</span> Master</span>}
+                {author?.role === 'admin' && <span className="scicomm-role-tag role-admin"><span className="emoji">🛡️</span> Admin</span>}
+                {author?.role === 'scicomm' && <span className="scicomm-role-tag role-scicomm"><span className="emoji">🔬</span> SciComm</span>}
+                {(!author?.role || author?.role === 'visitor' || author?.role === 'scientist') && <span className="scicomm-role-tag role-visitor"><span className="emoji">👤</span> Visitor</span>}
               </div>
               <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px' }}>{author?.department || 'Member'}</div>
               <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '12px' }}>{timeAgo(post.createdAt)} • 🌐{post.recognized && ' ⭐ Master Recognized'}</div>
@@ -409,7 +413,52 @@ export default function SciCommSinglePost() {
             )}
           </div>
 
-          <p dir="auto" style={{ fontSize: '16px', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: '0 0 16px' }}>{renderPostText(post.content)}</p>
+          {(() => {
+            const shouldTruncate = post.content && (post.content.length > 280 || post.content.split('\n').length > 3);
+            let displayText = post.content;
+            if (shouldTruncate && !isExpanded) {
+              const newlineIndices = [];
+              let idx = post.content.indexOf('\n');
+              while (idx !== -1) {
+                newlineIndices.push(idx);
+                idx = post.content.indexOf('\n', idx + 1);
+              }
+              
+              let truncateIdx = 280;
+              if (newlineIndices.length >= 3) {
+                truncateIdx = Math.min(truncateIdx, newlineIndices[2]);
+              }
+              
+              displayText = post.content.substring(0, truncateIdx) + '...';
+            }
+            return (
+              <p dir="auto" style={{ fontSize: '16px', lineHeight: '1.6', whiteSpace: 'pre-wrap', margin: '0 0 16px' }}>
+                {renderPostText(displayText)}
+                {shouldTruncate && (
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsExpanded(!isExpanded);
+                    }}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      color: '#1d4ed8', 
+                      fontWeight: 700, 
+                      cursor: 'pointer', 
+                      padding: '0 0 0 4px', 
+                      fontSize: '15px',
+                      display: 'inline-block',
+                      fontFamily: 'inherit'
+                    }}
+                  >
+                    {isExpanded ? ' show less' : ' see more'}
+                  </button>
+                )}
+              </p>
+            );
+          })()}
 
           {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '12px', marginBottom: '16px', maxHeight: '600px', objectFit: 'cover' }} />}
         </div>

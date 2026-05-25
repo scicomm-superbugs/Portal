@@ -180,6 +180,7 @@ export default function SciCommFeed() {
   const [activeCommentMenu, setActiveCommentMenu] = useState(null); // string id_path
   const [deleteConfirm, setDeleteConfirm] = useState(null); // { title, message, onConfirm }
   const [appComingSoon, setAppComingSoon] = useState(null); // platform name
+  const [expandedPosts, setExpandedPosts] = useState({});
 
   const [searchParams] = useSearchParams();
   const highlightedPostId = searchParams.get('postId');
@@ -1356,10 +1357,10 @@ export default function SciCommFeed() {
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                       <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>{post.authorName}</h4></Link>
-                      {author?.role === 'master' && <span className="tag" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}><span className="emoji">👑</span> Master</span>}
-                      {author?.role === 'admin' && <span className="tag" style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}><span className="emoji">🛡️</span> Admin</span>}
-                      {author?.role === 'scicomm' && <span className="tag" style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}><span className="emoji">🔬</span> SciComm</span>}
-                      {(!author?.role || author?.role === 'visitor' || author?.role === 'scientist') && <span className="tag" style={{ background: 'linear-gradient(135deg, #94a3b8, #64748b)', color: 'white', padding: '1px 7px', borderRadius: '10px', fontSize: '10px', fontWeight: 700 }}><span className="emoji">👤</span> Visitor</span>}
+                      {author?.role === 'master' && <span className="scicomm-role-tag role-master"><span className="emoji">👑</span> Master</span>}
+                      {author?.role === 'admin' && <span className="scicomm-role-tag role-admin"><span className="emoji">🛡️</span> Admin</span>}
+                      {author?.role === 'scicomm' && <span className="scicomm-role-tag role-scicomm"><span className="emoji">🔬</span> SciComm</span>}
+                      {(!author?.role || author?.role === 'visitor' || author?.role === 'scientist') && <span className="scicomm-role-tag role-visitor"><span className="emoji">👤</span> Visitor</span>}
                     </div>
                     <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px' }}>{author?.department || 'Member'}</div>
                     <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>
@@ -1418,12 +1419,58 @@ export default function SciCommFeed() {
                       </div>
                     ) : (
                       <>
-                        <p dir="auto" style={{ 
-                          margin: '0 0 8px', 
-                          fontSize: '14px', 
-                          lineHeight: '1.5', 
-                          whiteSpace: 'pre-wrap'
-                        }}>{renderPostText(post.content)}</p>
+                        {(() => {
+                          const isExpanded = expandedPosts[post.id];
+                          const shouldTruncate = post.content && (post.content.length > 280 || post.content.split('\n').length > 3);
+                          let displayText = post.content;
+                          if (shouldTruncate && !isExpanded) {
+                            const newlineIndices = [];
+                            let idx = post.content.indexOf('\n');
+                            while (idx !== -1) {
+                              newlineIndices.push(idx);
+                              idx = post.content.indexOf('\n', idx + 1);
+                            }
+                            
+                            let truncateIdx = 280;
+                            if (newlineIndices.length >= 3) {
+                              truncateIdx = Math.min(truncateIdx, newlineIndices[2]);
+                            }
+                            
+                            displayText = post.content.substring(0, truncateIdx) + '...';
+                          }
+                          return (
+                            <p dir="auto" style={{ 
+                              margin: '0 0 8px', 
+                              fontSize: '14px', 
+                              lineHeight: '1.5', 
+                              whiteSpace: 'pre-wrap'
+                            }}>
+                              {renderPostText(displayText)}
+                              {shouldTruncate && (
+                                <button 
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setExpandedPosts(prev => ({ ...prev, [post.id]: !prev[post.id] }));
+                                  }}
+                                  style={{ 
+                                    background: 'none', 
+                                    border: 'none', 
+                                    color: '#1d4ed8', 
+                                    fontWeight: 700, 
+                                    cursor: 'pointer', 
+                                    padding: '0 0 0 4px', 
+                                    fontSize: '13px',
+                                    display: 'inline-block',
+                                    fontFamily: 'inherit'
+                                  }}
+                                >
+                                  {isExpanded ? ' show less' : ' see more'}
+                                </button>
+                              )}
+                            </p>
+                          );
+                        })()}
                         {post.articleTitle && <div style={{ padding: '10px 14px', background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: '8px', marginBottom: '8px', fontWeight: 700, fontSize: '16px', color: '#92400e' }}>📝 {post.articleTitle}</div>}
                         {post.imageUrl && <img src={post.imageUrl} alt="" style={{ width: '100%', borderRadius: '8px', marginBottom: '8px', maxHeight: '500px', objectFit: 'cover' }} />}
                         {post.videoUrl && (

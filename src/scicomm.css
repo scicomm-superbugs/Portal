@@ -4019,3 +4019,75 @@ html.no-pull-to-refresh body,
   color: #86efac !important;
 }
 
+/* ======================================================
+   Premium Role Tags (Light & Dark Mode)
+   ====================================================== */
+.scicomm-role-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Light Mode Themes */
+.scicomm-role-tag.role-master {
+  background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+  border-color: #fcd34d !important;
+  color: #b45309 !important;
+}
+
+.scicomm-role-tag.role-admin {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe) !important;
+  border-color: #bfdbfe !important;
+  color: #1e40af !important;
+}
+
+.scicomm-role-tag.role-scicomm {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2) !important;
+  border-color: #fca5a5 !important;
+  color: #991b1b !important;
+}
+
+.scicomm-role-tag.role-visitor {
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9) !important;
+  border-color: #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+/* Dark Mode Overrides */
+.scicomm-dark-mode .scicomm-role-tag.role-master {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.15)) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+  color: #fbbf24 !important;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-role-tag.role-admin {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(29, 78, 216, 0.15)) !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+  color: #60a5fa !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-role-tag.role-scicomm {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  color: #fca5a5 !important;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-role-tag.role-visitor {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #94a3b8 !important;
+  box-shadow: none !important;
+}
+
+
