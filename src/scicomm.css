@@ -3323,9 +3323,9 @@ html.no-pull-to-refresh body,
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Ensure inner wrappers inside the comment capsule are completely transparent */
-.scicomm-comment-capsule div,
-.scicomm-dark-mode .scicomm-comment-capsule div {
+/* Ensure inner wrappers inside the comment capsule are completely transparent, excluding the emoji picker */
+.scicomm-comment-capsule div:not(.gboard-emoji-picker):not(.gboard-emoji-picker div),
+.scicomm-dark-mode .scicomm-comment-capsule div:not(.gboard-emoji-picker):not(.gboard-emoji-picker div) {
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
