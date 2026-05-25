@@ -320,73 +320,11 @@ export default function SciCommLayout() {
             <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`} style={{position:'relative'}}><MessageCircle className="icon" size={20} />{unreadChatCount > 0 && <span className="scicomm-notif-badge tag">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}<span className="nav-text">Chat</span></Link>
             <Link to="/notifications" className={`scicomm-nav-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={20} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span className="nav-text">Alerts</span></Link>
             
-            {/* Work Space Tools Dropdown */}
-            <div className="scicomm-nav-item profile-dropdown-container" style={{ position: 'relative' }}>
+            <Link to="/hub" className={`scicomm-nav-item ${isActive('/hub') ? 'active' : ''}`} style={{ position: 'relative' }}>
               <LayoutDashboard className="icon" size={20} />
-              <span className="nav-text">WorkSpace <span className="emoji">▼</span></span>
+              <span className="nav-text">WorkSpace</span>
               {workspaceNotifs > 0 && <span className="scicomm-notif-badge tag" style={{ position: 'absolute', top: 4, right: 4 }}>{workspaceNotifs}</span>}
-              <div className="scicomm-dropdown" style={{ minWidth: '320px', padding: '16px' }}>
-                <h3 style={{ margin: '0 0 12px', fontSize: '14px', color: 'rgba(0,0,0,0.6)' }}>Your WorkSpace</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                  <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                    <Globe className="icon colored-icon" size={24} color="#e11d48" />
-                    <span style={{ fontSize: '13px', fontWeight: 600 }}>Community</span>
-                  </Link>
-                  {isTeam ? (
-                    <Link to="/tasks" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                      <Briefcase className="icon colored-icon" size={24} color="#3b82f6" />
-                      <span style={{ fontSize: '13px', fontWeight: 600 }}>Tasks</span>
-                      {myPendingTasks.length > 0 && <span className="scicomm-notif-badge tag" style={{ position: 'absolute', top: 8, right: 8 }}>{myPendingTasks.length}</span>}
-                    </Link>
-                  ) : (
-                    <div onClick={() => setShowApplyModal(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                      <Briefcase className="icon" size={24} color="#94a3b8" />
-                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Tasks</span>
-                      <Lock className="icon" size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
-                    </div>
-                  )}
-                  <Link to="/calendar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                    <Calendar className="icon colored-icon" size={24} color="#8b5cf6" />
-                    <span style={{ fontSize: '13px', fontWeight: 600 }}>Calendar</span>
-                    {upcomingMeetings.length > 0 && <span className="scicomm-notif-badge tag" style={{ position: 'absolute', top: 8, right: 8 }}>{upcomingMeetings.length}</span>}
-                  </Link>
-                  {isTeam ? (
-                    <Link to="/meetings" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                      <Video className="icon" size={24} color="#10b981" />
-                      <span style={{ fontSize: '13px', fontWeight: 600 }}>Meetings</span>
-                    </Link>
-                  ) : (
-                    <div onClick={() => setShowApplyModal(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                      <Video className="icon" size={24} color="#94a3b8" />
-                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Meetings</span>
-                      <Lock className="icon" size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
-                    </div>
-                  )}
-                  {isTeam ? (
-                    <div onClick={() => setShowComingSoon(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                      <FolderKanban className="icon" size={24} color="#14b8a6" />
-                      <span style={{ fontSize: '13px', fontWeight: 600 }}>Projects</span>
-                    </div>
-                  ) : (
-                    <div onClick={() => setShowApplyModal(true)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                      <FolderKanban className="icon" size={24} color="#94a3b8" />
-                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Projects</span>
-                      <Lock className="icon" size={14} color="#ef4444" style={{ position: 'absolute', top: 8, right: 8 }} />
-                    </div>
-                  )}
-                  <Link to="/leaderboard" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', textDecoration: 'none', color: '#0f172a', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#f1f5f9'} onMouseOut={e => e.currentTarget.style.background='#f8fafc'}>
-                    <Trophy className="icon" size={24} color="#f59e0b" />
-                    <span style={{ fontSize: '13px', fontWeight: 600 }}>Leaderboard</span>
-                  </Link>
-                  {isAdmin && (
-                    <Link to="/admin" style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px', background: '#fffbeb', border: '1px solid #fbbf24', borderRadius: '12px', textDecoration: 'none', color: '#b45309', position: 'relative', marginTop: '4px', fontWeight: 600, transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#fef3c7'} onMouseOut={e => e.currentTarget.style.background='#fffbeb'}>
-                      <Shield className="icon" size={20} /> Admin Dashboard
-                      {pendingAccounts.length > 0 && <span className="scicomm-notif-badge tag" style={{ position: 'absolute', top: '50%', right: 12, transform: 'translateY(-50%)' }}>{pendingAccounts.length}</span>}
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </div>
+            </Link>
 
 
 
