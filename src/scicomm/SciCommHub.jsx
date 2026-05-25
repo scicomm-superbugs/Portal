@@ -22,11 +22,11 @@ export default function SciCommHub() {
       setIsDarkMode(safeLocalStorage.getItem('scicommDarkMode') === 'true');
     };
     window.addEventListener('storage', handleStorageChange);
-    // Also set up an observer to watch for class changes on body
+    // Also set up an observer to watch for class changes on html root
     const observer = new MutationObserver(() => {
-      setIsDarkMode(document.body.classList.contains('scicomm-dark-mode'));
+      setIsDarkMode(document.documentElement.classList.contains('scicomm-dark-mode'));
     });
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       observer.disconnect();
