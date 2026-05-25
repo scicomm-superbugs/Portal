@@ -164,9 +164,9 @@ export default function SciCommNetwork() {
                 <div key={s.id} className="scicomm-card" style={{ textAlign: 'center', padding: '16px', border: '1px solid #e0dfdc' }}>
                   <Link to={`/member/${s.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>{renderAvatar(s, 72)}</div>
-                    <h4 style={{ margin: '0 0 4px', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                    <h4 style={{ margin: '0 0 4px', fontSize: '14px', display: 'block', textAlign: 'center' }}>
                       {s.name}
-                      <SciCommVerificationBadge role={s.role} />
+                      <SciCommVerificationBadge role={s.role} style={{ marginLeft: '4px' }} />
                     </h4>
                     <p style={{ color: 'rgba(0,0,0,0.6)', margin: '0 0 12px', fontSize: '12px', height: '32px', overflow: 'hidden' }}>{s.department || 'Science Communicator'}</p>
                   </Link>

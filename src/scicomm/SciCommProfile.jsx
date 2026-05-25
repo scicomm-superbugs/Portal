@@ -348,7 +348,7 @@ export default function SciCommProfile() {
       )}
 
       {/* Profile Header */}
-      <div className="scicomm-card" style={{ overflow: 'hidden' }}>
+      <div className="scicomm-card" style={{ overflow: 'visible' }}>
         <div style={{ width: '100%', aspectRatio: '4 / 1', background: me?.coverPhoto ? `url(${me.coverPhoto}) center/cover` : 'linear-gradient(135deg, #1d4ed8 0%, #0f172a 50%, #020617 100%)', position: 'relative' }}>
           <label style={{ position: 'absolute', bottom: 10, right: 10, background: 'rgba(0,0,0,0.5)', color: 'white', borderRadius: '20px', padding: '6px 12px', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <Camera size={14} /> {isUploadingCover ? 'Uploading...' : 'Edit Cover'}

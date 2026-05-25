@@ -171,7 +171,7 @@ export default function SciCommMemberProfile() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '40px' }}>
-      <div className="scicomm-card" style={{ overflow: 'hidden' }}>
+      <div className="scicomm-card" style={{ overflow: 'visible' }}>
         <div style={{ width: '100%', aspectRatio: '4 / 1', background: member.coverPhoto ? `url(${member.coverPhoto}) center/cover` : 'linear-gradient(135deg, #1d4ed8 0%, #0f172a 50%, #020617 100%)' }}></div>
         <div style={{ padding: '0 24px 24px' }}>
           <div style={{ marginTop: '-60px', marginBottom: '12px' }}>{renderAvatar(120)}</div>

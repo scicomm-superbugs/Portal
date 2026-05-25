@@ -4106,7 +4106,7 @@ html.no-pull-to-refresh body,
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
-  vertical-align: middle !important;
+  vertical-align: -0.125em !important;
   line-height: 1 !important;
 }
 
