@@ -1764,3 +1764,17 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   color: #4b5563 !important;
   box-shadow: none !important;
 }
+
+/* Disable native Chromium/Android WebView pull-to-refresh overscroll action globally */
+html,
+body,
+.scicomm-app,
+.scicomm-dark-mode,
+html.no-pull-to-refresh,
+html.no-pull-to-refresh body,
+.scicomm-dark-mode.no-pull-to-refresh,
+.scicomm-dark-mode.no-pull-to-refresh body {
+  overscroll-behavior-y: contain !important;
+  overscroll-behavior: contain !important;
+}
+

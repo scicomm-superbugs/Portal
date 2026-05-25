@@ -78,7 +78,7 @@ export default function SciCommChat() {
       activeRoom.members.includes(s.id) && 
       String(s.id) !== String(user.id) &&
       (!mentionQuery || 
-       s.name.toLowerCase().includes(mentionQuery.toLowerCase()) || 
+       (s.name || '').toLowerCase().includes(mentionQuery.toLowerCase()) || 
        (s.username || '').toLowerCase().includes(mentionQuery.toLowerCase()))
     )
   ].slice(0, 5) : [];
@@ -119,13 +119,13 @@ export default function SciCommChat() {
 
   const filteredActiveRooms = myActiveRooms.filter(r => {
     if (r.hiddenFor?.includes(user.id)) return false;
-    const title = r.type === 'group' ? r.name : (r.memberNames?.[r.members.find(id => id !== user.id)] || 'Chat');
+    const title = r.type === 'group' ? (r.name || '') : (r.memberNames?.[r.members.find(id => id !== user.id)] || 'Chat');
     return title.toLowerCase().includes(roomSearch.toLowerCase());
   });
 
   const filteredNewChatUsers = scientists.filter(s => 
     String(s.id) !== String(user.id) && 
-    (s.name.toLowerCase().includes(newChatSearch.toLowerCase()) || (s.username || '').toLowerCase().includes(newChatSearch.toLowerCase()))
+    ((s.name || '').toLowerCase().includes(newChatSearch.toLowerCase()) || (s.username || '').toLowerCase().includes(newChatSearch.toLowerCase()))
   );
 
   const getRoomOther = (room) => {
@@ -385,7 +385,7 @@ export default function SciCommChat() {
         return;
       }
       
-      const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+      const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || (s.name || '').replace(/\s+/g, '').toLowerCase() === username);
       if (userMatch && activeRoom?.members.includes(userMatch.id) && String(userMatch.id) !== String(user.id) && !notifiedIds.has(String(userMatch.id))) {
         notifiedIds.add(String(userMatch.id));
         db.scicomm_notifications.add({
@@ -866,7 +866,7 @@ export default function SciCommChat() {
                     ) : renderAvatar(s, 32)}
                     <div>
                       <div style={{ fontWeight: 700, fontSize: '14px' }}>{s.name}</div>
-                      <div style={{ fontSize: '11px', color: '#64748b' }}>@{s.username || s.name.replace(/\s+/g, '')}</div>
+                      <div style={{ fontSize: '11px', color: '#64748b' }}>@{s.username || (s.name || '').replace(/\s+/g, '')}</div>
                     </div>
                   </div>
                 ))}
@@ -1066,7 +1066,7 @@ export default function SciCommChat() {
                 {(() => {
                   const freshRoom = chatRooms.find(r => r.id === selectedRoom);
                   const currentMemberIds = (freshRoom?.members || []).map(String);
-                  return scientists.filter(s => !currentMemberIds.includes(String(s.id)) && (s.name.toLowerCase().includes(newChatSearch.toLowerCase()) || (s.username||'').toLowerCase().includes(newChatSearch.toLowerCase()))).map(u => (
+                  return scientists.filter(s => !currentMemberIds.includes(String(s.id)) && ((s.name || '').toLowerCase().includes(newChatSearch.toLowerCase()) || (s.username||'').toLowerCase().includes(newChatSearch.toLowerCase()))).map(u => (
                   <div key={u.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '16px', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background='#f8fafc'} onMouseLeave={e => e.currentTarget.style.background='transparent'}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       {renderAvatar(u, 40)}

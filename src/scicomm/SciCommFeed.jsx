@@ -509,7 +509,7 @@ export default function SciCommFeed() {
       const mentions = text?.match(/@\w+/g) || [];
       mentions.forEach(mention => {
         const username = mention.slice(1).toLowerCase();
-        const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+        const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || (s.name || '').replace(/\s+/g, '').toLowerCase() === username);
         if (userMatch && String(userMatch.id) !== String(user.id) && !notifiedIds.has(String(userMatch.id))) {
           notifiedIds.add(String(userMatch.id));
           db.scicomm_notifications.add({
@@ -642,7 +642,7 @@ export default function SciCommFeed() {
       if (part.startsWith('#')) return <Link key={i} to={`/network?q=${encodeURIComponent(part.slice(1))}`} style={{ color: '#0a66c2', fontWeight: 600, textDecoration: 'none' }}>{part}</Link>;
       if (part.startsWith('@')) {
         const username = part.slice(1).toLowerCase();
-        const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+        const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || (s.name || '').replace(/\s+/g, '').toLowerCase() === username);
         if (userMatch) return <Link key={i} to={`/member/${userMatch.id}`} style={{ background: '#eef3f8', color: '#0a66c2', padding: '2px 4px', borderRadius: '4px', fontWeight: 600, textDecoration: 'none' }}>{part}</Link>;
         return <span key={i} style={{ color: '#0a66c2', fontWeight: 600 }}>{part}</span>;
       }
@@ -655,7 +655,7 @@ export default function SciCommFeed() {
 
   const mentionSuggestions = mentionKey !== null ? scientists.filter(s => 
     !mentionQuery || 
-    s.name.toLowerCase().includes(mentionQuery.toLowerCase()) || 
+    (s.name || '').toLowerCase().includes(mentionQuery.toLowerCase()) || 
     (s.username || '').toLowerCase().includes(mentionQuery.toLowerCase())
   ).slice(0, 5) : [];
 
@@ -694,7 +694,7 @@ export default function SciCommFeed() {
             {renderAvatar(s, 28)}
             <div>
               <div style={{ fontWeight: 600 }}>{s.name}</div>
-              <div style={{ fontSize: '11px', color: '#64748b' }}>@{s.username || s.name.replace(/\s+/g, '')}</div>
+              <div style={{ fontSize: '11px', color: '#64748b' }}>@{s.username || (s.name || '').replace(/\s+/g, '')}</div>
             </div>
           </div>
         ))}

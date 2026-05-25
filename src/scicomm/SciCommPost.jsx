@@ -30,7 +30,7 @@ export default function SciCommPost() {
 
   const mentionSuggestions = scientists.filter(s => 
     !mentionQuery || 
-    s.name.toLowerCase().includes(mentionQuery.toLowerCase()) || 
+    (s.name || '').toLowerCase().includes(mentionQuery.toLowerCase()) || 
     (s.username || '').toLowerCase().includes(mentionQuery.toLowerCase())
   ).slice(0, 5);
 
@@ -113,7 +113,7 @@ export default function SciCommPost() {
       const mentions = content.match(/@\w+/g) || [];
       mentions.forEach(mention => {
         const username = mention.slice(1).toLowerCase();
-        const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+        const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || (s.name || '').replace(/\s+/g, '').toLowerCase() === username);
         if (userMatch && String(userMatch.id) !== String(user.id)) {
           db.scicomm_notifications.add({
             userId: userMatch.id, type: 'mention',
@@ -166,7 +166,7 @@ export default function SciCommPost() {
                 {renderAvatar(s, 32)}
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '14px' }}>{s.name}</div>
-                  <div style={{ fontSize: '12px', color: '#64748b' }}>@{s.username || s.name.replace(/\s+/g, '')}</div>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>@{s.username || (s.name || '').replace(/\s+/g, '')}</div>
                 </div>
               </div>
             ))}

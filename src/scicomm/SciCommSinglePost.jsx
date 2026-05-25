@@ -71,7 +71,7 @@ export default function SciCommSinglePost() {
       if (part.startsWith('#')) return <span key={i} style={{ color: '#1d4ed8', fontWeight: 600 }}>{part}</span>;
       if (part.startsWith('@')) {
         const username = part.slice(1).toLowerCase();
-        const mentioned = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+        const mentioned = scientists.find(s => (s.username || '').toLowerCase() === username || (s.name || '').replace(/\s+/g, '').toLowerCase() === username);
         if (mentioned) return <Link key={i} to={`/member/${mentioned.id}`} style={{ color: '#1d4ed8', fontWeight: 600, textDecoration: 'none' }}>{part}</Link>;
       }
       return part;

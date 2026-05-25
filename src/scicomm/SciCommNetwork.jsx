@@ -103,7 +103,7 @@ export default function SciCommNetwork() {
     const cs = getConnectionStatus(m.id);
     if (searchTerm) {
       // When searching, show ALL members matching the query
-      return m.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      return (m.name || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
              (m.department || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
              (m.username || '').toLowerCase().includes(searchTerm.toLowerCase());
     }

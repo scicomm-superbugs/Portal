@@ -295,7 +295,7 @@ export default function SciCommAdmin() {
             const mentions = c.text?.match(/@\w+/g) || [];
             for (const mention of mentions) {
               const username = mention.slice(1).toLowerCase();
-              const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+              const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || (s.name || '').replace(/\s+/g, '').toLowerCase() === username);
               if (userMatch && String(userMatch.id) !== String(c.authorId)) {
                 await db.scicomm_notifications.add({
                   userId: userMatch.id, type: 'mention', senderId: c.authorId,
@@ -333,7 +333,7 @@ export default function SciCommAdmin() {
             }
           } else {
             const username = mention.slice(1).toLowerCase();
-            const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || s.name.replace(/\s+/g, '').toLowerCase() === username);
+            const userMatch = scientists.find(s => (s.username || '').toLowerCase() === username || (s.name || '').replace(/\s+/g, '').toLowerCase() === username);
             if (userMatch && String(userMatch.id) !== String(m.senderId)) {
               await db.scicomm_notifications.add({
                 userId: userMatch.id, type: 'mention', senderId: m.senderId,
