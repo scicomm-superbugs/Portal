@@ -3502,7 +3502,6 @@ html.no-pull-to-refresh body,
   background: #fef2f2 !important;
   border-color: #fecaca !important;
   color: #b91c1c !important;
-  align-items: stretch !important;
 }
 .scicomm-status-block-rejected h3 {
   color: #b91c1c !important;
@@ -3521,6 +3520,8 @@ html.no-pull-to-refresh body,
   font-style: italic;
   font-size: 13px;
   text-align: left;
+  width: 100%;
+  box-sizing: border-box;
 }
 .scicomm-feedback-box strong {
   font-weight: 700;
