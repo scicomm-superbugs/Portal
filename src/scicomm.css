@@ -84,8 +84,8 @@
   color: rgba(0,0,0,0.6);
   text-decoration: none !important;
   min-width: unset !important;
-  padding: 6px 12px !important;
-  height: 40px !important;
+  padding: 4px 12px !important;
+  height: 44px !important;
   align-self: center !important;
   border-radius: 8px !important;
   cursor: pointer;
@@ -94,6 +94,13 @@
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+}
+
+.scicomm-nav-item svg,
+.scicomm-nav-item .icon {
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
 }
 
 .scicomm-nav-item:hover {
@@ -2845,8 +2852,10 @@ html.no-pull-to-refresh body,
 }
 
 .scicomm-hub-grid .hub-icon-wrapper {
-  width: 6vh !important; /* Dynamic height-scaled wrappers */
-  height: 6vh !important;
+  width: 6.5vh !important; /* Dynamic height-scaled wrappers */
+  height: 6.5vh !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
   max-width: 60px !important;
   max-height: 60px !important;
   border-radius: 14px !important;
@@ -2857,16 +2866,20 @@ html.no-pull-to-refresh body,
 
 @media (min-width: 769px) {
   .scicomm-hub-grid .hub-icon-wrapper {
-    width: 7vh !important;
-    height: 7vh !important;
+    width: 7.5vh !important;
+    height: 7.5vh !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
     max-width: 72px !important;
     max-height: 72px !important;
     border-radius: 18px !important;
   }
   
   .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper {
-    width: 5vh !important;
-    height: 5vh !important;
+    width: 5.5vh !important;
+    height: 5.5vh !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
     max-width: 48px !important;
     max-height: 48px !important;
     border-radius: 12px !important;
@@ -2875,25 +2888,31 @@ html.no-pull-to-refresh body,
 
 .scicomm-hub-grid .hub-icon-wrapper svg,
 .scicomm-hub-grid .hub-icon-wrapper .icon {
-  width: 3vh !important;
-  height: 3vh !important;
-  max-width: 30px !important;
-  max-height: 30px !important;
+  width: 3.8vh !important;
+  height: 3.8vh !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
 }
 
 @media (min-width: 769px) {
   .scicomm-hub-grid .hub-icon-wrapper svg,
   .scicomm-hub-grid .hub-icon-wrapper .icon {
-    width: 3.5vh !important;
-    height: 3.5vh !important;
+    width: 4.2vh !important;
+    height: 4.2vh !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
     max-width: 36px !important;
     max-height: 36px !important;
   }
   
   .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper svg,
   .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper .icon {
-    width: 2.5vh !important;
-    height: 2.5vh !important;
+    width: 2.8vh !important;
+    height: 2.8vh !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
     max-width: 24px !important;
     max-height: 24px !important;
   }
