@@ -2762,21 +2762,20 @@ html.no-pull-to-refresh body,
 .scicomm-hub-container {
   display: flex !important;
   flex-direction: column !important;
-  justify-content: center !important; /* Centered vertically */
+  justify-content: space-evenly !important; /* Distribute components perfectly down the screen */
   align-items: center !important;
   height: 100% !important;
   width: 100% !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
-  padding: 20px !important;
+  padding: 2.5vh 20px !important;
   margin: 0 auto !important;
   max-width: 1200px !important;
 }
 
 @media (max-width: 768px) {
   .scicomm-hub-container {
-    padding: 12px 16px !important;
-    justify-content: space-evenly !important; /* Keep mobile spacing optimized without vertical overflows */
+    padding: 2vh 16px !important;
   }
 }
 
@@ -2786,85 +2785,86 @@ html.no-pull-to-refresh body,
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
-  margin-bottom: 24px !important;
+  margin-bottom: 1.5vh !important;
   text-align: center !important;
   width: 100% !important;
 }
 
-@media (max-width: 768px) {
-  .scicomm-hub-header {
-    margin-bottom: 8px !important;
-  }
-}
-
 .scicomm-hub-header img {
-  height: 120px !important; /* Large, premium branded presence, not tiny! */
-  max-height: 14vh !important;
+  height: 180px !important; /* Large, prominent desktop brand presence */
+  max-height: 18vh !important;
   max-width: 80% !important;
   width: auto !important;
   object-fit: contain !important;
-  margin-bottom: 12px !important;
+  margin-bottom: 1vh !important;
   transition: all 0.3s ease !important;
 }
 
 @media (max-width: 768px) {
   .scicomm-hub-header img {
-    height: 90px !important; /* Highly visible branding on mobile viewports */
-    margin-bottom: 4px !important;
+    height: 120px !important; /* Large, highly visible mobile brand presence */
+    max-height: 15vh !important;
+    margin-bottom: 0.5vh !important;
   }
 }
 
 .scicomm-hub-grid {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
-  gap: 16px !important; /* Symmetrical gaps */
+  gap: 2vh 16px !important; /* Premium dynamic gaps to scale height */
   width: 100% !important;
-  max-width: 400px !important; /* Centered, robust mobile grid */
+  max-width: 420px !important; /* Symmetrical centered columns */
   margin: 0 auto !important;
   box-sizing: border-box !important;
-  flex-shrink: 0 !important;
+  flex: 1 !important; /* Grid expands vertically on mobile to fill remaining space */
+  align-content: center !important;
 }
 
 @media (min-width: 769px) {
   .scicomm-hub-grid {
     grid-template-columns: repeat(3, 1fr) !important;
-    max-width: 840px !important; /* Center columns symmetrically on desktop */
-    gap: 24px !important;
+    max-width: 900px !important; /* Center columns symmetrically on desktop */
+    gap: 3vh 24px !important;
+    flex: unset !important; /* Keep desktop layout compact and elegant */
   }
 }
 
 .scicomm-hub-grid .hub-card {
   text-decoration: none !important;
   background: #ffffff !important;
-  border-radius: 20px !important;
-  padding: 16px !important;
+  border-radius: 24px !important;
+  padding: 2.5vh 16px !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 10px !important;
+  gap: 1.5vh !important;
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
   position: relative !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.02) !important;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s !important;
   cursor: pointer !important;
-  height: 110px !important; /* Balanced square/rectangle layout for mobile */
+  height: 100% !important; /* Fill available row cell height */
+  min-height: 14vh !important; /* Dynamic stretching height on mobile */
+  max-height: 20vh !important;
   box-sizing: border-box !important;
 }
 
 @media (min-width: 769px) {
   .scicomm-hub-grid .hub-card {
-    height: 150px !important; /* Symmetrical box shape on desktop */
+    height: 180px !important; /* Perfectly proportioned rectangles on desktop */
+    min-height: unset !important;
+    max-height: unset !important;
     padding: 24px !important;
-    gap: 14px !important;
+    gap: 16px !important;
   }
   
   /* Symmetrical Admin card in desktop layout */
   .scicomm-hub-grid .hub-card-admin {
-    grid-column: span 1 !important; /* Render nicely as a standard sized card in a perfect 3x2 grid */
+    grid-column: span 1 !important;
     flex-direction: column !important;
     justify-content: center !important;
-    gap: 14px !important;
+    gap: 16px !important;
     padding: 24px !important;
   }
 }
@@ -2875,9 +2875,13 @@ html.no-pull-to-refresh body,
 }
 
 .scicomm-hub-grid .hub-icon-wrapper {
-  width: 46px !important; /* Well-proportioned icon containers */
-  height: 46px !important;
-  border-radius: 14px !important;
+  width: 7vh !important; /* Dynamic bold wrapper sizes */
+  height: 7vh !important;
+  max-width: 64px !important;
+  max-height: 64px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  border-radius: 18px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -2886,9 +2890,13 @@ html.no-pull-to-refresh body,
 
 @media (min-width: 769px) {
   .scicomm-hub-grid .hub-icon-wrapper {
-    width: 60px !important;
-    height: 60px !important;
-    border-radius: 18px !important;
+    width: 68px !important;
+    height: 68px !important;
+    max-width: unset !important;
+    max-height: unset !important;
+    min-width: unset !important;
+    min-height: unset !important;
+    border-radius: 20px !important;
   }
 }
 
@@ -2898,21 +2906,31 @@ html.no-pull-to-refresh body,
 
 .scicomm-hub-grid .hub-icon-wrapper svg,
 .scicomm-hub-grid .hub-icon-wrapper .icon {
-  width: 24px !important; /* Normal, crisp icon sizing */
-  height: 24px !important;
+  width: 3.5vh !important; /* Crisp, readable layout icons */
+  height: 3.5vh !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
   flex-shrink: 0 !important;
 }
 
 @media (min-width: 769px) {
   .scicomm-hub-grid .hub-icon-wrapper svg,
   .scicomm-hub-grid .hub-icon-wrapper .icon {
-    width: 30px !important;
-    height: 30px !important;
+    width: 34px !important;
+    height: 34px !important;
+    max-width: unset !important;
+    max-height: unset !important;
+    min-width: unset !important;
+    min-height: unset !important;
   }
 }
 
 .scicomm-hub-grid .hub-card span {
-  font-size: 14px !important; /* Highly readable layout typography */
+  font-size: 1.8vh !important; /* Scalable typography */
+  max-font-size: 15px !important;
+  min-font-size: 13px !important;
   font-weight: 600 !important;
   color: rgba(0, 0, 0, 0.8) !important;
   text-align: center !important;
@@ -2920,7 +2938,9 @@ html.no-pull-to-refresh body,
 
 @media (min-width: 769px) {
   .scicomm-hub-grid .hub-card span {
-    font-size: 15px !important;
+    font-size: 16px !important;
+    max-font-size: unset !important;
+    min-font-size: unset !important;
   }
 }
 
