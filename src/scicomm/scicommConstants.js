@@ -2,6 +2,7 @@
 export const REACTIONS = [
   { key: 'like', emoji: '👍', label: 'Like', color: '#0a66c2' },
   { key: 'love', emoji: '❤️', label: 'Love', color: '#df4f60' },
+  { key: 'haha', emoji: '😆', label: 'Haha', color: '#fdd835' },
   { key: 'support', emoji: '👏', label: 'Support', color: '#6dae4f' },
   { key: 'care', emoji: '🤗', label: 'Care', color: '#eaaa30' },
   { key: 'brilliant', emoji: '💡', label: 'Brilliant', color: '#f5c400' },

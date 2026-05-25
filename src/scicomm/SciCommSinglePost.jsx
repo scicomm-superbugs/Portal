@@ -35,6 +35,7 @@ export default function SciCommSinglePost() {
   const [commentImage, setCommentImage] = useState({});
   const [replyTo, setReplyTo] = useState(null);
   const [activeReactionPicker, setActiveReactionPicker] = useState(null);
+  const [showPostMenu, setShowPostMenu] = useState(false);
   const [activeCommentMenu, setActiveCommentMenu] = useState(null);
   const [editingComment, setEditingComment] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(null);
@@ -218,12 +219,14 @@ export default function SciCommSinglePost() {
       const myReaction = Object.entries(cReactions).find(([, arr]) => arr.includes(user.id))?.[0];
       const cAuthor = getAuthor(c.authorId);
       const isDeleted = c.deletedByAdmin;
+      const hasReacts = Object.values(cReactions).some(arr => arr.length > 0);
+      const bubbleClass = `scicomm-comment-bubble ${isDeleted ? "moderated-comment" : (path.length === 0 ? "main-comment" : "reply-comment")} ${hasReacts ? "has-reactions" : ""}`;
       return (
         <div key={i} className={path.length > 0 ? "scicomm-comment-thread-line" : ""} style={{ marginBottom: path.length === 0 ? '12px' : '8px', marginTop: path.length > 0 ? '8px' : '0', paddingLeft: path.length > 0 ? '12px' : '0', position: 'relative' }}>
           <div style={{ display: 'flex', gap: '8px' }}>
             <Link to={`/member/${c.authorId}`} style={{ flexShrink: 0, opacity: isDeleted ? 0.3 : 1 }}>{renderAvatar(cAuthor, path.length === 0 ? 32 : 24)}</Link>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div className={isDeleted ? "scicomm-comment-bubble moderated-comment" : (path.length === 0 ? "scicomm-comment-bubble main-comment" : "scicomm-comment-bubble reply-comment")} style={{ position: 'relative' }}>
+              <div className={bubbleClass} style={{ position: 'relative' }}>
                 <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '13px' }}>{c.authorName}</strong></Link>
                 {isDeleted ? (
                   <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -332,7 +335,7 @@ export default function SciCommSinglePost() {
                         <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                       </div>
                     </div>
-                    <button className="scicomm-btn-primary scicomm-comment-send-btn" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'center', borderRadius: '24px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
+                    <button className="scicomm-comment-send-btn" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'center', borderRadius: '24px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
                     <button onClick={() => { setReplyTo(null); setCommentText(prev => ({...prev, [replyKey]: ''})); setCommentImage(prev => ({...prev, [replyKey]: null})); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={16} /></button>
                   </div>
                   {commentImage[replyKey] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}><span className="emoji">📎</span> {commentImage[replyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
@@ -370,10 +373,10 @@ export default function SciCommSinglePost() {
             </div>
             {(isAdmin || String(post.authorId) === String(user.id)) && (
               <div style={{ position: 'relative' }}>
-                <button onClick={() => setActiveReactionPicker(activeReactionPicker === 'menu' ? null : 'menu')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.4)' }}><MoreHorizontal size={20} /></button>
-                {activeReactionPicker === 'menu' && (
+                <button onClick={() => setShowPostMenu(!showPostMenu)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(0,0,0,0.4)' }}><MoreHorizontal size={20} /></button>
+                {showPostMenu && (
                   <div style={{ position: 'absolute', right: 0, top: '100%', background: 'white', border: '1px solid #e0dfdc', borderRadius: '12px', padding: '8px 0', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 100, minWidth: '160px' }}>
-                    <button onClick={() => { if(window.confirm('Delete this post?')) { db.scicomm_posts.delete(post.id); navigate('/'); } }} style={{ display: 'block', width: '100%', padding: '10px 16px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '14px', textAlign: 'left', color: '#ef4444', fontWeight: 600 }}>🗑️ Delete Post</button>
+                    <button onClick={() => { if(window.confirm('Delete this post?')) { setShowPostMenu(false); db.scicomm_posts.delete(post.id); navigate('/'); } }} style={{ display: 'block', width: '100%', padding: '10px 16px', border: 'none', background: 'none', cursor: 'pointer', fontSize: '14px', textAlign: 'left', color: '#ef4444', fontWeight: 600 }}>🗑️ Delete Post</button>
                   </div>
                 )}
               </div>
@@ -395,15 +398,23 @@ export default function SciCommSinglePost() {
           </div>
         )}
 
-        <div style={{ display: 'flex', borderTop: '1px solid #e0dfdc', position: 'relative' }}>
-          <div style={{ flex: 1, position: 'relative' }} onMouseEnter={() => setActiveReactionPicker(post.id)} onMouseLeave={() => setActiveReactionPicker(null)}>
-            <button className="scicomm-post-btn" style={{ width: '100%', color: myReaction ? REACTIONS.find(r => r.key === myReaction)?.color || '#1d4ed8' : 'rgba(0,0,0,0.6)' }}>
-              {myReaction ? REACTIONS.find(r => r.key === myReaction)?.emoji : <ThumbsUp size={18} />} {myReaction ? REACTIONS.find(r => r.key === myReaction)?.label : 'Like'}
+        <div className="scicomm-post-actions-row">
+          <div style={{ flex: 1, position: 'relative', userSelect: 'none', WebkitUserSelect: 'none' }}
+            onMouseEnter={() => setActiveReactionPicker(post.id)}
+            onMouseLeave={() => setActiveReactionPicker(null)}
+            onTouchStart={() => { window.reactionTimer = setTimeout(() => setActiveReactionPicker(post.id), 200); }}
+            onTouchEnd={() => clearTimeout(window.reactionTimer)}
+            onTouchMove={() => clearTimeout(window.reactionTimer)}
+            onContextMenu={(e) => { e.preventDefault(); setActiveReactionPicker(post.id); }}>
+            <button className={`scicomm-post-btn ${myReaction ? 'liked' : ''}`} style={{ width: '100%', color: myReaction ? REACTIONS.find(r => r.key === myReaction)?.color || '#1d4ed8' : 'rgba(0,0,0,0.6)' }} onClick={() => handleReaction(post, myReaction || 'like')}>
+              {myReaction ? <span className="emoji">{REACTIONS.find(r => r.key === myReaction)?.emoji}</span> : <ThumbsUp size={18} />} {myReaction ? REACTIONS.find(r => r.key === myReaction)?.label : 'Like'}
             </button>
             {activeReactionPicker === post.id && (
-              <div style={{ position: 'absolute', bottom: '100%', left: '10px', background: 'white', borderRadius: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)', padding: '6px 8px', display: 'flex', gap: '2px', zIndex: 50 }}>
+              <div className="scicomm-reacts-popup">
                 {REACTIONS.map(r => (
-                  <button key={r.key} onClick={() => handleReaction(post, r.key)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }} onMouseEnter={e => e.target.style.transform = 'scale(1.3)'} onMouseLeave={e => e.target.style.transform = 'scale(1)'}>{r.emoji}</button>
+                  <button key={r.key} onClick={() => handleReaction(post, r.key)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }} onMouseEnter={e => e.target.style.transform = 'scale(1.3)'} onMouseLeave={e => e.target.style.transform = 'scale(1)'}>
+                    <span className="emoji">{r.emoji}</span>
+                  </button>
                 ))}
               </div>
             )}
@@ -412,7 +423,7 @@ export default function SciCommSinglePost() {
           <button className="scicomm-post-btn" style={{ flex: 1 }}><Share2 size={18} /> Share</button>
         </div>
 
-        <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '0 0 16px 16px' }}>
+        <div className="scicomm-single-post-comments-container">
           <div className="scicomm-comment-input-row" style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center', position: 'relative' }}>
             {renderAvatar(getAuthor(user.id), 32)}
             <div className="scicomm-comment-capsule">
@@ -437,7 +448,7 @@ export default function SciCommSinglePost() {
                 <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
               </div>
             </div>
-            <button className="scicomm-btn-primary scicomm-comment-send-btn" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'center', borderRadius: '24px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
+            <button className="scicomm-comment-send-btn" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'center', borderRadius: '24px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
           </div>
 
           {commentImage[post.id] && (

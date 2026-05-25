@@ -3295,3 +3295,114 @@ html.no-pull-to-refresh body,
   background-color: #3a3b3c !important;
   box-shadow: none !important;
 }
+
+/* ==========================================
+   Facebook-style Card Bugs and Polishing
+   ========================================== */
+
+/* Reaction picker popup bubble in light/dark mode */
+.scicomm-reacts-popup {
+  position: absolute !important;
+  bottom: 100% !important;
+  left: 10px !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border-radius: 24px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e5e7eb !important;
+  padding: 6px 8px !important;
+  display: flex !important;
+  gap: 4px !important;
+  z-index: 100 !important;
+}
+
+.scicomm-dark-mode .scicomm-reacts-popup {
+  background-color: #242526 !important;
+  background: #242526 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Ensure inner wrappers inside the comment capsule are completely transparent */
+.scicomm-comment-capsule div,
+.scicomm-dark-mode .scicomm-comment-capsule div {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Redesign text clipping inside comment inputs */
+.scicomm-comment-textarea-field,
+.scicomm-dark-mode .scicomm-comment-textarea-field {
+  min-height: 32px !important;
+  line-height: 1.5 !important;
+  padding: 6px 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #050505 !important;
+  outline: none !important;
+  resize: none !important;
+  overflow-y: hidden !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-textarea-field {
+  color: #e4e6eb !important;
+}
+
+/* Reset capsule dark mode color */
+.scicomm-dark-mode .scicomm-comment-capsule {
+  background-color: #3a3b3c !important;
+  background: #3a3b3c !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.scicomm-dark-mode .scicomm-comment-capsule:focus-within {
+  background-color: #4e4f50 !important;
+  background: #4e4f50 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Spacing and margins for speech bubbles that have floating reactions */
+.scicomm-comment-bubble.has-reactions {
+  padding-bottom: 16px !important;
+  min-width: 120px !important;
+}
+
+/* Thin, faded border-line dividers for action buttons */
+.scicomm-post-actions-row {
+  display: flex !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  padding: 4px 12px !important;
+  margin: 8px 0 0 0 !important;
+  position: relative !important;
+}
+
+.scicomm-dark-mode .scicomm-post-actions-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Comments section divider */
+.scicomm-post-comments-container {
+  padding: 8px 16px 16px !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+.scicomm-dark-mode .scicomm-post-comments-container {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Elegant single post comments section backdrop */
+.scicomm-single-post-comments-container {
+  background: #f8fafc !important;
+  padding: 16px !important;
+  border-radius: 0 0 16px 16px !important;
+}
+.scicomm-dark-mode .scicomm-single-post-comments-container {
+  background: #1c1d1e !important;
+}
+
