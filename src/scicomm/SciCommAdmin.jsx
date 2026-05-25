@@ -420,7 +420,7 @@ export default function SciCommAdmin() {
             <div key={s.id} className="scicomm-admin-pending-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid #eef3f8', flexWrap: 'wrap', gap: '8px' }}>
               <div>
                 <div style={{ fontWeight: 600 }}>{s.name}</div>
-                <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>@{s.username} • {s.email || '-'} • {s.department || '-'}</div>
+                <div className="scicomm-admin-user-subtext" style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>@{s.username} • {s.email || '-'} • {s.department || '-'}</div>
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button className="scicomm-btn-primary" style={{ padding: '6px 14px', fontSize: '12px' }} onClick={() => handleApprove(s.id)}><UserCheck size={14} /> Approve</button>
@@ -446,22 +446,22 @@ export default function SciCommAdmin() {
                       {s.avatar ? <img src={s.avatar} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} /> : '👤'}
                     </div>
                     <div>
-                    <div style={{ fontWeight: 600, fontSize: '14px' }}>{s.name} <span style={{ background: s.role === 'master' ? 'linear-gradient(135deg, #fbbf24, #f59e0b)' : s.role === 'admin' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : s.role === 'scicomm' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : '#e2e8f0', color: s.role === 'scientist' ? '#475569' : 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '10px', fontWeight: 700, marginLeft: '4px' }}>{s.role === 'master' ? '👑 Master' : s.role === 'admin' ? '🛡️ Admin' : s.role === 'scicomm' ? '🔬 SciComm' : '👤 Visitor'}</span></div>
-                      <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>@{s.username} • {s.email || 'No email'} • {s.department || 'No department'}</div>
+                      <div style={{ fontWeight: 600, fontSize: '14px' }}>{s.name} <span className={`scicomm-admin-role-tag role-${s.role}`} style={{ background: s.role === 'master' ? 'linear-gradient(135deg, #fbbf24, #f59e0b)' : s.role === 'admin' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : s.role === 'scicomm' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : '#e2e8f0', color: s.role === 'scientist' ? '#475569' : 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '10px', fontWeight: 700, marginLeft: '4px' }}>{s.role === 'master' ? '👑 Master' : s.role === 'admin' ? '🛡️ Admin' : s.role === 'scicomm' ? '🔬 SciComm' : '👤 Visitor'}</span></div>
+                      <div className="scicomm-admin-user-subtext" style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>@{s.username} • {s.email || 'No email'} • {s.department || 'No department'}</div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                     {s.role !== 'master' && (
                       <>
                         {isMaster && (
-                          <select value={s.role} onChange={e => handlePromote(s.id, e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', border: '1px solid #e0dfdc', borderRadius: '8px', cursor: 'pointer', background: 'white' }}>
+                          <select className="scicomm-admin-select" value={s.role} onChange={e => handlePromote(s.id, e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', border: '1px solid #e0dfdc', borderRadius: '8px', cursor: 'pointer', background: 'white' }}>
                             <option value="scientist">👤 Visitor</option>
                             <option value="scicomm">🔬 SciComm Team</option>
                             <option value="admin">🛡️ Admin</option>
                           </select>
                         )}
                         {!isMaster && s.role === 'scientist' && <button onClick={() => handlePromote(s.id, 'scicomm')} className="scicomm-btn-secondary" style={{ padding: '4px 10px', fontSize: '11px' }}>Promote to SciComm</button>}
-                        <button onClick={async () => {
+                        <button className="scicomm-admin-reset-pwd-btn" onClick={async () => {
                           const bcrypt = (await import('bcryptjs')).default;
                           const newPass = window.prompt('Enter new password for ' + s.name);
                           if (newPass && newPass.length >= 4) {

@@ -813,6 +813,7 @@ export default function SciCommFeed() {
 
                   {/* Reply toggle */}
                   <button 
+                    className="scicomm-comment-reply-btn"
                     onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} 
                     style={{ 
                       background: 'none', border: 'none', cursor: 'pointer', 
@@ -853,11 +854,11 @@ export default function SciCommFeed() {
               {/* Reply Input - uses same flat structure as main comment input */}
               {isReplying && (
                 <div style={{ marginTop: '8px' }}>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', position: 'relative' }}>
+                  <div className="scicomm-comment-input-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', position: 'relative' }}>
                     {renderAvatar(getAuthor(user.id), 24)}
                     <div style={{ flex: 1, position: 'relative' }}>
                       <MentionDropdown inputKey={replyKey} />
-                      <textarea dir="auto" placeholder={`Replying to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} 
+                      <textarea className="scicomm-comment-textarea" dir="auto" placeholder={`Replying to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} 
                         onChange={e => {
                           handleCommentInput(replyKey, e.target.value);
                           e.target.style.height = 'auto';
@@ -869,7 +870,7 @@ export default function SciCommFeed() {
                         style={{ width: '100%', border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit', overflow: 'hidden' }} autoFocus />
                     </div>
                     <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                      <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}>😀</button>
+                      <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}>😀</button>
                       {showEmojiPicker === replyKey && (
                         <EmojiPicker
                           onSelect={(emoji) => setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+emoji}))}
@@ -878,8 +879,8 @@ export default function SciCommFeed() {
                         />
                       )}
                     </div>
-                    <label style={{ cursor: 'pointer', padding: '4px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
-                    <button className="scicomm-btn-primary" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '24px', height: '40px' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
+                    <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px' }}>📷<input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                    <button className="scicomm-btn-primary scicomm-comment-send-btn" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '24px', height: '40px' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
                     <button onClick={() => { setReplyTo(null); setCommentText(prev => ({...prev, [replyKey]: ''})); setCommentImage(prev => ({...prev, [replyKey]: null})); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '18px' }}>&times;</button>
                   </div>
                   {commentImage[replyKey] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>📎 {commentImage[replyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
@@ -949,78 +950,6 @@ export default function SciCommFeed() {
           </div>
         </div>
         <button onClick={() => window.dispatchEvent(new CustomEvent('show-changelog'))} style={{ marginTop: '8px', width: '100%', padding: '10px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.2s' }} onMouseOver={e => e.currentTarget.style.background='#dc2626'} onMouseOut={e => e.currentTarget.style.background='#ef4444'}><span className="emoji">🚀</span> What's New in v5.0.2</button>
-        
-        {/* PREMIUM SIDEBAR APP PROMOTION CARD */}
-        <div 
-          className="scicomm-card" 
-          onClick={() => {
-            navigate('/download');
-          }}
-          style={{ 
-            marginTop: '8px', 
-            padding: '24px 20px', 
-            background: isDarkMode ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)', 
-            border: `1px solid ${isDarkMode ? '#334155' : '#e2e8f0'}`,
-            borderRadius: '20px',
-            position: 'relative',
-            overflow: 'hidden',
-            cursor: 'pointer'
-          }}
-        >
-          {/* Subtle Background Icon */}
-          <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.05, transform: 'rotate(15deg)', pointerEvents: 'none' }}>
-            <Smartphone size={80} color={isDarkMode ? 'white' : 'black'} />
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '18px', position: 'relative', zIndex: 1 }}>
-            <div style={{ 
-              background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', 
-              padding: '10px', 
-              borderRadius: '12px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-            }}>
-              <Smartphone size={22} color="white" />
-            </div>
-            <div>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: isDarkMode ? '#f8fafc' : '#0f172a', letterSpacing: '-0.3px' }}>SUPERBUGS HUB</h3>
-              <p style={{ margin: 0, fontSize: '11px', color: isDarkMode ? '#3b82f6' : '#2563eb', fontWeight: 800 }}>v5.0.2 (BETA EARLY ACCESS)</p>
-            </div>
-          </div>
-          
-          <p style={{ margin: '0 0 20px', fontSize: '12px', color: isDarkMode ? '#94a3b8' : '#64748b', lineHeight: '1.6', fontWeight: 500, position: 'relative', zIndex: 1 }}>
-            Experience the future of scientific communication with our native application. Designed for speed, security, and seamless workflow integration.
-          </p>
-          
-          <div
-            style={{ 
-              width: '100%', 
-              padding: '14px', 
-              borderRadius: '14px', 
-              border: 'none', 
-              background: 'linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)', 
-              color: 'white', 
-              fontWeight: 900, 
-              fontSize: '13px', 
-              cursor: 'pointer',
-              boxShadow: '0 8px 20px rgba(37, 99, 235, 0.3)',
-              transition: 'all 0.3s ease',
-              display: 'block',
-              textDecoration: 'none',
-              textAlign: 'center',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              position: 'relative',
-              zIndex: 1
-            }}
-            onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 99, 235, 0.4)'; }}
-            onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(37, 99, 235, 0.3)'; }}
-          >
-            Download App
-          </div>
-        </div>
       </div>
 
       {/* Main Feed */}
@@ -1602,9 +1531,9 @@ export default function SciCommFeed() {
                 <div style={{ padding: '8px 16px 16px', borderTop: '1px solid #e0dfdc' }}>
                   {renderCommentTree(post, post.comments || [], [])}
                   {/* Main comment input */}
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center', position: 'relative' }}>
+                  <div className="scicomm-comment-input-row" style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center', position: 'relative' }}>
                     <MentionDropdown inputKey={post.id} />
-                    <textarea dir="auto" placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} 
+                    <textarea className="scicomm-comment-textarea" dir="auto" placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} 
                       onChange={e => {
                         handleCommentInput(post.id, e.target.value);
                         e.target.style.height = 'auto';
@@ -1615,7 +1544,7 @@ export default function SciCommFeed() {
                       rows={1}
                       style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit', overflow: 'hidden' }} />
                     <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                      <button onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
+                      <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
                       {showEmojiPicker === post.id && (
                         <EmojiPicker
                           onSelect={(emoji) => setCommentText(prev => ({...prev, [post.id]: (prev[post.id]||'')+emoji}))}
@@ -1624,8 +1553,8 @@ export default function SciCommFeed() {
                         />
                       )}
                     </div>
-                    <label style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
-                    <button className="scicomm-btn-primary" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '24px', height: '40px' }} onClick={() => handleAddComment(post)}><Send className="icon" size={16} /></button>
+                    <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                    <button className="scicomm-btn-primary scicomm-comment-send-btn" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'flex-end', borderRadius: '24px', height: '40px' }} onClick={() => handleAddComment(post)}><Send className="icon" size={16} /></button>
                   </div>
                   {commentImage[post.id] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}><span className="emoji">📎</span> {commentImage[post.id].name} <button onClick={() => setCommentImage(prev => ({...prev, [post.id]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
                 </div>

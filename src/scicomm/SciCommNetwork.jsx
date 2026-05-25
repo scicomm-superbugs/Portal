@@ -205,9 +205,9 @@ export default function SciCommNetwork() {
                   <Link to={`/member/${m.id}`} style={{ textDecoration: 'none', color: 'inherit' }}><div style={{ fontWeight: 600, fontSize: '14px' }}>{m.name}</div></Link>
                   <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>{m.department || 'Member'}</div>
                 </div>
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  <button className="scicomm-btn-primary" onClick={() => handleStartChat(m.id)} style={{ padding: '6px 12px', fontSize: '12px' }}><MessageCircle size={14} /></button>
-                  {conn && <button onClick={() => handleRemoveConnection(conn.id)} style={{ padding: '6px 12px', fontSize: '12px', border: '1px solid #ef4444', borderRadius: '24px', background: 'transparent', color: '#ef4444', cursor: 'pointer' }}><UserX size={14} /></button>}
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <button className="scicomm-network-chat-btn" onClick={() => handleStartChat(m.id)} title="Chat"><MessageCircle size={15} /></button>
+                  {conn && <button className="scicomm-network-remove-btn" onClick={() => handleRemoveConnection(conn.id)} title="Remove Connection"><UserX size={15} /></button>}
                 </div>
               </div>
               );

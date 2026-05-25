@@ -270,6 +270,59 @@
   box-shadow: inset 0 0 0 1px #1d4ed8;
 }
 
+/* Custom Network Action Buttons styling (light mode) */
+.scicomm-network-chat-btn {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #1d4ed8 !important;
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.scicomm-network-chat-btn:hover {
+  background-color: #dbeafe !important;
+  color: #1e40af !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(29, 78, 216, 0.18) !important;
+}
+
+.scicomm-network-chat-btn svg {
+  stroke: #1d4ed8 !important;
+}
+
+.scicomm-network-remove-btn {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #ef4444 !important;
+  background-color: transparent !important;
+  color: #ef4444 !important;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.scicomm-network-remove-btn:hover {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  color: #dc2626 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.15) !important;
+}
+
+.scicomm-network-remove-btn svg {
+  stroke: #ef4444 !important;
+}
+
 /* ===== FEED ACTIONS ===== */
 .scicomm-feed-action {
   display: flex;
@@ -305,10 +358,107 @@
   font-size: 14px;
   cursor: pointer;
   transition: all 0.15s;
+  border-radius: 8px !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .scicomm-post-btn:hover {
   background: #f3f2ef;
+  border-radius: 8px !important;
+}
+
+/* Custom Comment reply links & inputs (Light/Dark Mode Cohesive styling) */
+.scicomm-comment-reply-btn {
+  color: rgba(0, 0, 0, 0.45) !important;
+  transition: color 0.15s ease-in-out !important;
+}
+
+.scicomm-comment-reply-btn:hover {
+  color: #1d4ed8 !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-reply-btn {
+  color: #94a3b8 !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-reply-btn:hover {
+  color: #38bdf8 !important;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.35) !important;
+}
+
+.scicomm-comment-input-row {
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+.scicomm-comment-textarea {
+  flex: 1 !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  outline: none !important;
+  resize: none !important;
+  min-height: 40px !important;
+  padding: 10px 14px !important;
+  border-radius: 24px !important;
+  background-color: #f3f2ef !important;
+  background: #f3f2ef !important;
+  color: #0f172a !important;
+  border: 1px solid #e0dfdc !important;
+  transition: all 0.2s ease-in-out !important;
+  overflow: hidden !important;
+}
+
+.scicomm-comment-textarea:focus {
+  border-color: #1d4ed8 !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.12) !important;
+}
+
+/* Translucent Emoji & Camera buttons inside Comment area */
+.scicomm-comment-emoji-btn,
+.scicomm-comment-image-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  padding: 0 !important;
+  font-size: 16px !important;
+}
+
+.scicomm-comment-emoji-btn:hover,
+.scicomm-comment-image-btn:hover {
+  background-color: #e2e8f0 !important;
+  background: #e2e8f0 !important;
+  transform: scale(1.08) !important;
+}
+
+/* Round Send Button in comment row */
+.scicomm-comment-send-btn {
+  width: 38px !important;
+  height: 38px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 4px 10px rgba(29, 78, 216, 0.15) !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.scicomm-comment-send-btn:hover {
+  transform: scale(1.05) translateY(-1px) !important;
+  box-shadow: 0 6px 14px rgba(29, 78, 216, 0.25) !important;
 }
 
 .scicomm-post-btn.liked {
@@ -1056,6 +1206,53 @@
   transform: none !important;
 }
 
+/* Custom Network Action Buttons styling (dark mode) */
+.scicomm-dark-mode .scicomm-network-chat-btn {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  border: 1px solid rgba(96, 165, 250, 0.45) !important;
+  color: #60a5fa !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+.scicomm-dark-mode .scicomm-network-chat-btn svg {
+  stroke: #60a5fa !important;
+}
+
+.scicomm-dark-mode .scicomm-network-chat-btn:hover {
+  background-color: #1e293b !important;
+  background: #1e293b !important;
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.45) !important;
+  transform: translateY(-1px) !important;
+}
+
+.scicomm-dark-mode .scicomm-network-chat-btn:hover svg {
+  stroke: #93c5fd !important;
+}
+
+.scicomm-dark-mode .scicomm-network-remove-btn {
+  background-color: transparent !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  color: #fca5a5 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+.scicomm-dark-mode .scicomm-network-remove-btn svg {
+  stroke: #fca5a5 !important;
+}
+
+.scicomm-dark-mode .scicomm-network-remove-btn:hover {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.35) !important;
+  transform: translateY(-1px) !important;
+}
+
+.scicomm-dark-mode .scicomm-network-remove-btn:hover svg {
+  stroke: #fecaca !important;
+}
+
 .scicomm-dark-mode button:disabled,
 .scicomm-dark-mode button[disabled],
 .scicomm-dark-mode div[style*="max-height" i] button:disabled,
@@ -1787,6 +1984,73 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   color: #cbd5e1 !important;
 }
 
+/* Custom Admin User Management List Dark Mode Enhancements */
+.scicomm-dark-mode .scicomm-admin-user-subtext {
+  color: #94a3b8 !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-role-tag {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-role-tag.role-scientist {
+  background: rgba(255, 255, 255, 0.08) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-role-tag.role-scicomm {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.2)) !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  color: #fca5a5 !important;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-role-tag.role-admin {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.2)) !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+  color: #93c5fd !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-role-tag.role-master {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.25)) !important;
+  border: 1px solid rgba(251, 191, 36, 0.4) !important;
+  color: #fde047 !important;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.2) !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-select {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-select option {
+  background-color: #0c0f16 !important;
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-reset-pwd-btn {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  background: rgba(245, 158, 11, 0.1) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: #fbbf24 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-reset-pwd-btn:hover {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  background: rgba(245, 158, 11, 0.2) !important;
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.35) !important;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
 .scicomm-dark-mode .scicomm-admin-input {
   background-color: #0c0f16 !important;
   background: #0c0f16 !important;
@@ -1906,12 +2170,47 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 .scicomm-dark-mode .scicomm-post-btn,
 .scicomm-dark-mode .scicomm-feed-action {
   color: #cbd5e1 !important;
+  border-radius: 8px !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .scicomm-dark-mode .scicomm-post-btn:hover,
 .scicomm-dark-mode .scicomm-feed-action:hover {
   background-color: rgba(255, 255, 255, 0.08) !important;
   background: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
+  border-radius: 8px !important;
+}
+
+/* Dark mode comment textareas */
+.scicomm-dark-mode .scicomm-comment-textarea {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-textarea:focus {
+  border-color: #38bdf8 !important;
+  background-color: #0e131f !important;
+  background: #0e131f !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-emoji-btn:hover,
+.scicomm-dark-mode .scicomm-comment-image-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  transform: scale(1.08) !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-send-btn {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-send-btn:hover {
+  transform: scale(1.05) translateY(-1px) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4) !important;
 }
 
 /* 3. Dropdown Yellow/Gold Link Buttons Override (e.g. Admin Dashboard & View Leaderboard) */
@@ -2087,6 +2386,41 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 }
 
 /* 6. Header Download App Button */
+.scicomm-download-btn-wrapper,
+.scicomm-download-btn-wrapper:visited,
+.scicomm-download-btn-wrapper:hover,
+.scicomm-download-btn-wrapper:focus,
+.scicomm-download-btn-wrapper:active,
+.scicomm-download-btn-wrapper.active {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  position: relative !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  min-width: unset !important;
+  height: 100% !important;
+  padding: 0 !important;
+}
+
+.scicomm-dark-mode .scicomm-download-btn-wrapper,
+.scicomm-dark-mode .scicomm-download-btn-wrapper:visited,
+.scicomm-dark-mode .scicomm-download-btn-wrapper:hover,
+.scicomm-dark-mode .scicomm-download-btn-wrapper:focus,
+.scicomm-dark-mode .scicomm-download-btn-wrapper:active,
+.scicomm-dark-mode .scicomm-download-btn-wrapper.active {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .scicomm-download-btn-inner {
   display: flex;
   align-items: center;
@@ -2458,7 +2792,11 @@ html.no-pull-to-refresh body,
 .scicomm-btn-primary,
 .scicomm-btn-primary:hover,
 .scicomm-btn-secondary,
-.scicomm-btn-secondary:hover {
+.scicomm-btn-secondary:hover,
+.scicomm-post-btn,
+.scicomm-post-btn:hover,
+.scicomm-post-btn:focus,
+.scicomm-post-btn:active {
   text-decoration: none !important;
   outline: none !important;
 }

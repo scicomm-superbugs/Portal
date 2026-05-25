@@ -357,7 +357,7 @@ export default function SciCommLayout() {
               </div>
             </div>
 
-            <Link to="/download" className={`scicomm-nav-item scicomm-download-btn-wrapper ${isActive('/download') ? 'active' : ''}`} style={{ position: 'relative', marginLeft: '8px' }}>
+            <Link to="/download" className={`scicomm-download-btn-wrapper ${isActive('/download') ? 'active' : ''}`} style={{ position: 'relative', marginLeft: '8px' }}>
               <div className="scicomm-download-btn-inner">
                 <Smartphone className="icon" size={16} />
                 <span className="nav-text">Download App</span>

@@ -272,6 +272,7 @@ export default function SciCommSinglePost() {
                   })}
                   {/* Reply toggle */}
                   <button 
+                    className="scicomm-comment-reply-btn"
                     onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} 
                     style={{ 
                       background: 'none', border: 'none', cursor: 'pointer', 
@@ -297,9 +298,9 @@ export default function SciCommSinglePost() {
               {/* Reply Input - uses same flat structure as main comment input */}
               {isReplying && (
                 <div style={{ marginTop: '8px' }}>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', position: 'relative' }}>
+                  <div className="scicomm-comment-input-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', position: 'relative' }}>
                     {renderAvatar(getAuthor(user.id), 24)}
-                    <textarea dir="auto" placeholder={`Replying to ${c.authorName}...`} value={commentText[replyKey] || ''} 
+                    <textarea className="scicomm-comment-textarea" dir="auto" placeholder={`Replying to ${c.authorName}...`} value={commentText[replyKey] || ''} 
                       onChange={e => {
                         setCommentText({...commentText, [replyKey]: e.target.value});
                         e.target.style.height = 'auto';
@@ -308,7 +309,7 @@ export default function SciCommSinglePost() {
                       rows={1}
                       style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit', overflow: 'hidden' }} autoFocus />
                     <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                      <button onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
+                      <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
                       {showEmojiPicker === replyKey && (
                         <EmojiPicker
                           onSelect={(emoji) => setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+emoji}))}
@@ -317,8 +318,8 @@ export default function SciCommSinglePost() {
                         />
                       )}
                     </div>
-                    <label style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
-                    <button className="scicomm-btn-primary" style={{ padding: '4px 12px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
+                    <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                    <button className="scicomm-btn-primary scicomm-comment-send-btn" style={{ padding: '4px 12px', fontSize: '11px', borderRadius: '16px' }} onClick={() => handleAddComment(post)}>Reply</button>
                     <button onClick={() => { setReplyTo(null); setCommentText(prev => ({...prev, [replyKey]: ''})); setCommentImage(prev => ({...prev, [replyKey]: null})); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={16} /></button>
                   </div>
                   {commentImage[replyKey] && <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}><span className="emoji">📎</span> {commentImage[replyKey].name} <button onClick={() => setCommentImage(prev => ({...prev, [replyKey]: null}))} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '11px' }}>✕ Remove</button></div>}
@@ -399,9 +400,9 @@ export default function SciCommSinglePost() {
         </div>
 
         <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '0 0 16px 16px' }}>
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center', position: 'relative' }}>
+          <div className="scicomm-comment-input-row" style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center', position: 'relative' }}>
             {renderAvatar(getAuthor(user.id), 32)}
-            <textarea dir="auto" placeholder="Write a comment..." value={commentText[post.id] || ''} 
+            <textarea className="scicomm-comment-textarea" dir="auto" placeholder="Write a comment..." value={commentText[post.id] || ''} 
               onChange={e => {
                 setCommentText({...commentText, [post.id]: e.target.value});
                 e.target.style.height = 'auto';
@@ -410,7 +411,7 @@ export default function SciCommSinglePost() {
               rows={1}
               style={{ flex: 1, border: '1px solid #e0dfdc', borderRadius: '24px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', minHeight: '40px', fontFamily: 'inherit', overflow: 'hidden' }} />
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <button onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
+              <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
               {showEmojiPicker === post.id && (
                 <EmojiPicker
                   onSelect={(emoji) => setCommentText(prev => ({...prev, [post.id]: (prev[post.id]||'')+emoji}))}
@@ -419,8 +420,8 @@ export default function SciCommSinglePost() {
                 />
               )}
             </div>
-            <label style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
-            <button className="scicomm-btn-primary" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'center', borderRadius: '24px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
+            <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+            <button className="scicomm-btn-primary scicomm-comment-send-btn" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'center', borderRadius: '24px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
           </div>
           {commentImage[post.id] && (
             <div style={{ fontSize: '11px', color: '#666', marginTop: '-8px', marginBottom: '12px', paddingLeft: '40px' }}>
