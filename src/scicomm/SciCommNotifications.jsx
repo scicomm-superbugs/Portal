@@ -391,11 +391,8 @@ export default function SciCommNotifications() {
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
-            <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: isUnread ? 700 : 500, color: isUnread ? '#0f172a' : '#334155', lineHeight: '1.4', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: isUnread ? 700 : 500, color: isUnread ? '#0f172a' : '#334155', lineHeight: '1.4' }}>
               {n.title}
-              {n.senderId && (
-                <SciCommVerificationBadge userId={n.senderId} scientists={scientists} size={14} />
-              )}
             </p>
           </div>
           <p style={{ margin: 0, fontSize: '14px', color: isUnread ? '#3b82f6' : '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: isUnread ? 600 : 400 }}>

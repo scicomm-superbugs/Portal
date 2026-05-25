@@ -398,7 +398,7 @@ export default function SciCommSinglePost() {
                 <SciCommVerificationBadge role={author?.role} size={16} style={{ marginLeft: '4px' }} showTooltip={true} />
               </div>
               <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px' }}>{author?.department || 'Member'}</div>
-              <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '12px' }}>{timeAgo(post.createdAt)} • 🌐{post.recognized && ' ⭐ Master Recognized'}</div>
+              <div className="scicomm-post-meta" style={{ fontSize: '12px' }}>{timeAgo(post.createdAt)} • 🌐{post.recognized && ' ⭐ Master Recognized'}</div>
             </div>
             {(isAdmin || String(post.authorId) === String(user.id)) && (
               <div style={{ position: 'relative' }}>

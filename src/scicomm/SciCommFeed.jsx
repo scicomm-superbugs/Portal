@@ -1362,7 +1362,7 @@ export default function SciCommFeed() {
                       <SciCommVerificationBadge role={author?.role} showTooltip={true} />
                     </div>
                     <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px' }}>{author?.department || 'Member'}</div>
-                    <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>
+                    <div className="scicomm-post-meta" style={{ fontSize: '11px' }}>
                       <Link to={`/view-post/${post.id}`} style={{ color: 'inherit', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.textDecoration='underline'} onMouseLeave={e => e.currentTarget.style.textDecoration='none'}>
                         {timeAgo(post.createdAt)}
                       </Link> • <span className="emoji">🌐</span>{post.recognized && <span> <span className="emoji">⭐</span> Master Recognized</span>}{post.editedAt && <span> • <span className="emoji">✏️</span> edited</span>}

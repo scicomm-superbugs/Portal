@@ -2433,7 +2433,7 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   border-radius: 100px !important;
   border: 1px solid #cce3ff !important;
   box-shadow: 0 2px 4px rgba(0, 119, 181, 0.1) !important;
-  transition: all 0.2s ease !important;
+  transition: none !important;
 }
 
 .scicomm-download-btn-inner .icon,
@@ -2448,8 +2448,8 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 .scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner {
   background: linear-gradient(135deg, #e0f0ff 0%, #d0e8ff 100%) !important;
   border-color: #b3d7ff !important;
-  box-shadow: 0 4px 10px rgba(0, 119, 181, 0.2) !important;
-  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px rgba(0, 119, 181, 0.1) !important;
+  transform: none !important;
 }
 
 .scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner .icon,
@@ -2474,15 +2474,15 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 /* Dark mode hover state */
 .scicomm-dark-mode .scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner {
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
-  border-color: rgba(56, 189, 248, 0.6) !important;
-  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2) !important;
-  transform: translateY(-1px) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  transform: none !important;
 }
 
 .scicomm-dark-mode .scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner .icon,
 .scicomm-dark-mode .scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner .nav-text {
-  color: #7dd3fc !important;
-  stroke: #7dd3fc !important;
+  color: #38bdf8 !important;
+  stroke: #38bdf8 !important;
 }
 
 
@@ -4189,6 +4189,26 @@ html.no-pull-to-refresh body,
   top: auto !important;
   bottom: 100% !important;
   border-color: transparent transparent rgba(15, 23, 42, 0.96) transparent !important;
+}
+
+/* Post Meta and Global Muted Text Contrast in Dark Mode */
+.scicomm-post-meta {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+.scicomm-dark-mode .scicomm-post-meta {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Global fallback for any inline rgba(0,0,0,0.x) styling in dark mode */
+.scicomm-dark-mode div[style*="rgba(0,0,0"],
+.scicomm-dark-mode div[style*="rgba(0, 0, 0"],
+.scicomm-dark-mode span[style*="rgba(0,0,0"],
+.scicomm-dark-mode span[style*="rgba(0, 0, 0"],
+.scicomm-dark-mode p[style*="rgba(0,0,0"],
+.scicomm-dark-mode p[style*="rgba(0, 0, 0"],
+.scicomm-dark-mode a[style*="rgba(0,0,0"],
+.scicomm-dark-mode a[style*="rgba(0, 0, 0"] {
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
 
