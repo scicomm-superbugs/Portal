@@ -768,7 +768,7 @@ export default function SciCommFeed() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div className={bubbleClass} style={{ position: 'relative' }}>
                 <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: path.length === 0 ? '13px' : '12px' }}>{c.authorName}</strong></Link>
-                <SciCommVerificationBadge userId={c.authorId} scientists={scientists} size={11} style={{ marginLeft: '4px' }} />
+                <SciCommVerificationBadge userId={c.authorId} scientists={scientists} size={11} style={{ marginLeft: '4px' }} showTooltip={true} />
                 {isDeleted ? (
                   <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '18px' }}>🛡️</span>
@@ -1359,7 +1359,7 @@ export default function SciCommFeed() {
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                       <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>{post.authorName}</h4></Link>
-                      <SciCommVerificationBadge role={author?.role} />
+                      <SciCommVerificationBadge role={author?.role} showTooltip={true} />
                     </div>
                     <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px' }}>{author?.department || 'Member'}</div>
                     <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '11px' }}>
@@ -1679,7 +1679,7 @@ export default function SciCommFeed() {
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <div style={{ fontWeight: 600, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       {s.name}
-                      <SciCommVerificationBadge role={s.role} />
+                      <SciCommVerificationBadge role={s.role} showTooltip={true} />
                     </div>
                     <div style={{ color: level.color, fontSize: '11px', fontWeight: 700 }}>
                       Lv. {level.level} • {score === Infinity ? 'Infinity' : score} pts

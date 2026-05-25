@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function SciCommVerificationBadge({ role, userId, scientists = [], size = 14, style = {}, tooltipPosition = 'top' }) {
+export default function SciCommVerificationBadge({ role, userId, scientists = [], size = 14, style = {}, tooltipPosition = 'top', showTooltip = false }) {
   // Resolve role if userId and scientists are provided
   let userRole = role;
   if (!userRole && userId && scientists.length > 0) {
@@ -34,10 +34,12 @@ export default function SciCommVerificationBadge({ role, userId, scientists = []
             strokeLinejoin="round"
           />
         </svg>
-        <span className="scicomm-verify-tooltip">
-          <strong>🏆 Verified Administrator</strong>
-          This verified badge is for Administrators and Platform Masters. You can earn it by being promoted to Admin or Master by the platform owners!
-        </span>
+        {showTooltip && (
+          <span className="scicomm-verify-tooltip">
+            <strong>🏆 Verified Administrator</strong>
+            This verified badge is for Administrators and Platform Masters. You can earn it by being promoted to Admin or Master by the platform owners!
+          </span>
+        )}
       </span>
     );
   }
@@ -62,10 +64,12 @@ export default function SciCommVerificationBadge({ role, userId, scientists = []
           strokeLinejoin="round"
         />
       </svg>
-      <span className="scicomm-verify-tooltip">
-        <strong>🔬 Verified SciComm Member</strong>
-        This verified badge is for the Science Communication Team. You can earn it by applying and joining the official Science Communication Team!
-      </span>
+      {showTooltip && (
+        <span className="scicomm-verify-tooltip">
+          <strong>🔬 Verified SciComm Member</strong>
+          This verified badge is for the Science Communication Team. You can earn it by applying and joining the official Science Communication Team!
+        </span>
+      )}
     </span>
   );
 }

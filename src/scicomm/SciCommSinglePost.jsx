@@ -237,7 +237,7 @@ export default function SciCommSinglePost() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div className={bubbleClass} style={{ position: 'relative' }}>
                 <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '13px' }}>{c.authorName}</strong></Link>
-                <SciCommVerificationBadge userId={c.authorId} scientists={scientists} size={11} style={{ marginLeft: '4px' }} />
+                <SciCommVerificationBadge userId={c.authorId} scientists={scientists} size={11} style={{ marginLeft: '4px' }} showTooltip={true} />
                 {isDeleted ? (
                   <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '18px' }}>🛡️</span>
@@ -395,7 +395,7 @@ export default function SciCommSinglePost() {
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                 <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>{post.authorName}</h4></Link>
-                <SciCommVerificationBadge role={author?.role} size={16} style={{ marginLeft: '4px' }} />
+                <SciCommVerificationBadge role={author?.role} size={16} style={{ marginLeft: '4px' }} showTooltip={true} />
               </div>
               <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px' }}>{author?.department || 'Member'}</div>
               <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '12px' }}>{timeAgo(post.createdAt)} • 🌐{post.recognized && ' ⭐ Master Recognized'}</div>
