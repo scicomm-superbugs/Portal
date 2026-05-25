@@ -561,7 +561,12 @@ export default function SciCommChat() {
                       ) : (
                         <div className="group-icon"><Users size={24} color="white" /></div>
                       )
-                    ) : renderAvatar(other, 48)}
+                    ) : (
+                      <>
+                        {renderAvatar(other, 48)}
+                        <div className="sc-avatar-status"></div>
+                      </>
+                    )}
                     {unread > 0 && <div className="sc-chat-room-unread">{unread}</div>}
                   </div>
                   <div className="sc-chat-room-info">
