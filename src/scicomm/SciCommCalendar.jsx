@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLiveCollection, db } from '../db';
 import { useAuth } from '../context/AuthContext';
 import { ChevronLeft, ChevronRight, Plus, User as UserIcon, X, Calendar as CalIcon } from 'lucide-react';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommCalendar() {
   const { user } = useAuth();
@@ -77,6 +78,9 @@ export default function SciCommCalendar() {
               <option key={s.id} value={s.id}>{s.name} ({s.department || 'Member'})</option>
             ))}
           </select>
+          {targetUser && (
+            <SciCommVerificationBadge role={targetUser.role} size={16} style={{ marginLeft: '4px' }} />
+          )}
         </div>
       )}
 

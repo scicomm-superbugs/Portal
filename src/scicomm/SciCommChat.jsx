@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { AVATARS, timeAgo } from './scicommConstants';
 import ImageCropperModal from './ImageCropperModal';
 import EmojiPicker from '../components/EmojiPicker';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommChat() {
   const { user } = useAuth();
@@ -573,7 +574,10 @@ export default function SciCommChat() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <div style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{getRoomTitle(r)}</div>
+                      <div style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        {getRoomTitle(r)}
+                        {r.type !== 'group' && <SciCommVerificationBadge role={other?.role} />}
+                      </div>
                       <div style={{ fontSize: '11px', color: '#94a3b8' }}>{timeAgo(r.lastMessageAt)}</div>
                     </div>
                     <div style={{ fontSize: '13px', color: unread > 0 ? '#1e293b' : '#64748b', fontWeight: unread > 0 ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -588,7 +592,7 @@ export default function SciCommChat() {
               <div key={r.id} onClick={() => { setSelectedRoom(r.id); setMobileSidebarOpen(false); }} style={{ display: 'flex', gap: '12px', padding: '12px', borderRadius: '16px', cursor: 'pointer', background: selectedRoom === r.id ? '#fef2f2' : 'transparent' }}>
                 {renderAvatar(getRoomOther(r), 48)}
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: '15px' }}>{getRoomTitle(r)}</div>
+                  <div style={{ fontWeight: 700, fontSize: '15px', display: 'flex', alignItems: 'center', gap: '4px' }}>{getRoomTitle(r)} <SciCommVerificationBadge role={getRoomOther(r)?.role} /></div>
                   <div style={{ fontSize: '13px', color: '#dc2626', fontWeight: 600 }}>New Message Request</div>
                 </div>
               </div>
@@ -614,7 +618,7 @@ export default function SciCommChat() {
                 <div key={u.id} onClick={() => createPrivateRoom(u.id, u.name)} style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '12px 16px', borderRadius: '16px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background='#f8fafc'} onMouseLeave={e => e.currentTarget.style.background='transparent'}>
                   {renderAvatar(u, 44)}
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: '15px' }}>{u.name}</div>
+                    <div style={{ fontWeight: 700, fontSize: '15px', display: 'flex', alignItems: 'center', gap: '4px' }}>{u.name} <SciCommVerificationBadge role={u.role} /></div>
                     <div style={{ fontSize: '12px', color: '#64748b' }}>{u.department || 'Member'}</div>
                   </div>
                 </div>
@@ -657,7 +661,7 @@ export default function SciCommChat() {
                   <label key={u.id} style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '10px 16px', borderRadius: '16px', cursor: 'pointer', background: selectedMembers.includes(u.id) ? '#f0f7ff' : 'transparent' }}>
                     <input type="checkbox" checked={selectedMembers.includes(u.id)} onChange={e => setSelectedMembers(e.target.checked ? [...selectedMembers, u.id] : selectedMembers.filter(id => id !== u.id))} style={{ width: 18, height: 18, borderRadius: '6px' }} />
                     {renderAvatar(u, 36)}
-                    <span style={{ fontWeight: 600, fontSize: '14px' }}>{u.name}</span>
+                    <span style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>{u.name} <SciCommVerificationBadge role={u.role} /></span>
                   </label>
                 ))}
               </div>
@@ -693,7 +697,10 @@ export default function SciCommChat() {
                   )
                 ) : renderAvatar(getRoomOther(activeRoom), 44)}
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{getRoomTitle(activeRoom)}</div>
+                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {getRoomTitle(activeRoom)}
+                    {activeRoom.type !== 'group' && <SciCommVerificationBadge role={getRoomOther(activeRoom)?.role} />}
+                  </div>
                   <div style={{ fontSize: '11px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{activeRoom.type === 'group' ? `${activeRoom.members?.length} members` : (getRoomOther(activeRoom)?.department || 'Member')}</div>
                 </div>
               </div>
@@ -755,7 +762,12 @@ export default function SciCommChat() {
                       }
                     }}
                   >
-                    {isFirstInGroup && !isMe && activeRoom.type === 'group' && <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', marginLeft: '16px', marginBottom: '2px' }}>{m.senderName}</div>}
+                    {isFirstInGroup && !isMe && activeRoom.type === 'group' && (
+                      <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', marginLeft: '16px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        {m.senderName}
+                        <SciCommVerificationBadge userId={m.senderId} scientists={scientists} />
+                      </div>
+                    )}
                     <div 
                       className={`chat-bubble ${isMe ? 'chat-bubble-me' : 'chat-bubble-other'}`}
                       style={{ 
@@ -1024,7 +1036,12 @@ export default function SciCommChat() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           {renderAvatar(m, 36)}
                           <div>
-                            <div style={{ fontSize: '14px', fontWeight: 700 }}>{m?.name} {isMe && '(You)'} {isMemberAdmin && <span style={{fontSize: '10px', background: '#1d4ed8', color: 'white', padding: '2px 6px', borderRadius: '8px', marginLeft: '4px'}}>Admin</span>}</div>
+                            <div style={{ fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              {m?.name}
+                              <SciCommVerificationBadge role={m?.role} />
+                              {isMe && '(You)'}
+                              {isMemberAdmin && <span style={{fontSize: '10px', background: '#1d4ed8', color: 'white', padding: '2px 6px', borderRadius: '8px', marginLeft: '4px'}}>Admin</span>}
+                            </div>
                             <div style={{ fontSize: '11px', color: '#64748b' }}>{m?.department || 'Member'}</div>
                           </div>
                         </div>

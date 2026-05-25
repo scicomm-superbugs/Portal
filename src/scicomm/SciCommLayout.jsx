@@ -6,6 +6,7 @@ import { safeLocalStorage } from '../utils/safeStorage';
 import { useState, useEffect, useRef } from 'react';
 import { AVATARS } from './scicommConstants';
 import '../scicomm.css';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommLayout() {
   const { user, logout, isBannerDismissed, dismissBanner } = useAuth();
@@ -337,7 +338,7 @@ export default function SciCommLayout() {
                   <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
                     {renderAvatar(44)}
                     <div>
-                      <div style={{fontWeight:600,fontSize:'14px'}}>{user.name}</div>
+                      <div style={{fontWeight:600,fontSize:'14px',display:'flex',alignItems:'center',gap:'4px'}}>{user.name} <SciCommVerificationBadge role={me?.role || user.role} /></div>
                       <div style={{fontSize:'12px',color:'rgba(0,0,0,0.6)'}}>{me?.department || 'Member'}</div>
                     </div>
                   </div>
@@ -400,7 +401,10 @@ export default function SciCommLayout() {
                 <button className="scicomm-mobile-sidebar-close" onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#666', marginTop: '-8px' }}>×</button>
               </div>
               <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <h3 className="scicomm-mobile-sidebar-name" style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700 }}>{user.name}</h3>
+                <h3 className="scicomm-mobile-sidebar-name" style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  {user.name}
+                  <SciCommVerificationBadge role={me?.role || user.role} />
+                </h3>
               </Link>
               <div className="scicomm-mobile-sidebar-dept" style={{ color: '#4b5563', fontSize: '14px', marginBottom: '4px', fontWeight: 500 }}>{me?.department || 'Member'}</div>
             </div>

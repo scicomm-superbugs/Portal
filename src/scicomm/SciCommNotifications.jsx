@@ -4,6 +4,7 @@ import { Bell, AlertTriangle, Briefcase, UserCheck, Calendar, MessageCircle, Use
 import { useEffect, useState } from 'react';
 import { timeAgo, AVATARS } from './scicommConstants';
 import { Link } from 'react-router-dom';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommNotifications() {
   const { user } = useAuth();
@@ -131,7 +132,8 @@ export default function SciCommNotifications() {
       time: s.createdAt || new Date().toISOString(), 
       id: 'p_' + s.id, 
       link: '/admin',
-      read: false
+      read: false,
+      senderId: s.id
     })),
     ...pendingConnections.map(c => ({ 
       type: 'connection', 
@@ -144,7 +146,8 @@ export default function SciCommNotifications() {
       time: c.createdAt, 
       id: 'c_' + c.id, 
       link: '/network',
-      read: false
+      read: false,
+      senderId: c.fromId
     })),
     ...upcomingMeetings.map(m => ({ 
       type: 'meeting', 
@@ -172,7 +175,8 @@ export default function SciCommNotifications() {
       link: '/leaderboard',
       read: a.read || false,
       rawId: a.id,
-      comment: a.comment
+      comment: a.comment,
+      senderId: a.userId
     })),
     ...pendingApps.map(a => ({
       type: 'application_pending',
@@ -185,7 +189,8 @@ export default function SciCommNotifications() {
       time: a.createdAt,
       id: 'app_admin_' + a.id,
       link: '/admin?tab=applications',
-      read: false
+      read: false,
+      senderId: a.userId
     })),
     ...(() => {
       const groupedGenNotifs = [];
@@ -386,8 +391,11 @@ export default function SciCommNotifications() {
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
-            <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: isUnread ? 700 : 500, color: isUnread ? '#0f172a' : '#334155', lineHeight: '1.4' }}>
+            <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: isUnread ? 700 : 500, color: isUnread ? '#0f172a' : '#334155', lineHeight: '1.4', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
               {n.title}
+              {n.senderId && (
+                <SciCommVerificationBadge userId={n.senderId} scientists={scientists} size={14} />
+              )}
             </p>
           </div>
           <p style={{ margin: 0, fontSize: '14px', color: isUnread ? '#3b82f6' : '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: isUnread ? 600 : 400 }}>

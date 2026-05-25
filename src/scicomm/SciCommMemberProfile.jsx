@@ -5,6 +5,7 @@ import { useLiveCollection, db, firestore, getCollectionName } from '../db';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { UserCircle, MessageCircle, UserPlus, UserCheck, Award, Pin, FileText, UserX } from 'lucide-react';
 import { AVATARS, calculateScore, getUnlockedTags, timeAgo, getUserLevel, AUTO_TAGS } from './scicommConstants';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 const base64ToBlob = (base64, contentType) => {
   const byteCharacters = atob(base64);
@@ -179,10 +180,7 @@ export default function SciCommMemberProfile() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <h1 style={{ margin: '0', fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
                   {member.name}
-                  {member.role === 'master' && <span className="scicomm-role-tag role-master" style={{ marginLeft: '8px', verticalAlign: 'middle' }}><span className="emoji">👑</span> Master</span>}
-                  {member.role === 'admin' && <span className="scicomm-role-tag role-admin" style={{ marginLeft: '8px', verticalAlign: 'middle' }}><span className="emoji">🛡️</span> Admin</span>}
-                  {member.role === 'scicomm' && <span className="scicomm-role-tag role-scicomm" style={{ marginLeft: '8px', verticalAlign: 'middle' }}><span className="emoji">🔬</span> SciComm</span>}
-                  {(!member.role || member.role === 'visitor' || member.role === 'scientist') && <span className="scicomm-role-tag role-visitor" style={{ marginLeft: '8px', verticalAlign: 'middle' }}><span className="emoji">👤</span> Visitor</span>}
+                  <SciCommVerificationBadge role={member.role} size={20} style={{ marginLeft: '8px' }} />
                 </h1>
                 <span className="tag" style={{ background: memberLevel.bg, color: memberLevel.color, padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 800, border: `1px solid ${memberLevel.color}40`, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   Lv. {memberLevel.level}{memberLevel.title ? ' ' + memberLevel.title : ''}

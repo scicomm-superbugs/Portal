@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { AVATARS, timeAgo, REACTIONS } from './scicommConstants';
 import EmojiPicker from '../components/EmojiPicker';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommSinglePost() {
   const { postId } = useParams();
@@ -236,6 +237,7 @@ export default function SciCommSinglePost() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div className={bubbleClass} style={{ position: 'relative' }}>
                 <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: '13px' }}>{c.authorName}</strong></Link>
+                <SciCommVerificationBadge userId={c.authorId} scientists={scientists} size={11} style={{ marginLeft: '4px' }} />
                 {isDeleted ? (
                   <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '18px' }}>🛡️</span>
@@ -393,10 +395,7 @@ export default function SciCommSinglePost() {
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                 <Link to={`/member/${post.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>{post.authorName}</h4></Link>
-                {author?.role === 'master' && <span className="scicomm-role-tag role-master"><span className="emoji">👑</span> Master</span>}
-                {author?.role === 'admin' && <span className="scicomm-role-tag role-admin"><span className="emoji">🛡️</span> Admin</span>}
-                {author?.role === 'scicomm' && <span className="scicomm-role-tag role-scicomm"><span className="emoji">🔬</span> SciComm</span>}
-                {(!author?.role || author?.role === 'visitor' || author?.role === 'scientist') && <span className="scicomm-role-tag role-visitor"><span className="emoji">👤</span> Visitor</span>}
+                <SciCommVerificationBadge role={author?.role} size={16} style={{ marginLeft: '4px' }} />
               </div>
               <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px' }}>{author?.department || 'Member'}</div>
               <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: '12px' }}>{timeAgo(post.createdAt)} • 🌐{post.recognized && ' ⭐ Master Recognized'}</div>

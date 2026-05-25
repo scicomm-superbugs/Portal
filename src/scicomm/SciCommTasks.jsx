@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLiveCollection, db, uploadFile } from '../db';
 import { useAuth } from '../context/AuthContext';
 import { Briefcase, CheckCircle, Clock, AlertCircle, FileText, Upload, Link as LinkIcon } from 'lucide-react';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommTasks() {
   const { user } = useAuth();
@@ -146,7 +147,10 @@ export default function SciCommTasks() {
                 <div key={t.id} className="scicomm-task-review-card" style={{ padding: '14px', marginBottom: '6px', borderRadius: '8px', border: '1px solid #c4b5fd', background: '#f3f0ff' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                     <h4 style={{ margin: 0, fontSize: '15px' }}>{t.title}</h4>
-                    <span className="scicomm-task-review-assignee" style={{ fontSize: '12px', fontWeight: 600, color: '#6d28d9' }}>{getAssignee(t.assignedTo)}</span>
+                    <span className="scicomm-task-review-assignee" style={{ fontSize: '12px', fontWeight: 600, color: '#6d28d9', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      {getAssignee(t.assignedTo)}
+                      <SciCommVerificationBadge userId={t.assignedTo} scientists={scientists} />
+                    </span>
                   </div>
                   <div className="scicomm-task-submission-content" style={{ background: 'white', padding: '10px', borderRadius: '6px', fontSize: '13px', border: '1px solid #ddd' }}>
                     <strong>Submission:</strong>{' '}
@@ -204,7 +208,12 @@ export default function SciCommTasks() {
                             <h4 className="scicomm-task-title" style={{ margin: 0, fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>{t.title} {getStatusBadge(t.status)}</h4>
                             <span className={`scicomm-task-priority-badge ${t.priority ? t.priority.toLowerCase() : 'medium'}`} style={{ background: ps.bg, color: ps.color, padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 600 }}>{t.priority || 'Medium'}</span>
                           </div>
-                          {isAdmin && <div className="scicomm-task-assignee" style={{ fontSize: '12px', color: '#1d4ed8', fontWeight: 600 }}>→ {getAssignee(t.assignedTo)}</div>}
+                          {isAdmin && (
+                            <div className="scicomm-task-assignee" style={{ fontSize: '12px', color: '#1d4ed8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              → {getAssignee(t.assignedTo)}
+                              <SciCommVerificationBadge userId={t.assignedTo} scientists={scientists} />
+                            </div>
+                          )}
                           {t.description && <p className="scicomm-task-desc" style={{ margin: '4px 0', fontSize: '13px', color: 'rgba(0,0,0,0.6)' }}>{t.description}</p>}
                           <div className="scicomm-task-meta" style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                             <span>📅 {t.dueDate ? new Date(t.dueDate).toLocaleDateString() : 'TBD'}</span>
@@ -265,7 +274,12 @@ export default function SciCommTasks() {
                       <span className="scicomm-task-completed-title" style={{ fontSize: '13px', flex: 1 }}>{t.title}</span>
                       {t.awardedPoints && <span className="scicomm-task-pts-badge" style={{ background: '#dbeafe', color: '#1e3a8a', padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 700 }}>+{t.awardedPoints} pts</span>}
                       {t.evalNote && <span className="scicomm-task-completed-note" style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', fontStyle: 'italic' }}>"{t.evalNote}"</span>}
-                      {isAdmin && <span className="scicomm-task-completed-assignee" style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>→ {getAssignee(t.assignedTo)}</span>}
+                      {isAdmin && (
+                        <span className="scicomm-task-completed-assignee" style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          → {getAssignee(t.assignedTo)}
+                          <SciCommVerificationBadge userId={t.assignedTo} scientists={scientists} />
+                        </span>
+                      )}
                     </div>
                   ))}
                 </>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { UserPlus, UserCheck, MessageCircle, UserCircle, Search, UserX, ShieldOff } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AVATARS } from './scicommConstants';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommNetwork() {
   const { user } = useAuth();
@@ -165,9 +166,7 @@ export default function SciCommNetwork() {
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>{renderAvatar(s, 72)}</div>
                     <h4 style={{ margin: '0 0 4px', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', flexWrap: 'wrap' }}>
                       {s.name}
-                      {s.role === 'master' && <span className="tag" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}><span className="emoji">👑</span></span>}
-                      {s.role === 'admin' && <span className="tag" style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}><span className="emoji">🛡️</span></span>}
-                      {s.role === 'scicomm' && <span className="tag" style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', fontSize: '9px', padding: '2px 6px', borderRadius: '10px', fontWeight: 700 }}><span className="emoji">🔬</span></span>}
+                      <SciCommVerificationBadge role={s.role} />
                     </h4>
                     <p style={{ color: 'rgba(0,0,0,0.6)', margin: '0 0 12px', fontSize: '12px', height: '32px', overflow: 'hidden' }}>{s.department || 'Science Communicator'}</p>
                   </Link>
@@ -202,7 +201,7 @@ export default function SciCommNetwork() {
               <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0', borderBottom: '1px solid #eef3f8' }}>
                 <Link to={`/member/${m.id}`} style={{ flexShrink: 0 }}>{renderAvatar(m, 48)}</Link>
                 <div style={{ flex: 1 }}>
-                  <Link to={`/member/${m.id}`} style={{ textDecoration: 'none', color: 'inherit' }}><div style={{ fontWeight: 600, fontSize: '14px' }}>{m.name}</div></Link>
+                  <Link to={`/member/${m.id}`} style={{ textDecoration: 'none', color: 'inherit' }}><div style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>{m.name} <SciCommVerificationBadge role={m.role} /></div></Link>
                   <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>{m.department || 'Member'}</div>
                 </div>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -226,7 +225,7 @@ export default function SciCommNetwork() {
                 <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0', borderBottom: '1px solid #eef3f8' }}>
                   <Link to={`/member/${c.fromId}`} style={{ flexShrink: 0 }}>{renderAvatar(sender, 48)}</Link>
                   <div style={{ flex: 1 }}>
-                    <Link to={`/member/${c.fromId}`} style={{ textDecoration: 'none', color: 'inherit' }}><div style={{ fontWeight: 600, fontSize: '14px' }}>{c.fromName}</div></Link>
+                    <Link to={`/member/${c.fromId}`} style={{ textDecoration: 'none', color: 'inherit' }}><div style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>{c.fromName} <SciCommVerificationBadge role={sender?.role} /></div></Link>
                     <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>wants to connect</div>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
@@ -250,7 +249,7 @@ export default function SciCommNetwork() {
                 <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 0', borderBottom: '1px solid #eef3f8' }}>
                   <Link to={`/member/${c.toId}`} style={{ flexShrink: 0 }}>{renderAvatar(receiver, 48)}</Link>
                   <div style={{ flex: 1 }}>
-                    <Link to={`/member/${c.toId}`} style={{ textDecoration: 'none', color: 'inherit' }}><div style={{ fontWeight: 600, fontSize: '14px' }}>{c.toName}</div></Link>
+                    <Link to={`/member/${c.toId}`} style={{ textDecoration: 'none', color: 'inherit' }}><div style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>{c.toName} <SciCommVerificationBadge role={receiver?.role} /></div></Link>
                     <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>Request sent</div>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>

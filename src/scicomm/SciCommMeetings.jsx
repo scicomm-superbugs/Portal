@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLiveCollection, db } from '../db';
 import { Calendar, Clock, Link2, Users, CheckCircle, UserCircle } from 'lucide-react';
 import { AVATARS, timeAgo } from './scicommConstants';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommMeetings() {
   const { user } = useAuth();
@@ -89,7 +90,12 @@ export default function SciCommMeetings() {
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '13px', color: 'rgba(0,0,0,0.6)' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Calendar size={14} /> {new Date(m.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
               {m.time && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={14} /> {m.time}</span>}
-              <span>By {m.createdBy}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                By {m.createdBy}
+                {scientists.find(s => s.name === m.createdBy) && (
+                  <SciCommVerificationBadge role={scientists.find(s => s.name === m.createdBy)?.role} />
+                )}
+              </span>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
@@ -158,6 +164,7 @@ export default function SciCommMeetings() {
                     <label key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', cursor: 'pointer', padding: '4px 8px', borderRadius: '16px', background: form.selectedMembers.includes(s.id) ? '#eff6ff' : '#f3f2ef', border: form.selectedMembers.includes(s.id) ? '1px solid #1d4ed8' : '1px solid transparent' }}>
                       <input type="checkbox" checked={form.selectedMembers.includes(s.id)} onChange={() => toggleMember(s.id)} style={{ display: 'none' }} />
                       {s.name}
+                      <SciCommVerificationBadge role={s.role} />
                     </label>
                   ))}
                 </div>

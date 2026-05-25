@@ -7,6 +7,7 @@ import { Trash2, UserX, UserCheck, Shield, Plus, AlertTriangle, Calendar, CheckC
 import { AVATARS, calculateScore, getUnlockedTags, REACTIONS } from './scicommConstants';
 import SciCommMeetings from './SciCommMeetings';
 import * as XLSX from 'xlsx';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommAdmin() {
   const { user } = useAuth();
@@ -446,7 +447,10 @@ export default function SciCommAdmin() {
                       {s.avatar ? <img src={s.avatar} alt="" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} /> : '👤'}
                     </div>
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: '14px' }}>{s.name} <span className={`scicomm-admin-role-tag role-${s.role}`} style={{ background: s.role === 'master' ? 'linear-gradient(135deg, #fbbf24, #f59e0b)' : s.role === 'admin' ? 'linear-gradient(135deg, #3b82f6, #1d4ed8)' : s.role === 'scicomm' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : '#e2e8f0', color: s.role === 'scientist' ? '#475569' : 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '10px', fontWeight: 700, marginLeft: '4px' }}>{s.role === 'master' ? '👑 Master' : s.role === 'admin' ? '🛡️ Admin' : s.role === 'scicomm' ? '🔬 SciComm' : '👤 Visitor'}</span></div>
+                      <div style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        {s.name}
+                        <SciCommVerificationBadge role={s.role} />
+                      </div>
                       <div className="scicomm-admin-user-subtext" style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>@{s.username} • {s.email || 'No email'} • {s.department || 'No department'}</div>
                     </div>
                   </div>
@@ -576,7 +580,7 @@ export default function SciCommAdmin() {
           {posts.length === 0 ? <p style={{ color: '#666' }}>No posts.</p> : posts.map(p => (
             <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #eef3f8' }}>
               <div style={{ flex: 1 }}>
-                <strong style={{ fontSize: '13px' }}>{p.authorName}</strong>
+                <strong style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px' }}>{p.authorName} <SciCommVerificationBadge userId={p.authorId} scientists={scientists} /></strong>
                 <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>{p.content.substring(0, 80)}{p.content.length > 80 ? '...' : ''}</p>
               </div>
               <button onClick={() => handleRemovePost(p.id)} style={{ background: '#fee2e2', border: 'none', color: '#991b1b', padding: '4px 10px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', flexShrink: 0 }}><Trash2 size={12} /> Remove</button>
@@ -592,7 +596,7 @@ export default function SciCommAdmin() {
           {activeStories.length === 0 ? <p style={{ color: '#666', textAlign: 'center', padding: '24px' }}>No active stories.</p> : activeStories.map(s => (
             <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #eef3f8' }}>
               <div style={{ flex: 1 }}>
-                <strong style={{ fontSize: '13px' }}>{s.authorName}</strong>
+                <strong style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px' }}>{s.authorName} <SciCommVerificationBadge userId={s.authorId} scientists={scientists} /></strong>
                 <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'rgba(0,0,0,0.6)' }}>{s.content || 'Media only'}</p>
                 <div style={{ fontSize: '11px', color: '#94a3b8' }}>Expires: {new Date(s.expiresAt).toLocaleString()}</div>
               </div>
@@ -634,7 +638,7 @@ export default function SciCommAdmin() {
                   const a = getAnalytics(s);
                   return (
                     <tr key={s.id} style={{ borderBottom: '1px solid #eef3f8' }}>
-                      <td style={{ padding: '8px 4px', fontWeight: 600 }}>{s.name}</td>
+                      <td style={{ padding: '8px 4px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>{s.name} <SciCommVerificationBadge role={s.role} /></td>
                       <td style={{ padding: '8px 4px', fontWeight: 700, color: '#1d4ed8' }}>{a.score}</td>
                       <td style={{ padding: '8px 4px' }}>{a.postCount}</td>
                       <td style={{ padding: '8px 4px' }}>{a.likesReceived}</td>
@@ -666,7 +670,7 @@ export default function SciCommAdmin() {
                   {applicant.avatar ? <img src={applicant.avatar} alt="" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} /> : <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#eef3f8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>👤</div>}
                 </div>
                 <div style={{ flex: 1, minWidth: '200px' }}>
-                  <div style={{ fontWeight: 700, fontSize: '15px', marginBottom: '2px' }}>{applicant.name}</div>
+                  <div style={{ fontWeight: 700, fontSize: '15px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>{applicant.name} <SciCommVerificationBadge role={applicant.role} /></div>
                   <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{applicant.department || 'No department'} · @{applicant.username}</div>
                   {applicant.bio && <div style={{ fontSize: '12px', color: '#475569', marginBottom: '4px', fontStyle: 'italic' }}>"{applicant.bio}"</div>}
                   <div style={{ fontSize: '11px', color: '#94a3b8' }}>Applied: {new Date(app.createdAt).toLocaleDateString()}</div>
@@ -692,7 +696,7 @@ export default function SciCommAdmin() {
               return (
                 <div key={app.id} className="scicomm-admin-activity-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: '#f8fafc', padding: '16px', borderRadius: '12px', borderLeft: `4px solid ${app.status === 'approved' ? '#22c55e' : '#ef4444'}` }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: '15px' }}>{u.name}</div>
+                    <div style={{ fontWeight: 700, fontSize: '15px', display: 'flex', alignItems: 'center', gap: '4px' }}>{u.name} <SciCommVerificationBadge role={u.role} /></div>
                     <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px', margin: '4px 0' }}>
                       <strong>Status:</strong> {app.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
                     </div>

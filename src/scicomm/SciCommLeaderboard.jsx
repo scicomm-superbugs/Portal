@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Trophy, UserCircle, TrendingUp, Lock, Send, Users, Shield } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AVATARS, AUTO_TAGS, calculateScore, getUnlockedTags, REACTIONS, getUserLevel } from './scicommConstants';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 export default function SciCommLeaderboard() {
   const { user } = useAuth();
@@ -224,10 +225,10 @@ export default function SciCommLeaderboard() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                           <Link to={`/member/${s.id}`} style={{ fontWeight: 700, fontSize: '15px', textDecoration: 'none', color: '#1e293b' }}>{s.name}</Link>
+                          <SciCommVerificationBadge role={s.role} />
                           {isMe && <span style={{ color: '#1d4ed8', fontSize: '11px', fontWeight: 600 }}>(You)</span>}
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                          <span style={{ background: s.role === 'master' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '2px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: 700 }}>{s.role === 'master' ? '👑 Master' : '🛡️ Admin'}</span>
                           <span style={{ fontSize: '11px', color: '#1d4ed8', fontWeight: 700 }}>∞ points</span>
                         </div>
                       </div>
@@ -256,7 +257,7 @@ export default function SciCommLeaderboard() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 600, fontSize: '14px' }}>{s.name}</span>
-                    <span style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white', padding: '2px 6px', borderRadius: '8px', fontSize: '9px', fontWeight: 700 }}>🔬</span>
+                    <SciCommVerificationBadge role={s.role} />
                     <span style={{ background: sLevel.bg, color: sLevel.color, padding: '2px 6px', borderRadius: '8px', fontSize: '10px', fontWeight: 700 }}>Lv. {sLevel.level}</span>
                     {isMe && <span style={{ color: '#1d4ed8', fontSize: '11px' }}>(You)</span>}
                   </div>

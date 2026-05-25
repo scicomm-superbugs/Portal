@@ -4097,4 +4097,98 @@ html.no-pull-to-refresh body,
   box-shadow: none !important;
 }
 
+/* ======================================================
+   Premium Verification Checkmark Badges & Tooltips
+   ====================================================== */
+.scicomm-verify-badge-container {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
+}
+
+.scicomm-verify-badge {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15)) !important;
+}
+
+.scicomm-verify-badge-container:hover .scicomm-verify-badge {
+  transform: scale(1.25) !important;
+}
+
+.scicomm-verify-tooltip {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  bottom: 140% !important;
+  left: 50% !important;
+  transform: translateX(-50%) translateY(6px) !important;
+  background: rgba(15, 23, 42, 0.96) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f8fafc !important;
+  padding: 10px 14px !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+  width: 220px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4) !important;
+  z-index: 999999 !important;
+  pointer-events: none !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-align: center !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.scicomm-verify-tooltip strong {
+  display: block !important;
+  font-size: 12px !important;
+  margin-bottom: 4px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+}
+
+.scicomm-verify-badge-container:hover .scicomm-verify-tooltip,
+.scicomm-verify-badge-container:focus-within .scicomm-verify-tooltip {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: translateX(-50%) translateY(0) !important;
+}
+
+/* Tooltip Arrow */
+.scicomm-verify-tooltip::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  border-width: 6px !important;
+  border-style: solid !important;
+  border-color: rgba(15, 23, 42, 0.96) transparent transparent transparent !important;
+}
+
+/* Support for elements inside scrollable/confined areas where tooltip might overflow top */
+.scicomm-verify-badge-container.tooltip-bottom .scicomm-verify-tooltip {
+  bottom: auto !important;
+  top: 140% !important;
+  transform: translateX(-50%) translateY(-6px) !important;
+}
+
+.scicomm-verify-badge-container.tooltip-bottom:hover .scicomm-verify-tooltip {
+  transform: translateX(-50%) translateY(0) !important;
+}
+
+.scicomm-verify-badge-container.tooltip-bottom .scicomm-verify-tooltip::after {
+  top: auto !important;
+  bottom: 100% !important;
+  border-color: transparent transparent rgba(15, 23, 42, 0.96) transparent !important;
+}
+
 

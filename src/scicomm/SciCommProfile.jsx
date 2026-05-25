@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs';
 import { Camera, Edit2, Award, Pin, AlertTriangle, UserCircle, X, Settings, Briefcase, FileText, CheckCircle, GraduationCap, Upload, Lock } from 'lucide-react';
 import { AVATARS, AUTO_TAGS, calculateScore, getUnlockedTags, timeAgo, getUserLevel } from './scicommConstants';
 import ImageCropperModal from './ImageCropperModal';
+import SciCommVerificationBadge from './SciCommVerificationBadge';
 
 const base64ToBlob = (base64, contentType) => {
   const byteCharacters = atob(base64);
@@ -367,10 +368,7 @@ export default function SciCommProfile() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <h1 style={{ margin: '0', fontSize: '26px', fontWeight: 800, color: '#0f172a' }}>
                   {me?.name || user.name}
-                  {user.role === 'master' && <span className="scicomm-role-tag role-master" style={{ marginLeft: '8px', verticalAlign: 'middle' }}><span className="emoji">👑</span> Master</span>}
-                  {user.role === 'admin' && <span className="scicomm-role-tag role-admin" style={{ marginLeft: '8px', verticalAlign: 'middle' }}><span className="emoji">🛡️</span> Admin</span>}
-                  {user.role === 'scicomm' && <span className="scicomm-role-tag role-scicomm" style={{ marginLeft: '8px', verticalAlign: 'middle' }}><span className="emoji">🔬</span> SciComm</span>}
-                  {(!user.role || user.role === 'visitor' || user.role === 'scientist') && <span className="scicomm-role-tag role-visitor" style={{ marginLeft: '8px', verticalAlign: 'middle' }}><span className="emoji">👤</span> Visitor</span>}
+                  <SciCommVerificationBadge role={me?.role || user.role} size={20} style={{ marginLeft: '8px' }} />
                 </h1>
                 <span className="tag" style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: 800, border: `1px solid ${myLevel.color}40`, boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   Lv. {myLevel.level}{myLevel.title ? ' ' + myLevel.title : ''}
