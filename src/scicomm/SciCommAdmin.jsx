@@ -404,7 +404,7 @@ export default function SciCommAdmin() {
 
       <div className="scicomm-card" style={{ display: 'flex', flexWrap: 'wrap', overflow: 'hidden' }}>
         {tabs.map(t => (
-          <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
+          <button key={t.id} onClick={() => setActiveTab(t.id)} className={`scicomm-admin-tab-btn ${activeTab === t.id ? 'active' : ''}`} style={{
             flex: '1 1 auto', minWidth: '80px', padding: '10px 6px', border: 'none', background: activeTab === t.id ? '#1d4ed8' : 'transparent',
             color: activeTab === t.id ? 'white' : 'rgba(0,0,0,0.6)', fontWeight: 600, cursor: 'pointer', fontSize: '12px',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.2s'
@@ -417,7 +417,7 @@ export default function SciCommAdmin() {
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>🕐 Pending Approvals</h3>
           {pendingAccounts.length === 0 ? <p style={{ color: '#666', textAlign: 'center', padding: '24px' }}>No pending accounts.</p> : pendingAccounts.map(s => (
-            <div key={s.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid #eef3f8', flexWrap: 'wrap', gap: '8px' }}>
+            <div key={s.id} className="scicomm-admin-pending-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid #eef3f8', flexWrap: 'wrap', gap: '8px' }}>
               <div>
                 <div style={{ fontWeight: 600 }}>{s.name}</div>
                 <div style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>@{s.username} • {s.email || '-'} • {s.department || '-'}</div>
@@ -439,7 +439,7 @@ export default function SciCommAdmin() {
             const analytics = getAnalytics(s);
             const memberWarnings = warningsData.filter(w => String(w.userId) === String(s.id) && w.status !== 'removed');
             return (
-              <div key={s.id} style={{ padding: '14px', borderBottom: '1px solid #eef3f8', marginBottom: '8px' }}>
+              <div key={s.id} className="scicomm-admin-user-row" style={{ padding: '14px', borderBottom: '1px solid #eef3f8', marginBottom: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#eef3f8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
@@ -486,9 +486,9 @@ export default function SciCommAdmin() {
                     { label: 'Warnings', val: memberWarnings.length, color: memberWarnings.length > 0 ? '#ef4444' : '#1d4ed8' },
                     { label: 'Connections', val: analytics.connectionCount, color: '#06b6d4' },
                   ].map((stat, i) => (
-                    <div key={i} style={{ background: '#f9fafb', borderRadius: '6px', padding: '6px 10px', textAlign: 'center', minWidth: '60px', flex: '1 1 auto' }}>
+                    <div key={i} className="scicomm-admin-user-stat-card" style={{ background: '#f9fafb', borderRadius: '6px', padding: '6px 10px', textAlign: 'center', minWidth: '60px', flex: '1 1 auto' }}>
                       <div style={{ fontWeight: 700, fontSize: '14px', color: stat.color }}>{stat.val}</div>
-                      <div style={{ fontSize: '10px', color: 'rgba(0,0,0,0.5)' }}>{stat.label}</div>
+                      <div className="scicomm-admin-user-stat-label" style={{ fontSize: '10px', color: 'rgba(0,0,0,0.5)' }}>{stat.label}</div>
                     </div>
                   ))}
                 </div>
@@ -503,15 +503,15 @@ export default function SciCommAdmin() {
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>📋 Assign Task</h3>
           <form onSubmit={handleAssignTask} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-            <input type="text" placeholder="Task Title" value={taskForm.title} onChange={e => setTaskForm({ ...taskForm, title: e.target.value })} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
-            <textarea placeholder="Description..." value={taskForm.description} onChange={e => setTaskForm({ ...taskForm, description: e.target.value })} rows={2} style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', resize: 'vertical' }} />
+            <input className="scicomm-admin-input" type="text" placeholder="Task Title" value={taskForm.title} onChange={e => setTaskForm({ ...taskForm, title: e.target.value })} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
+            <textarea className="scicomm-admin-input" placeholder="Description..." value={taskForm.description} onChange={e => setTaskForm({ ...taskForm, description: e.target.value })} rows={2} style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px', resize: 'vertical' }} />
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <select value={taskForm.assignedTo} onChange={e => setTaskForm({ ...taskForm, assignedTo: e.target.value })} required style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }}>
+              <select className="scicomm-admin-input" value={taskForm.assignedTo} onChange={e => setTaskForm({ ...taskForm, assignedTo: e.target.value })} required style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }}>
                 <option value="">Select member...</option>
                 {activeAccounts.filter(s => s.role !== 'master').map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
-              <input type="date" value={taskForm.dueDate} onChange={e => setTaskForm({ ...taskForm, dueDate: e.target.value })} required style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
-              <select value={taskForm.priority} onChange={e => setTaskForm({ ...taskForm, priority: e.target.value })} style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }}>
+              <input className="scicomm-admin-input" type="date" value={taskForm.dueDate} onChange={e => setTaskForm({ ...taskForm, dueDate: e.target.value })} required style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
+              <select className="scicomm-admin-input" value={taskForm.priority} onChange={e => setTaskForm({ ...taskForm, priority: e.target.value })} style={{ flex: 1, padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }}>
                 <option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option><option value="Urgent">🔴 Urgent</option>
               </select>
             </div>
@@ -525,22 +525,22 @@ export default function SciCommAdmin() {
         <div className="scicomm-card scicomm-card-padding">
           <h3 style={{ margin: '0 0 12px', fontSize: '18px' }}>⚠️ Warning System (3-Strike)</h3>
           <form onSubmit={handleSendWarning} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-            <select value={warningForm.userId} onChange={e => setWarningForm({ ...warningForm, userId: e.target.value })} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }}>
+            <select className="scicomm-admin-input" value={warningForm.userId} onChange={e => setWarningForm({ ...warningForm, userId: e.target.value })} required style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }}>
               <option value="">Select member...</option>
               {activeAccounts.filter(s => s.role !== 'master').map(s => {
                 const wCount = warningsData.filter(w => String(w.userId) === String(s.id) && w.status !== 'removed').length;
                 return <option key={s.id} value={s.id}>{s.name} ({wCount}/3 warnings)</option>;
               })}
             </select>
-            <textarea placeholder="Warning reason..." value={warningForm.message} onChange={e => setWarningForm({ ...warningForm, message: e.target.value })} required rows={2} style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
-            <textarea placeholder="Disciplinary note (optional)..." value={warningForm.note} onChange={e => setWarningForm({ ...warningForm, note: e.target.value })} rows={1} style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
+            <textarea className="scicomm-admin-input" placeholder="Warning reason..." value={warningForm.message} onChange={e => setWarningForm({ ...warningForm, message: e.target.value })} required rows={2} style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
+            <textarea className="scicomm-admin-input" placeholder="Disciplinary note (optional)..." value={warningForm.note} onChange={e => setWarningForm({ ...warningForm, note: e.target.value })} rows={1} style={{ padding: '10px 14px', border: '1px solid #e0dfdc', borderRadius: '8px', fontSize: '14px' }} />
             <button type="submit" style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '24px', padding: '10px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>⚠️ Issue Warning</button>
           </form>
 
           <h4 style={{ margin: '0 0 8px', fontSize: '16px' }}>Appeals to Review</h4>
           {warningsData.filter(w => w.appeal && w.appealStatus === 'pending').length === 0 ? <p style={{ color: '#666', fontSize: '13px' }}>No pending appeals.</p> : (
             warningsData.filter(w => w.appeal && w.appealStatus === 'pending').map(w => (
-              <div key={w.id} style={{ padding: '12px', background: '#fffbeb', borderRadius: '8px', marginBottom: '8px', border: '1px solid #fde68a' }}>
+              <div key={w.id} className="scicomm-admin-warning-appeal-card" style={{ padding: '12px', background: '#fffbeb', borderRadius: '8px', marginBottom: '8px', border: '1px solid #fde68a' }}>
                 <div style={{ fontWeight: 600, fontSize: '14px' }}>{w.userName} — Warning {w.warningNumber}</div>
                 <p style={{ margin: '4px 0', fontSize: '13px', color: 'rgba(0,0,0,0.7)' }}>Reason: {w.message}</p>
                 <p style={{ margin: '4px 0', fontSize: '13px', color: '#0a66c2' }}>Appeal: {w.appeal}</p>
@@ -661,7 +661,7 @@ export default function SciCommAdmin() {
             const applicant = scientists.find(s => String(s.id) === String(app.userId));
             if (!applicant) return null;
             return (
-              <div key={app.id} style={{ display: 'flex', gap: '12px', padding: '14px', marginBottom: '8px', borderRadius: '10px', border: '1px solid #e2e8f0', background: '#f8fafc', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <div key={app.id} className="scicomm-admin-application-card" style={{ display: 'flex', gap: '12px', padding: '14px', marginBottom: '8px', borderRadius: '10px', border: '1px solid #e2e8f0', background: '#f8fafc', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                 <div style={{ flexShrink: 0 }}>
                   {applicant.avatar ? <img src={applicant.avatar} alt="" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} /> : <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#eef3f8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>👤</div>}
                 </div>
@@ -690,14 +690,14 @@ export default function SciCommAdmin() {
               const u = scientists.find(s => String(s.id) === String(app.userId));
               if (!u) return null;
               return (
-                <div key={app.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: '#f8fafc', padding: '16px', borderRadius: '12px', borderLeft: `4px solid ${app.status === 'approved' ? '#22c55e' : '#ef4444'}` }}>
+                <div key={app.id} className="scicomm-admin-activity-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: '#f8fafc', padding: '16px', borderRadius: '12px', borderLeft: `4px solid ${app.status === 'approved' ? '#22c55e' : '#ef4444'}` }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 700, fontSize: '15px' }}>{u.name}</div>
                     <div style={{ color: 'rgba(0,0,0,0.6)', fontSize: '13px', margin: '4px 0' }}>
                       <strong>Status:</strong> {app.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
                     </div>
                     {app.comment && (
-                      <div style={{ fontSize: '13px', background: 'rgba(255,255,255,0.6)', padding: '6px 10px', borderRadius: '8px', fontStyle: 'italic', marginTop: '6px', color: '#475569', display: 'inline-block' }}>
+                      <div className="scicomm-admin-app-comment" style={{ fontSize: '13px', background: 'rgba(255,255,255,0.6)', padding: '6px 10px', borderRadius: '8px', fontStyle: 'italic', marginTop: '6px', color: '#475569', display: 'inline-block' }}>
                         "{app.comment}"
                       </div>
                     )}

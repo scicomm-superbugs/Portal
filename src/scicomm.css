@@ -1755,6 +1755,98 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   box-shadow: 0 0 8px rgba(59, 130, 246, 0.15) !important;
 }
 
+/* --- ADMIN DASHBOARD DARK MODE PREMIUM COMPATIBILITY --- */
+.scicomm-dark-mode .scicomm-admin-tab-btn {
+  color: #cbd5e1 !important;
+  background: transparent !important;
+  transition: all 0.2s ease !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-tab-btn.active {
+  color: #ffffff !important;
+  background: #1d4ed8 !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-tab-btn:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-pending-row,
+.scicomm-dark-mode .scicomm-admin-user-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-user-stat-card {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-user-stat-label {
+  color: #cbd5e1 !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-input {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-input::placeholder {
+  color: #64748b !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-warning-appeal-card {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-warning-appeal-card p {
+  color: #cbd5e1 !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-warning-appeal-card p[style*="color"] {
+  color: #60a5fa !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-application-card {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-application-card div {
+  color: #cbd5e1 !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-application-card div[style*="fontWeight: 700"] {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-activity-card {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-activity-card strong {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-admin-app-comment {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+
 .scicomm-dark-mode *[style*="f3f4f6" i], .scicomm-dark-mode *[style*="243,244,246" i], .scicomm-dark-mode *[style*="243, 244, 246" i],
 .scicomm-dark-mode *[style*="eff6ff" i], .scicomm-dark-mode *[style*="239,246,255" i], .scicomm-dark-mode *[style*="239, 246, 255" i],
 .scicomm-dark-mode *[style*="e0f2fe" i], .scicomm-dark-mode *[style*="224,242,254" i], .scicomm-dark-mode *[style*="224, 242, 254" i],
