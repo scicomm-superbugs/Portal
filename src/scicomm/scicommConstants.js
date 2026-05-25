@@ -5,9 +5,7 @@ export const REACTIONS = [
   { key: 'haha', emoji: '😆', label: 'Haha', color: '#fdd835' },
   { key: 'support', emoji: '👏', label: 'Support', color: '#6dae4f' },
   { key: 'care', emoji: '🤗', label: 'Care', color: '#eaaa30' },
-  { key: 'brilliant', emoji: '💡', label: 'Brilliant', color: '#f5c400' },
   { key: 'fire', emoji: '🔥', label: 'Fire', color: '#e16745' },
-  { key: 'genius', emoji: '🧠', label: 'Genius', color: '#9b59b6' },
 ];
 
 // ===== AVATARS (SVG-based science-themed) =====

@@ -19,7 +19,9 @@ import {
   UserCheck,
   Briefcase,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Smile,
+  Image
 } from 'lucide-react';
 import { AVATARS, timeAgo, REACTIONS } from './scicommConstants';
 import EmojiPicker from '../components/EmojiPicker';
@@ -347,7 +349,7 @@ export default function SciCommSinglePost() {
                       </div>
                       <div className="scicomm-comment-tools">
                         <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                          <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
+                          <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}><Smile size={18} style={{ color: '#65676b' }} /></button>
                           {showEmojiPicker === replyKey && (
                             <EmojiPicker
                               onSelect={(emoji) => setCommentText(prev => ({...prev, [replyKey]: (prev[replyKey]||'')+emoji}))}
@@ -356,7 +358,7 @@ export default function SciCommSinglePost() {
                             />
                           )}
                         </div>
-                        <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                        <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Image size={18} style={{ color: '#65676b' }} /><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [replyKey]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
                       </div>
                     </div>
                     <button className="scicomm-comment-send-btn" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'center', borderRadius: '24px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
@@ -462,7 +464,7 @@ export default function SciCommSinglePost() {
               </div>
               <div className="scicomm-comment-tools">
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
+                  <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}><Smile size={18} style={{ color: '#65676b' }} /></button>
                   {showEmojiPicker === post.id && (
                     <EmojiPicker
                       onSelect={(emoji) => setCommentText(prev => ({...prev, [post.id]: (prev[post.id]||'')+emoji}))}
@@ -471,7 +473,7 @@ export default function SciCommSinglePost() {
                     />
                   )}
                 </div>
-                <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px' }}><span className="emoji">📷</span><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
+                <label className="scicomm-comment-image-btn" style={{ cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Image size={18} style={{ color: '#65676b' }} /><input type="file" accept="image/*" onChange={e => setCommentImage(prev => ({...prev, [post.id]: e.target.files[0]}))} style={{ display: 'none' }} /></label>
               </div>
             </div>
             <button className="scicomm-comment-send-btn" style={{ padding: '8px 16px', flexShrink: 0, alignSelf: 'center', borderRadius: '24px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => handleAddComment(post)}><Send size={16} /></button>
