@@ -103,11 +103,12 @@ export default function SciCommFeed() {
   const { user, isBannerDismissed, dismissBanner } = useAuth();
   const navigate = useNavigate();
 
-  const scientists = useLiveCollection('scientists') || [];
+  const scientistsRaw = useLiveCollection('scientists');
+  const scientists = scientistsRaw || [];
   const currentUserData = scientists.find(s => String(s.id) === String(user.id));
   const isAdmin = user.role === 'admin' || user.role === 'master';
 
-  const postsRaw = useLiveCollection('scicomm_posts') || [];
+  const postsRaw = useLiveCollection('scicomm_posts');
   const bannersRaw = useLiveCollection('scicomm_banners') || [];
   const connectionsRaw = useLiveCollection('scicomm_connections') || [];
   const tasksData = useLiveCollection('tasks') || [];
@@ -180,7 +181,7 @@ export default function SciCommFeed() {
   const highlightedPostId = searchParams.get('postId');
 
   useEffect(() => {
-    if (highlightedPostId && postsRaw.length > 0) {
+    if (highlightedPostId && postsRaw && postsRaw.length > 0) {
       setTimeout(() => {
         const el = document.getElementById(`post-${highlightedPostId}`);
         if (el) {
@@ -193,7 +194,7 @@ export default function SciCommFeed() {
         }
       }, 500);
     }
-  }, [highlightedPostId, postsRaw.length]);
+  }, [highlightedPostId, postsRaw ? postsRaw.length : 0]);
   
   const handleDeleteComment = async (post, path) => {
     setDeleteConfirm({
@@ -284,7 +285,7 @@ export default function SciCommFeed() {
   }
 
   const banners = [...bannersRaw].sort((a,b) => (a.order||0) - (b.order||0));
-  const posts = [...postsRaw].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const posts = postsRaw ? [...postsRaw].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) : [];
 
   const getAuthor = (id) => scientists.find(s => String(s.id) === String(id));
   const getAvatar = (member) => {
@@ -1309,7 +1310,13 @@ export default function SciCommFeed() {
         </div>
 
         {/* Posts */}
-        {posts.length === 0 ? (
+        {postsRaw === null ? (
+          <div className="scicomm-card scicomm-card-padding" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', color: '#64748b' }}>
+            <div style={{ width: '40px', height: '40px', border: '3px solid rgba(59,130,246,0.2)', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+            <div style={{ marginTop: '16px', fontSize: '14px', fontWeight: 600 }}>Loading discussion feed...</div>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          </div>
+        ) : posts.length === 0 ? (
           <div className="scicomm-card scicomm-card-padding" style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
             <div style={{ fontSize: '48px', marginBottom: '12px' }}>📢</div>
             <h3 style={{ margin: '0 0 8px' }}>No posts yet</h3>

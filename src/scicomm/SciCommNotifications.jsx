@@ -9,15 +9,25 @@ import SciCommVerificationBadge from './SciCommVerificationBadge';
 export default function SciCommNotifications() {
   const { user } = useAuth();
   const isAdmin = user.role === 'admin' || user.role === 'master';
-  const tasksData = useLiveCollection('tasks') || [];
-  const warningsData = useLiveCollection('scicomm_warnings') || [];
-  const scientists = useLiveCollection('scientists') || [];
-  const connectionsData = useLiveCollection('scicomm_connections') || [];
-  const meetingsData = useLiveCollection('scicomm_meetings') || [];
-  const applicationsData = useLiveCollection('scicomm_applications') || [];
-  const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
-  const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
-  const generalNotifications = useLiveCollection('scicomm_notifications') || [];
+  const tasksDataRaw = useLiveCollection('tasks');
+  const warningsDataRaw = useLiveCollection('scicomm_warnings');
+  const scientistsRaw = useLiveCollection('scientists');
+  const connectionsDataRaw = useLiveCollection('scicomm_connections');
+  const meetingsDataRaw = useLiveCollection('scicomm_meetings');
+  const applicationsDataRaw = useLiveCollection('scicomm_applications');
+  const chatMessagesRaw = useLiveCollection('scicomm_chat_messages');
+  const chatRoomsRaw = useLiveCollection('scicomm_chat_rooms');
+  const generalNotificationsRaw = useLiveCollection('scicomm_notifications');
+
+  const tasksData = tasksDataRaw || [];
+  const warningsData = warningsDataRaw || [];
+  const scientists = scientistsRaw || [];
+  const connectionsData = connectionsDataRaw || [];
+  const meetingsData = meetingsDataRaw || [];
+  const applicationsData = applicationsDataRaw || [];
+  const chatMessages = chatMessagesRaw || [];
+  const chatRooms = chatRoomsRaw || [];
+  const generalNotifications = generalNotificationsRaw || [];
 
   const [activeTab, setActiveTab] = useState('all');
   const [showCongratsPopup, setShowCongratsPopup] = useState(false);
@@ -461,35 +471,45 @@ export default function SciCommNotifications() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', background: 'white', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
-        {unreadNotifications.length > 0 && (
-          <div>
-            <div style={{ padding: '16px 20px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>New Notifications</h3>
-              <div style={{ background: '#3b82f6', color: 'white', fontSize: '12px', fontWeight: 700, padding: '2px 8px', borderRadius: '12px' }}>{unreadNotifications.length}</div>
-            </div>
-            <div>
-              {unreadNotifications.map(renderNotificationItem)}
-            </div>
+        {generalNotificationsRaw === null || scientistsRaw === null || tasksDataRaw === null ? (
+          <div style={{ textAlign: 'center', padding: '80px 20px', color: '#64748b' }}>
+            <div style={{ width: '40px', height: '40px', border: '3px solid rgba(59,130,246,0.2)', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 16px' }}></div>
+            <div style={{ fontSize: '14px', fontWeight: 600 }}>Loading alerts...</div>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
-        )}
+        ) : (
+          <>
+            {unreadNotifications.length > 0 && (
+              <div>
+                <div style={{ padding: '16px 20px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>New Notifications</h3>
+                  <div style={{ background: '#3b82f6', color: 'white', fontSize: '12px', fontWeight: 700, padding: '2px 8px', borderRadius: '12px' }}>{unreadNotifications.length}</div>
+                </div>
+                <div>
+                  {unreadNotifications.map(renderNotificationItem)}
+                </div>
+              </div>
+            )}
 
-        {readNotifications.length > 0 && (
-          <div>
-            <div style={{ padding: '16px 20px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', borderTop: unreadNotifications.length > 0 ? '1px solid #e2e8f0' : 'none', display: 'flex', alignItems: 'center' }}>
-              <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Earlier</h3>
-            </div>
-            <div>
-              {readNotifications.map(renderNotificationItem)}
-            </div>
-          </div>
-        )}
+            {readNotifications.length > 0 && (
+              <div>
+                <div style={{ padding: '16px 20px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', borderTop: unreadNotifications.length > 0 ? '1px solid #e2e8f0' : 'none', display: 'flex', alignItems: 'center' }}>
+                  <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Earlier</h3>
+                </div>
+                <div>
+                  {readNotifications.map(renderNotificationItem)}
+                </div>
+              </div>
+            )}
 
-        {filteredNotifications.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-            <div style={{ fontSize: '64px', marginBottom: '24px' }}>✨</div>
-            <h3 style={{ margin: '0 0 12px', fontSize: '22px', fontWeight: 900 }}>Everything is clear!</h3>
-            <p style={{ color: '#64748b', fontSize: '16px', maxWidth: '300px', margin: '0 auto' }}>You've caught up with all your scientific alerts and messages.</p>
-          </div>
+            {filteredNotifications.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+                <div style={{ fontSize: '64px', marginBottom: '24px' }}>✨</div>
+                <h3 style={{ margin: '0 0 12px', fontSize: '22px', fontWeight: 900 }}>Everything is clear!</h3>
+                <p style={{ color: '#64748b', fontSize: '16px', maxWidth: '300px', margin: '0 auto' }}>You've caught up with all your scientific alerts and messages.</p>
+              </div>
+            )}
+          </>
         )}
       </div>
 
