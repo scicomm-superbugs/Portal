@@ -3255,6 +3255,10 @@ html.no-pull-to-refresh body,
 .scicomm-dark-mode .scicomm-comment-textarea-field {
   color: #e4e6eb !important;
   background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .scicomm-comment-tools {
@@ -3614,7 +3618,7 @@ html.no-pull-to-refresh body,
 .scicomm-dark-mode input[type="password"],
 .scicomm-dark-mode input[type="email"],
 .scicomm-dark-mode input[type="search"],
-.scicomm-dark-mode textarea,
+.scicomm-dark-mode textarea:not(.scicomm-composer-textarea):not(.scicomm-comment-textarea-field),
 .scicomm-dark-mode select {
   background-color: #0c0f16 !important;
   background: #0c0f16 !important;
@@ -3626,7 +3630,7 @@ html.no-pull-to-refresh body,
 .scicomm-dark-mode input[type="password"]:focus,
 .scicomm-dark-mode input[type="email"]:focus,
 .scicomm-dark-mode input[type="search"]:focus,
-.scicomm-dark-mode textarea:focus,
+.scicomm-dark-mode textarea:not(.scicomm-composer-textarea):not(.scicomm-comment-textarea-field):focus,
 .scicomm-dark-mode select:focus {
   border-color: #60a5fa !important;
   box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25) !important;
@@ -3691,6 +3695,11 @@ html.no-pull-to-refresh body,
 
 .scicomm-dark-mode .scicomm-composer-textarea {
   color: #ffffff !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .scicomm-dark-mode .scicomm-composer-textarea::placeholder {
