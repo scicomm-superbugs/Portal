@@ -1995,21 +1995,67 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
 }
 
 /* 6. Header Download App Button */
-.scicomm-dark-mode a[href*="download"] div[style*="linear-gradient"] {
-  background-color: #0b0f19 !important;
-  background: linear-gradient(135deg, #0b0f19 0%, #111827 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
+.scicomm-download-btn-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e0f0ff 100%) !important;
+  padding: 8px 16px !important;
+  border-radius: 100px !important;
+  border: 1px solid #cce3ff !important;
+  box-shadow: 0 2px 4px rgba(0, 119, 181, 0.1) !important;
+  transition: all 0.2s ease !important;
 }
-.scicomm-dark-mode a[href*="download"] div[style*="linear-gradient"] span,
-.scicomm-dark-mode a[href*="download"] div[style*="linear-gradient"] svg {
-  color: #ffffff !important;
-  stroke: #ffffff !important;
+
+.scicomm-download-btn-inner .icon,
+.scicomm-download-btn-inner .nav-text {
+  color: #0077b5 !important;
+  stroke: #0077b5 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
 }
-.scicomm-dark-mode a[href*="download"]:hover div[style*="linear-gradient"] {
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
+
+/* Light mode hover state */
+.scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner {
+  background: linear-gradient(135deg, #e0f0ff 0%, #d0e8ff 100%) !important;
+  border-color: #b3d7ff !important;
+  box-shadow: 0 4px 10px rgba(0, 119, 181, 0.2) !important;
+  transform: translateY(-1px) !important;
 }
+
+.scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner .icon,
+.scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner .nav-text {
+  color: #00598a !important;
+  stroke: #00598a !important;
+}
+
+/* Dark mode overrides */
+.scicomm-dark-mode .scicomm-download-btn-inner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+.scicomm-dark-mode .scicomm-download-btn-inner .icon,
+.scicomm-dark-mode .scicomm-download-btn-inner .nav-text {
+  color: #38bdf8 !important;
+  stroke: #38bdf8 !important;
+}
+
+/* Dark mode hover state */
+.scicomm-dark-mode .scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  border-color: rgba(56, 189, 248, 0.6) !important;
+  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
+.scicomm-dark-mode .scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner .icon,
+.scicomm-dark-mode .scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner .nav-text {
+  color: #7dd3fc !important;
+  stroke: #7dd3fc !important;
+}
+
 
 /* Premium SciComm Hub Cards Dark Mode Overrides */
 .scicomm-dark-mode .hub-card {
