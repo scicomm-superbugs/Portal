@@ -2815,5 +2815,211 @@ html.no-pull-to-refresh body,
   color: #ffffff !important;
 }
 
+/* ======================================================
+   Premium & Clean Posts Redesign Custom CSS rules
+   ====================================================== */
 
+/* Premium Overrides for Post Cards & Feed main */
+.scicomm-card {
+  background: white;
+  border-radius: 16px !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
 
+.scicomm-card:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Action button bar adjustments */
+.scicomm-post-btn {
+  border-radius: 12px !important;
+  padding: 10px 12px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.scicomm-post-btn:hover {
+  background-color: rgba(29, 78, 216, 0.05) !important;
+  color: #1d4ed8 !important;
+}
+
+.scicomm-post-btn.liked {
+  color: #1d4ed8 !important;
+}
+
+/* Dark mode overrides for cards & buttons */
+.scicomm-dark-mode .scicomm-card {
+  background: rgba(13, 16, 23, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+.scicomm-dark-mode .scicomm-card:hover {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+  transform: none !important;
+}
+
+.scicomm-dark-mode .scicomm-post-btn:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-post-btn.liked {
+  color: #38bdf8 !important;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4) !important;
+}
+
+/* Premium Comments Speech Bubble */
+.scicomm-comment-bubble {
+  display: inline-block;
+  max-width: 100%;
+  padding: 10px 16px !important;
+  border-radius: 0 16px 16px 16px !important;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+/* Light Mode Comment bubble background and subtle border */
+.scicomm-comment-bubble.main-comment {
+  background-color: #f1f5f9 !important;
+  background: #f1f5f9 !important;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+}
+
+.scicomm-comment-bubble.reply-comment {
+  background-color: #f8fafc !important;
+  background: #f8fafc !important;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01) !important;
+}
+
+/* Moderated comment style */
+.scicomm-comment-bubble.moderated-comment {
+  background-color: rgba(254, 226, 226, 0.4) !important;
+  background: rgba(254, 226, 226, 0.4) !important;
+  border: 1px dashed #fecaca !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+/* Dark Mode Comment bubble styling override */
+.scicomm-dark-mode .scicomm-comment-bubble {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-bubble.main-comment {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-bubble.reply-comment {
+  background-color: rgba(255, 255, 255, 0.015) !important;
+  background: rgba(255, 255, 255, 0.015) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-bubble.moderated-comment {
+  background-color: rgba(127, 29, 29, 0.15) !important;
+  background: rgba(127, 29, 29, 0.15) !important;
+  border: 1px dashed rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Thread dashed lines styling */
+.scicomm-comment-thread-line {
+  border-left: 1.5px dashed rgba(0, 0, 0, 0.12) !important;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.scicomm-dark-mode .scicomm-comment-thread-line {
+  border-left: 1.5px dashed rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Unified Comment Input Capsule container */
+.scicomm-comment-capsule {
+  display: flex !important;
+  flex: 1 !important;
+  align-items: center !important;
+  border-radius: 24px !important;
+  border: 1px solid #e0dfdc !important;
+  background-color: #f3f2ef !important;
+  padding: 2px 6px 2px 14px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.scicomm-comment-textarea-field {
+  flex: 1 !important;
+  border: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #0f172a !important;
+  outline: none !important;
+  resize: none !important;
+  min-height: 38px !important;
+  padding: 8px 6px 8px 0 !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+
+.scicomm-comment-tools {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Glowing active border for comment input capsule */
+.scicomm-comment-capsule:focus-within {
+  border-color: #1d4ed8 !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.12) !important;
+}
+
+/* Dark Mode comment input overrides */
+.scicomm-dark-mode .scicomm-comment-capsule {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-textarea-field {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-capsule:focus-within {
+  border-color: #38bdf8 !important;
+  background-color: #0e131f !important;
+  background: #0e131f !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+}
+
+/* Translucent reaction count capsule bubbles */
+.scicomm-comment-react-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.scicomm-dark-mode .scicomm-comment-react-pill {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+}
