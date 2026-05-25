@@ -500,87 +500,79 @@ export default function SciCommChat() {
   }, [selectedRoom, allMessages.length]);
 
   return (
-    <div className="scicomm-chat-container" style={{ 
-      display: 'flex', 
-      height: 'calc(100vh - 100px)', 
-      background: '#f8fafc', 
-      overflow: 'hidden',
-      borderRadius: '16px',
-      border: '1px solid #e2e8f0',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-      marginTop: '2px',
-      position: 'relative',
-      width: '100%'
-    }}>
+    <div className="sc-chat">
       {/* Sidebar */}
-      <div className={`scicomm-chat-sidebar ${mobileSidebarOpen ? 'open' : ''}`} style={{ 
-        width: '360px', 
-        background: 'white', 
-        borderRight: '1px solid #e2e8f0', 
-        display: 'flex', 
-        flexDirection: 'column',
-        position: 'relative',
-        zIndex: 100
-      }}>
-        <div style={{ padding: '24px 20px 16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px' }}>Messages</h2>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => setShowNewChat(true)} style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#eff6ff', color: '#1d4ed8', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} title="New Chat"><MessageSquare size={20} /></button>
-              <button onClick={() => setShowNewGroup(true)} style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#f0fdf4', color: '#166534', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} title="New Group"><Plus size={24} /></button>
+      <div className={`sc-chat-sidebar ${!mobileSidebarOpen ? 'hidden' : ''}`}>
+        <div className="sc-chat-sidebar-head">
+          <div className="sc-chat-sidebar-title-row">
+            <h2 className="sc-chat-sidebar-title">Messages</h2>
+            <div className="sc-chat-sidebar-actions">
+              <button onClick={() => setShowNewChat(true)} style={{ background: '#eff6ff', color: '#1d4ed8' }} title="New Chat">
+                <MessageSquare size={20} />
+              </button>
+              <button onClick={() => setShowNewGroup(true)} style={{ background: '#f0fdf4', color: '#166534' }} title="New Group">
+                <Plus size={24} />
+              </button>
             </div>
           </div>
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', background: '#f1f5f9', borderRadius: '14px', padding: '10px 16px', gap: '10px' }}>
+          <div className="sc-chat-search">
             <Search size={18} color="#64748b" />
             <input 
               type="text" 
               placeholder="Search conversations..." 
               value={roomSearch} 
               onChange={e => setRoomSearch(e.target.value)} 
-              style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '14px', fontWeight: 500 }} 
             />
           </div>
         </div>
 
-        <div style={{ display: 'flex', padding: '0 20px', gap: '20px', borderBottom: '1px solid #f1f5f9' }}>
-          <button onClick={() => setActiveTab('chats')} style={{ background: 'none', border: 'none', padding: '12px 4px', fontSize: '14px', fontWeight: activeTab === 'chats' ? 800 : 500, color: activeTab === 'chats' ? '#1d4ed8' : '#64748b', borderBottom: activeTab === 'chats' ? '2px solid #1d4ed8' : '2px solid transparent', cursor: 'pointer' }}>Chats</button>
-          <button onClick={() => setActiveTab('requests')} style={{ background: 'none', border: 'none', padding: '12px 4px', fontSize: '14px', fontWeight: activeTab === 'requests' ? 800 : 500, color: activeTab === 'requests' ? '#1d4ed8' : '#64748b', borderBottom: activeTab === 'requests' ? '2px solid #1d4ed8' : '2px solid transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="sc-chat-tabs">
+          <button 
+            onClick={() => setActiveTab('chats')} 
+            className={`sc-chat-tab ${activeTab === 'chats' ? 'active' : ''}`}
+          >
+            Chats
+          </button>
+          <button 
+            onClick={() => setActiveTab('requests')} 
+            className={`sc-chat-tab ${activeTab === 'requests' ? 'active' : ''}`}
+          >
             Requests
-            {myRequests.length > 0 && <span style={{ background: '#ef4444', color: 'white', borderRadius: '10px', padding: '2px 6px', fontSize: '10px', fontWeight: 800 }}>{myRequests.length}</span>}
+            {myRequests.length > 0 && <span className="sc-chat-tab-badge">{myRequests.length}</span>}
           </button>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', padding: '10px' }}>
+        <div className="sc-chat-list">
           {activeTab === 'chats' ? (
             filteredActiveRooms.length > 0 ? filteredActiveRooms.map(r => {
               const unread = unreadPerRoom(r.id);
               const isActive = selectedRoom === r.id;
               const other = getRoomOther(r);
               return (
-                <div key={r.id} onClick={() => { setSelectedRoom(r.id); setMobileSidebarOpen(false); }} style={{ 
-                  display: 'flex', gap: '12px', padding: '12px', borderRadius: '16px', cursor: 'pointer', transition: 'all 0.2s',
-                  background: isActive ? '#f0f7ff' : 'transparent',
-                  marginBottom: '4px'
-                }} onMouseEnter={e => !isActive && (e.currentTarget.style.background = '#f8fafc')} onMouseLeave={e => !isActive && (e.currentTarget.style.background = 'transparent')}>
-                <div style={{ position: 'relative' }}>
+                <div 
+                  key={r.id} 
+                  onClick={() => { setSelectedRoom(r.id); setMobileSidebarOpen(false); }} 
+                  className={`sc-chat-room ${isActive ? 'active' : ''}`}
+                >
+                  <div className="sc-chat-room-avatar">
                     {r.type === 'group' ? (
                       r.avatar ? (
-                        <img src={r.avatar} alt="Group" style={{ width: 48, height: 48, borderRadius: '16px', objectFit: 'cover' }} />
+                        <img src={r.avatar} alt="Group" />
                       ) : (
-                        <div style={{ width: 48, height: 48, borderRadius: '16px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={24} color="white" /></div>
+                        <div className="group-icon"><Users size={24} color="white" /></div>
                       )
                     ) : renderAvatar(other, 48)}
-                    {unread > 0 && <div style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#1d4ed8', color: 'white', borderRadius: '50%', width: '20px', height: '20px', fontSize: '10px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' }}>{unread}</div>}
+                    {unread > 0 && <div className="sc-chat-room-unread">{unread}</div>}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <div style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <div className="sc-chat-room-info">
+                    <div className="sc-chat-room-top">
+                      <div className="sc-chat-room-name">
                         {getRoomTitle(r)}
                         {r.type !== 'group' && <SciCommVerificationBadge role={other?.role} />}
                       </div>
-                      <div style={{ fontSize: '11px', color: '#94a3b8' }}>{timeAgo(r.lastMessageAt)}</div>
+                      <div className="sc-chat-room-time">{timeAgo(r.lastMessageAt)}</div>
                     </div>
-                    <div style={{ fontSize: '13px', color: unread > 0 ? '#1e293b' : '#64748b', fontWeight: unread > 0 ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div className={`sc-chat-room-last ${unread > 0 ? 'unread' : ''}`}>
                       {r.lastSender === user.name ? 'You: ' : ''}{r.lastMessage || 'Start a conversation'}
                     </div>
                   </div>
@@ -588,107 +580,160 @@ export default function SciCommChat() {
               );
             }) : <div style={{ textAlign: 'center', padding: '40px 20px', color: '#94a3b8' }}>No conversations found.</div>
           ) : (
-            myRequests.map(r => (
-              <div key={r.id} onClick={() => { setSelectedRoom(r.id); setMobileSidebarOpen(false); }} style={{ display: 'flex', gap: '12px', padding: '12px', borderRadius: '16px', cursor: 'pointer', background: selectedRoom === r.id ? '#fef2f2' : 'transparent' }}>
-                {renderAvatar(getRoomOther(r), 48)}
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: '15px', display: 'flex', alignItems: 'center', gap: '4px' }}>{getRoomTitle(r)} <SciCommVerificationBadge role={getRoomOther(r)?.role} /></div>
+            myRequests.length > 0 ? myRequests.map(r => (
+              <div 
+                key={r.id} 
+                onClick={() => { setSelectedRoom(r.id); setMobileSidebarOpen(false); }} 
+                className={`sc-chat-room ${selectedRoom === r.id ? 'active' : ''}`}
+              >
+                <div className="sc-chat-room-avatar">
+                  {renderAvatar(getRoomOther(r), 48)}
+                </div>
+                <div className="sc-chat-room-info">
+                  <div className="sc-chat-room-name">
+                    {getRoomTitle(r)} 
+                    <SciCommVerificationBadge role={getRoomOther(r)?.role} />
+                  </div>
                   <div style={{ fontSize: '13px', color: '#dc2626', fontWeight: 600 }}>New Message Request</div>
                 </div>
               </div>
-            ))
+            )) : <div style={{ textAlign: 'center', padding: '40px 20px', color: '#94a3b8' }}>No requests found.</div>
           )}
         </div>
 
         {/* New Chat Overlay */}
         {showNewChat && (
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'white', zIndex: 110, display: 'flex', flexDirection: 'column', animation: 'slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-            <div style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #f1f5f9' }}>
-              <button onClick={() => setShowNewChat(false)} style={{ background: '#f1f5f9', border: 'none', color: '#64748b', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><ChevronLeft size={24} /></button>
-              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 900 }}>New Chat</h3>
+          <div className="sc-chat-overlay">
+            <div className="sc-chat-overlay-header">
+              <button onClick={() => setShowNewChat(false)} className="sc-chat-overlay-back">
+                <ChevronLeft size={24} />
+              </button>
+              <h3 className="sc-chat-overlay-title">New Chat</h3>
             </div>
-            <div style={{ padding: '16px 20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', background: '#f1f5f9', borderRadius: '14px', padding: '12px 16px', gap: '10px' }}>
-                <Search size={18} color="#64748b" />
-                <input type="text" placeholder="Search people..." value={newChatSearch} onChange={e => setNewChatSearch(e.target.value)} style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '14px' }} />
-              </div>
-            </div>
-            <div style={{ flex: 1, overflowY: 'auto', padding: '0 10px 20px' }}>
-              {filteredNewChatUsers.map(u => (
-                <div key={u.id} onClick={() => createPrivateRoom(u.id, u.name)} style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '12px 16px', borderRadius: '16px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background='#f8fafc'} onMouseLeave={e => e.currentTarget.style.background='transparent'}>
-                  {renderAvatar(u, 44)}
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: '15px', display: 'flex', alignItems: 'center', gap: '4px' }}>{u.name} <SciCommVerificationBadge role={u.role} /></div>
-                    <div style={{ fontSize: '12px', color: '#64748b' }}>{u.department || 'Member'}</div>
-                  </div>
+            <div className="sc-chat-overlay-body">
+              <div style={{ marginBottom: '16px' }}>
+                <div className="sc-chat-search">
+                  <Search size={18} color="#64748b" />
+                  <input 
+                    type="text" 
+                    placeholder="Search people..." 
+                    value={newChatSearch} 
+                    onChange={e => setNewChatSearch(e.target.value)} 
+                  />
                 </div>
-              ))}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {filteredNewChatUsers.map(u => (
+                  <div 
+                    key={u.id} 
+                    onClick={() => createPrivateRoom(u.id, u.name)} 
+                    className="sc-chat-overlay-user"
+                  >
+                    {renderAvatar(u, 44)}
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '15px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        {u.name} 
+                        <SciCommVerificationBadge role={u.role} />
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#64748b' }}>{u.department || 'Member'}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
         {/* New Group Overlay */}
         {showNewGroup && (
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'white', zIndex: 110, display: 'flex', flexDirection: 'column', animation: 'slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-            <div style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #f1f5f9' }}>
-              <button onClick={() => setShowNewGroup(false)} style={{ background: '#f1f5f9', border: 'none', color: '#64748b', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><ChevronLeft size={24} /></button>
-              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 900 }}>Create Group</h3>
+          <div className="sc-chat-overlay">
+            <div className="sc-chat-overlay-header">
+              <button onClick={() => setShowNewGroup(false)} className="sc-chat-overlay-back">
+                <ChevronLeft size={24} />
+              </button>
+              <h3 className="sc-chat-overlay-title">Create Group</h3>
             </div>
-            <div style={{ padding: '20px', flex: 1, overflowY: 'auto' }}>
+            <div className="sc-chat-overlay-body">
               <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#94a3b8', letterSpacing: '1px', marginBottom: '8px' }}>GROUP NAME</label>
-                <input type="text" placeholder="Enter group name..." value={newGroupName} onChange={e => setNewGroupName(e.target.value)} style={{ width: '100%', padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '15px', outline: 'none', transition: 'border-color 0.2s' }} />
+                <label className="sc-chat-form-label">GROUP NAME</label>
+                <input 
+                  type="text" 
+                  placeholder="Enter group name..." 
+                  value={newGroupName} 
+                  onChange={e => setNewGroupName(e.target.value)} 
+                  className="sc-chat-form-input" 
+                />
               </div>
               <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <label style={{ fontSize: '12px', fontWeight: 800, color: '#94a3b8', letterSpacing: '1px' }}>SELECT MEMBERS ({selectedMembers.length})</label>
+                <label className="sc-chat-form-label">SELECT MEMBERS ({selectedMembers.length})</label>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', background: '#f1f5f9', borderRadius: '14px', padding: '12px 16px', gap: '10px', marginBottom: '16px' }}>
-                <Search size={18} color="#64748b" />
-                <input type="text" placeholder="Search people..." value={newChatSearch} onChange={e => setNewChatSearch(e.target.value)} style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '14px' }} />
+              <div style={{ marginBottom: '16px' }}>
+                <div className="sc-chat-search">
+                  <Search size={18} color="#64748b" />
+                  <input 
+                    type="text" 
+                    placeholder="Search people..." 
+                    value={newChatSearch} 
+                    onChange={e => setNewChatSearch(e.target.value)} 
+                  />
+                </div>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
                 {selectedMembers.map(id => {
                   const m = scientists.find(s => String(s.id) === String(id));
                   return (
-                    <div key={id} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#eff6ff', color: '#1d4ed8', padding: '6px 10px', borderRadius: '10px', fontSize: '12px', fontWeight: 700 }}>
-                      {m?.name} <X size={12} style={{ cursor: 'pointer' }} onClick={() => setSelectedMembers(selectedMembers.filter(mid => mid !== id))} />
+                    <div key={id} className="sc-chat-chip">
+                      {m?.name} 
+                      <X size={12} style={{ cursor: 'pointer', marginLeft: '4px' }} onClick={() => setSelectedMembers(selectedMembers.filter(mid => mid !== id))} />
                     </div>
                   );
                 })}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {filteredNewChatUsers.slice(0, 30).map(u => (
-                  <label key={u.id} style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '10px 16px', borderRadius: '16px', cursor: 'pointer', background: selectedMembers.includes(u.id) ? '#f0f7ff' : 'transparent' }}>
-                    <input type="checkbox" checked={selectedMembers.includes(u.id)} onChange={e => setSelectedMembers(e.target.checked ? [...selectedMembers, u.id] : selectedMembers.filter(id => id !== u.id))} style={{ width: 18, height: 18, borderRadius: '6px' }} />
+                  <label 
+                    key={u.id} 
+                    className="sc-chat-overlay-user" 
+                    style={{ background: selectedMembers.includes(u.id) ? '#f0f7ff' : 'transparent', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+                  >
+                    <input 
+                      type="checkbox" 
+                      checked={selectedMembers.includes(u.id)} 
+                      onChange={e => setSelectedMembers(e.target.checked ? [...selectedMembers, u.id] : selectedMembers.filter(id => id !== u.id))} 
+                      style={{ width: 18, height: 18, borderRadius: '6px' }} 
+                    />
                     {renderAvatar(u, 36)}
-                    <span style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>{u.name} <SciCommVerificationBadge role={u.role} /></span>
+                    <span style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      {u.name} 
+                      <SciCommVerificationBadge role={u.role} />
+                    </span>
                   </label>
                 ))}
               </div>
             </div>
-            <div style={{ padding: '20px', borderTop: '1px solid #f1f5f9' }}>
-              <button onClick={createGroupRoom} disabled={!newGroupName.trim() || selectedMembers.length === 0} style={{ width: '100%', padding: '16px', borderRadius: '14px', border: 'none', background: '#1d4ed8', color: 'white', fontWeight: 800, fontSize: '16px', cursor: 'pointer', opacity: (!newGroupName.trim() || selectedMembers.length === 0) ? 0.6 : 1, boxShadow: '0 10px 25px rgba(29,78,216,0.3)' }}>Create Group</button>
+            <div className="sc-chat-overlay-footer">
+              <button 
+                onClick={createGroupRoom} 
+                disabled={!newGroupName.trim() || selectedMembers.length === 0} 
+                className="sc-chat-btn-primary"
+              >
+                Create Group
+              </button>
             </div>
           </div>
         )}
       </div>
 
       {/* Main Chat Area */}
-      <div className="scicomm-chat-main" style={{ 
-        flex: 1, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        position: 'relative', 
-        width: '100%',
-        minWidth: 0,
-        overflow: 'hidden'
-      }}>
+      <div className="sc-chat-main">
         {activeRoom ? (
           <>
             {/* Chat Header */}
-            <div className="chat-header" style={{ height: '70px', background: 'white', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIndex: 50 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
-                <button onClick={() => setMobileSidebarOpen(true)} className="chat-show-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', marginLeft: '-8px', flexShrink: 0 }}><ArrowLeft size={24} /></button>
+            <div className="sc-chat-header">
+              <div className="sc-chat-header-left">
+                <button onClick={() => setMobileSidebarOpen(true)} className="sc-chat-back-btn">
+                  <ArrowLeft size={24} />
+                </button>
                 {activeRoom.type === 'group' ? (
                   activeRoom.avatar ? (
                     <img src={activeRoom.avatar} alt="Group" style={{ width: 44, height: 44, borderRadius: '14px', objectFit: 'cover' }} />
@@ -696,23 +741,31 @@ export default function SciCommChat() {
                     <div style={{ width: 44, height: 44, borderRadius: '14px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={22} color="#1d4ed8" /></div>
                   )
                 ) : renderAvatar(getRoomOther(activeRoom), 44)}
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ fontWeight: 800, fontSize: '15px', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div className="sc-chat-header-info">
+                  <div className="sc-chat-header-name">
                     {getRoomTitle(activeRoom)}
                     {activeRoom.type !== 'group' && <SciCommVerificationBadge role={getRoomOther(activeRoom)?.role} />}
                   </div>
-                  <div style={{ fontSize: '11px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{activeRoom.type === 'group' ? `${activeRoom.members?.length} members` : (getRoomOther(activeRoom)?.department || 'Member')}</div>
+                  <div className="sc-chat-header-sub">
+                    {activeRoom.type === 'group' ? `${activeRoom.members?.length} members` : (getRoomOther(activeRoom)?.department || 'Member')}
+                  </div>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '8px', position: 'relative' }}>
-                {activeRoom.type === 'group' && <button onClick={openGroupSettings} style={{ background: '#f8fafc', border: 'none', color: '#64748b', width: 40, height: 40, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Settings size={20} /></button>}
+              <div className="sc-chat-header-actions">
+                {activeRoom.type === 'group' && (
+                  <button onClick={openGroupSettings} className="sc-chat-header-btn">
+                    <Settings size={20} />
+                  </button>
+                )}
                 <div style={{ position: 'relative' }}>
-                  <button onClick={() => setShowChatMenu(!showChatMenu)} style={{ background: '#f8fafc', border: 'none', color: '#64748b', width: 40, height: 40, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><MoreHorizontal size={20} /></button>
+                  <button onClick={() => setShowChatMenu(!showChatMenu)} className="sc-chat-header-btn">
+                    <MoreHorizontal size={20} />
+                  </button>
                   {showChatMenu && (
-                    <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: '8px', background: 'white', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0', minWidth: '160px', overflow: 'hidden', zIndex: 100 }}>
-                      <button onClick={handleDeleteChat} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', borderBottom: '1px solid #f1f5f9', textAlign: 'left', fontWeight: 600, color: '#ef4444', cursor: 'pointer' }} onMouseEnter={e=>e.currentTarget.style.background='#fee2e2'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Delete Chat</button>
+                    <div className="sc-chat-header-menu">
+                      <button onClick={handleDeleteChat}>Delete Chat</button>
                       {activeRoom.type === 'group' && (
-                        <button onClick={handleLeaveGroup} style={{ width: '100%', padding: '12px 16px', background: 'transparent', border: 'none', textAlign: 'left', fontWeight: 600, color: '#ef4444', cursor: 'pointer' }} onMouseEnter={e=>e.currentTarget.style.background='#fee2e2'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Leave Group</button>
+                        <button onClick={handleLeaveGroup}>Leave Group</button>
                       )}
                     </div>
                   )}
@@ -721,7 +774,7 @@ export default function SciCommChat() {
             </div>
 
             {/* Messages */}
-            <div className="chat-messages-container" style={{ flex: 1, overflowY: 'auto', padding: '16px', background: '#f8fafc', backgroundImage: 'radial-gradient(#e2e8f0 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
+            <div className="sc-chat-messages">
               {roomMessages.map((m, idx) => {
                 const isMe = String(m.senderId) === String(user.id);
                 const prev = roomMessages[idx - 1];
@@ -735,15 +788,11 @@ export default function SciCommChat() {
                   <div 
                     key={m.id} 
                     id={`msg-${m.id}`}
+                    className={`sc-msg-row ${isMe ? 'me' : 'other'}`}
                     style={{ 
-                      display: 'flex', 
-                      flexDirection: 'column', 
-                      alignItems: isMe ? 'flex-end' : 'flex-start', 
-                      marginBottom: '4px',
                       transform: `translateX(${constrainedTranslateX}px)`,
                       transition: isSwiping ? 'none' : 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                      zIndex: activeMsgMenu === m.id ? 100 : 1,
-                      position: 'relative'
+                      zIndex: activeMsgMenu === m.id ? 100 : 1
                     }}
                     onTouchStart={(e) => {
                       if (isDeleted) return;
@@ -756,41 +805,27 @@ export default function SciCommChat() {
                     onTouchEnd={() => {
                       if (swipeState.id === m.id) {
                         if (Math.abs(constrainedTranslateX) >= 50) {
-                          setReplyingTo(m);
+                           setReplyingTo(m);
                         }
                         setSwipeState({ id: null, startX: 0, currentX: 0 });
                       }
                     }}
                   >
                     {isFirstInGroup && !isMe && activeRoom.type === 'group' && (
-                      <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', marginLeft: '16px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div className="sc-msg-sender">
                         {m.senderName}
                         <SciCommVerificationBadge userId={m.senderId} scientists={scientists} />
                       </div>
                     )}
-                    <div 
-                      className={`chat-bubble ${isMe ? 'chat-bubble-me' : 'chat-bubble-other'}`}
-                      style={{ 
-                        maxWidth: '75%', 
-                        padding: '10px 16px', 
-                        borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                        background: isDeleted ? (isMe ? 'rgba(29, 78, 216, 0.1)' : '#f8fafc') : (highlightedMsgId === m.id ? (isMe ? '#2563eb' : '#fef3c7') : (isMe ? '#1d4ed8' : 'white')),
-                      color: isDeleted ? '#94a3b8' : (isMe ? 'white' : '#1e293b'),
-                      fontSize: '14px',
-                      lineHeight: '1.5',
-                      boxShadow: highlightedMsgId === m.id ? (isMe ? '0 0 0 4px rgba(219, 234, 254, 0.5)' : '0 0 0 4px rgba(253, 230, 138, 0.5)') : (isDeleted ? 'none' : '0 2px 8px rgba(0,0,0,0.03)'),
-                      border: isDeleted ? '1px dashed #cbd5e1' : (highlightedMsgId === m.id && !isMe ? '1px solid #fcd34d' : (isMe ? 'none' : '1px solid #e2e8f0')),
-                      position: 'relative',
-                      fontStyle: isDeleted ? 'italic' : 'normal',
-                      transition: 'all 0.6s ease'
-                    }}>
-                      <div style={{ 
-                        whiteSpace: 'pre-wrap'
-                      }}>
+                    <div className={`sc-bubble ${isMe ? 'me' : 'other'} ${isDeleted ? 'deleted' : ''} ${highlightedMsgId === m.id ? 'highlighted' : ''}`}>
+                      <div style={{ whiteSpace: 'pre-wrap' }}>
                         {m.replyToContent && (
-                          <div onClick={() => handleReplyClick(m.replyToId)} style={{ background: isMe ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)', padding: '6px 10px', borderRadius: '8px', marginBottom: '6px', borderLeft: `3px solid ${isMe ? 'white' : '#1d4ed8'}`, fontSize: '12px', cursor: 'pointer', transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity = 0.8} onMouseLeave={e => e.currentTarget.style.opacity = 1}>
-                            <div style={{ fontWeight: 700, marginBottom: '2px', opacity: 0.9 }}>{m.replyToSender}</div>
-                            <div style={{ opacity: 0.8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.replyToContent}</div>
+                          <div 
+                            onClick={() => handleReplyClick(m.replyToId)} 
+                            className={`sc-bubble-reply ${isMe ? 'me' : 'other'}`}
+                          >
+                            <div className="sc-bubble-reply-name">{m.replyToSender}</div>
+                            <div className="sc-bubble-reply-text">{m.replyToContent}</div>
                           </div>
                         )}
                         {(() => {
@@ -799,25 +834,13 @@ export default function SciCommChat() {
                           return <span style={{ fontSize: isEmojiOnly ? '32px' : 'inherit', lineHeight: isEmojiOnly ? '1.4' : 'inherit' }}>{text}</span>;
                         })()}
                         {!isDeleted && m.fileUrl && (
-                          <div style={{ marginTop: '8px' }}>
+                          <div className="sc-bubble-file" style={{ marginTop: '8px' }}>
                             {m.fileType?.startsWith('image/') || m.fileUrl.startsWith('data:image/') ? (
-                              <img src={m.fileUrl} alt="attachment" style={{ width: '100%', maxWidth: '280px', borderRadius: '12px', cursor: 'pointer', display: 'block', border: '1px solid rgba(255,255,255,0.1)' }} onClick={() => window.open(m.fileUrl, '_blank')} />
+                              <img src={m.fileUrl} alt="attachment" onClick={() => window.open(m.fileUrl, '_blank')} />
                             ) : m.fileType?.startsWith('video/') ? (
-                              <video src={m.fileUrl} controls style={{ width: '100%', maxWidth: '280px', borderRadius: '12px', display: 'block' }} />
+                              <video src={m.fileUrl} controls />
                             ) : (
-                              <a href={m.fileUrl} download={m.fileName || 'file'} target="_blank" rel="noreferrer" style={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: '8px', 
-                                padding: '10px 14px', 
-                                background: isMe ? 'rgba(255, 255, 255, 0.15)' : '#f1f5f9', 
-                                color: isMe ? 'white' : '#1d4ed8', 
-                                borderRadius: '12px', 
-                                textDecoration: 'none', 
-                                fontWeight: 600, 
-                                fontSize: '13px',
-                                wordBreak: 'break-all'
-                              }}>
+                              <a href={m.fileUrl} download={m.fileName || 'file'} target="_blank" rel="noreferrer" className={`sc-bubble-file-link ${isMe ? 'me' : 'other'}`}>
                                 <FileText size={18} />
                                 <span>{m.fileName || 'Download Attachment'}</span>
                               </a>
@@ -825,35 +848,25 @@ export default function SciCommChat() {
                           </div>
                         )}
                       </div>
-                      <div style={{ fontSize: '10px', marginTop: '4px', textAlign: 'right', opacity: 0.6 }}>{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                      <div className="sc-bubble-time">
+                        {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
                       
                       {!isDeleted && (
-                        <div 
-                          className="msg-actions"
-                          style={{ 
-                            position: 'absolute', 
-                            top: '50%', 
-                            transform: 'translateY(-50%)',
-                            [isMe ? 'left' : 'right']: '-36px',
-                            display: activeMsgMenu === m.id ? 'flex' : 'none',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            zIndex: activeMsgMenu === m.id ? 60 : 1
-                          }}
-                        >
+                        <div className={`sc-msg-actions-wrap ${isMe ? 'me' : 'other'} ${activeMsgMenu === m.id ? 'visible' : ''}`}>
                           <button 
+                            className="sc-msg-actions-btn"
                             onClick={(e) => { e.stopPropagation(); setActiveMsgMenu(activeMsgMenu === m.id ? null : m.id); }} 
-                            style={{ background: 'white', border: '1px solid #e2e8f0', color: '#64748b', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }} 
                             title="More options"
                           >
                             <MoreHorizontal size={14} />
                           </button>
                           
                           {activeMsgMenu === m.id && (
-                            <div style={{ position: 'absolute', top: '100%', [isMe ? 'left' : 'right']: 0, marginTop: '4px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 100, padding: '4px', minWidth: '140px' }}>
-                              <button onClick={() => { setReplyingTo(m); setActiveMsgMenu(null); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#0f172a', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#f1f5f9'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Reply</button>
-                              {isMe && <button onClick={() => { setEditingMsg(m.id); setMsgText(m.content); setActiveMsgMenu(null); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#0f172a', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#f1f5f9'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Edit</button>}
-                              {(isMe || isAdmin) && <button onClick={() => { setActiveMsgMenu(null); handleDeleteMessage(m); }} style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', fontSize: '13px', fontWeight: 600, color: '#ef4444', cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e=>e.currentTarget.style.background='#fee2e2'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>Delete</button>}
+                            <div className={`sc-msg-menu ${isMe ? 'me' : 'other'}`}>
+                              <button onClick={() => { setReplyingTo(m); setActiveMsgMenu(null); }} className="sc-msg-menu-item">Reply</button>
+                              {isMe && <button onClick={() => { setEditingMsg(m.id); setMsgText(m.content); setActiveMsgMenu(null); }} className="sc-msg-menu-item">Edit</button>}
+                              {(isMe || isAdmin) && <button onClick={() => { setActiveMsgMenu(null); handleDeleteMessage(m); }} className="sc-msg-menu-item danger">Delete</button>}
                             </div>
                           )}
                         </div>
@@ -862,15 +875,14 @@ export default function SciCommChat() {
                   </div>
                 );
               })}
-              <style>{`.msg-actions { display: none; } div[style*="position: relative"]:hover .msg-actions { display: flex !important; } @keyframes spin { to { transform: rotate(360deg); } }`}</style>
               <div ref={messagesEndRef} />
             </div>
 
             {/* Mention Dropdown */}
             {showMentions && mentionSuggestions.length > 0 && (
-              <div style={{ position: 'absolute', bottom: '80px', left: '20px', right: '20px', background: 'white', borderRadius: '12px', boxShadow: '0 10px 40px rgba(0,0,0,0.15)', border: '1px solid #e2e8f0', zIndex: 100, maxHeight: '200px', overflowY: 'auto' }}>
+              <div className="sc-chat-mentions">
                 {mentionSuggestions.map(s => (
-                  <div key={s.id} onClick={() => insertMention(s)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onMouseOver={e => e.currentTarget.style.background='#f8fafc'} onMouseOut={e => e.currentTarget.style.background='white'}>
+                  <div key={s.id} onClick={() => insertMention(s)} className="sc-chat-mention-item">
                     {s.id === 'all' ? (
                       <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Users size={16} color="#1d4ed8" />
@@ -886,9 +898,9 @@ export default function SciCommChat() {
             )}
 
             {/* Input Bar */}
-            <div style={{ padding: '20px 24px', background: 'white', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+            <div className="sc-chat-inputbar">
               {replyingTo && (
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '10px 16px', background: '#f8fafc', borderRadius: '12px', borderLeft: '4px solid #1d4ed8', marginBottom: '12px' }}>
+                <div className="sc-chat-reply-preview">
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: '12px', fontWeight: 700, color: '#1d4ed8', marginBottom: '2px' }}>Replying to {replyingTo.senderName}</div>
                     <div style={{ fontSize: '13px', color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{replyingTo.deleted ? '🚫 This message was deleted.' : replyingTo.content}</div>
@@ -897,108 +909,91 @@ export default function SciCommChat() {
                 </div>
               )}
               {activeRoom.status === 'request' && activeRoom.initiator !== user.id ? (
-                <div style={{ textAlign: 'center' }}>
-                  <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '16px' }}>{getRoomTitle(activeRoom)} wants to message you.</p>
-                  <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                    <button onClick={() => declineRequest(activeRoom.id)} style={{ padding: '10px 24px', borderRadius: '12px', border: '1px solid #ef4444', background: 'transparent', color: '#ef4444', fontWeight: 700, cursor: 'pointer' }}>Decline</button>
-                    <button onClick={() => acceptRequest(activeRoom.id)} style={{ padding: '10px 24px', borderRadius: '12px', border: 'none', background: '#22c55e', color: 'white', fontWeight: 700, cursor: 'pointer' }}>Accept</button>
+                <div className="sc-chat-request-bar">
+                  <p>{getRoomTitle(activeRoom)} wants to message you.</p>
+                  <div className="sc-chat-request-actions">
+                    <button onClick={() => declineRequest(activeRoom.id)} className="sc-chat-request-decline">Decline</button>
+                    <button onClick={() => acceptRequest(activeRoom.id)} className="sc-chat-request-accept">Accept</button>
                   </div>
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px' }}>
-                    <div style={{ flex: 1, background: '#f1f5f9', borderRadius: '18px', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <label 
-                        style={{ 
-                          position: 'relative',
-                          background: 'none', 
-                          border: 'none', 
-                          color: '#64748b', 
-                          cursor: 'pointer', 
-                          opacity: fileUploading ? 0.5 : 1, 
-                          display: 'flex', 
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: '24px',
-                          height: '24px',
-                          flexShrink: 0
-                        }}
-                      >
-                        <Plus size={20} />
-                        <input 
-                          type="file" 
-                          ref={fileInputRef} 
-                          onChange={handleFileChange} 
-                          disabled={fileUploading}
-                          style={{ 
-                            position: 'absolute', 
-                            top: 0, 
-                            left: 0, 
-                            width: '100%', 
-                            height: '100%', 
-                            opacity: 0, 
-                            cursor: 'pointer', 
-                            zIndex: 10 
-                          }} 
-                        />
-                      </label>
-                      {fileUploading ? (
-                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '14px', fontWeight: 600, padding: '8px 0' }}>
-                          <div style={{ width: '16px', height: '16px', border: '2px solid #1d4ed8', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-                          <span>Uploading: {uploadProgress}%</span>
-                        </div>
-                      ) : (
-                        <textarea dir="auto"
-                          placeholder="Type a message... (@ to mention)"
-                          value={msgText}
-                          onChange={e => handleInputChange(e.target.value)}
-                          onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); setShowEmoji(false); } }}
-                          style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: '15px', color: '#0f172a', padding: '8px 0', minHeight: '24px', maxHeight: '120px', resize: 'none', fontFamily: 'inherit' }}
+                <div className="sc-chat-input-row">
+                  <div className="sc-chat-input-field">
+                    <label className="attach-label" style={{ opacity: fileUploading ? 0.5 : 1 }}>
+                      <Plus size={20} />
+                      <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        onChange={handleFileChange} 
+                        disabled={fileUploading}
+                      />
+                    </label>
+                    {fileUploading ? (
+                      <div className="sc-chat-upload-progress">
+                        <div className="sc-chat-upload-spinner"></div>
+                        <span>Uploading: {uploadProgress}%</span>
+                      </div>
+                    ) : (
+                      <textarea 
+                        dir="auto"
+                        placeholder="Type a message... (@ to mention)"
+                        value={msgText}
+                        onChange={e => handleInputChange(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); setShowEmoji(false); } }}
+                      />
+                    )}
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <button onClick={() => setShowEmoji(!showEmoji)} className="sc-chat-emoji-btn">
+                        <Smile size={20} />
+                      </button>
+                      {showEmoji && (
+                        <EmojiPicker 
+                          onSelect={(emoji) => setMsgText(prev => prev + emoji)}
+                          onClose={() => setShowEmoji(false)}
+                          isDarkMode={isDarkMode} 
                         />
                       )}
-                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                        <button onClick={() => setShowEmoji(!showEmoji)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Smile size={20} /></button>
-                        {showEmoji && (
-                          <EmojiPicker 
-                            onSelect={(emoji) => setMsgText(prev => prev + emoji)}
-                            onClose={() => setShowEmoji(false)}
-                            isDarkMode={isDarkMode} 
-                          />
-                        )}
-                      </div>
                     </div>
-                    <button onClick={() => { sendMessage(); setShowEmoji(false); }} disabled={!msgText.trim()} style={{ width: '44px', height: '44px', borderRadius: '16px', background: msgText.trim() ? '#1d4ed8' : '#e2e8f0', color: 'white', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s', boxShadow: msgText.trim() ? '0 4px 12px rgba(29,78,216,0.3)' : 'none' }}><Send size={20} /></button>
                   </div>
+                  <button 
+                    onClick={() => { sendMessage(); setShowEmoji(false); }} 
+                    disabled={!msgText.trim()} 
+                    className={`sc-chat-send-btn ${msgText.trim() ? 'ready' : 'disabled'}`}
+                  >
+                    <Send size={20} />
+                  </button>
                 </div>
               )}
             </div>
           </>
         ) : (
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', background: '#f8fafc' }} className="chat-hide-mobile">
-            <div style={{ width: '140px', height: '140px', borderRadius: '50%', background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', boxShadow: '0 20px 40px rgba(59,130,246,0.1)' }}>
+          <div className="sc-chat-empty">
+            <div className="sc-chat-empty-icon">
               <MessageSquare size={56} color="#1d4ed8" />
             </div>
-            <h3 style={{ margin: '0 0 12px', fontSize: '28px', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.5px' }}>Your Hub Messages</h3>
-            <p style={{ fontSize: '16px', color: '#64748b', margin: 0 }}>Select a chat or start a new conversation with any scientist.</p>
+            <h3>Your Hub Messages</h3>
+            <p>Select a chat or start a new conversation with any scientist.</p>
           </div>
         )}
 
         {/* Group Settings Overlay */}
         {showGroupSettings && activeRoom && (
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'white', zIndex: 120, display: 'flex', flexDirection: 'column', animation: 'slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-            <div style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #f1f5f9' }}>
-              <button onClick={() => setShowGroupSettings(false)} style={{ background: '#f1f5f9', border: 'none', color: '#64748b', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><ChevronLeft size={24} /></button>
-              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 900 }}>Group Settings</h3>
+          <div className="sc-chat-overlay">
+            <div className="sc-chat-overlay-header">
+              <button onClick={() => setShowGroupSettings(false)} className="sc-chat-overlay-back">
+                <ChevronLeft size={24} />
+              </button>
+              <h3 className="sc-chat-overlay-title">Group Settings</h3>
             </div>
-            <div style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px' }}>
-                <div style={{ position: 'relative', width: '100px', height: '100px', marginBottom: '16px' }}>
+            <div className="sc-chat-overlay-body">
+              <div className="sc-chat-group-avatar-edit">
+                <div className="sc-chat-group-avatar-wrap">
                   {groupAvatarEdit ? (
-                    <img src={groupAvatarEdit} alt="Group" style={{ width: '100%', height: '100%', borderRadius: '32px', objectFit: 'cover' }} />
+                    <img src={groupAvatarEdit} alt="Group" />
                   ) : (
-                    <div style={{ width: '100%', height: '100%', borderRadius: '32px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Users size={40} color="white" /></div>
+                    <div className="placeholder"><Users size={40} color="white" /></div>
                   )}
-                  <label style={{ position: 'absolute', bottom: '-8px', right: '-8px', width: '36px', height: '36px', borderRadius: '50%', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', border: '1px solid #f1f5f9' }}>
+                  <label className="upload-label">
                     <Image size={18} color="#1d4ed8" />
                     <input type="file" accept="image/*" onChange={(e) => {
                       const file = e.target.files?.[0];
@@ -1010,19 +1005,32 @@ export default function SciCommChat() {
                     }} style={{ display: 'none' }} />
                   </label>
                 </div>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: '#1d4ed8' }}>Change Group Photo</div>
+                <div style={{ fontSize: '13px', fontWeight: 700, color: '#1d4ed8', marginTop: '8px' }}>Change Group Photo</div>
               </div>
               <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#94a3b8', letterSpacing: '1px', marginBottom: '8px' }}>GROUP NAME</label>
-                <input type="text" value={groupNameEdit} onChange={e => setGroupNameEdit(e.target.value)} style={{ width: '100%', padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '15px', outline: 'none' }} />
+                <label className="sc-chat-form-label">GROUP NAME</label>
+                <input 
+                  type="text" 
+                  value={groupNameEdit} 
+                  onChange={e => setGroupNameEdit(e.target.value)} 
+                  className="sc-chat-form-input" 
+                />
               </div>
               <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: '#94a3b8', letterSpacing: '1px', marginBottom: '8px' }}>DESCRIPTION</label>
-                <textarea dir="auto" value={groupDescEdit} onChange={e => setGroupDescEdit(e.target.value)} placeholder="What is this group about?" style={{ width: '100%', padding: '14px 18px', borderRadius: '14px', border: '1px solid #e2e8f0', background: '#f8fafc', fontSize: '15px', outline: 'none', resize: 'none' }} rows={3} />
+                <label className="sc-chat-form-label">DESCRIPTION</label>
+                <textarea 
+                  dir="auto" 
+                  value={groupDescEdit} 
+                  onChange={e => setGroupDescEdit(e.target.value)} 
+                  placeholder="What is this group about?" 
+                  className="sc-chat-form-input" 
+                  rows={3} 
+                  style={{ resize: 'none' }}
+                />
               </div>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 800, color: '#94a3b8', letterSpacing: '1px' }}>MEMBERS ({activeRoom.members?.length})</label>
+                  <label className="sc-chat-form-label" style={{ marginBottom: 0 }}>MEMBERS ({activeRoom.members?.length})</label>
                   <button onClick={() => setShowAddMembers(true)} style={{ background: 'none', border: 'none', color: '#1d4ed8', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>+ Add Member</button>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -1032,7 +1040,7 @@ export default function SciCommChat() {
                     const isMemberAdmin = activeRoom.admins?.includes(id);
                     const canPromote = (isAdmin || activeRoom.admins?.includes(user.id)) && !isMemberAdmin && !isMe;
                     return (
-                      <div key={id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#f8fafc', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
+                      <div key={id} className="sc-chat-overlay-member">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           {renderAvatar(m, 36)}
                           <div>
@@ -1060,67 +1068,79 @@ export default function SciCommChat() {
                 </div>
               </div>
             </div>
-            <div style={{ padding: '20px', borderTop: '1px solid #f1f5f9', display: 'flex', gap: '12px' }}>
-              <button onClick={() => setShowGroupSettings(false)} style={{ flex: 1, padding: '16px', borderRadius: '14px', border: '1px solid #e2e8f0', background: 'white', color: '#64748b', fontWeight: 800, cursor: 'pointer' }}>Cancel</button>
-              <button onClick={saveGroupSettings} style={{ flex: 2, padding: '16px', borderRadius: '14px', border: 'none', background: '#1d4ed8', color: 'white', fontWeight: 800, cursor: 'pointer', boxShadow: '0 10px 25px rgba(29,78,216,0.3)' }}>Save Changes</button>
+            <div className="sc-chat-overlay-footer" style={{ display: 'flex', gap: '12px' }}>
+              <button onClick={() => setShowGroupSettings(false)} className="sc-chat-btn-secondary" style={{ flex: 1 }}>Cancel</button>
+              <button onClick={saveGroupSettings} className="sc-chat-btn-primary" style={{ flex: 2 }}>Save Changes</button>
             </div>
           </div>
         )}
 
         {/* Add Members Overlay */}
         {showAddMembers && (
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'white', zIndex: 130, display: 'flex', flexDirection: 'column', animation: 'slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-            <div style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #f1f5f9' }}>
-              <button onClick={() => setShowAddMembers(false)} style={{ background: '#f1f5f9', border: 'none', color: '#64748b', width: 40, height: 40, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><ChevronLeft size={24} /></button>
-              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 900 }}>Add Members</h3>
+          <div className="sc-chat-overlay">
+            <div className="sc-chat-overlay-header">
+              <button onClick={() => setShowAddMembers(false)} className="sc-chat-overlay-back">
+                <ChevronLeft size={24} />
+              </button>
+              <h3 className="sc-chat-overlay-title">Add Members</h3>
             </div>
-            <div style={{ padding: '20px', flex: 1, overflowY: 'auto' }}>
-              <div style={{ display: 'flex', alignItems: 'center', background: '#f1f5f9', borderRadius: '14px', padding: '12px 16px', gap: '10px', marginBottom: '20px' }}>
-                <Search size={18} color="#64748b" />
-                <input type="text" placeholder="Search people..." value={newChatSearch} onChange={e => setNewChatSearch(e.target.value)} style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '14px' }} />
+            <div className="sc-chat-overlay-body">
+              <div style={{ marginBottom: '20px' }}>
+                <div className="sc-chat-search">
+                  <Search size={18} color="#64748b" />
+                  <input 
+                    type="text" 
+                    placeholder="Search people..." 
+                    value={newChatSearch} 
+                    onChange={e => setNewChatSearch(e.target.value)} 
+                  />
+                </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {(() => {
                   const freshRoom = chatRooms.find(r => r.id === selectedRoom);
                   const currentMemberIds = (freshRoom?.members || []).map(String);
                   return scientists.filter(s => !currentMemberIds.includes(String(s.id)) && ((s.name || '').toLowerCase().includes(newChatSearch.toLowerCase()) || (s.username||'').toLowerCase().includes(newChatSearch.toLowerCase()))).map(u => (
-                  <div key={u.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderRadius: '16px', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background='#f8fafc'} onMouseLeave={e => e.currentTarget.style.background='transparent'}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      {renderAvatar(u, 40)}
-                      <div>
-                        <div style={{ fontWeight: 700, fontSize: '15px' }}>{u.name}</div>
-                        <div style={{ fontSize: '12px', color: '#64748b' }}>{u.department || 'Member'}</div>
+                    <div key={u.id} className="sc-chat-overlay-user" style={{ justifyContent: 'space-between' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        {renderAvatar(u, 40)}
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: '15px' }}>{u.name}</div>
+                          <div style={{ fontSize: '12px', color: '#64748b' }}>{u.department || 'Member'}</div>
+                        </div>
                       </div>
+                      <button 
+                        onClick={async () => {
+                          const freshRoom = chatRooms.find(r => r.id === selectedRoom);
+                          if (!freshRoom) return;
+                          const currentMembers = freshRoom.members || [];
+                          if (currentMembers.map(String).includes(String(u.id))) return;
+                          const newMembers = [...currentMembers, u.id];
+                          const newNames = { ...(freshRoom.memberNames || {}), [u.id]: u.name };
+                          await db.scicomm_chat_rooms.update(selectedRoom, { members: newMembers, memberNames: newNames });
+                          await db.scicomm_notifications.add({
+                            userId: u.id, type: 'group_added', senderId: user.id,
+                            title: `${user.name.split(' ')[0]} added you to a group chat`,
+                            message: freshRoom.name || 'Group Chat',
+                            link: '/chat', createdAt: new Date().toISOString(), read: false
+                          });
+                          await db.scicomm_chat_messages.add({
+                            roomId: selectedRoom, senderId: 'system', senderName: 'System',
+                            content: `${user.name} added ${u.name} to the group.`,
+                            type: 'system', readBy: [], createdAt: new Date().toISOString()
+                          });
+                        }} 
+                        style={{ padding: '8px 16px', borderRadius: '10px', border: 'none', background: '#eff6ff', color: '#1d4ed8', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}
+                      >
+                        Add
+                      </button>
                     </div>
-                    <button onClick={async () => {
-                      // Read freshest room data directly from the live collection to avoid stale state
-                      const freshRoom = chatRooms.find(r => r.id === selectedRoom);
-                      if (!freshRoom) return;
-                      const currentMembers = freshRoom.members || [];
-                      // Prevent duplicate adds
-                      if (currentMembers.map(String).includes(String(u.id))) return;
-                      const newMembers = [...currentMembers, u.id];
-                      const newNames = { ...(freshRoom.memberNames || {}), [u.id]: u.name };
-                      await db.scicomm_chat_rooms.update(selectedRoom, { members: newMembers, memberNames: newNames });
-                      await db.scicomm_notifications.add({
-                        userId: u.id, type: 'group_added', senderId: user.id,
-                        title: `${user.name.split(' ')[0]} added you to a group chat`,
-                        message: freshRoom.name || 'Group Chat',
-                        link: '/chat', createdAt: new Date().toISOString(), read: false
-                      });
-                      await db.scicomm_chat_messages.add({
-                        roomId: selectedRoom, senderId: 'system', senderName: 'System',
-                        content: `${user.name} added ${u.name} to the group.`,
-                        type: 'system', readBy: [], createdAt: new Date().toISOString()
-                      });
-                    }} style={{ padding: '8px 16px', borderRadius: '10px', border: 'none', background: '#eff6ff', color: '#1d4ed8', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>Add</button>
-                  </div>
-                ));
+                  ));
                 })()}
               </div>
             </div>
-            <div style={{ padding: '20px', borderTop: '1px solid #f1f5f9' }}>
-              <button onClick={() => setShowAddMembers(false)} style={{ width: '100%', padding: '16px', borderRadius: '14px', border: 'none', background: '#1d4ed8', color: 'white', fontWeight: 800, fontSize: '16px', cursor: 'pointer' }}>Done</button>
+            <div className="sc-chat-overlay-footer">
+              <button onClick={() => setShowAddMembers(false)} className="sc-chat-btn-primary">Done</button>
             </div>
           </div>
         )}
@@ -1135,67 +1155,20 @@ export default function SciCommChat() {
       )}
 
       {deleteConfirm && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.2s' }}>
-          <div style={{ background: 'white', padding: '32px', borderRadius: '24px', width: '90%', maxWidth: '400px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
-            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#fee2e2', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+        <div className="sc-chat-modal-overlay">
+          <div className="sc-chat-modal">
+            <div className="sc-chat-modal-icon">
               <Trash2 size={32} />
             </div>
-            <h3 style={{ margin: '0 0 12px', fontSize: '22px', fontWeight: 900, textAlign: 'center', color: '#0f172a' }}>{deleteConfirm.title}</h3>
-            <p style={{ margin: '0 0 24px', color: '#64748b', fontSize: '15px', textAlign: 'center', lineHeight: '1.5' }}>{deleteConfirm.message}</p>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <button onClick={() => setDeleteConfirm(null)} style={{ flex: 1, padding: '14px', borderRadius: '16px', background: '#f1f5f9', border: 'none', fontWeight: 800, color: '#64748b', fontSize: '15px', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#e2e8f0'} onMouseLeave={e=>e.currentTarget.style.background='#f1f5f9'}>Cancel</button>
-              <button onClick={deleteConfirm.onConfirm} style={{ flex: 1, padding: '14px', borderRadius: '16px', background: '#ef4444', border: 'none', fontWeight: 800, color: 'white', fontSize: '15px', cursor: 'pointer', transition: 'background 0.2s', boxShadow: '0 4px 14px rgba(239, 68, 68, 0.4)' }} onMouseEnter={e=>e.currentTarget.style.background='#dc2626'} onMouseLeave={e=>e.currentTarget.style.background='#ef4444'}>Delete</button>
+            <h3>{deleteConfirm.title}</h3>
+            <p>{deleteConfirm.message}</p>
+            <div className="sc-chat-modal-actions">
+              <button onClick={() => setDeleteConfirm(null)} className="sc-chat-modal-cancel">Cancel</button>
+              <button onClick={deleteConfirm.onConfirm} className="sc-chat-modal-confirm">Delete</button>
             </div>
           </div>
         </div>
       )}
-      <style>{`
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        
-        .scicomm-chat-sidebar {
-          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        @media (max-width: 768px) {
-          .scicomm-chat-container {
-            border-radius: 0 !important;
-          }
-          .chat-hide-mobile { display: none !important; }
-          .chat-show-mobile { display: flex !important; }
-          .scicomm-chat-sidebar {
-            position: absolute !important;
-            top: 0; left: 0; bottom: 0;
-            width: 100% !important;
-            transform: translateX(-100%);
-          }
-          .scicomm-chat-sidebar.open {
-            transform: translateX(0);
-          }
-          
-          /* Hide scrollbars completely on mobile viewports */
-          *::-webkit-scrollbar,
-          ::-webkit-scrollbar {
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
-          }
-          * {
-            -ms-overflow-style: none !important;
-            scrollbar-width: none !important;
-          }
-        }
-        
-        @media (min-width: 769px) {
-          .chat-show-mobile { display: none !important; }
-        }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e2e8f0; borderRadius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
-      `}</style>
     </div>
   );
 }
