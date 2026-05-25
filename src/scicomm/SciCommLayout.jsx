@@ -385,7 +385,15 @@ export default function SciCommLayout() {
           <span>WorkSpace</span>
         </Link>
         <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users className="icon" size={22} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge tag">{pendingConnections.length}</span>}<span>Network</span></Link>
-        <Link to="/post" className={`scicomm-mobile-item scicomm-mobile-post-btn ${isActive('/post') ? 'active' : ''}`}><div className="scicomm-post-plus"><Plus size={20} /></div><span>Post</span></Link>
+        
+        {/* Dynamic Post button: Only appears with a scale pop-in animation when on the Community feed page */}
+        {location.pathname === '/community' && (
+          <Link to="/post" className={`scicomm-mobile-item scicomm-mobile-post-btn ${isActive('/post') ? 'active' : ''}`} style={{ animation: 'scicommPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' }}>
+            <div className="scicomm-post-plus"><Plus size={20} /></div>
+            <span>Post</span>
+          </Link>
+        )}
+
         <Link to="/community" className={`scicomm-mobile-item ${isActive('/community') ? 'active' : ''}`}><Globe className="icon" size={22} /><span>Community</span></Link>
         <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={22} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span>Alerts</span></Link>
       </nav>

@@ -4211,4 +4211,16 @@ html.no-pull-to-refresh body,
   color: rgba(255, 255, 255, 0.6) !important;
 }
 
+/* Premium Mobile Dynamic Pop-in Animation for the Post Button */
+@keyframes scicommPopIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 
