@@ -2717,62 +2717,197 @@ html.no-pull-to-refresh body,
   overscroll-behavior: contain !important;
 }
 
-/* ===== RESPONSIVE WORKSPACE HUB DESIGN ===== */
+/* ======================================================
+   Premium Adaptive Viewport-Stretching WorkSpace Hub Design
+   ====================================================== */
+.scicomm-hub-page-active .scicomm-page-content,
+.scicomm-app:has(.scicomm-hub-container) .scicomm-page-content {
+  margin: 0 auto !important;
+  padding: 0 !important;
+  max-width: 100% !important;
+  height: calc(100vh - 52px) !important; /* Take remaining desktop height */
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.scicomm-hub-page-active .scicomm-page-content > div,
+.scicomm-app:has(.scicomm-hub-container) .scicomm-page-content > div {
+  min-height: unset !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  .scicomm-hub-page-active .scicomm-page-content,
+  .scicomm-app:has(.scicomm-hub-container) .scicomm-page-content {
+    /* Subtract desktop header (52px), mobile bar (56px) and env safe area */
+    height: calc(100vh - 52px - 56px - env(safe-area-inset-bottom)) !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+.scicomm-hub-container {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-evenly !important; /* Dynamically spread components vertically */
+  align-items: stretch !important;
+  height: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  padding: 2.5vh 20px !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+}
+
+@media (max-width: 768px) {
+  .scicomm-hub-container {
+    padding: 1.5vh 16px !important;
+  }
+}
+
+.scicomm-hub-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  margin-bottom: 1.5vh !important;
+}
+
+.scicomm-hub-header img {
+  max-height: 10vh !important; /* Scale logo height fluidly based on viewport */
+  max-width: 80% !important;
+  width: auto !important;
+  object-fit: contain !important;
+  margin-bottom: 0.8vh !important;
+  transition: all 0.3s ease !important;
+}
+
 .scicomm-hub-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-  max-width: 400px;
-  margin: 0 auto;
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 1.5vh 14px !important; /* Gaps scale fluidly */
+  max-width: 420px !important;
+  margin: 0 auto !important;
+  flex: 1 !important; /* Stretch to fill available height */
+  width: 100% !important;
+  align-content: center !important;
+  box-sizing: border-box !important;
 }
 
 @media (min-width: 769px) {
   .scicomm-hub-grid {
     grid-template-columns: repeat(3, 1fr) !important;
-    max-width: 960px !important;
-    gap: 24px !important;
+    max-width: 900px !important;
+    gap: 2.5vh 24px !important;
   }
-  
+}
+
+.scicomm-hub-grid .hub-card {
+  padding: 2vh 16px !important; /* Dynamic padding */
+  gap: 0.8vh !important; /* Dynamic item gaps */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  height: 100% !important;
+  min-height: 11vh !important;
+  max-height: 18vh !important;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s !important;
+}
+
+@media (min-width: 769px) {
   .scicomm-hub-grid .hub-card {
-    padding: 32px 24px !important;
-    gap: 16px !important;
-    border-radius: 24px !important;
-  }
-  
-  .scicomm-hub-grid .hub-icon-wrapper {
-    width: 80px !important;
-    height: 80px !important;
-    border-radius: 22px !important;
-  }
-  
-  .scicomm-hub-grid .hub-icon-wrapper svg,
-  .scicomm-hub-grid .hub-icon-wrapper .icon {
-    width: 40px !important;
-    height: 40px !important;
-  }
-  
-  .scicomm-hub-grid .hub-card span {
-    font-size: 16px !important;
+    padding: 2.5vh 24px !important;
+    gap: 1.2vh !important;
+    border-radius: 20px !important;
+    min-height: 14vh !important;
+    max-height: 22vh !important;
   }
   
   .scicomm-hub-grid .hub-card-admin {
     grid-column: span 3 !important;
     flex-direction: row !important;
     justify-content: center !important;
-    gap: 16px !important;
-    padding: 24px !important;
+    gap: 20px !important;
+    padding: 1.8vh 24px !important;
+    max-height: 10vh !important;
+    min-height: 8vh !important;
+  }
+}
+
+.scicomm-hub-grid .hub-icon-wrapper {
+  width: 6vh !important; /* Dynamic height-scaled wrappers */
+  height: 6vh !important;
+  max-width: 60px !important;
+  max-height: 60px !important;
+  border-radius: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+@media (min-width: 769px) {
+  .scicomm-hub-grid .hub-icon-wrapper {
+    width: 7vh !important;
+    height: 7vh !important;
+    max-width: 72px !important;
+    max-height: 72px !important;
+    border-radius: 18px !important;
   }
   
   .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 14px !important;
+    width: 5vh !important;
+    height: 5vh !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
+    border-radius: 12px !important;
+  }
+}
+
+.scicomm-hub-grid .hub-icon-wrapper svg,
+.scicomm-hub-grid .hub-icon-wrapper .icon {
+  width: 3vh !important;
+  height: 3vh !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
+}
+
+@media (min-width: 769px) {
+  .scicomm-hub-grid .hub-icon-wrapper svg,
+  .scicomm-hub-grid .hub-icon-wrapper .icon {
+    width: 3.5vh !important;
+    height: 3.5vh !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
   }
   
   .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper svg,
   .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper .icon {
-    width: 24px !important;
-    height: 24px !important;
+    width: 2.5vh !important;
+    height: 2.5vh !important;
+    max-width: 24px !important;
+    max-height: 24px !important;
+  }
+}
+
+.scicomm-hub-grid .hub-card span {
+  font-size: 1.6vh !important; /* Scale text fluidly */
+  max-font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+@media (min-width: 769px) {
+  .scicomm-hub-grid .hub-card span {
+    font-size: 1.8vh !important;
   }
 }
 

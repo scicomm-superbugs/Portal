@@ -33,6 +33,13 @@ export default function SciCommHub() {
     };
   }, []);
 
+  useEffect(() => {
+    document.body.classList.add('scicomm-hub-page-active');
+    return () => {
+      document.body.classList.remove('scicomm-hub-page-active');
+    };
+  }, []);
+
   const navigate = useNavigate();
   const [showApplyModal, setShowApplyModal] = useState(false);
 
@@ -48,9 +55,9 @@ export default function SciCommHub() {
   ];
 
   return (
-    <div className="scicomm-hub-container" style={{ padding: '20px 16px', minHeight: 'calc(100vh - 160px)' }}>
-      <div className="scicomm-hub-header" style={{ textAlign: 'center', marginBottom: '28px' }}>
-        <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '150px', maxWidth: '100%', width: 'auto', marginBottom: '16px', objectFit: 'contain' }} onError={e => e.target.style.display='none'} />
+    <div className="scicomm-hub-container">
+      <div className="scicomm-hub-header">
+        <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" onError={e => e.target.style.display='none'} />
         <p style={{ margin: 0, fontSize: '13px', color: 'rgba(0,0,0,0.5)' }}>Quick access to everything</p>
       </div>
       <div className="scicomm-hub-grid">
