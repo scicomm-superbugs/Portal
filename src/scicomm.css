@@ -2407,6 +2407,7 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   min-width: unset !important;
   height: 100% !important;
   padding: 0 !important;
+  text-decoration: none !important;
 }
 
 .scicomm-dark-mode .scicomm-download-btn-wrapper,
@@ -2420,6 +2421,7 @@ html.scicomm-dark-mode ::-webkit-scrollbar-thumb:hover,
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+  text-decoration: none !important;
 }
 
 .scicomm-download-btn-inner {
