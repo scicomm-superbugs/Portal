@@ -274,8 +274,8 @@ export default function SciCommSinglePost() {
               {!isDeleted && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '8px' }}>
                   <div style={{ position: 'relative', display: 'inline-block' }}
-                    onMouseEnter={() => setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_"))}
-                    onMouseLeave={() => setActiveReactionPicker(null)}
+                    onMouseEnter={() => { clearTimeout(window.reactionLeaveTimer); setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_")); }}
+                    onMouseLeave={() => { window.reactionLeaveTimer = setTimeout(() => setActiveReactionPicker(null), 400); }}
                     onTouchStart={() => { window.reactionTimer = setTimeout(() => setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_")), 200); }}
                     onTouchEnd={() => clearTimeout(window.reactionTimer)}
                     onTouchMove={() => clearTimeout(window.reactionTimer)}
@@ -295,7 +295,7 @@ export default function SciCommSinglePost() {
                     {activeReactionPicker === "comment_" + post.id + "_" + currentPath.join("_") && (
                       <div className="scicomm-reacts-popup" style={{ bottom: '100%', left: '0px' }}>
                         {REACTIONS.map(r => (
-                          <button key={r.key} onClick={() => handleReactionOnComment(post, currentPath, r.key)} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }} onMouseEnter={e => e.target.style.transform = 'scale(1.3)'} onMouseLeave={e => e.target.style.transform = 'scale(1)'}>
+                          <button key={r.key} onClick={() => { clearTimeout(window.reactionLeaveTimer); handleReactionOnComment(post, currentPath, r.key); }} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }} onMouseEnter={e => { clearTimeout(window.reactionLeaveTimer); e.target.style.transform = 'scale(1.3)'; }} onMouseLeave={e => e.target.style.transform = 'scale(1)'}>
                             <span className="emoji">{r.emoji}</span>
                           </button>
                         ))}
@@ -424,8 +424,8 @@ export default function SciCommSinglePost() {
 
         <div className="scicomm-post-actions-row">
           <div style={{ flex: 1, position: 'relative', userSelect: 'none', WebkitUserSelect: 'none' }}
-            onMouseEnter={() => setActiveReactionPicker(post.id)}
-            onMouseLeave={() => setActiveReactionPicker(null)}
+            onMouseEnter={() => { clearTimeout(window.reactionLeaveTimer); setActiveReactionPicker(post.id); }}
+            onMouseLeave={() => { window.reactionLeaveTimer = setTimeout(() => setActiveReactionPicker(null), 400); }}
             onTouchStart={() => { window.reactionTimer = setTimeout(() => setActiveReactionPicker(post.id), 200); }}
             onTouchEnd={() => clearTimeout(window.reactionTimer)}
             onTouchMove={() => clearTimeout(window.reactionTimer)}
@@ -436,7 +436,7 @@ export default function SciCommSinglePost() {
             {activeReactionPicker === post.id && (
               <div className="scicomm-reacts-popup">
                 {REACTIONS.map(r => (
-                  <button key={r.key} onClick={() => handleReaction(post, r.key)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }} onMouseEnter={e => e.target.style.transform = 'scale(1.3)'} onMouseLeave={e => e.target.style.transform = 'scale(1)'}>
+                  <button key={r.key} onClick={() => { clearTimeout(window.reactionLeaveTimer); handleReaction(post, r.key); }} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }} onMouseEnter={e => { clearTimeout(window.reactionLeaveTimer); e.target.style.transform = 'scale(1.3)'; }} onMouseLeave={e => e.target.style.transform = 'scale(1)'}>
                     <span className="emoji">{r.emoji}</span>
                   </button>
                 ))}
