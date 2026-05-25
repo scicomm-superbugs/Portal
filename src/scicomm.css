@@ -2059,4 +2059,28 @@ html.no-pull-to-refresh body,
   }
 }
 
+/* Prevent outlines/underlines on all link buttons, hub cards, and nav items across all states */
+.hub-card,
+.hub-card:hover,
+.hub-card:focus,
+.hub-card:active,
+.hub-card *,
+.hub-card *:hover,
+.scicomm-nav-item,
+.scicomm-nav-item:hover,
+.scicomm-nav-item:focus,
+.scicomm-nav-item:active,
+.scicomm-mobile-item,
+.scicomm-mobile-item:hover,
+.scicomm-mobile-item:focus,
+.scicomm-mobile-item:active,
+.scicomm-btn-primary,
+.scicomm-btn-primary:hover,
+.scicomm-btn-secondary,
+.scicomm-btn-secondary:hover {
+  text-decoration: none !important;
+  outline: none !important;
+}
+
+
 
