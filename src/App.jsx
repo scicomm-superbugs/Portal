@@ -65,7 +65,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             {isSciComm ? (
               <Route path="/" element={<SciCommLayout />}>
-                <Route index element={<SciCommFeed />} />
+                <Route index element={<SciCommHub />} />
+                <Route path="community" element={<SciCommFeed />} />
                 <Route path="network" element={<SciCommNetwork />} />
                 <Route path="apply" element={<SciCommApply />} />
                 <Route path="download" element={<SciCommDownload />} />
@@ -80,7 +81,7 @@ function App() {
                 <Route path="chat" element={<SciCommChat />} />
                 <Route path="calendar" element={<SciCommCalendar />} />
                 <Route path="member/:memberId" element={<SciCommMemberProfile />} />
-                <Route path="hub" element={<SciCommHub />} />
+                <Route path="hub" element={<Navigate to="/" replace />} />
                 <Route path="post" element={<SciCommPost />} />
                 <Route path="view-post/:postId" element={<SciCommSinglePost />} />
                 <Route element={<ProtectedRoute requireAdmin={true} />}>

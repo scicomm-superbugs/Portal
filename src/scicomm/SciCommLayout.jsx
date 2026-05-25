@@ -316,16 +316,17 @@ export default function SciCommLayout() {
             )}
           </Link>
           <nav className="scicomm-nav">
-            <Link to="/" className={`scicomm-nav-item ${isActive('/') ? 'active' : ''}`}><Globe className="icon" size={20} /><span className="nav-text">Community</span></Link>
-            <Link to="/network" className={`scicomm-nav-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users className="icon" size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge tag">{pendingConnections.length}</span>}<span className="nav-text">Network</span></Link>
-            <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`} style={{position:'relative'}}><MessageCircle className="icon" size={20} />{unreadChatCount > 0 && <span className="scicomm-notif-badge tag">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}<span className="nav-text">Chat</span></Link>
-            <Link to="/notifications" className={`scicomm-nav-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={20} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span className="nav-text">Alerts</span></Link>
+            <Link to="/community" className={`scicomm-nav-item ${isActive('/community') ? 'active' : ''}`}><Globe className="icon" size={20} /><span className="nav-text">Community</span></Link>
             
-            <Link to="/hub" className={`scicomm-nav-item ${isActive('/hub') ? 'active' : ''}`} style={{ position: 'relative' }}>
+            <Link to="/" className={`scicomm-nav-item ${isActive('/') ? 'active' : ''}`} style={{ position: 'relative' }}>
               <LayoutDashboard className="icon" size={20} />
               <span className="nav-text">WorkSpace</span>
               {workspaceNotifs > 0 && <span className="scicomm-notif-badge tag" style={{ position: 'absolute', top: 4, right: 4 }}>{workspaceNotifs}</span>}
             </Link>
+
+            <Link to="/network" className={`scicomm-nav-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users className="icon" size={20} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge tag">{pendingConnections.length}</span>}<span className="nav-text">Network</span></Link>
+            <Link to="/chat" className={`scicomm-nav-item ${isActive('/chat') ? 'active' : ''}`} style={{position:'relative'}}><MessageCircle className="icon" size={20} />{unreadChatCount > 0 && <span className="scicomm-notif-badge tag">{unreadChatCount > 9 ? '9+' : unreadChatCount}</span>}<span className="nav-text">Chat</span></Link>
+            <Link to="/notifications" className={`scicomm-nav-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={20} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span className="nav-text">Alerts</span></Link>
 
 
 
@@ -379,15 +380,15 @@ export default function SciCommLayout() {
 
       {/* Mobile Bottom Bar - LinkedIn Style: Home, Network, Post, Notifications, SciComm */}
       <nav className="scicomm-mobile-bar">
-        <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`}><Globe className="icon" size={22} /><span>Community</span></Link>
-        <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users className="icon" size={22} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge tag">{pendingConnections.length}</span>}<span>Network</span></Link>
-        <Link to="/post" className={`scicomm-mobile-item scicomm-mobile-post-btn ${isActive('/post') ? 'active' : ''}`}><div className="scicomm-post-plus"><Plus size={20} /></div><span>Post</span></Link>
-        <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={22} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span>Alerts</span></Link>
-        <Link to="/hub" className={`scicomm-mobile-item ${isActive('/hub') ? 'active' : ''}`} style={{position:'relative'}}>
+        <Link to="/community" className={`scicomm-mobile-item ${isActive('/community') ? 'active' : ''}`}><Globe className="icon" size={22} /><span>Community</span></Link>
+        <Link to="/" className={`scicomm-mobile-item ${isActive('/') ? 'active' : ''}`} style={{position:'relative'}}>
           <LayoutDashboard className="icon" size={22} />
           {workspaceNotifs > 0 && <span className="scicomm-notif-badge tag">{workspaceNotifs}</span>}
           <span>WorkSpace</span>
         </Link>
+        <Link to="/network" className={`scicomm-mobile-item ${isActive('/network') ? 'active' : ''}`} style={{position:'relative'}}><Users className="icon" size={22} />{pendingConnections.length > 0 && <span className="scicomm-notif-badge tag">{pendingConnections.length}</span>}<span>Network</span></Link>
+        <Link to="/post" className={`scicomm-mobile-item scicomm-mobile-post-btn ${isActive('/post') ? 'active' : ''}`}><div className="scicomm-post-plus"><Plus size={20} /></div><span>Post</span></Link>
+        <Link to="/notifications" className={`scicomm-mobile-item ${isActive('/notifications') ? 'active' : ''}`} style={{position:'relative'}}><Bell className="icon" size={22} />{notifCount > 0 && <span className="scicomm-notif-badge tag">{notifCount}</span>}<span>Alerts</span></Link>
       </nav>
 
       {/* Mobile Profile Sidebar Overlay */}

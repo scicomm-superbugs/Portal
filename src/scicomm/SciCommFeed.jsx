@@ -950,11 +950,14 @@ export default function SciCommFeed() {
       {/* Left Sidebar */}
       <div className="scicomm-sidebar-left hide-on-mobile">
         <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
-        <div className="scicomm-card" style={{ textAlign: 'center', overflow: 'hidden', cursor: 'pointer', transition: 'box-shadow 0.2s' }}>
-          <div style={{ width: '100%', aspectRatio: '4 / 1', background: currentUserData?.coverPhoto ? `url(${currentUserData.coverPhoto}) center/cover` : 'linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%)' }}></div>
+        <div className="scicomm-card" style={{ textAlign: 'center', overflow: 'visible', cursor: 'pointer', transition: 'box-shadow 0.2s' }}>
+          <div style={{ width: '100%', aspectRatio: '4 / 1', background: currentUserData?.coverPhoto ? `url(${currentUserData.coverPhoto}) center/cover` : 'linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%)', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}></div>
           <div style={{marginTop:'-28px'}}>{renderAvatar(currentUserData, 56)}</div>
           <div style={{ padding: '8px 12px 12px' }}>
-            <h3 style={{ margin: '4px 0 2px', fontSize: '15px' }}>{user.name}</h3>
+            <h3 style={{ margin: '4px 0 2px', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', width: '100%', overflow: 'hidden' }}>
+              <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{user.name}</span>
+              <SciCommVerificationBadge role={currentUserData?.role || user.role} showTooltip={true} tooltipPosition="bottom" />
+            </h3>
             <p style={{ color: 'rgba(0,0,0,0.6)', fontSize: '12px', margin: '0 0 8px' }}>{currentUserData?.department || 'Science Communicator'}</p>
             <div className="tag" style={{ background: myLevel.bg, color: myLevel.color, padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, display: 'inline-block', marginBottom: '8px', border: `1px solid ${myLevel.color}40` }}>
               Lv. {myLevel.level}{myLevel.title ? ' ' + myLevel.title : ''}

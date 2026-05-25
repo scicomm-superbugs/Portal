@@ -39,7 +39,6 @@ export default function SciCommHub() {
   const [showComingSoon, setShowComingSoon] = useState(false);
 
   const items = [
-    { to: '/', icon: <Globe size={32} />, label: 'Community', color: '#e11d48', bg: '#fff1f2', badge: 0 },
     { to: '/tasks', icon: <Briefcase size={32} />, label: 'Tasks', color: isTeam ? '#3b82f6' : '#94a3b8', bg: isTeam ? '#eff6ff' : '#f8fafc', badge: myPendingTasks.length, locked: !isTeam },
     { to: '/meetings', icon: <Video size={32} />, label: 'Meetings', color: isTeam ? '#8b5cf6' : '#94a3b8', bg: isTeam ? '#f5f3ff' : '#f8fafc', badge: 0, locked: !isTeam },
     { isProjects: true, icon: <FolderKanban size={32} />, label: 'Projects', color: isTeam ? '#14b8a6' : '#94a3b8', bg: isTeam ? '#ccfbf1' : '#f8fafc', badge: 0, locked: !isTeam },
