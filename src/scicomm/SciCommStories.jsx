@@ -316,8 +316,22 @@ export default function SciCommStories({ scientists }) {
       <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '12px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {/* Create Story Card */}
         <div onClick={() => setShowCreateModal(true)} style={{ width: '100px', height: '160px', flexShrink: 0, borderRadius: '12px', background: 'white', position: 'relative', overflow: 'hidden', cursor: 'pointer', border: '1px solid #e0dfdc', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-          <div style={{ height: '100px', background: '#f3f2ef', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {renderAvatar(scientists.find(s => String(s.id) === String(user.id)) || { name: user.name }, 100)}
+          <div style={{ height: '100px', background: '#f3f2ef', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', overflow: 'hidden' }}>
+            {(() => {
+              const me = scientists.find(s => String(s.id) === String(user.id));
+              if (me?.avatar) {
+                return <img src={me.avatar} alt="Me" style={{ width: '100%', height: '100%', objectFit: 'cover', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }} />;
+              }
+              const av = me ? AVATARS.find(a => a.id === me.avatarId) : null;
+              if (av) {
+                return (
+                  <div style={{ width: '100%', height: '100%', background: av.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '44px', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+                    <span className="emoji">{av.svg}</span>
+                  </div>
+                );
+              }
+              return <UserCircle size={64} color="#94a3b8" />;
+            })()}
           </div>
           <div style={{ position: 'absolute', top: '85px', left: '50%', transform: 'translateX(-50%)', background: '#1d4ed8', color: 'white', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid white' }}>
             <Plus size={20} />
