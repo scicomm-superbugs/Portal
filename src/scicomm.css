@@ -3740,3 +3740,157 @@ html.no-pull-to-refresh body,
   color: #94a3b8 !important;
 }
 
+
+/* ===== SCICOMM HOMEPAGE NOTIFICATION BANNERS ===== */
+.scicomm-banner-notif {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border-radius: 12px !important;
+  padding: 16px 20px !important;
+  margin-bottom: 16px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+  animation: slideUp 0.3s ease-out !important;
+  border: 1px solid transparent !important;
+}
+
+.scicomm-banner-icon-wrapper {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.scicomm-banner-text-title {
+  margin: 0 0 4px !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+
+.scicomm-banner-text-desc {
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+.scicomm-banner-close-btn {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background 0.2s, color 0.2s !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  z-index: 9999 !important;
+}
+
+/* Light Mode Approved Banner Styles */
+.scicomm-banner-notif-approved {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0) !important;
+  border: 1px solid #86efac !important;
+}
+
+.scicomm-banner-icon-wrapper-approved {
+  background: #16a34a !important;
+  color: white !important;
+}
+
+.scicomm-banner-text-title-approved {
+  color: #166534 !important;
+}
+
+.scicomm-banner-text-desc-approved {
+  color: #14532d !important;
+}
+
+.scicomm-banner-close-btn-approved {
+  color: #166534 !important;
+}
+
+.scicomm-banner-close-btn-approved:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Light Mode Rejected Banner Styles */
+.scicomm-banner-notif-rejected {
+  background: linear-gradient(135deg, #fee2e2, #fecaca) !important;
+  border: 1px solid #fca5a5 !important;
+}
+
+.scicomm-banner-icon-wrapper-rejected {
+  background: #dc2626 !important;
+  color: white !important;
+}
+
+.scicomm-banner-text-title-rejected {
+  color: #991b1b !important;
+}
+
+.scicomm-banner-text-desc-rejected {
+  color: #7f1d1d !important;
+}
+
+.scicomm-banner-close-btn-rejected {
+  color: #991b1b !important;
+}
+
+.scicomm-banner-close-btn-rejected:hover {
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Dark Mode Overrides for Approved and Rejected Banners */
+.scicomm-dark-mode .scicomm-banner-notif-approved {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+}
+
+.scicomm-dark-mode .scicomm-banner-text-title-approved {
+  color: #34d399 !important;
+  text-shadow: none !important;
+}
+
+.scicomm-dark-mode .scicomm-banner-text-desc-approved {
+  color: #10b981 !important;
+}
+
+.scicomm-dark-mode .scicomm-banner-close-btn-approved {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-banner-close-btn-approved:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+.scicomm-dark-mode .scicomm-banner-notif-rejected {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border: 1px solid rgba(239, 68, 68, 0.35) !important;
+}
+
+.scicomm-dark-mode .scicomm-banner-text-title-rejected {
+  color: #f87171 !important;
+  text-shadow: none !important;
+}
+
+.scicomm-dark-mode .scicomm-banner-text-desc-rejected {
+  color: #f87171 !important;
+}
+
+.scicomm-dark-mode .scicomm-banner-close-btn-rejected {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-banner-close-btn-rejected:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+

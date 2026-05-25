@@ -1147,16 +1147,14 @@ export default function SciCommFeed() {
 
         {/* Approved Application Banner */}
         {showApprovalBanner && (
-          <div 
-            style={{ background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)', border: '1px solid #86efac', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}
-          >
+          <div className="scicomm-banner-notif scicomm-banner-notif-approved">
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#16a34a', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div className="scicomm-banner-icon-wrapper scicomm-banner-icon-wrapper-approved">
                 <Trophy size={24} />
               </div>
               <div>
-                <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 800, color: '#166534' }}>Welcome to the SciComm Team! 🎉</h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#14532d', lineHeight: '1.4' }}>Your application was approved! You now have full access to workspace options and the leaderboard.</p>
+                <h3 className="scicomm-banner-text-title scicomm-banner-text-title-approved">Welcome to the SciComm Team! 🎉</h3>
+                <p className="scicomm-banner-text-desc scicomm-banner-text-desc-approved">Your application was approved! You now have full access to workspace options and the leaderboard.</p>
               </div>
             </div>
             <button 
@@ -1170,24 +1168,7 @@ export default function SciCommFeed() {
                   setDismissedBanners(prev => ({ ...prev, [key]: true }));
                 }
               }} 
-              style={{ 
-                background: 'rgba(255,255,255,0.6)', 
-                border: 'none', 
-                borderRadius: '50%', 
-                width: '36px', 
-                height: '36px', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                cursor: 'pointer', 
-                color: '#166534', 
-                transition: 'background 0.2s', 
-                flexShrink: 0, 
-                position: 'relative', 
-                zIndex: 9999 
-              }} 
-              onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.9)'} 
-              onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.6)'}
+              className="scicomm-banner-close-btn scicomm-banner-close-btn-approved"
             >
               <X size={20} />
             </button>
@@ -1196,18 +1177,16 @@ export default function SciCommFeed() {
 
         {/* Rejected Application Banner */}
         {showRejectionBanner && (
-          <div 
-            style={{ background: 'linear-gradient(135deg, #fee2e2, #fecaca)', border: '1px solid #fca5a5', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', animation: 'slideUp 0.3s ease-out' }}
-          >
+          <div className="scicomm-banner-notif scicomm-banner-notif-rejected">
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#dc2626', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div className="scicomm-banner-icon-wrapper scicomm-banner-icon-wrapper-rejected">
                 <X size={24} />
               </div>
               <div>
-                <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: 800, color: '#991b1b' }}>Application Update 📢</h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#7f1d1d', lineHeight: '1.4' }}>Thank you so much for applying! 🌻 Your application wasn't approved today, but every step is progress. Keep up the amazing effort, and feel free to apply again later! ✨</p>
+                <h3 className="scicomm-banner-text-title scicomm-banner-text-title-rejected">Application Update 📢</h3>
+                <p className="scicomm-banner-text-desc scicomm-banner-text-desc-rejected">Thank you so much for applying! 🌻 Your application wasn't approved today, but every step is progress. Keep up the amazing effort, and feel free to apply again later! ✨</p>
                 {latestApp && latestApp.comment && (
-                  <div style={{ marginTop: '8px', padding: '8px 12px', background: 'rgba(255,255,255,0.4)', borderRadius: '8px', fontSize: '13px', color: '#7f1d1d', fontStyle: 'italic', borderLeft: '3px solid #dc2626' }}>
+                  <div className="scicomm-feedback-box" style={{ marginTop: '8px' }}>
                     <strong>Feedback:</strong> {latestApp.comment}
                   </div>
                 )}
@@ -1224,24 +1203,7 @@ export default function SciCommFeed() {
                   setDismissedBanners(prev => ({ ...prev, [key]: true }));
                 }
               }} 
-              style={{ 
-                background: 'rgba(255,255,255,0.6)', 
-                border: 'none', 
-                borderRadius: '50%', 
-                width: '36px', 
-                height: '36px', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                cursor: 'pointer', 
-                color: '#991b1b', 
-                transition: 'background 0.2s', 
-                flexShrink: 0, 
-                position: 'relative', 
-                zIndex: 9999 
-              }} 
-              onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.9)'} 
-              onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.6)'}
+              className="scicomm-banner-close-btn scicomm-banner-close-btn-rejected"
             >
               <X size={20} />
             </button>
