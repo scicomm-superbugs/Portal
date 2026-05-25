@@ -94,7 +94,7 @@ function App() {
                 <Route path="tracking" element={<UsageTracking />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="tasks" element={<Tasks />} />
-                <Route path="chat" element={<Chat />} />
+                <Route path="chat" element={<SciCommChat />} />
                 <Route path="team" element={<TeamSearch />} />
                 <Route element={<ProtectedRoute requireAdmin={true} />}>
                   <Route path="chemicals" element={<RegisterChemical />} />
