@@ -810,7 +810,7 @@ export default function SciCommFeed() {
               
               {!isDeleted && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '8px' }}>
-                  <div style={{ position: 'relative', display: 'inline-block' }}
+                  <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}
                     onMouseEnter={() => { clearTimeout(window.reactionLeaveTimer); setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_")); }}
                     onMouseLeave={() => { window.reactionLeaveTimer = setTimeout(() => setActiveReactionPicker(null), 400); }}
                     onTouchStart={() => { window.reactionTimer = setTimeout(() => setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_")), 200); }}

@@ -1336,9 +1336,9 @@
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-.scicomm-dark-mode div:has(> textarea),
-.scicomm-dark-mode *[style*="rgba(241, 245, 249, 0.6)"],
-.scicomm-dark-mode *[style*="rgba(241,245,249,0.6)"] {
+.scicomm-dark-mode div:has(> textarea):not(.scicomm-composer-capsule):not(.scicomm-comment-capsule),
+.scicomm-dark-mode *[style*="rgba(241, 245, 249, 0.6)"]:not(.scicomm-composer-capsule):not(.scicomm-comment-capsule),
+.scicomm-dark-mode *[style*="rgba(241,245,249,0.6)"]:not(.scicomm-composer-capsule):not(.scicomm-comment-capsule) {
   background-color: #030712 !important;
   background: #030712 !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -1351,14 +1351,15 @@
 }
 
 .scicomm-dark-mode .scicomm-search-box {
-  background-color: #030712 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background-color: #3a3b3c !important;
+  background: #3a3b3c !important;
+  border: none !important;
 }
 .scicomm-dark-mode .scicomm-search-box input {
   color: #ffffff !important;
 }
 .scicomm-dark-mode .scicomm-search-box input::placeholder {
-  color: #64748b !important;
+  color: #94a3b8 !important;
 }
 
 /* --- UNIVERSAL INLINE COLOR CATCH-ALL --- */
@@ -3153,7 +3154,7 @@ html.no-pull-to-refresh body,
 }
 
 .scicomm-comment-reply-btn:hover {
-  text-decoration: underline !important;
+  text-decoration: none !important;
   color: #65676b !important;
 }
 
@@ -3162,6 +3163,7 @@ html.no-pull-to-refresh body,
 }
 
 .scicomm-dark-mode .scicomm-comment-reply-btn:hover {
+  text-decoration: none !important;
   color: #b0b3b8 !important;
   text-shadow: none !important;
 }
