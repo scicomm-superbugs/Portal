@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Users, Briefcase, Bell, UserCircle, Search, Trophy, Shield, MessageCircle, Calendar, AlertTriangle, Menu, Moon, Sun, Building2, Video, Settings, LayoutDashboard, Lock, FolderKanban, Smartphone, Plus, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLiveCollection } from '../db';
-import { safeLocalStorage } from '../utils/safeStorage';
+import { safeLocalStorage, safeSessionStorage } from '../utils/safeStorage';
 import { useState, useEffect, useRef } from 'react';
 import { AVATARS } from './scicommConstants';
 import '../scicomm.css';
@@ -44,6 +44,7 @@ export default function SciCommLayout() {
   const [isDarkMode, setIsDarkMode] = useState(safeLocalStorage.getItem('scicommDarkMode') === 'true');
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [showComingSoon, setShowComingSoon] = useState(false);
+  const [showWelcomeToast, setShowWelcomeToast] = useState(false);
   const postsRaw = useLiveCollection('scicomm_posts') || [];
   
   // Calculate stats for sidebar
@@ -78,6 +79,19 @@ export default function SciCommLayout() {
       }
     }
   }, []);
+
+  // Initialize Welcome Back Toast exactly once per browser tab session
+  useEffect(() => {
+    if (user) {
+      const alreadySeen = safeSessionStorage.getItem('scicomm_welcome_toast_seen');
+      if (!alreadySeen) {
+        setShowWelcomeToast(true);
+        safeSessionStorage.setItem('scicomm_welcome_toast_seen', 'true');
+        const timer = setTimeout(() => setShowWelcomeToast(false), 6000); // comfortable 6 seconds duration
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [user]);
 
   // Push notifications - safe wrapper for mobile and desktop
   const sendPushNotif = async (title, body) => {
@@ -399,6 +413,10 @@ export default function SciCommLayout() {
               from { transform: translateX(-100%); }
               to { transform: translateX(0); }
             }
+            @keyframes slideUp {
+              from { transform: translate(-50%, 100%); opacity: 0; }
+              to { transform: translate(-50%, 0); opacity: 1; }
+            }
           `}</style>
         </div>
       )}
@@ -512,6 +530,29 @@ export default function SciCommLayout() {
               Awesome, I'll wait!
             </button>
           </div>
+        </div>
+      )}
+      {showWelcomeToast && (
+        <div className="scicomm-welcome-toast" style={{
+          position: 'fixed',
+          bottom: '72px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%)',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: '30px',
+          boxShadow: '0 10px 25px rgba(29, 78, 216, 0.45)',
+          zIndex: 99999,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          fontWeight: 600,
+          fontSize: '14px',
+          animation: 'slideUp 0.3s ease'
+        }}>
+          <span>Welcome back, {user.name}! 👋</span>
+          <button onClick={() => setShowWelcomeToast(false)} style={{ background: 'none', border: 'none', color: 'white', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', padding: 0 }}>&times;</button>
         </div>
       )}
     </div>
