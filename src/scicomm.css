@@ -3792,7 +3792,7 @@ html.no-pull-to-refresh body,
   transition: background 0.2s, color 0.2s !important;
   flex-shrink: 0 !important;
   position: relative !important;
-  z-index: 9999 !important;
+  z-index: 5 !important;
 }
 
 /* Light Mode Approved Banner Styles */
@@ -3894,5 +3894,119 @@ html.no-pull-to-refresh body,
 
 .scicomm-dark-mode .scicomm-banner-close-btn-rejected:hover {
   background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ======================================================
+   Changelog Modal Styles (Premium Dark Mode Colors)
+   ====================================================== */
+.scicomm-changelog-modal {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  padding: 28px !important;
+  max-width: 480px !important;
+  width: 100% !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.scicomm-changelog-subtitle {
+  margin: 0 !important;
+  color: #64748b !important;
+  font-size: 13px !important;
+}
+
+.scicomm-changelog-box {
+  padding: 14px !important;
+  border-radius: 10px !important;
+  border: 1px solid transparent !important;
+}
+
+.scicomm-changelog-box h4 {
+  margin: 0 0 8px !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}
+
+.scicomm-changelog-box ul {
+  margin: 0 !important;
+  padding-left: 18px !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+/* Light Mode Themes */
+.scicomm-changelog-box-blue {
+  background: #eff6ff !important;
+  border-color: #dbeafe !important;
+}
+.scicomm-changelog-box-blue h4,
+.scicomm-changelog-box-blue ul {
+  color: #1e3a8a !important;
+}
+
+.scicomm-changelog-box-red {
+  background: #fef2f2 !important;
+  border-color: #fee2e2 !important;
+}
+.scicomm-changelog-box-red h4,
+.scicomm-changelog-box-red ul {
+  color: #991b1b !important;
+}
+
+.scicomm-changelog-box-green {
+  background: #dcfce7 !important;
+  border-color: #bbf7d0 !important;
+}
+.scicomm-changelog-box-green h4,
+.scicomm-changelog-box-green ul {
+  color: #166534 !important;
+}
+
+/* Dark Mode Overrides */
+.scicomm-dark-mode .scicomm-changelog-modal {
+  background: #1c1d1e !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+}
+
+.scicomm-dark-mode .scicomm-changelog-subtitle {
+  color: #94a3b8 !important;
+}
+
+.scicomm-dark-mode .scicomm-changelog-box-blue {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+.scicomm-dark-mode .scicomm-changelog-box-blue h4 {
+  color: #60a5fa !important;
+}
+.scicomm-dark-mode .scicomm-changelog-box-blue ul {
+  color: #93c5fd !important;
+}
+
+.scicomm-dark-mode .scicomm-changelog-box-red {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+.scicomm-dark-mode .scicomm-changelog-box-red h4 {
+  color: #f87171 !important;
+}
+.scicomm-dark-mode .scicomm-changelog-box-red ul {
+  color: #fca5a5 !important;
+}
+
+.scicomm-dark-mode .scicomm-changelog-box-green {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+.scicomm-dark-mode .scicomm-changelog-box-green h4 {
+  color: #34d399 !important;
+}
+.scicomm-dark-mode .scicomm-changelog-box-green ul {
+  color: #86efac !important;
 }
 

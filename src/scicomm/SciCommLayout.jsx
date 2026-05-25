@@ -452,34 +452,34 @@ export default function SciCommLayout() {
       {/* Version Changelog Popup */}
       {showChangelog && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div style={{ background: 'white', borderRadius: '16px', padding: '28px', maxWidth: '480px', width: '100%', maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+          <div className="scicomm-changelog-modal">
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
               <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>
                 <img src={isDarkMode ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '160px' }} onError={e => e.target.style.display='none'} />
               </div>
               <h2 style={{ margin: '0 0 4px', fontSize: '22px' }}>What's New in {PLATFORM_VERSION}</h2>
-              <p style={{ margin: 0, color: 'rgba(0,0,0,0.5)', fontSize: '13px' }}>SciComm Platform Update</p>
+              <p className="scicomm-changelog-subtitle">SciComm Platform Update</p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
-              <div style={{ background: '#eff6ff', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 8px', color: '#1e3a8a', fontSize: '14px', fontWeight: 800 }}>✨ New Features</h4>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#1e3a8a', lineHeight: '1.6' }}>
+              <div className="scicomm-changelog-box scicomm-changelog-box-blue">
+                <h4>✨ New Features</h4>
+                <ul>
                   <li><strong>Branding Update:</strong> Renamed app to <strong>"SUPERBUGS HUB"</strong>.</li>
                   <li><strong>Optimized Icons:</strong> Scaled brand logo to fit circular/square templates perfectly.</li>
                   <li><strong>External Deep-linking:</strong> Web links now load natively inside the system browser.</li>
                   <li><strong>Gallery Attachment Picker:</strong> Access device photo library and storage fields.</li>
                 </ul>
               </div>
-              <div style={{ background: '#fef2f2', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 8px', color: '#991b1b', fontSize: '14px', fontWeight: 800 }}>🛠️ Permissions Expansion</h4>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#991b1b', lineHeight: '1.6' }}>
+              <div className="scicomm-changelog-box scicomm-changelog-box-red">
+                <h4>🛠️ Permissions Expansion</h4>
+                <ul>
                   <li><strong>Future-proofing:</strong> Pre-declared Camera, Location, modern Media, and Notifications.</li>
                   <li><strong>Media Uploads:</strong> Added modern Android API 33+ permissions for media access.</li>
                 </ul>
               </div>
-              <div style={{ background: '#dcfce7', padding: '14px', borderRadius: '10px' }}>
-                <h4 style={{ margin: '0 0 8px', color: '#166534', fontSize: '14px', fontWeight: 800 }}>🌍 Platform Expansion</h4>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.6' }}>
+              <div className="scicomm-changelog-box scicomm-changelog-box-green">
+                <h4>🌍 Platform Expansion</h4>
+                <ul>
                   <li><strong>Mobile:</strong> Restored native Google login account bottom sheet.</li>
                   <li><strong>Infrastructure:</strong> Placed v5.0.2 APK on the dedicated Download page.</li>
                   <li><strong>Stability:</strong> Resolved file selection bugs and general web app performance.</li>
