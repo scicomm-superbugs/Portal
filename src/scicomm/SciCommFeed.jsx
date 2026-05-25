@@ -758,7 +758,7 @@ export default function SciCommFeed() {
           <div style={{ display: 'flex', gap: path.length === 0 ? '8px' : '6px' }}>
             <Link to={`/member/${c.authorId}`} style={{ flexShrink: 0, opacity: isDeleted ? 0.3 : 1 }}>{renderAvatar(cAuthor, path.length === 0 ? 32 : 24)}</Link>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div className={isDeleted ? "scicomm-comment-bubble moderated-comment" : (path.length === 0 ? "scicomm-comment-bubble main-comment" : "scicomm-comment-bubble reply-comment")}>
+              <div className={isDeleted ? "scicomm-comment-bubble moderated-comment" : (path.length === 0 ? "scicomm-comment-bubble main-comment" : "scicomm-comment-bubble reply-comment")} style={{ position: 'relative' }}>
                 <Link to={`/member/${c.authorId}`} style={{ textDecoration: 'none', color: 'inherit' }}><strong style={{ fontSize: path.length === 0 ? '13px' : '12px' }}>{c.authorName}</strong></Link>
                 {isDeleted ? (
                   <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -787,34 +787,50 @@ export default function SciCommFeed() {
                     </>
                   )
                 )}
+
+                {/* Floating Facebook comment reactions overlapping the bubble */}
+                {Object.values(cReactions).some(arr => arr.length > 0) && (
+                  <div className="scicomm-comment-react-pill" onClick={() => setShowReactors({ reactions: cReactions, title: 'Reactions' })}>
+                    {Object.entries(cReactions)
+                      .filter(([, arr]) => arr.length > 0)
+                      .map(([key]) => REACTIONS.find(r => r.key === key)?.emoji)
+                      .join('')}
+                    <span style={{ marginLeft: '2px' }}>
+                      {Object.values(cReactions).reduce((sum, arr) => sum + arr.length, 0)}
+                    </span>
+                  </div>
+                )}
               </div>
               
               {!isDeleted && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '4px' }}>
-                  <span style={{ fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>{timeAgo(c.createdAt)}</span>
-                  {['like', 'love', 'fire'].map(rk => {
-                    const rd = REACTIONS.find(r => r.key === rk);
-                    const isActive = myReaction === rk;
-                    return (
-                      <button key={rk} onClick={() => handleReactionOnComment(post, currentPath, rk)} title={cReactions[rk]?.map(id => getAuthor(id)?.name).join(', ')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: isActive ? 700 : 500, color: isActive ? rd.color : 'rgba(0,0,0,0.5)', padding: '6px 4px', display: 'flex', alignItems: 'center', gap: '2px', minHeight: '32px', touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}>
-                        <span className="emoji">{rd.emoji}</span> {(cReactions[rk]?.length || 0) > 0 && <span className="scicomm-comment-react-pill" onClick={(e) => { e.stopPropagation(); setShowReactors({ reactions: cReactions, title: 'Reactions' }); }}>{cReactions[rk].length}</span>}
-                      </button>
-                    );
-                  })}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '8px' }}>
+                  <button 
+                    className="scicomm-comment-reply-btn"
+                    onClick={() => handleReactionOnComment(post, currentPath, myReaction ? null : 'like')} 
+                    style={{ 
+                      background: 'none', border: 'none', cursor: 'pointer', 
+                      fontSize: '12px', fontWeight: 700, 
+                      color: myReaction ? '#1d4ed8' : '#65676b', 
+                      padding: '2px 0' 
+                    }}
+                  >
+                    {myReaction ? 'Liked' : 'Like'}
+                  </button>
 
-                  {/* Reply toggle */}
                   <button 
                     className="scicomm-comment-reply-btn"
                     onClick={() => setReplyTo(isReplying ? null : { postId: post.id, path: currentPath, authorName: c.authorName })} 
                     style={{ 
                       background: 'none', border: 'none', cursor: 'pointer', 
-                      fontSize: '11px', fontWeight: 600, 
-                      color: isReplying ? '#1d4ed8' : 'rgba(0,0,0,0.5)', 
+                      fontSize: '12px', fontWeight: 700, 
+                      color: isReplying ? '#1d4ed8' : '#65676b', 
                       padding: '2px 0' 
                     }}
                   >
                     Reply
                   </button>
+                  
+                  <span style={{ fontSize: '12px', color: '#65676b' }}>{timeAgo(c.createdAt)}</span>
 
                   {/* Edit/Delete Options */}
                   <div style={{ position: 'relative' }}>

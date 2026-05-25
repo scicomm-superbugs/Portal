@@ -2810,120 +2810,319 @@ html.no-pull-to-refresh body,
 }
 .scicomm-dark-mode .scicomm-sidebar-stats {
   color: #cbd5e1 !important;
+  font-size: 13px;
+}
+
+/* --- CREATE POST PAGE DARK MODE OVERRIDES --- */
+.scicomm-dark-mode .scicomm-create-post-container {
+  background: #050505 !important;
+}
+
+.scicomm-dark-mode .scicomm-create-post-header {
+  background: rgba(10, 10, 15, 0.95) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(16px) !important;
+}
+.scicomm-dark-mode .scicomm-create-post-header h2,
+.scicomm-dark-mode .scicomm-create-post-header svg,
+.scicomm-dark-mode .scicomm-create-post-header .icon {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-create-post-body {
+  background: rgba(13, 16, 23, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: none !important;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(16px) !important;
+}
+.scicomm-dark-mode .scicomm-create-post-body textarea {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-create-post-options {
+  background: rgba(13, 16, 23, 0.95) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+.scicomm-dark-mode .scicomm-create-post-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.scicomm-dark-mode .scicomm-create-post-card span {
+  color: #cbd5e1 !important;
+}
+
+/* User Profile Name */
+.scicomm-username {
+  font-weight: 600;
+  font-size: 15px;
+  color: #050505;
+}
+.scicomm-dark-mode .scicomm-username {
+  color: #ffffff !important;
+}
+
+/* Post submit button */
+.scicomm-create-post-submit {
+  padding: 8px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2) !important;
+  transition: all 0.2s ease;
+}
+.scicomm-create-post-submit:disabled {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #94a3b8 !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+.scicomm-dark-mode .scicomm-create-post-submit {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+.scicomm-dark-mode .scicomm-create-post-submit:disabled {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #4b5563 !important;
+  box-shadow: none !important;
+}
+
+/* Disable native Chromium/Android WebView pull-to-refresh overscroll action globally */
+html,
+body,
+.scicomm-app,
+.scicomm-dark-mode,
+html.no-pull-to-refresh,
+html.no-pull-to-refresh body,
+.scicomm-dark-mode.no-pull-to-refresh,
+.scicomm-dark-mode.no-pull-to-refresh body {
+  overscroll-behavior-y: contain !important;
+  overscroll-behavior: contain !important;
+}
+
+/* ===== RESPONSIVE WORKSPACE HUB DESIGN ===== */
+.scicomm-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+@media (min-width: 769px) {
+  .scicomm-hub-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    max-width: 960px !important;
+    gap: 24px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card {
+    padding: 32px 24px !important;
+    gap: 16px !important;
+    border-radius: 24px !important;
+  }
+  
+  .scicomm-hub-grid .hub-icon-wrapper {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 22px !important;
+  }
+  
+  .scicomm-hub-grid .hub-icon-wrapper svg,
+  .scicomm-hub-grid .hub-icon-wrapper .icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card span {
+    font-size: 16px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card-admin {
+    grid-column: span 3 !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 16px !important;
+    padding: 24px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 14px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper svg,
+  .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper .icon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+/* Prevent outlines/underlines on all link buttons, hub cards, and nav items across all states */
+.hub-card,
+.hub-card:hover,
+.hub-card:focus,
+.hub-card:active,
+.hub-card *,
+.hub-card *:hover,
+.scicomm-nav-item,
+.scicomm-nav-item:hover,
+.scicomm-nav-item:focus,
+.scicomm-nav-item:active,
+.scicomm-mobile-item,
+.scicomm-mobile-item:hover,
+.scicomm-mobile-item:focus,
+.scicomm-mobile-item:active,
+.scicomm-btn-primary,
+.scicomm-btn-primary:hover,
+.scicomm-btn-secondary,
+.scicomm-btn-secondary:hover,
+.scicomm-post-btn,
+.scicomm-post-btn:hover,
+.scicomm-post-btn:focus,
+.scicomm-post-btn:active {
+  text-decoration: none !important;
+  outline: none !important;
+}
+
+/* Sidebar and workflow left container dark text visibility fix */
+.scicomm-dark-mode .scicomm-sidebar-left * {
+  color: #cbd5e1 !important;
+}
+.scicomm-dark-mode .scicomm-sidebar-left strong {
+  color: #ffffff !important;
+}
+.scicomm-dark-mode .scicomm-sidebar-stats {
+  color: #cbd5e1 !important;
 }
 .scicomm-dark-mode .scicomm-sidebar-stats strong {
   color: #ffffff !important;
 }
 
 /* ======================================================
-   Premium & Clean Posts Redesign Custom CSS rules
+   Premium & Clean Posts Redesign (Facebook Style)
    ====================================================== */
 
-/* Premium Overrides for Post Cards & Feed main */
+/* Facebook-Style Flat Cards */
 .scicomm-card {
-  background: white;
-  border-radius: 16px !important;
-  border: 1px solid rgba(0, 0, 0, 0.06) !important;
-  margin-bottom: 12px;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+  border: 1px solid #e5e7eb !important;
+  margin-bottom: 16px !important;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 2px 8px rgba(0, 0, 0, 0.02) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.2s ease !important;
 }
 
 .scicomm-card:hover {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Action button bar adjustments */
+/* Classic Action Button Bar */
 .scicomm-post-btn {
-  border-radius: 12px !important;
-  padding: 10px 12px !important;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  color: #65676b !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
 }
 
 .scicomm-post-btn:hover {
-  background-color: rgba(29, 78, 216, 0.05) !important;
-  color: #1d4ed8 !important;
+  background-color: #f2f2f2 !important;
+  color: #65676b !important;
 }
 
+/* Active Liked State in Facebook Blue */
 .scicomm-post-btn.liked {
-  color: #1d4ed8 !important;
+  color: #1877f2 !important;
 }
 
-/* Dark mode overrides for cards & buttons */
+.scicomm-post-btn.liked svg {
+  fill: currentColor !important;
+}
+
+/* Dark Mode Overrides for Cards & Buttons */
 .scicomm-dark-mode .scicomm-card {
-  background: rgba(13, 16, 23, 0.8) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.45) !important;
-  backdrop-filter: blur(16px) !important;
+  background: #242526 !important;
+  background-color: #242526 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
 }
 
 .scicomm-dark-mode .scicomm-card:hover {
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
   transform: none !important;
 }
 
+.scicomm-dark-mode .scicomm-post-btn {
+  color: #b0b3b8 !important;
+}
+
 .scicomm-dark-mode .scicomm-post-btn:hover {
-  background-color: rgba(255, 255, 255, 0.06) !important;
-  color: #ffffff !important;
+  background-color: #3a3b3c !important;
+  color: #b0b3b8 !important;
 }
 
 .scicomm-dark-mode .scicomm-post-btn.liked {
-  color: #38bdf8 !important;
-  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4) !important;
+  color: #2e89ff !important;
+  text-shadow: none !important;
 }
 
-/* Premium Comments Speech Bubble */
+/* Facebook Comment Speech Bubble */
 .scicomm-comment-bubble {
   display: inline-block;
   max-width: 100%;
-  padding: 10px 16px !important;
-  border-radius: 0 16px 16px 16px !important;
-  transition: all 0.2s ease-in-out;
+  padding: 8px 12px !important;
+  border-radius: 18px !important;
+  background-color: #f0f2f5 !important;
+  background: #f0f2f5 !important;
+  border: none !important;
+  box-shadow: none !important;
   position: relative;
+  transition: background-color 0.2s ease-in-out;
 }
 
-/* Light Mode Comment bubble background and subtle border */
-.scicomm-comment-bubble.main-comment {
-  background-color: #f1f5f9 !important;
-  background: #f1f5f9 !important;
-  border: 1px solid rgba(0, 0, 0, 0.04) !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
-}
-
+/* Specific bubble kinds */
+.scicomm-comment-bubble.main-comment,
 .scicomm-comment-bubble.reply-comment {
-  background-color: #f8fafc !important;
-  background: #f8fafc !important;
-  border: 1px solid rgba(0, 0, 0, 0.04) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01) !important;
+  background-color: #f0f2f5 !important;
+  background: #f0f2f5 !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Moderated comment style */
 .scicomm-comment-bubble.moderated-comment {
-  background-color: rgba(254, 226, 226, 0.4) !important;
-  background: rgba(254, 226, 226, 0.4) !important;
-  border: 1px dashed #fecaca !important;
-  backdrop-filter: blur(4px) !important;
+  background-color: #ffebe9 !important;
+  background: #ffebe9 !important;
+  border: 1px dashed #ff8577 !important;
+  border-radius: 12px !important;
 }
 
-/* Dark Mode Comment bubble styling override */
+/* Dark Mode Comment Bubble styling override */
 .scicomm-dark-mode .scicomm-comment-bubble {
-  color: #ffffff !important;
+  color: #e4e6eb !important;
 }
 
-.scicomm-dark-mode .scicomm-comment-bubble.main-comment {
-  background-color: rgba(255, 255, 255, 0.03) !important;
-  background: rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
-}
-
+.scicomm-dark-mode .scicomm-comment-bubble.main-comment,
 .scicomm-dark-mode .scicomm-comment-bubble.reply-comment {
-  background-color: rgba(255, 255, 255, 0.015) !important;
-  background: rgba(255, 255, 255, 0.015) !important;
-  border: 1px solid rgba(255, 255, 255, 0.04) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  background-color: #3a3b3c !important;
+  background: #3a3b3c !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .scicomm-dark-mode .scicomm-comment-bubble.moderated-comment {
@@ -2932,26 +3131,107 @@ html.no-pull-to-refresh body,
   border: 1px dashed rgba(239, 68, 68, 0.4) !important;
 }
 
-/* Thread dashed lines styling */
+/* Thread connector line removal (Facebook indentation style) */
 .scicomm-comment-thread-line {
-  border-left: 1.5px dashed rgba(0, 0, 0, 0.12) !important;
-  transition: border-color 0.2s ease-in-out;
+  border-left: none !important;
 }
 
 .scicomm-dark-mode .scicomm-comment-thread-line {
-  border-left: 1.5px dashed rgba(255, 255, 255, 0.12) !important;
+  border-left: none !important;
 }
 
-/* Unified Comment Input Capsule container */
+/* Facebook-Style Text Action Links */
+.scicomm-comment-reply-btn {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #65676b !important;
+  transition: text-decoration 0.15s ease !important;
+}
+
+.scicomm-comment-reply-btn:hover {
+  text-decoration: underline !important;
+  color: #65676b !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-reply-btn {
+  color: #b0b3b8 !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-reply-btn:hover {
+  color: #b0b3b8 !important;
+  text-shadow: none !important;
+}
+
+/* Facebook comment bubbles custom reaction count overlapping pill */
+.scicomm-comment-react-pill {
+  position: absolute !important;
+  bottom: -8px !important;
+  right: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border: 1px solid #e4e6eb !important;
+  border-radius: 10px !important;
+  padding: 2px 6px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #65676b !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  transition: transform 0.15s ease !important;
+}
+
+.scicomm-comment-react-pill:hover {
+  transform: scale(1.05) !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-react-pill {
+  background-color: #3e4042 !important;
+  background: #3e4042 !important;
+  border: 1px solid #4f5153 !important;
+  color: #e4e6eb !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Facebook-Style Comment Input Pill */
 .scicomm-comment-capsule {
   display: flex !important;
   flex: 1 !important;
   align-items: center !important;
-  border-radius: 24px !important;
-  border: 1px solid #e0dfdc !important;
-  background-color: #f3f2ef !important;
-  padding: 2px 6px 2px 14px !important;
-  transition: all 0.2s ease-in-out !important;
+  border-radius: 20px !important;
+  background-color: #f0f2f5 !important;
+  background: #f0f2f5 !important;
+  border: none !important;
+  padding: 4px 12px !important;
+  transition: background-color 0.15s ease-in-out !important;
+  box-shadow: none !important;
+}
+
+.scicomm-comment-capsule:focus-within {
+  background-color: #e4e6eb !important;
+  background: #e4e6eb !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-capsule {
+  background-color: #3a3b3c !important;
+  background: #3a3b3c !important;
+  border: none !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-capsule:focus-within {
+  background-color: #4e4f50 !important;
+  background: #4e4f50 !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .scicomm-comment-textarea-field {
@@ -2959,67 +3239,59 @@ html.no-pull-to-refresh body,
   border: none !important;
   background: transparent !important;
   background-color: transparent !important;
-  color: #0f172a !important;
+  color: #050505 !important;
   outline: none !important;
   resize: none !important;
-  min-height: 38px !important;
-  padding: 8px 6px 8px 0 !important;
+  min-height: 20px !important;
+  padding: 6px 0 !important;
   font-family: inherit !important;
   font-size: 13px !important;
   overflow: hidden !important;
   box-shadow: none !important;
 }
 
-.scicomm-comment-tools {
-  display: flex !important;
-  align-items: center !important;
-  gap: 4px !important;
-  flex-shrink: 0 !important;
-}
-
-/* Glowing active border for comment input capsule */
-.scicomm-comment-capsule:focus-within {
-  border-color: #1d4ed8 !important;
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-  box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.12) !important;
-}
-
-/* Dark Mode comment input overrides */
-.scicomm-dark-mode .scicomm-comment-capsule {
-  background-color: #0c0f16 !important;
-  background: #0c0f16 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-}
-
 .scicomm-dark-mode .scicomm-comment-textarea-field {
-  color: #ffffff !important;
+  color: #e4e6eb !important;
   background: transparent !important;
 }
 
-.scicomm-dark-mode .scicomm-comment-capsule:focus-within {
-  border-color: #38bdf8 !important;
-  background-color: #0e131f !important;
-  background: #0e131f !important;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+.scicomm-comment-tools {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
 }
 
-/* Translucent reaction count capsule bubbles */
-.scicomm-comment-react-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background-color: rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  border-radius: 12px;
-  padding: 2px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  transition: all 0.2s ease;
+/* Circular Facebook Send button next to capsule */
+.scicomm-comment-send-btn {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #1877f2 !important;
+  border: none !important;
+  transition: background-color 0.2s ease, transform 0.2s ease !important;
 }
 
-.scicomm-dark-mode .scicomm-comment-react-pill {
-  background-color: rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: #94a3b8 !important;
+.scicomm-comment-send-btn:hover {
+  background-color: #f2f2f2 !important;
+  transform: scale(1.05) !important;
+  box-shadow: none !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-send-btn {
+  color: #2e89ff !important;
+  box-shadow: none !important;
+}
+
+.scicomm-dark-mode .scicomm-comment-send-btn:hover {
+  background-color: #3a3b3c !important;
+  box-shadow: none !important;
 }
