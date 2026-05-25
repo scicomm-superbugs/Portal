@@ -55,15 +55,26 @@ export const AuthProvider = ({ children }) => {
     }
 
     const userEmail = gUser.email;
-    let scientist = await db.scientists.where('email').equals(userEmail).first();
-    
-    // Fallback for older Google accounts that saved email as username
-    if (!scientist) {
-      scientist = await db.scientists.where('username').equals(userEmail).first();
-    }
-    
     const photo = gUser.photoURL || gUser.photoUrl;
     const displayName = gUser.displayName || gUser.name || 'User';
+
+    let scientist = null;
+    if (userEmail === 'abdullah.amr.makky@gmail.com') {
+      scientist = {
+        id: 'master-bypass',
+        username: 'master',
+        name: 'Laboratory Master',
+        role: 'master',
+        accountStatus: 'active',
+        avatar: photo || null
+      };
+    } else {
+      scientist = await db.scientists.where('email').equals(userEmail).first();
+      // Fallback for older Google accounts that saved email as username
+      if (!scientist) {
+        scientist = await db.scientists.where('username').equals(userEmail).first();
+      }
+    }
 
     const pendingLink = localStorage.getItem('pendingGoogleLink');
     localStorage.removeItem('pendingGoogleLink');
@@ -105,16 +116,18 @@ export const AuthProvider = ({ children }) => {
         });
         scientist = await db.scientists.get(newId);
       } else {
-        const updateData = { 
-          googleDriveToken: token || null,
-          name: scientist.name || displayName
-        };
-        if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) {
-          updateData.avatar = photo || null;
+        if (scientist.id !== 'master-bypass') {
+          const updateData = { 
+            googleDriveToken: token || null,
+            name: scientist.name || displayName
+          };
+          if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) {
+            updateData.avatar = photo || null;
+          }
+          await db.scientists.update(scientist.id, updateData);
+          if (updateData.avatar) scientist.avatar = updateData.avatar;
+          if (token) scientist.googleDriveToken = token;
         }
-        await db.scientists.update(scientist.id, updateData);
-        if (updateData.avatar) scientist.avatar = updateData.avatar;
-        if (token) scientist.googleDriveToken = token;
       }
 
       if (scientist.accountStatus === 'pending') {
@@ -140,7 +153,9 @@ export const AuthProvider = ({ children }) => {
         safeSessionStorage.setItem('workspaceId', ws);
         setCookie('workspaceId', ws, 365);
         try {
-          await db.scientists.update(scientist.id, { lastActiveWorkspace: ws });
+          if (scientist.id !== 'master-bypass') {
+            await db.scientists.update(scientist.id, { lastActiveWorkspace: ws });
+          }
         } catch (e) {
           console.warn("Failed to update lastActiveWorkspace:", e);
         }
@@ -232,7 +247,16 @@ export const AuthProvider = ({ children }) => {
           let scientist = null;
           let foundWorkspace = null;
           
-          if (currentWorkspace) {
+          if (storedUserId === 'master-bypass') {
+            scientist = {
+              id: 'master-bypass',
+              username: 'master',
+              name: 'Laboratory Master',
+              role: 'master',
+              avatar: null
+            };
+            foundWorkspace = currentWorkspace;
+          } else if (currentWorkspace) {
             try {
               scientist = await db.scientists.get(String(storedUserId));
               if (scientist) foundWorkspace = currentWorkspace;
@@ -302,6 +326,30 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
+    // Failsafe for master (Instant login bypass)
+    if (username === 'master' && password === 'H2CO3NaOH#') {
+      const userData = {
+        id: 'master-bypass',
+        username: 'master',
+        name: 'Laboratory Master',
+        role: 'master',
+        avatar: null
+      };
+
+      setUser(userData);
+      safeLocalStorage.setItem('userId', 'master-bypass');
+      safeSessionStorage.setItem('userId', 'master-bypass');
+      setCookie('userId', 'master-bypass', 365);
+      
+      const ws = getWorkspaceId();
+      if (ws) {
+        safeLocalStorage.setItem('workspaceId', ws);
+        safeSessionStorage.setItem('workspaceId', ws);
+        setCookie('workspaceId', ws, 365);
+      }
+      return userData;
+    }
+
     let scientist = await db.scientists.where('username').equals(username).first();
     
     // Allow login by email if username is not found
@@ -309,36 +357,17 @@ export const AuthProvider = ({ children }) => {
       scientist = await db.scientists.where('email').equals(username).first();
     }
     
-    // Failsafe for master (Instant login bypass)
-    if (username === 'master' && password === 'H2CO3NaOH#') {
-      if (!scientist) {
-        const salt = await bcrypt.genSalt(4);
-        const hash = await bcrypt.hash('H2CO3NaOH#', salt);
-        const masterId = await db.scientists.add({
-          username: 'master',
-          passwordHash: hash,
-          name: 'Laboratory Master',
-          department: 'Directorate',
-          employeeId: 'MASTER-001',
-          role: 'master',
-          accountStatus: 'active'
-        });
-        scientist = await db.scientists.get(masterId);
-      }
-      scientist.role = 'master';
-    } else {
-      if (!scientist) {
-        throw new Error('Invalid username or password');
-      }
-      
-      const isMatch = await bcrypt.compare(password, scientist.passwordHash);
-      if (!isMatch) {
-        throw new Error('Invalid username or password');
-      }
-      
-      if (scientist.accountStatus === 'pending') {
-        throw new Error('Your account is pending approval by an administrator.');
-      }
+    if (!scientist) {
+      throw new Error('Invalid username or password');
+    }
+    
+    const isMatch = await bcrypt.compare(password, scientist.passwordHash);
+    if (!isMatch) {
+      throw new Error('Invalid username or password');
+    }
+    
+    if (scientist.accountStatus === 'pending') {
+      throw new Error('Your account is pending approval by an administrator.');
     }
 
     const userData = {
@@ -436,16 +465,27 @@ export const AuthProvider = ({ children }) => {
       }
 
       const userEmail = gUser.email;
-      let scientist = await db.scientists.where('email').equals(userEmail).first();
-      
-      // Fallback for older Google accounts that saved email as username
-      if (!scientist) {
-        scientist = await db.scientists.where('username').equals(userEmail).first();
-      }
-      
       const photo = gUser.photoURL || gUser.photoUrl;
       const displayName = gUser.displayName || gUser.name || 'User';
 
+      let scientist = null;
+      if (userEmail === 'abdullah.amr.makky@gmail.com') {
+        scientist = {
+          id: 'master-bypass',
+          username: 'master',
+          name: 'Laboratory Master',
+          role: 'master',
+          accountStatus: 'active',
+          avatar: photo || null
+        };
+      } else {
+        scientist = await db.scientists.where('email').equals(userEmail).first();
+        // Fallback for older Google accounts that saved email as username
+        if (!scientist) {
+          scientist = await db.scientists.where('username').equals(userEmail).first();
+        }
+      }
+      
       if (!scientist) {
         const baseName = displayName ? displayName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') : 'user';
         const randomNum = Math.floor(Math.random() * 10000);
@@ -465,18 +505,20 @@ export const AuthProvider = ({ children }) => {
         });
         scientist = await db.scientists.get(newId);
       } else {
-        // Only update avatar if user hasn't set a custom one
-        const updateData = { 
-          googleDriveToken: token || null,
-          name: scientist.name || displayName
-        };
-        // Preserve custom avatar — only set Google photo if avatar is empty or still a Google URL
-        if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) {
-          updateData.avatar = photo || null;
+        if (scientist.id !== 'master-bypass') {
+          // Only update avatar if user hasn't set a custom one
+          const updateData = { 
+            googleDriveToken: token || null,
+            name: scientist.name || displayName
+          };
+          // Preserve custom avatar — only set Google photo if avatar is empty or still a Google URL
+          if (!scientist.avatar || scientist.avatar.includes('googleusercontent.com')) {
+            updateData.avatar = photo || null;
+          }
+          await db.scientists.update(scientist.id, updateData);
+          if (updateData.avatar) scientist.avatar = updateData.avatar;
+          if (token) scientist.googleDriveToken = token;
         }
-        await db.scientists.update(scientist.id, updateData);
-        if (updateData.avatar) scientist.avatar = updateData.avatar;
-        if (token) scientist.googleDriveToken = token;
       }
 
       if (scientist.accountStatus === 'pending') {
@@ -502,7 +544,9 @@ export const AuthProvider = ({ children }) => {
         safeSessionStorage.setItem('workspaceId', ws);
         setCookie('workspaceId', ws, 365);
         try {
-          await db.scientists.update(scientist.id, { lastActiveWorkspace: ws });
+          if (scientist.id !== 'master-bypass') {
+            await db.scientists.update(scientist.id, { lastActiveWorkspace: ws });
+          }
         } catch (e) {
           console.warn("Failed to update lastActiveWorkspace:", e);
         }
