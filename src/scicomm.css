@@ -2000,3 +2000,63 @@ html.no-pull-to-refresh body,
   overscroll-behavior: contain !important;
 }
 
+/* ===== RESPONSIVE WORKSPACE HUB DESIGN ===== */
+.scicomm-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+@media (min-width: 769px) {
+  .scicomm-hub-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    max-width: 960px !important;
+    gap: 24px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card {
+    padding: 32px 24px !important;
+    gap: 16px !important;
+    border-radius: 24px !important;
+  }
+  
+  .scicomm-hub-grid .hub-icon-wrapper {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 22px !important;
+  }
+  
+  .scicomm-hub-grid .hub-icon-wrapper svg,
+  .scicomm-hub-grid .hub-icon-wrapper .icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card span {
+    font-size: 16px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card-admin {
+    grid-column: span 3 !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 16px !important;
+    padding: 24px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 14px !important;
+  }
+  
+  .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper svg,
+  .scicomm-hub-grid .hub-card-admin .hub-icon-wrapper .icon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+
