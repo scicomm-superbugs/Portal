@@ -451,41 +451,41 @@ export default function SciCommLayout() {
       {mobileSidebarOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex' }}>
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)' }} onClick={() => setMobileSidebarOpen(false)} />
-          <div style={{ position: 'relative', width: '280px', maxWidth: '80%', background: 'white', height: '100%', display: 'flex', flexDirection: 'column', boxShadow: '2px 0 12px rgba(0,0,0,0.2)', animation: 'slideRight 0.3s ease' }}>
-            <div style={{ padding: '20px 16px', borderBottom: '1px solid #e0dfdc' }}>
+          <div className="scicomm-mobile-sidebar" style={{ position: 'relative', width: '280px', maxWidth: '80%', background: 'white', height: '100%', display: 'flex', flexDirection: 'column', boxShadow: '2px 0 12px rgba(0,0,0,0.2)', animation: 'slideRight 0.3s ease' }}>
+            <div className="scicomm-mobile-sidebar-header" style={{ padding: '20px 16px', borderBottom: '1px solid #e0dfdc' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
                 <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none' }}>{renderAvatar(56)}</Link>
-                <button onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#666', marginTop: '-8px' }}>×</button>
+                <button className="scicomm-mobile-sidebar-close" onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#666', marginTop: '-8px' }}>×</button>
               </div>
               <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <h3 style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700 }}>{user.name}</h3>
+                <h3 className="scicomm-mobile-sidebar-name" style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700 }}>{user.name}</h3>
               </Link>
-              <div style={{ color: '#4b5563', fontSize: '14px', marginBottom: '4px', fontWeight: 500 }}>{me?.department || 'Member'}</div>
+              <div className="scicomm-mobile-sidebar-dept" style={{ color: '#4b5563', fontSize: '14px', marginBottom: '4px', fontWeight: 500 }}>{me?.department || 'Member'}</div>
             </div>
 
-            <div style={{ padding: '16px', borderBottom: '1px solid #e0dfdc' }}>
-              <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: '#374151', fontWeight: 600, fontSize: '14px', marginBottom: '16px' }}>
+            <div className="scicomm-mobile-sidebar-stats" style={{ padding: '16px', borderBottom: '1px solid #e0dfdc' }}>
+              <Link to="/profile" className="scicomm-mobile-sidebar-stat-link" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: '#374151', fontWeight: 600, fontSize: '14px', marginBottom: '16px' }}>
                 <span>Profile viewers</span>
-                <span style={{ color: '#1d4ed8' }}>{profileViewers}</span>
+                <span className="scicomm-mobile-sidebar-stat-val" style={{ color: '#1d4ed8' }}>{profileViewers}</span>
               </Link>
-              <Link to="/profile" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: '#374151', fontWeight: 600, fontSize: '14px' }}>
+              <Link to="/profile" className="scicomm-mobile-sidebar-stat-link" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: '#374151', fontWeight: 600, fontSize: '14px' }}>
                 <span>Post impressions</span>
-                <span style={{ color: '#1d4ed8' }}>{postImpressions}</span>
+                <span className="scicomm-mobile-sidebar-stat-val" style={{ color: '#1d4ed8' }}>{postImpressions}</span>
               </Link>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '12px 0' }}>
-              <button onClick={() => { setMobileSidebarOpen(false); window.dispatchEvent(new CustomEvent('show-changelog')); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 700, cursor: 'pointer', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="scicomm-mobile-sidebar-menu" style={{ flex: 1, overflowY: 'auto', padding: '12px 0' }}>
+              <button className="scicomm-mobile-sidebar-changelog-btn" onClick={() => { setMobileSidebarOpen(false); window.dispatchEvent(new CustomEvent('show-changelog')); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 700, cursor: 'pointer', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{ fontSize: '18px' }}>🚀</span> What's New in {PLATFORM_VERSION}
               </button>
-              {isAdmin && <Link to="/admin" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: '#1f2937', fontSize: '15px', fontWeight: 600 }}><Shield size={20} color="#4b5563" /> Admin Dashboard {pendingAccounts.length > 0 && <span className="scicomm-notif-badge" style={{position:'static', marginLeft:'auto'}}>{pendingAccounts.length}</span>}</Link>}
-              <button onClick={() => { toggleDarkMode(); setMobileSidebarOpen(false); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {isAdmin && <Link to="/admin" className="scicomm-mobile-sidebar-menu-item" onClick={() => setMobileSidebarOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: '#1f2937', fontSize: '15px', fontWeight: 600 }}><Shield size={20} color="#4b5563" /> Admin Dashboard {pendingAccounts.length > 0 && <span className="scicomm-notif-badge" style={{position:'static', marginLeft:'auto'}}>{pendingAccounts.length}</span>}</Link>}
+              <button className="scicomm-mobile-sidebar-menu-item" onClick={() => { toggleDarkMode(); setMobileSidebarOpen(false); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 {isDarkMode ? <Sun size={20} color="#4b5563" /> : <Moon size={20} color="#4b5563" />} {isDarkMode ? 'Light Mode' : 'Dark Mode'}
               </button>
-              <button onClick={() => { safeLocalStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button className="scicomm-mobile-sidebar-menu-item" onClick={() => { safeLocalStorage.removeItem('workspaceId'); window.location.href = '#/portal'; }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Building2 size={20} color="#4b5563" /> Switch Hub
               </button>
-              <button onClick={() => { setMobileSidebarOpen(false); navigate('/download'); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button className="scicomm-mobile-sidebar-menu-item" onClick={() => { setMobileSidebarOpen(false); navigate('/download'); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Smartphone size={20} color="#4b5563" /> Download App
               </button>
               <div style={{ padding: '24px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 'auto' }}>
@@ -493,9 +493,9 @@ export default function SciCommLayout() {
               </div>
             </div>
 
-            <div style={{ padding: '12px 0', borderTop: '1px solid #e0dfdc' }}>
-              <button onClick={() => { setMobileSidebarOpen(false); navigate('/settings'); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#4b5563', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}><Settings size={20} /> Settings</button>
-              <button onClick={() => { setMobileSidebarOpen(false); handleLogout(); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#4b5563', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>Sign Out</button>
+            <div className="scicomm-mobile-sidebar-footer" style={{ padding: '12px 0', borderTop: '1px solid #e0dfdc' }}>
+              <button className="scicomm-mobile-sidebar-footer-item" onClick={() => { setMobileSidebarOpen(false); navigate('/settings'); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#4b5563', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}><Settings size={20} /> Settings</button>
+              <button className="scicomm-mobile-sidebar-footer-item" onClick={() => { setMobileSidebarOpen(false); handleLogout(); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: '#4b5563', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>Sign Out</button>
             </div>
           </div>
           <style>{`

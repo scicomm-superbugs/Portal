@@ -1079,7 +1079,9 @@
 .scicomm-dark-mode *[style*="background-color: #ffffff"],
 .scicomm-dark-mode *[style*="background-color:#ffffff"],
 .scicomm-dark-mode *[style*="background: rgb(255, 255, 255)"],
-.scicomm-dark-mode *[style*="background-color: rgb(255, 255, 255)"] {
+.scicomm-dark-mode *[style*="background-color: rgb(255, 255, 255)"],
+.scicomm-dark-mode *[style*="background:rgb(255,255,255)"],
+.scicomm-dark-mode *[style*="background-color:rgb(255,255,255)"] {
   background-color: #0c0f16 !important;
   background: #0c0f16 !important;
   color: #ffffff !important;
@@ -1113,7 +1115,21 @@
 .scicomm-dark-mode *[style*="background: #f9fafb"],
 .scicomm-dark-mode *[style*="background-color: #f9fafb"],
 .scicomm-dark-mode *[style*="background: rgb(249, 250, 251)"],
-.scicomm-dark-mode *[style*="background-color: rgb(249, 250, 251)"] {
+.scicomm-dark-mode *[style*="background-color: rgb(249, 250, 251)"],
+.scicomm-dark-mode *[style*="background:rgb(242,242,242)"],
+.scicomm-dark-mode *[style*="background-color:rgb(242,242,242)"],
+.scicomm-dark-mode *[style*="background:rgb(243,242,239)"],
+.scicomm-dark-mode *[style*="background-color:rgb(243,242,239)"],
+.scicomm-dark-mode *[style*="background:rgb(238,243,248)"],
+.scicomm-dark-mode *[style*="background-color:rgb(238,243,248)"],
+.scicomm-dark-mode *[style*="background:rgb(248,250,252)"],
+.scicomm-dark-mode *[style*="background-color:rgb(248,250,252)"],
+.scicomm-dark-mode *[style*="background:rgb(241,245,249)"],
+.scicomm-dark-mode *[style*="background-color:rgb(241,245,249)"],
+.scicomm-dark-mode *[style*="background:rgb(239,246,255)"],
+.scicomm-dark-mode *[style*="background-color:rgb(239,246,255)"],
+.scicomm-dark-mode *[style*="background:rgb(249,250,251)"],
+.scicomm-dark-mode *[style*="background-color:rgb(249,250,251)"] {
   background-color: #111827 !important;
   background: #111827 !important;
   color: #ffffff !important;
@@ -1156,6 +1172,12 @@
 .scicomm-dark-mode *[style*="color:#333"],
 .scicomm-dark-mode *[style*="color: #050505"],
 .scicomm-dark-mode *[style*="color:#050505"],
+.scicomm-dark-mode *[style*="color: #1f2937"],
+.scicomm-dark-mode *[style*="color:#1f2937"],
+.scicomm-dark-mode *[style*="color: #374151"],
+.scicomm-dark-mode *[style*="color:#374151"],
+.scicomm-dark-mode *[style*="color: #4b5563"],
+.scicomm-dark-mode *[style*="color:#4b5563"],
 .scicomm-dark-mode *[style*="color: rgba(0,0,0,0.9)"],
 .scicomm-dark-mode *[style*="color:rgba(0,0,0,0.9)"],
 .scicomm-dark-mode *[style*="color: rgba(0,0,0,0.8)"],
@@ -1164,9 +1186,42 @@
 .scicomm-dark-mode *[style*="color: rgb(30, 41, 59)"],
 .scicomm-dark-mode *[style*="color: rgb(0, 0, 0)"],
 .scicomm-dark-mode *[style*="color: black"],
-.scicomm-dark-mode *[style*="color:black"] {
+.scicomm-dark-mode *[style*="color:black"],
+.scicomm-dark-mode *[style*="color: rgb(31, 41, 55)"],
+.scicomm-dark-mode *[style*="color:rgb(31, 41, 55)"],
+.scicomm-dark-mode *[style*="color:rgb(31,41,55)"],
+.scicomm-dark-mode *[style*="color: rgb(55, 65, 81)"],
+.scicomm-dark-mode *[style*="color:rgb(55, 65, 81)"],
+.scicomm-dark-mode *[style*="color:rgb(55,65,81)"],
+.scicomm-dark-mode *[style*="color: rgb(75, 85, 99)"],
+.scicomm-dark-mode *[style*="color:rgb(75, 85, 99)"],
+.scicomm-dark-mode *[style*="color:rgb(75,85,99)"],
+.scicomm-dark-mode *[style*="color: rgb(15, 23, 42)"],
+.scicomm-dark-mode *[style*="color:rgb(15, 23, 42)"],
+.scicomm-dark-mode *[style*="color:rgb(15,23,42)"],
+.scicomm-dark-mode *[style*="color: rgb(30, 41, 59)"],
+.scicomm-dark-mode *[style*="color:rgb(30, 41, 59)"],
+.scicomm-dark-mode *[style*="color:rgb(30,41,59)"],
+.scicomm-dark-mode *[style*="color: rgb(51, 65, 85)"],
+.scicomm-dark-mode *[style*="color:rgb(51, 65, 85)"],
+.scicomm-dark-mode *[style*="color:rgb(51,65,85)"],
+.scicomm-dark-mode *[style*="color: rgb(5, 5, 5)"],
+.scicomm-dark-mode *[style*="color:rgb(5, 5, 5)"],
+.scicomm-dark-mode *[style*="color:rgb(5,5,5)"],
+.scicomm-dark-mode *[style*="color: rgb(0, 0, 0)"],
+.scicomm-dark-mode *[style*="color:rgb(0, 0, 0)"],
+.scicomm-dark-mode *[style*="color:rgb(0,0,0)"] {
   color: #ffffff !important;
 }
+
+/* Force dark SVG stroke colors to render white in dark mode */
+.scicomm-dark-mode svg[stroke="#4b5563"],
+.scicomm-dark-mode svg[stroke="#4b5563"] *,
+.scicomm-dark-mode svg[stroke="rgb(75, 85, 99)"],
+.scicomm-dark-mode svg[stroke="rgb(75, 85, 99)"] * {
+  stroke: #ffffff !important;
+}
+
 
 /* Muted/secondary text overrides — #94a3b8, rgba(0,0,0,0.3-0.4), #475569, #666, #555, #444, #6b7280 */
 .scicomm-dark-mode *[style*="color: #94a3b8"],
@@ -1186,14 +1241,86 @@
 .scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.4)"],
 .scicomm-dark-mode *[style*="color: rgba(0,0,0,0.3)"],
 .scicomm-dark-mode *[style*="color:rgba(0,0,0,0.3)"],
-.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.3)"] {
+.scicomm-dark-mode *[style*="color: rgba(0, 0, 0, 0.3)"],
+.scicomm-dark-mode *[style*="color: rgb(148, 163, 184)"],
+.scicomm-dark-mode *[style*="color:rgb(148, 163, 184)"],
+.scicomm-dark-mode *[style*="color:rgb(148,163,184)"],
+.scicomm-dark-mode *[style*="color: rgb(71, 85, 105)"],
+.scicomm-dark-mode *[style*="color:rgb(71, 85, 105)"],
+.scicomm-dark-mode *[style*="color:rgb(71,85,105)"],
+.scicomm-dark-mode *[style*="color: rgb(107, 114, 128)"],
+.scicomm-dark-mode *[style*="color:rgb(107, 114, 128)"],
+.scicomm-dark-mode *[style*="color:rgb(107,114,128)"] {
   color: #94a3b8 !important;
 }
 
-/* Link-style blue text #0a66c2 — lighten for dark mode */
+/* Link-style blue text #0a66c2, #1d4ed8 — lighten for dark mode */
 .scicomm-dark-mode *[style*="color: #0a66c2"],
-.scicomm-dark-mode *[style*="color:#0a66c2"] {
+.scicomm-dark-mode *[style*="color:#0a66c2"],
+.scicomm-dark-mode *[style*="color: #1d4ed8"],
+.scicomm-dark-mode *[style*="color:#1d4ed8"],
+.scicomm-dark-mode *[style*="color: rgb(10, 102, 194)"],
+.scicomm-dark-mode *[style*="color:rgb(10, 102, 194)"],
+.scicomm-dark-mode *[style*="color:rgb(10,102,194)"],
+.scicomm-dark-mode *[style*="color: rgb(29, 78, 216)"],
+.scicomm-dark-mode *[style*="color:rgb(29, 78, 216)"],
+.scicomm-dark-mode *[style*="color:rgb(29,78,216)"] {
   color: #60a5fa !important;
+}
+
+/* --- MOBILE SIDEBAR DRAWER DRASTIC CONTRAST FIX --- */
+.scicomm-dark-mode .scicomm-mobile-sidebar {
+  background-color: #0c0f16 !important;
+  background: #0c0f16 !important;
+  color: #ffffff !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-close {
+  color: #cbd5e1 !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-name {
+  color: #ffffff !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-dept {
+  color: #94a3b8 !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-stats {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-stat-link {
+  color: #cbd5e1 !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-stat-val {
+  color: #60a5fa !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-menu-item {
+  color: #ffffff !important;
+}
+
+/* Make sure all SVGs inside the sidebar menus/items inherit the white/light text color in dark mode */
+.scicomm-dark-mode .scicomm-mobile-sidebar svg,
+.scicomm-dark-mode .scicomm-mobile-sidebar svg * {
+  stroke: currentColor !important;
+  color: currentColor !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.scicomm-dark-mode .scicomm-mobile-sidebar-footer-item {
+  color: #cbd5e1 !important;
 }
 
 /* Chat sidebar & header hardcoded dark text */
