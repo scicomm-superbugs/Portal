@@ -533,23 +533,25 @@ export default function SciCommFeed() {
       if (i < path.length - 1) target = target.replies;
     }
     
-    const reactions = target.reactions || {};
-    const users = reactions[reactionKey] || [];
-    let isAdding = false;
+    const reactions = { ...(target.reactions || {}) };
+    if (!reactions[reactionKey]) reactions[reactionKey] = [];
+    const idx = reactions[reactionKey].indexOf(user.id);
     
-    if (users.includes(user.id)) {
-      reactions[reactionKey] = users.filter(id => id !== user.id);
-      if (reactions[reactionKey].length === 0) delete reactions[reactionKey];
-    } else {
+    // Remove from all reactions first
+    for (const k in reactions) {
+      reactions[k] = reactions[k].filter(id => id !== user.id);
+      if (reactions[k].length === 0) delete reactions[k];
+    }
+    
+    let isAdding = false;
+    if (idx === -1) {
       isAdding = true;
-      for (const k in reactions) {
-        reactions[k] = reactions[k].filter(id => id !== user.id);
-        if (reactions[k].length === 0) delete reactions[k];
-      }
       if (!reactions[reactionKey]) reactions[reactionKey] = [];
       reactions[reactionKey].push(user.id);
     }
+    
     target.reactions = reactions;
+    
     try {
       await db.scicomm_posts.update(post.id, { comments });
       
@@ -808,18 +810,35 @@ export default function SciCommFeed() {
               
               {!isDeleted && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '8px' }}>
-                  <button 
-                    className="scicomm-comment-reply-btn"
-                    onClick={() => handleReactionOnComment(post, currentPath, myReaction ? null : 'like')} 
-                    style={{ 
-                      background: 'none', border: 'none', cursor: 'pointer', 
-                      fontSize: '12px', fontWeight: 700, 
-                      color: myReaction ? '#1d4ed8' : '#65676b', 
-                      padding: '2px 0' 
-                    }}
-                  >
-                    {myReaction ? 'Liked' : 'Like'}
-                  </button>
+                  <div style={{ position: 'relative', display: 'inline-block' }}
+                    onMouseEnter={() => setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_"))}
+                    onMouseLeave={() => setActiveReactionPicker(null)}
+                    onTouchStart={() => { window.reactionTimer = setTimeout(() => setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_")), 200); }}
+                    onTouchEnd={() => clearTimeout(window.reactionTimer)}
+                    onTouchMove={() => clearTimeout(window.reactionTimer)}
+                    onContextMenu={(e) => { e.preventDefault(); setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_")); }}>
+                    <button 
+                      className="scicomm-comment-reply-btn"
+                      onClick={() => handleReactionOnComment(post, currentPath, myReaction || 'like')} 
+                      style={{ 
+                        background: 'none', border: 'none', cursor: 'pointer', 
+                        fontSize: '12px', fontWeight: 700, 
+                        color: myReaction ? (REACTIONS.find(r => r.key === myReaction)?.color || '#1877f2') : '#65676b', 
+                        padding: '2px 0' 
+                      }}
+                    >
+                      {myReaction ? (REACTIONS.find(r => r.key === myReaction)?.label || 'Liked') : 'Like'}
+                    </button>
+                    {activeReactionPicker === "comment_" + post.id + "_" + currentPath.join("_") && (
+                      <div className="scicomm-reacts-popup" style={{ bottom: '100%', left: '0px' }}>
+                        {REACTIONS.map(r => (
+                          <button key={r.key} onClick={() => handleReactionOnComment(post, currentPath, r.key)} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }} onMouseEnter={e => e.target.style.transform = 'scale(1.3)'} onMouseLeave={e => e.target.style.transform = 'scale(1)'}>
+                            <span className="emoji">{r.emoji}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
                   <button 
                     className="scicomm-comment-reply-btn"
@@ -867,7 +886,7 @@ export default function SciCommFeed() {
                 <div style={{ marginTop: '8px' }}>
                   <div className="scicomm-comment-input-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', position: 'relative' }}>
                     {renderAvatar(getAuthor(user.id), 24)}
-                    <div className="scicomm-comment-capsule">
+                    <div className="scicomm-comment-capsule" onClick={e => { if (!['BUTTON', 'INPUT', 'LABEL', 'SPAN', 'SVG', 'PATH'].includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('label')) e.currentTarget.querySelector('textarea')?.focus(); }}>
                       <div style={{ flex: 1, position: 'relative' }}>
                         <MentionDropdown inputKey={replyKey} />
                         <textarea className="scicomm-comment-textarea-field" dir="auto" placeholder={`Replying to ${c.authorName}... (@ to mention)`} value={commentText[replyKey] || ''} 
@@ -1547,7 +1566,7 @@ export default function SciCommFeed() {
                   {renderCommentTree(post, post.comments || [], [])}
                   {/* Main comment input */}
                   <div className="scicomm-comment-input-row" style={{ display: 'flex', gap: '8px', marginTop: '4px', alignItems: 'center', position: 'relative' }}>
-                    <div className="scicomm-comment-capsule">
+                    <div className="scicomm-comment-capsule" onClick={e => { if (!['BUTTON', 'INPUT', 'LABEL', 'SPAN', 'SVG', 'PATH'].includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('label')) e.currentTarget.querySelector('textarea')?.focus(); }}>
                       <div style={{ flex: 1, position: 'relative' }}>
                         <MentionDropdown inputKey={post.id} />
                         <textarea className="scicomm-comment-textarea-field" dir="auto" placeholder="Add a comment... (use @ to mention)" value={commentText[post.id] || ''} 

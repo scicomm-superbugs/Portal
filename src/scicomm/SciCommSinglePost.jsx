@@ -154,21 +154,26 @@ export default function SciCommSinglePost() {
       target = target[path[i]];
       if (i < path.length - 1) target = target.replies;
     }
-    const reactions = target.reactions || {};
-    const users = reactions[reactionKey] || [];
-    if (users.includes(user.id)) {
-      reactions[reactionKey] = users.filter(id => id !== user.id);
-      if (reactions[reactionKey].length === 0) delete reactions[reactionKey];
-    } else {
-      for (const k in reactions) {
-        reactions[k] = reactions[k].filter(id => id !== user.id);
-        if (reactions[k].length === 0) delete reactions[k];
-      }
+    
+    const reactions = { ...(target.reactions || {}) };
+    if (!reactions[reactionKey]) reactions[reactionKey] = [];
+    const idx = reactions[reactionKey].indexOf(user.id);
+    
+    // Remove from all reactions first
+    for (const k in reactions) {
+      reactions[k] = reactions[k].filter(id => id !== user.id);
+      if (reactions[k].length === 0) delete reactions[k];
+    }
+    
+    if (idx === -1) {
       if (!reactions[reactionKey]) reactions[reactionKey] = [];
       reactions[reactionKey].push(user.id);
     }
+    
     target.reactions = reactions;
-    await db.scicomm_posts.update(post.id, { comments });
+    try {
+      await db.scicomm_posts.update(post.id, { comments });
+    } catch (err) { console.error(err); }
   };
 
   const handleDeleteComment = async (post, path) => {
@@ -268,18 +273,35 @@ export default function SciCommSinglePost() {
               
               {!isDeleted && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', paddingLeft: '8px' }}>
-                  <button 
-                    className="scicomm-comment-reply-btn"
-                    onClick={() => handleReactionOnComment(post, currentPath, myReaction ? null : 'like')} 
-                    style={{ 
-                      background: 'none', border: 'none', cursor: 'pointer', 
-                      fontSize: '12px', fontWeight: 700, 
-                      color: myReaction ? '#1d4ed8' : '#65676b', 
-                      padding: '2px 0' 
-                    }}
-                  >
-                    {myReaction ? 'Liked' : 'Like'}
-                  </button>
+                  <div style={{ position: 'relative', display: 'inline-block' }}
+                    onMouseEnter={() => setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_"))}
+                    onMouseLeave={() => setActiveReactionPicker(null)}
+                    onTouchStart={() => { window.reactionTimer = setTimeout(() => setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_")), 200); }}
+                    onTouchEnd={() => clearTimeout(window.reactionTimer)}
+                    onTouchMove={() => clearTimeout(window.reactionTimer)}
+                    onContextMenu={(e) => { e.preventDefault(); setActiveReactionPicker("comment_" + post.id + "_" + currentPath.join("_")); }}>
+                    <button 
+                      className="scicomm-comment-reply-btn"
+                      onClick={() => handleReactionOnComment(post, currentPath, myReaction || 'like')} 
+                      style={{ 
+                        background: 'none', border: 'none', cursor: 'pointer', 
+                        fontSize: '12px', fontWeight: 700, 
+                        color: myReaction ? (REACTIONS.find(r => r.key === myReaction)?.color || '#1877f2') : '#65676b', 
+                        padding: '2px 0' 
+                      }}
+                    >
+                      {myReaction ? (REACTIONS.find(r => r.key === myReaction)?.label || 'Liked') : 'Like'}
+                    </button>
+                    {activeReactionPicker === "comment_" + post.id + "_" + currentPath.join("_") && (
+                      <div className="scicomm-reacts-popup" style={{ bottom: '100%', left: '0px' }}>
+                        {REACTIONS.map(r => (
+                          <button key={r.key} onClick={() => handleReactionOnComment(post, currentPath, r.key)} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '4px 6px', borderRadius: '50%', transition: 'transform 0.15s' }} onMouseEnter={e => e.target.style.transform = 'scale(1.3)'} onMouseLeave={e => e.target.style.transform = 'scale(1)'}>
+                            <span className="emoji">{r.emoji}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
                   <button 
                     className="scicomm-comment-reply-btn"
@@ -312,15 +334,17 @@ export default function SciCommSinglePost() {
                 <div style={{ marginTop: '8px' }}>
                   <div className="scicomm-comment-input-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', position: 'relative' }}>
                     {renderAvatar(getAuthor(user.id), 24)}
-                    <div className="scicomm-comment-capsule">
-                      <textarea className="scicomm-comment-textarea-field" dir="auto" placeholder={`Replying to ${c.authorName}...`} value={commentText[replyKey] || ''} 
-                        onChange={e => {
-                          setCommentText({...commentText, [replyKey]: e.target.value});
-                          e.target.style.height = 'auto';
-                          e.target.style.height = e.target.scrollHeight + 'px';
-                        }} 
-                        rows={1}
-                        autoFocus style={{ border: 'none', background: 'transparent', outline: 'none', flex: 1 }} />
+                    <div className="scicomm-comment-capsule" onClick={e => { if (!['BUTTON', 'INPUT', 'LABEL', 'SPAN', 'SVG', 'PATH'].includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('label')) e.currentTarget.querySelector('textarea')?.focus(); }}>
+                      <div style={{ flex: 1, position: 'relative' }}>
+                        <textarea className="scicomm-comment-textarea-field" dir="auto" placeholder={`Replying to ${c.authorName}...`} value={commentText[replyKey] || ''} 
+                          onChange={e => {
+                            setCommentText({...commentText, [replyKey]: e.target.value});
+                            e.target.style.height = 'auto';
+                            e.target.style.height = e.target.scrollHeight + 'px';
+                          }} 
+                          rows={1}
+                          autoFocus />
+                      </div>
                       <div className="scicomm-comment-tools">
                         <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                           <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === replyKey ? null : replyKey)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
@@ -426,14 +450,16 @@ export default function SciCommSinglePost() {
         <div className="scicomm-single-post-comments-container">
           <div className="scicomm-comment-input-row" style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center', position: 'relative' }}>
             {renderAvatar(getAuthor(user.id), 32)}
-            <div className="scicomm-comment-capsule">
-              <textarea className="scicomm-comment-textarea-field" dir="auto" placeholder="Write a comment..." value={commentText[post.id] || ''} 
-                onChange={e => {
-                  setCommentText({...commentText, [post.id]: e.target.value});
-                  e.target.style.height = 'auto';
-                  e.target.style.height = e.target.scrollHeight + 'px';
-                }} 
-                rows={1} />
+            <div className="scicomm-comment-capsule" onClick={e => { if (!['BUTTON', 'INPUT', 'LABEL', 'SPAN', 'SVG', 'PATH'].includes(e.target.tagName) && !e.target.closest('button') && !e.target.closest('label')) e.currentTarget.querySelector('textarea')?.focus(); }}>
+              <div style={{ flex: 1, position: 'relative' }}>
+                <textarea className="scicomm-comment-textarea-field" dir="auto" placeholder="Write a comment..." value={commentText[post.id] || ''} 
+                  onChange={e => {
+                    setCommentText({...commentText, [post.id]: e.target.value});
+                    e.target.style.height = 'auto';
+                    e.target.style.height = e.target.scrollHeight + 'px';
+                  }} 
+                  rows={1} />
+              </div>
               <div className="scicomm-comment-tools">
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                   <button className="scicomm-comment-emoji-btn" onClick={() => setShowEmojiPicker(showEmojiPicker === post.id ? null : post.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', padding: '4px', display: 'flex', alignItems: 'center' }}><span className="emoji">😀</span></button>
