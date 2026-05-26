@@ -6235,3 +6235,178 @@ html.no-pull-to-refresh body,
 }
 
 
+/* ── Chats / Requests Tabs ── */
+.mc-tabs-bar {
+  display: flex;
+  padding: 0 16px;
+  gap: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fff;
+  margin-bottom: 8px;
+}
+
+.mc-tab-btn {
+  padding: 10px 4px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.mc-tab-btn:hover {
+  color: #0f172a;
+}
+
+.mc-tab-btn.active {
+  color: #3b82f6;
+}
+
+.mc-tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  border-radius: 3px 3px 0 0;
+}
+
+.mc-tab-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 6px;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* ── Request Action Box ── */
+.mc-request-action-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.mc-request-action-box p {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.mc-request-action-box .mc-request-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 24px;
+  max-width: 360px;
+  line-height: 1.5;
+}
+
+.mc-request-actions {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.mc-decline-btn,
+.mc-accept-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.mc-decline-btn {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.mc-decline-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.mc-accept-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.mc-accept-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+}
+
+/* ── Dark Mode Overrides for Request Features ── */
+.scicomm-dark-mode .mc-tabs-bar {
+  background: rgba(13, 16, 23, 0.95) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.scicomm-dark-mode .mc-tab-btn {
+  color: #94a3b8 !important;
+}
+
+.scicomm-dark-mode .mc-tab-btn:hover {
+  color: #f1f5f9 !important;
+}
+
+.scicomm-dark-mode .mc-tab-btn.active {
+  color: #60a5fa !important;
+}
+
+.scicomm-dark-mode .mc-tab-btn.active::after {
+  background: linear-gradient(90deg, #60a5fa, #3b82f6) !important;
+}
+
+.scicomm-dark-mode .mc-request-action-box {
+  background: #111827 !important;
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.scicomm-dark-mode .mc-request-action-box p {
+  color: #f1f5f9 !important;
+}
+
+.scicomm-dark-mode .mc-request-action-box .mc-request-subtitle {
+  color: #94a3b8 !important;
+}
+
+.scicomm-dark-mode .mc-decline-btn {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #cbd5e1 !important;
+}
+
+.scicomm-dark-mode .mc-decline-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f1f5f9 !important;
+}
+
+.scicomm-dark-mode .mc-accept-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  color: white !important;
+}
+
+

@@ -98,6 +98,7 @@ const StoryVideo = ({ videoUrl, isPaused, style, onEnded }) => {
 export default function SciCommStories({ scientists }) {
   const { user } = useAuth();
   const allStories = useLiveCollection('scicomm_stories') || [];
+  const connections = useLiveCollection('scicomm_connections') || [];
   
   // Filter out expired stories from display
   const now = new Date();
@@ -219,12 +220,22 @@ export default function SciCommStories({ scientists }) {
     if (existing) roomId = existing.id;
     else {
       const otherUser = scientists.find(s => String(s.id) === String(viewingUserId));
+      
+      const conn = connections.find(c => 
+        c.status === 'accepted' && 
+        ((c.fromId === user.id && c.toId === viewingUserId) || (c.fromId === viewingUserId && c.toId === user.id))
+      );
+      const status = conn ? 'active' : 'requested';
+      const requestedBy = conn ? null : user.id;
+
       roomId = await db.scicomm_chat_rooms.add({
         type: 'private',
         members: [user.id, viewingUserId],
         memberNames: { [user.id]: user.name, [viewingUserId]: otherUser?.name || story.authorName },
         createdAt: new Date().toISOString(),
-        lastMessageAt: new Date().toISOString()
+        lastMessageAt: new Date().toISOString(),
+        status,
+        requestedBy
       });
     }
 
@@ -264,12 +275,22 @@ export default function SciCommStories({ scientists }) {
         if (existing) roomId = existing.id;
         else {
           const otherUser = scientists.find(s => String(s.id) === String(viewingUserId));
+          
+          const conn = connections.find(c => 
+            c.status === 'accepted' && 
+            ((c.fromId === user.id && c.toId === viewingUserId) || (c.fromId === viewingUserId && c.toId === user.id))
+          );
+          const status = conn ? 'active' : 'requested';
+          const requestedBy = conn ? null : user.id;
+
           roomId = await db.scicomm_chat_rooms.add({
             type: 'private',
             members: [user.id, viewingUserId],
             memberNames: { [user.id]: user.name, [viewingUserId]: otherUser?.name || story.authorName },
             createdAt: new Date().toISOString(),
-            lastMessageAt: new Date().toISOString()
+            lastMessageAt: new Date().toISOString(),
+            status,
+            requestedBy
           });
         }
 

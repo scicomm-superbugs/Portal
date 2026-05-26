@@ -58,6 +58,7 @@ export default function SciCommChat() {
   const scientists = useLiveCollection('scientists') || [];
   const chatRooms = useLiveCollection('scicomm_chat_rooms') || [];
   const chatMessages = useLiveCollection('scicomm_chat_messages') || [];
+  const connections = useLiveCollection('scicomm_connections') || [];
 
   const me = scientists.find(s => String(s.id) === String(user.id));
 
@@ -86,6 +87,7 @@ export default function SciCommChat() {
   const [uploading, setUploading] = useState(false);
   const [editGroupName, setEditGroupName] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [activeTab, setActiveTab] = useState('chats'); // 'chats' or 'requests'
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
 
   // Touch/swipe state for mobile reply
@@ -122,15 +124,32 @@ export default function SciCommChat() {
       .sort((a, b) => new Date(b.lastMessageAt || b.createdAt) - new Date(a.lastMessageAt || a.createdAt));
   }, [chatRooms, user.id]);
 
-  const filteredRooms = useMemo(() => {
-    if (!sidebarSearch.trim()) return myRooms;
-    const q = sidebarSearch.toLowerCase();
+  const chatsRooms = useMemo(() => {
     return myRooms.filter(r => {
+      if (r.type === 'group') return true;
+      if (!r.status || r.status === 'active') return true;
+      if (r.status === 'requested' && r.requestedBy === user.id) return true;
+      return false;
+    });
+  }, [myRooms, user.id]);
+
+  const requestsRooms = useMemo(() => {
+    return myRooms.filter(r => {
+      return r.type === 'private' && r.status === 'requested' && r.requestedBy !== user.id;
+    });
+  }, [myRooms, user.id]);
+
+  const tabRooms = activeTab === 'chats' ? chatsRooms : requestsRooms;
+
+  const filteredRooms = useMemo(() => {
+    if (!sidebarSearch.trim()) return tabRooms;
+    const q = sidebarSearch.toLowerCase();
+    return tabRooms.filter(r => {
       if (r.groupName && r.groupName.toLowerCase().includes(q)) return true;
       const names = Object.values(r.memberNames || {});
       return names.some(n => n.toLowerCase().includes(q));
     });
-  }, [myRooms, sidebarSearch]);
+  }, [tabRooms, sidebarSearch]);
 
   // ── Active room messages ────────────────────────────────
   const activeRoom = chatRooms.find(r => r.id === activeRoomId);
@@ -232,14 +251,42 @@ export default function SciCommChat() {
   const startPrivateChat = async (scientist) => {
     const existing = chatRooms.find(r => r.type === 'private' && r.members?.includes(user.id) && r.members?.includes(scientist.id));
     if (existing) { openRoom(existing.id); return; }
+
+    // Check if they are connected
+    const conn = connections.find(c => 
+      c.status === 'accepted' && 
+      ((c.fromId === user.id && c.toId === scientist.id) || (c.fromId === scientist.id && c.toId === user.id))
+    );
+
+    const status = conn ? 'active' : 'requested';
+    const requestedBy = conn ? null : user.id;
+
     const roomId = await db.scicomm_chat_rooms.add({
       type: 'private',
       members: [user.id, scientist.id],
       memberNames: { [user.id]: user.name, [scientist.id]: scientist.name },
       createdAt: new Date().toISOString(),
-      lastMessageAt: new Date().toISOString()
+      lastMessageAt: new Date().toISOString(),
+      status,
+      requestedBy
     });
     openRoom(roomId);
+  };
+
+  // ── Message Request Actions ─────────────────────────────
+  const acceptRequest = async (roomId) => {
+    await db.scicomm_chat_rooms.update(roomId, { status: 'active', requestedBy: null });
+  };
+
+  const declineRequest = async (roomId) => {
+    if (window.confirm("Decline and delete this chat request?")) {
+      const messagesToDelete = chatMessages.filter(m => m.roomId === roomId);
+      for (const msg of messagesToDelete) {
+        await db.scicomm_chat_messages.delete(msg.id).catch(() => {});
+      }
+      await db.scicomm_chat_rooms.delete(roomId).catch(() => {});
+      setActiveRoomId(null);
+    }
   };
 
   // ── Create group ────────────────────────────────────────
@@ -505,6 +552,19 @@ export default function SciCommChat() {
           <div className="mc-sidebar-search">
             <Search size={16} className="mc-search-icon" />
             <input type="text" placeholder="Search conversations..." value={sidebarSearch} onChange={e => setSidebarSearch(e.target.value)} className="mc-search-input" />
+          </div>
+
+          {/* Tabs Bar */}
+          <div className="mc-tabs-bar">
+            <button className={`mc-tab-btn ${activeTab === 'chats' ? 'active' : ''}`} onClick={() => { setActiveTab('chats'); setActiveRoomId(null); }}>
+              Chats
+            </button>
+            <button className={`mc-tab-btn ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => { setActiveTab('requests'); setActiveRoomId(null); }}>
+              Requests
+              {requestsRooms.length > 0 && (
+                <span className="mc-tab-badge">{requestsRooms.length}</span>
+              )}
+            </button>
           </div>
 
           {/* Chat List */}
@@ -820,66 +880,77 @@ export default function SciCommChat() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* ── Input Area ── */}
-              <div className="mc-input-area">
-                {/* Reply preview */}
-                {replyingTo && (
-                  <div className="mc-input-reply-preview">
-                    <div className="mc-input-reply-info">
-                      <span className="mc-input-reply-name">Replying to {replyingTo.senderName}</span>
-                      <span className="mc-input-reply-text">{replyingTo.content?.substring(0, 80) || '📎 Attachment'}</span>
-                    </div>
-                    <button className="mc-icon-btn" onClick={() => setReplyingTo(null)}><X size={16} /></button>
+              {/* ── Input Area / Request Actions ── */}
+              {activeRoom?.status === 'requested' && activeRoom?.requestedBy !== user.id ? (
+                <div className="mc-request-action-box">
+                  <p>Accept message request from <strong>{getRoomName(activeRoom)}</strong>?</p>
+                  <p className="mc-request-subtitle">If you accept, they will be able to see when you read their messages and message you back.</p>
+                  <div className="mc-request-actions">
+                    <button className="mc-decline-btn" onClick={() => declineRequest(activeRoom.id)}>Decline</button>
+                    <button className="mc-accept-btn" onClick={() => acceptRequest(activeRoom.id)}>Accept</button>
                   </div>
-                )}
-
-                {/* Edit indicator */}
-                {editingMessage && (
-                  <div className="mc-input-reply-preview mc-editing-preview">
-                    <div className="mc-input-reply-info">
-                      <span className="mc-input-reply-name">Editing message</span>
-                      <span className="mc-input-reply-text">{editingMessage.content?.substring(0, 80)}</span>
-                    </div>
-                    <button className="mc-icon-btn" onClick={() => { setEditingMessage(null); setMessageText(''); }}><X size={16} /></button>
-                  </div>
-                )}
-
-                {/* Attach preview */}
-                {attachFile && (
-                  <div className="mc-attach-preview">
-                    {attachPreview ? <img src={attachPreview} alt="" className="mc-attach-thumb" /> : <div className="mc-attach-file-badge"><Paperclip size={16} /> {attachFile.name}</div>}
-                    <button className="mc-icon-btn" onClick={() => { setAttachFile(null); setAttachPreview(null); }}><X size={16} /></button>
-                  </div>
-                )}
-
-                <div className="mc-input-row">
-                  <button className="mc-icon-btn" onClick={() => setShowEmojiPicker(!showEmojiPicker)} title="Emoji"><Smile size={22} /></button>
-                  <button className="mc-icon-btn" onClick={() => fileInputRef.current?.click()} title="Attach"><Paperclip size={22} /></button>
-                  <input type="file" ref={fileInputRef} hidden accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" onChange={handleFileSelect} />
-                  <textarea
-                    ref={textareaRef}
-                    dir="auto"
-                    className="mc-input-textarea"
-                    placeholder="Type a message..."
-                    value={messageText}
-                    onChange={e => setMessageText(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
-                    rows={1}
-                  />
-                  <button className={`mc-send-btn ${(messageText.trim() || attachFile) ? 'active' : ''}`} onClick={sendMessage} disabled={uploading}>
-                    {uploading ? <div className="mc-spinner" /> : <Send size={20} />}
-                  </button>
                 </div>
+              ) : (
+                <div className="mc-input-area">
+                  {/* Reply preview */}
+                  {replyingTo && (
+                    <div className="mc-input-reply-preview">
+                      <div className="mc-input-reply-info">
+                        <span className="mc-input-reply-name">Replying to {replyingTo.senderName}</span>
+                        <span className="mc-input-reply-text">{replyingTo.content?.substring(0, 80) || '📎 Attachment'}</span>
+                      </div>
+                      <button className="mc-icon-btn" onClick={() => setReplyingTo(null)}><X size={16} /></button>
+                    </div>
+                  )}
 
-                {/* Emoji Picker */}
-                {showEmojiPicker && (
-                  <div className="mc-emoji-picker">
-                    {EMOJI_LIST.map(e => (
-                      <button key={e} className="mc-emoji-btn" onClick={() => { setMessageText(prev => prev + e); textareaRef.current?.focus(); }}>{e}</button>
-                    ))}
+                  {/* Edit indicator */}
+                  {editingMessage && (
+                    <div className="mc-input-reply-preview mc-editing-preview">
+                      <div className="mc-input-reply-info">
+                        <span className="mc-input-reply-name">Editing message</span>
+                        <span className="mc-input-reply-text">{editingMessage.content?.substring(0, 80)}</span>
+                      </div>
+                      <button className="mc-icon-btn" onClick={() => { setEditingMessage(null); setMessageText(''); }}><X size={16} /></button>
+                    </div>
+                  )}
+
+                  {/* Attach preview */}
+                  {attachFile && (
+                    <div className="mc-attach-preview">
+                      {attachPreview ? <img src={attachPreview} alt="" className="mc-attach-thumb" /> : <div className="mc-attach-file-badge"><Paperclip size={16} /> {attachFile.name}</div>}
+                      <button className="mc-icon-btn" onClick={() => { setAttachFile(null); setAttachPreview(null); }}><X size={16} /></button>
+                    </div>
+                  )}
+
+                  <div className="mc-input-row">
+                    <button className="mc-icon-btn" onClick={() => setShowEmojiPicker(!showEmojiPicker)} title="Emoji"><Smile size={22} /></button>
+                    <button className="mc-icon-btn" onClick={() => fileInputRef.current?.click()} title="Attach"><Paperclip size={22} /></button>
+                    <input type="file" ref={fileInputRef} hidden accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" onChange={handleFileSelect} />
+                    <textarea
+                      ref={textareaRef}
+                      dir="auto"
+                      className="mc-input-textarea"
+                      placeholder="Type a message..."
+                      value={messageText}
+                      onChange={e => setMessageText(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
+                      rows={1}
+                    />
+                    <button className={`mc-send-btn ${(messageText.trim() || attachFile) ? 'active' : ''}`} onClick={sendMessage} disabled={uploading}>
+                      {uploading ? <div className="mc-spinner" /> : <Send size={20} />}
+                    </button>
                   </div>
-                )}
-              </div>
+
+                  {/* Emoji Picker */}
+                  {showEmojiPicker && (
+                    <div className="mc-emoji-picker">
+                      {EMOJI_LIST.map(e => (
+                        <button key={e} className="mc-emoji-btn" onClick={() => { setMessageText(prev => prev + e); textareaRef.current?.focus(); }}>{e}</button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </>
           )}
 
