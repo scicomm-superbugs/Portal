@@ -68,6 +68,7 @@
 .scicomm-nav {
   display: flex;
   align-items: center;
+  gap: 4px;
   height: 100%;
 }
 
@@ -83,8 +84,8 @@
   justify-content: center;
   color: rgba(0,0,0,0.6);
   text-decoration: none !important;
-  min-width: unset !important;
-  padding: 4px 12px !important;
+  width: 80px !important;
+  box-sizing: border-box !important;
   height: 44px !important;
   align-self: center !important;
   border-radius: 8px !important;
