@@ -519,6 +519,8 @@ export default function SciCommChat() {
             {filteredRooms.map(room => {
               const unread = getUnreadCount(room);
               const online = getRoomOnlineStatus(room);
+              const otherId = (room.members || []).find(id => id !== user.id);
+              const other = scientists.find(s => String(s.id) === String(otherId));
               return (
                 <div key={room.id} className={`mc-chat-item ${room.id === activeRoomId ? 'active' : ''} ${unread > 0 ? 'unread' : ''}`} onClick={() => openRoom(room.id)}>
                   <div className="mc-chat-item-avatar">
@@ -527,7 +529,12 @@ export default function SciCommChat() {
                   </div>
                   <div className="mc-chat-item-info">
                     <div className="mc-chat-item-top">
-                      <span className="mc-chat-item-name">{getRoomName(room)}</span>
+                      <span className="mc-chat-item-name" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        {getRoomName(room)}
+                        {room.type === 'private' && other && (
+                          <SciCommVerificationBadge role={other.role} style={{ verticalAlign: 'middle', display: 'inline-flex' }} />
+                        )}
+                      </span>
                       <span className="mc-chat-item-time">{timeAgo(room.lastMessageAt || room.createdAt)}</span>
                     </div>
                     <div className="mc-chat-item-bottom">
@@ -652,7 +659,14 @@ export default function SciCommChat() {
                   {activeRoom && getRoomAvatar(activeRoom)}
                 </div>
                 <div className="mc-chat-header-info" onClick={() => activeRoom?.type === 'group' && setShowGroupSettings(true)}>
-                  <div className="mc-chat-header-name">{activeRoom && getRoomName(activeRoom)}</div>
+                  <div className="mc-chat-header-name" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {activeRoom && getRoomName(activeRoom)}
+                    {activeRoom?.type === 'private' && (() => {
+                      const otherId = (activeRoom.members || []).find(id => id !== user.id);
+                      const other = scientists.find(s => String(s.id) === String(otherId));
+                      return other ? <SciCommVerificationBadge role={other.role} style={{ verticalAlign: 'middle', display: 'inline-flex' }} /> : null;
+                    })()}
+                  </div>
                   <div className="mc-chat-header-status">{activeRoom && getRoomActivity(activeRoom)}</div>
                 </div>
                 <div className="mc-chat-header-menu" style={{ position: 'relative' }}>
@@ -705,7 +719,15 @@ export default function SciCommChat() {
                         )}
 
                         <div className="mc-msg-bubble-wrap">
-                          {showSenderName && <div className="mc-msg-sender-name">{msg.senderName}</div>}
+                          {showSenderName && (
+                            <div className="mc-msg-sender-name" style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
+                              {msg.senderName}
+                              {(() => {
+                                const sender = scientists.find(s => String(s.id) === String(msg.senderId));
+                                return sender ? <SciCommVerificationBadge role={sender.role} style={{ verticalAlign: 'middle', display: 'inline-flex' }} /> : null;
+                              })()}
+                            </div>
+                          )}
 
                           <div className={`mc-msg-bubble ${isMine ? 'sent' : 'received'}`}
                             onContextMenu={(e) => { e.preventDefault(); setShowMessageMenu(msg.id); }}
@@ -899,7 +921,12 @@ export default function SciCommChat() {
                         <div key={mid} className="mc-contact-item">
                           {renderAvatar(s, 36)}
                           <div className="mc-contact-info">
-                            <div className="mc-contact-name">{s?.name || 'Unknown'} {isCreator && <span className="mc-admin-tag">Admin</span>} {isMe && <span className="mc-you-tag">You</span>}</div>
+                            <div className="mc-contact-name" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              {s?.name || 'Unknown'}
+                              {s && <SciCommVerificationBadge role={s.role} style={{ verticalAlign: 'middle', display: 'inline-flex' }} />}
+                              {isCreator && <span className="mc-admin-tag">Admin</span>}
+                              {isMe && <span className="mc-you-tag">You</span>}
+                            </div>
                             <div className="mc-contact-dept">{s?.department || 'Member'}</div>
                           </div>
                           {!isMe && user.id === activeRoom.createdBy && (
@@ -937,7 +964,10 @@ export default function SciCommChat() {
                           <div key={s.id} className="mc-contact-item" onClick={() => { addMemberToGroup(s.id); setShowAddMembers(false); }}>
                             {renderAvatar(s, 36)}
                             <div className="mc-contact-info">
-                              <div className="mc-contact-name">{s.name}</div>
+                              <div className="mc-contact-name" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                {s.name}
+                                <SciCommVerificationBadge role={s.role} style={{ verticalAlign: 'middle', display: 'inline-flex' }} />
+                              </div>
                               <div className="mc-contact-dept">{s.department || 'Member'}</div>
                             </div>
                             <Plus size={18} style={{ color: '#3b82f6' }} />
