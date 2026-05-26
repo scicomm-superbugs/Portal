@@ -107,6 +107,18 @@ export default function SciCommChat() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  // ── Toggle mobile bar in chat room ──────────────────────
+  useEffect(() => {
+    if (activeRoomId && isMobileView) {
+      document.documentElement.classList.add('scicomm-in-chat-room');
+    } else {
+      document.documentElement.classList.remove('scicomm-in-chat-room');
+    }
+    return () => {
+      document.documentElement.classList.remove('scicomm-in-chat-room');
+    };
+  }, [activeRoomId, isMobileView]);
+
   // ── Update lastSeen every minute ────────────────────────
   useEffect(() => {
     const update = () => {

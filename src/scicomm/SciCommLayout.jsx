@@ -70,14 +70,32 @@ export default function SciCommLayout() {
     return () => { document.body.style.overflow = 'unset'; };
   }, [mobileSidebarOpen]);
 
-  // Register service worker for mobile notifications
+  // Register service worker and request notification permissions
   useEffect(() => {
-    if ('serviceWorker' in navigator && 'Notification' in window) {
-      navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
-      if (Notification.permission === 'default') {
-        Notification.requestPermission();
+    const initNotifications = async () => {
+      // Native app notification permission request
+      if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        try {
+          const { LocalNotifications } = await import('@capacitor/local-notifications');
+          const status = await LocalNotifications.checkPermissions();
+          if (status.display !== 'granted') {
+            await LocalNotifications.requestPermissions();
+          }
+        } catch (e) {
+          console.log('Error requesting native notification permissions:', e);
+        }
       }
-    }
+      
+      // Web notification registration
+      if ('serviceWorker' in navigator && 'Notification' in window) {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
+        if (Notification.permission === 'default') {
+          Notification.requestPermission();
+        }
+      }
+    };
+    
+    initNotifications();
   }, []);
 
   // Initialize Audio Unlock/Welcome Back Modal exactly once per browser tab session
@@ -93,6 +111,31 @@ export default function SciCommLayout() {
   // Push notifications - safe wrapper for mobile and desktop
   const sendPushNotif = async (title, body) => {
     try {
+      // 1. Try native Capacitor local notification if running on a native app platform (Android/iOS)
+      if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        try {
+          const { LocalNotifications } = await import('@capacitor/local-notifications');
+          const status = await LocalNotifications.checkPermissions();
+          if (status.display !== 'granted') {
+            await LocalNotifications.requestPermissions();
+          }
+          await LocalNotifications.schedule({
+            notifications: [
+              {
+                title: title,
+                body: body,
+                id: Math.floor(Math.random() * 1000000),
+                schedule: { at: new Date(Date.now() + 50) }
+              }
+            ]
+          });
+          return; // Native succeeded, bypass standard web notification
+        } catch (nativeErr) {
+          console.log('Capacitor native notification failed, falling back to web:', nativeErr);
+        }
+      }
+
+      // 2. Web push notification fallback
       if (!('Notification' in window) || Notification.permission !== 'granted') return;
       
       if ('serviceWorker' in navigator) {

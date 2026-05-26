@@ -6417,4 +6417,22 @@ html.no-pull-to-refresh body,
   color: white !important;
 }
 
+/* --- Premium Responsive WebView Navigation and Stacking Context Fix --- */
+.scicomm-in-chat-room .scicomm-mobile-bar {
+  display: none !important;
+}
 
+@media (max-width: 768px) {
+  .scicomm-in-chat-room .mc-container {
+    bottom: 0 !important;
+    height: calc(100dvh - 52px) !important;
+  }
+}
+
+.mc-container,
+.mc-messages,
+.mc-chat-list {
+  overscroll-behavior-y: none !important;
+  overscroll-behavior: none !important;
+  -webkit-overflow-scrolling: touch !important;
+}
