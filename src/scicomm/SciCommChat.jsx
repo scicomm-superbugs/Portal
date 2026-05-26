@@ -108,12 +108,12 @@ export default function SciCommChat() {
   // ── Update lastSeen every minute ────────────────────────
   useEffect(() => {
     const update = () => {
-      if (me) db.scientists.update(String(user.id), { lastSeen: new Date().toISOString() }).catch(() => {});
+      db.scientists.update(String(user.id), { lastSeen: new Date().toISOString() }).catch(() => {});
     };
     update();
     const iv = setInterval(update, 60000);
     return () => clearInterval(iv);
-  }, [me, user.id]);
+  }, [user.id]);
 
   // ── Rooms sorted & filtered ─────────────────────────────
   const myRooms = useMemo(() => {
